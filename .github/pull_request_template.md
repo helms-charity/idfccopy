@@ -3,5 +3,5 @@ Please always provide the [GitHub issue(s)](../issues) your PR is for, as well a
 Fix #<gh-issue-id>
 
 Test URLs:
-- Before: https://main--internal-aem-eds-poc-en--Tekno-Point.aem.live/
-- After: https://<branch>--internal-aem-eds-poc-en--Tekno-Point.aem.live/
+- Before: https://main--idfc--aemsites.aem.page/
+- After: https://<branch>--idfc--aemsites.aem.page/

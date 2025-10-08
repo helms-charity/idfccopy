@@ -1,5 +1,5 @@
 mountpoints:
   /:
-    url: "https://author-p48457-e1275402.adobeaemcloud.com/bin/franklin.delivery/Tekno-Point/internal-aem-eds-poc-en/main"
+    url: "https://author-idfc-dev.adobecqms.net/bin/franklin.delivery/aemsites/idfc/main"
     type: "markup"
     suffix: ".html"
