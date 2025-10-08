@@ -1,0 +1,661 @@
+/*
+ * Copyright 2020 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
+
+:root {
+  /* colors */
+  --background-color: white;
+  --light-color: #f8f8f8;
+  --dark-color: #505050;
+  --text-color: #131313;
+  --link-color: #3b63fb;
+  --link-hover-color: #1d3ecf;
+
+  /* fonts */
+  --body-font-family: 'Inter', sans-serif;
+  --heading-font-family: 'Inter-bold', sans-serif;
+
+  /* body sizes */
+  --body-font-size-m: 22px;
+  --body-font-size-s: 19px;
+  --body-font-size-xs: 17px;
+
+  /* heading sizes */
+  --heading-font-size-xxl: 55px;
+  --heading-font-size-xl: 44px;
+  --heading-font-size-l: 34px;
+  --heading-font-size-m: 27px;
+  --heading-font-size-s: 24px;
+  --heading-font-size-xs: 22px;
+
+  /* nav height */
+  --nav-height: 64px;
+}
+
+/* fallback fonts */
+@font-face {
+  font-family: roboto-condensed-fallback;
+  size-adjust: 88.82%;
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: roboto-fallback;
+  size-adjust: 99.529%;
+  src: local('Arial');
+}
+
+@media (width >=900px) {
+  :root {
+    /* body sizes */
+    --body-font-size-m: 18px;
+    --body-font-size-s: 16px;
+    --body-font-size-xs: 14px;
+
+    /* heading sizes */
+    --heading-font-size-xxl: 45px;
+    --heading-font-size-xl: 36px;
+    --heading-font-size-l: 28px;
+    --heading-font-size-m: 22px;
+    --heading-font-size-s: 20px;
+    --heading-font-size-xs: 18px;
+  }
+}
+
+body {
+  display: none;
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 1.6;
+}
+
+body.appear {
+  display: block;
+}
+
+header {
+  height: var(--nav-height);
+}
+
+header .header,
+footer .footer {
+  visibility: hidden;
+}
+
+header .header[data-block-status="loaded"],
+footer .footer[data-block-status="loaded"] {
+  visibility: visible;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0.8em;
+  margin-bottom: 0.25em;
+  font-family: var(--heading-font-family);
+  font-weight: 600;
+  line-height: 1.25;
+  scroll-margin: 40px;
+}
+
+h1 {
+  font-size: var(--heading-font-size-xxl);
+}
+
+h2 {
+  font-size: var(--heading-font-size-xl);
+}
+
+h3 {
+  font-size: var(--heading-font-size-l);
+}
+
+h4 {
+  font-size: var(--heading-font-size-m);
+}
+
+h5 {
+  font-size: var(--heading-font-size-s);
+}
+
+h6 {
+  font-size: var(--heading-font-size-xs);
+}
+
+p,
+dl,
+ol,
+ul,
+pre,
+blockquote {
+  margin-top: 0.8em;
+  margin-bottom: 0.25em;
+}
+
+code,
+pre {
+  font-size: var(--body-font-size-s);
+}
+
+pre {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: var(--light-color);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+main>div {
+  margin: 40px 16px;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+/* links */
+a:any-link {
+  color: var(--link-color);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+/* buttons */
+a.button:any-link,
+button {
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  margin: 12px 0;
+  border: 2px solid transparent;
+  border-radius: 2.4em;
+  padding: 0.5em 1.2em;
+  font-family: var(--body-font-family);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--link-color);
+  color: var(--background-color);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.button:hover,
+a.button:focus,
+button:hover,
+button:focus {
+  background-color: var(--link-hover-color);
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled:hover {
+  background-color: var(--light-color);
+  cursor: unset;
+}
+
+a.button.secondary,
+button.secondary {
+  background-color: unset;
+  border: 2px solid currentcolor;
+  color: var(--text-color);
+}
+
+main img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+.icon {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}
+
+.icon img {
+  height: 100%;
+  width: 100%;
+}
+
+/* sections */
+main>.section {
+  margin: 40px 0;
+}
+
+main>.section>div {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 24px;
+}
+
+main>.section:first-of-type {
+  margin-top: 0;
+}
+
+@media (width >=900px) {
+  main>.section>div {
+    padding: 0 32px;
+  }
+
+  header {
+    height: 160px;
+
+  }
+}
+
+@media (width <=900px) {
+
+
+  header {
+    /* padding-bottom: 113px; */
+    height: 117px;
+  }
+}
+
+/* section metadata */
+main .section.light,
+main .section.highlight {
+  background-color: var(--light-color);
+  margin: 0;
+  padding: 40px 0;
+}
+
+/* IDFC */
+
+.section.secondary-navbar-container {
+  margin: 0;
+  position: sticky;
+  top: 159px;
+  z-index: 2;
+  background-color: #fff;
+  border-bottom: 1px solid #E0E0E0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE 10+ */
+  background: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(37, 36, 59, 0.1);
+  padding: 0 1rem;
+}
+
+.secondary-navbar-wrapper {
+  width: 100%;
+}
+
+@media (max-width:767px) {
+  .section.secondary-navbar-container {
+    top: 115px;
+  }
+
+  .secondary-navbar-wrapper {
+    width: auto;
+  }
+}
+
+.section.overview-rte-container {
+  background-color: #F5F5F5;
+  margin-top: 0;
+  padding: 42px 0 23px 0;
+}
+
+.section.columns-container h2 {
+  color: #25243B;
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 30px;
+  margin-bottom: 14px;
+  letter-spacing: -0.6px;
+}
+
+.section.personalloanbenefits h2,
+.section.swipper-card-container h2,
+.section.swipper-card-container h6,
+.section.pl-blogs-container h2 {
+  color: #25243B;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.686px;
+  margin-bottom: 25px;
+}
+
+.section.swipper-card-container h2 {
+  margin-top: 0;
+}
+
+.section.git-block-container h3 {
+  color: #25243B;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.5px;
+}
+
+.section.personalloanbenefits h2,
+.section.typeofpersonalloan h2,
+section.faq-accordion-container h4 {
+  color: #25243B;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: -0.923px;
+  margin-bottom: 24px;
+  display: block;
+}
+
+@media (max-width:767px) {
+
+  .section.personalloanbenefits h2,
+  .section.typeofpersonalloan h2,
+  .section.pl-blogs-container h2,
+  .section.swipper-card-container h2 {
+    font-size: 20px;
+    line-height: normal;
+    margin-bottom: 13px;
+  }
+  .section.swipper-card-container h6{
+    font-size: 16px;
+  }
+}
+
+.section.pl-blogs-container {
+  background-color: rgba(225, 225, 235, 0.29);
+  padding: 32px 0;
+  margin: 0;
+}
+
+
+.section.banner-image .default-content-wrapper ol {
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  background: #F6F6F6 !important;
+  padding: 4px 13px;
+  font-size: 13px;
+  line-height: 16px;
+  color: #767676;
+}
+
+.section.banner-image .default-content-wrapper ol li {
+  list-style: none;
+  margin-right: 20px;
+}
+
+.section.banner-image .default-content-wrapper ol li a {
+  position: relative;
+  color: #767676;
+  pointer-events: none;
+}
+
+.section.banner-image .default-content-wrapper ol li:nth-child(1) a {
+  color: #9D1D27;
+  pointer-events: visible;
+}
+
+.section.banner-image .default-content-wrapper ol li:nth-child(2) a::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 3px;
+  left: -14px;
+  transform: rotate(44deg);
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentcolor;
+  border-radius: 0 1px 0 0;
+  border-width: 3px 3px 0 0;
+  color: #9D1D27;
+}
+
+.section.banner-image .default-content-wrapper .button-container a {
+  background-color: #9B1E26;
+}
+
+.section.banner-image .default-content-wrapper {
+  width: 100%;
+  height: 580px;
+}
+
+.section.banner-image>div>ol {
+  position: absolute;
+  top: 3%;
+}
+
+.section.banner-image h1 {
+  position: absolute;
+  top: 9%;
+  color: #25243B;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -1.25px;
+}
+
+.section.banner-image h3 {
+  position: absolute;
+  top: 20%;
+  color: #25243B;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.562px;
+}
+
+.section.banner-image .default-content-wrapper .button-container {
+  position: absolute;
+  top: 26%;
+}
+
+
+.section.banner-image>div>p:nth-child(2) {
+  display: none;
+}
+
+.section.banner-image>div>p:nth-child(1) {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 580px;
+  object-fit: cover;
+}
+
+.section.banner-image .default-content-wrapper p img {
+  width: 100%;
+  height: 580px;
+  /* max-height: 580px; */
+}
+
+@media (max-width:767px) {
+  .section.banner-image>div>p:nth-child(1) {
+    display: none;
+    /* margin: 0 -30px; */
+  }
+
+  .section.banner-image>div>p:nth-child(2) {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height: 580px; */
+    object-fit: cover;
+    margin: unset;
+  }
+
+  .section.banner-image .default-content-wrapper ol {
+    display: None;
+  }
+
+  .section.banner-image .default-content-wrapper p img {
+    height: auto;
+  }
+
+  /* .section.banner-image .default-content-wrapper{
+  position: relative;
+} */
+  .section.banner-image h1 {
+    top: 1%;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: normal;
+    font-style: normal;
+    line-height: normal;
+    padding: 0 10px;
+  }
+
+  .section.banner-image h3 {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 1.3px;
+    top: 5%;
+    padding: 0 10px;
+  }
+
+  .section.banner-image .default-content-wrapper .button-container {
+    position: absolute;
+    top: 7%;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  .section.banner-image .default-content-wrapper .button-container a {
+    padding: 14px 34px;
+  }
+}
+
+.section.swipper-card-container {
+  padding: 20px 0 0;
+  background-color: rgba(239, 223, 211, 0.5);
+  margin: 0;
+}
+
+.section.bankproducts {
+  background-color: #fff;
+  margin-bottom: 40px;
+}
+
+.section.rte-block-container {
+  padding: 80px 0;
+  background-color: #F5F5F5;
+  margin: 0;
+}
+
+@media (max-width:767px) {
+  .section.rte-block-container {
+    padding: 40px 0;
+  }
+}
+
+.section.personalloanbenefits {
+  margin: 0;
+  padding: 30px 0 56px;
+  background-color: rgba(239, 223, 211, 0.3);
+  width: 100%;
+}
+
+@media (max-width:767px) {
+  .section.personalloanbenefits {
+    padding: 30px 0;
+  }
+}
+
+.section.faq-accordion-container h4 {
+  color: #25243B;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: -0.923px;
+  margin-bottom: 28px;
+}
+
+@media (max-width:767px) {
+  .section.faq-accordion-container h4{
+    font-size: 20px;
+  }
+}
+
+*{
+  font-family: "Inter";
+}
+
+@media (width>=900px) {
+  .section.highlight.hero-banner.banner-image.columns-container {
+    /* margin-top: 60px; */
+    /* margin-top: 160px; */
+
+  }
+}
+
+.section.highlight.hero-banner.banner-image.columns-container {
+  position: relative;
+  /* This is critical for absolute positioning */
+  width: 100%;
+  /* max-height: 580px; */
+  height: 580px;
+  padding: unset;
+}
+
+.section.highlight.hero-banner.banner-image.columns-container picture,
+.section.highlight.hero-banner.banner-image.columns-container picture {
+  /* position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;        
+  height: auto;        
+  object-fit: cover;    */
+}
+
+@media (max-width:767px) {
+  .section.highlight.hero-banner.banner-image.columns-container {
+    height: 1250px;
+  }
+
+  .section.columns-container .columns-wrapper{
+    padding-right: 0;
+  }
+}

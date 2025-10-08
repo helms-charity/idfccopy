@@ -1,0 +1,125 @@
+/* stylelint-disable */
+.secondary-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  overflow-x: auto;
+  background: #FFFFFF;
+  padding: 0 1rem;
+}
+
+.secondary-nav-links {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 3.5rem;
+  scrollbar-width: none;
+}
+.secondary-nav-links::-webkit-scrollbar {
+  display: none;
+}
+.secondary-nav-cta-wrapper {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+/* Base nav item */
+.secondary-nav-item {
+  font-weight: 400;
+  color: #25243B !important;
+  font-size: 17px;
+  line-height: 20px;
+  letter-spacing: -0.5px;
+  padding: 25px 0px 20px;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  transition: font-weight 0.2s ease;
+}
+.secondary-nav-item:hover {
+  text-decoration: none;
+  font-weight: 500;
+}
+.secondary-nav-item:hover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: #9D1D27;
+  transition: all 0.3s ease;
+}
+/* CTA Button */
+.secondary-nav-cta {
+  display: inline-block;
+    color: rgb(255, 255, 255) !important;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    line-height: 22px;
+    padding: 12px 30px;
+    border-radius: 25px;
+    background: rgb(157, 29, 39);
+    white-space: nowrap;
+}
+.secondary-nav-cta:hover {
+  background-color: #A01313;
+  text-decoration: none !important;
+  border: none;
+}
+.secondary-nav-item.secondary-nav-cta:hover::after {
+  display: none;
+}
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .secondary-navbar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+  .secondary-nav-links {
+    flex: 1 1 100%;
+    gap: 2rem;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .secondary-nav-cta-wrapper {
+    display: none; /* Hide CTA on mobile */
+  }
+}
+/* .secondary-nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: #9D1D27;
+  transition: all 0.3s ease;
+} */
+.secondary-nav-links {
+  position: relative; /* For the sliding indicator */
+}
+
+.nav-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background-color: #9D1D27;
+  transition: transform 0.3s ease, width 0.3s ease;
+  will-change: transform, width;
+  z-index: 1;
+}
+
+.secondary-nav-item::after,
+.secondary-nav-item.active::after {
+  content: none !important; /* Disable built-in underline */
+}
