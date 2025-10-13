@@ -33,6 +33,38 @@
             {
               "name": "Highlight",
               "value": "highlight"
+            },
+            {
+              "name": "Banner Image",
+              "value": "banner-image"
+            },
+            {
+              "name": "Hero Banner",
+              "value": "hero-banner"
+            },
+            {
+              "name": "Benefits PL Calculator",
+              "value": "personalLoanBenefits"
+            },
+            {
+              "name": "Types of Personal loan",
+              "value": "typeOfPersonalLoan"
+            },
+            {
+              "name": "Bank Products",
+              "value": "bankProducts"
+            },
+            {
+              "name": "Mid Banner",
+              "value": "mid-banner"
+            },
+            {
+              "name": "PL Faqs",
+              "value": "pl-faqs"
+            },
+            {
+              "name": "Banner Breadcrumb",
+              "value": "banner-breadcrumb"
             }
           ]
         }
@@ -50,7 +82,17 @@
         "hero",
         "cards",
         "columns",
-        "fragment"
+        "fragment",
+        "swipper-card",
+        "rte-block",
+        "git-block",
+        "personal-loan-block",
+        "mid-banner",
+        "pl-swipper-blogs",
+        "pl-blogs",
+        "faq-accordion",
+        "overview-rte",
+        "cf-fragment"
       ]
     }
   ]

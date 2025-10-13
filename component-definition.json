@@ -83,6 +83,37 @@
       "id": "blocks",
       "components": [
         {
+          "title": "Accordion",
+          "id": "accordion",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Accordion",
+                  "model": "accordion",
+                  "filter": "accordion"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Accordion Item",
+          "id": "accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Accordion Item",
+                  "model": "accordion-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Cards",
           "id": "cards",
           "plugins": {
@@ -107,112 +138,6 @@
                 "template": {
                   "name": "Card",
                   "model": "card"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Columns",
-          "id": "columns",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/columns/v1/columns",
-                "template": {
-                  "columns": "2",
-                  "rows": "1"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Fragment",
-          "id": "fragment",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "Fragment",
-                  "model": "fragment"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Hero",
-          "id": "hero",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "Hero",
-                  "model": "hero"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Nav List",
-          "id": "nav-list",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "Nav List",
-                  "filter": "nav-list"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Nav Item",
-          "id": "nav-item",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Nav Item",
-                  "model": "nav-item"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "RTE Block",
-          "id": "rte-block",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "RTE Block",
-                  "model": "rte-block",
-                  "filter": "rte-block"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "RTE Item",
-          "id": "rte-item",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "RTE Item",
-                  "model": "rte-item"
                 }
               }
             }
@@ -250,31 +175,45 @@
           }
         },
         {
-          "title": "Accordion",
-          "id": "accordion",
+          "title": "Columns",
+          "id": "columns",
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
+                "resourceType": "core/franklin/components/columns/v1/columns",
                 "template": {
-                  "name": "Accordion",
-                  "model": "accordion",
-                  "filter": "accordion"
+                  "columns": "2",
+                  "rows": "1"
                 }
               }
             }
           }
         },
         {
-          "title": "Accordion Item",
-          "id": "accordion-item",
+          "title": "FAQ Accordion",
+          "id": "faq-accordion",
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
+                "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Accordion Item",
-                  "model": "accordion-item"
+                  "name": "FAQ Accordion",
+                  "filter": "faq-accordion"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Fragment",
+          "id": "fragment",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Fragment",
+                  "model": "fragment"
                 }
               }
             }
@@ -312,31 +251,15 @@
           }
         },
         {
-          "title": "Personal Loan Block",
-          "id": "personal-loan-block",
+          "title": "Hero",
+          "id": "hero",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Personal Loan Block",
-                  "model": "personal-loan-block",
-                  "filter": "personal-loan-block"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Personal Loan Item",
-          "id": "personal-loan-item",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Personal Loan Item",
-                  "model": "personal-loan-item"
+                  "name": "Hero",
+                  "model": "hero"
                 }
               }
             }
@@ -368,6 +291,97 @@
                 "template": {
                   "name": "Mid Banner Item",
                   "model": "mid-banner-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Nav List",
+          "id": "nav-list",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Nav List",
+                  "filter": "nav-list"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Nav Item",
+          "id": "nav-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Nav Item",
+                  "model": "nav-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Overview RTE",
+          "id": "overview-rte",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Overview RTE",
+                  "filter": "overview-rte"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Overview RTE Item",
+          "id": "overview-rte-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Overview RTE Item",
+                  "model": "overview-rte-item"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Personal Loan Block",
+          "id": "personal-loan-block",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Personal Loan Block",
+                  "model": "personal-loan-block",
+                  "filter": "personal-loan-block"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Personal Loan Item",
+          "id": "personal-loan-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Personal Loan Item",
+                  "model": "personal-loan-item"
                 }
               }
             }
@@ -436,6 +450,37 @@
           }
         },
         {
+          "title": "RTE Block",
+          "id": "rte-block",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "RTE Block",
+                  "model": "rte-block",
+                  "filter": "rte-block"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "RTE Item",
+          "id": "rte-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "RTE Item",
+                  "model": "rte-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Secondary Nav",
           "id": "secondary-nav",
           "plugins": {
@@ -467,30 +512,30 @@
           }
         },
         {
-          "title": "Overview RTE",
-          "id": "overview-rte",
+          "title": "Swipper Card",
+          "id": "swipper-card",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
-                  "name": "Overview RTE",
-                  "filter": "overview-rte"
+                  "name": "Swipper Card",
+                  "filter": "swipper-card"
                 }
               }
             }
           }
         },
         {
-          "title": "Overview RTE Item",
-          "id": "overview-rte-item",
+          "title": "Swipper Card Item",
+          "id": "swipper-card-item",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name":  "Overview RTE Item",
-                  "model": "overview-rte-item"
+                  "name": "Swipper Card Item",
+                  "model": "swipper-card-item"
                 }
               }
             }

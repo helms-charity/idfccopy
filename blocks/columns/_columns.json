@@ -21,6 +21,25 @@
       "id": "columns",
       "fields": [
         {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Style",
+          "options": [
+            {
+              "name": "Hero Banner",
+              "value": "hero-banner"
+            },
+            {
+              "name": "Feature Cards",
+              "value": "feature-cards"
+            },
+            {
+              "name": "Table",
+              "value": "table"
+            }
+          ]
+        },
+        {
           "component": "text",
           "valueType": "number",
           "name": "columns",
