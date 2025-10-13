@@ -273,6 +273,23 @@
     ]
   },
   {
+    "id": "faq-accordion-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "col_head",
+        "label": "Accordion Head"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "col1_body",
+        "label": "Accordion Body"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
@@ -395,6 +412,10 @@
     ]
   },
   {
+    "id": "overview-rte-item",
+    "fields": []
+  },
+  {
     "id": "personal-loan-item",
     "fields": [
       {
@@ -447,6 +468,32 @@
     ]
   },
   {
+    "id": "pl-swipper-blogs-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "rte-item",
     "fields": [
       {
@@ -457,6 +504,10 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "secondary-nav-item",
+    "fields": []
   },
   {
     "id": "swipper-card-item",

@@ -104,6 +104,12 @@
     ]
   },
   {
+    "id": "pl-swipper-blogs",
+    "components": [
+      "pl-swipper-blogs-item"
+    ]
+  },
+  {
     "id": "rte-block",
     "components": [
       "rte-item"

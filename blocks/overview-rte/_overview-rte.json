@@ -31,7 +31,12 @@
       }
     }
   ],
-  "models": [],
+  "models": [
+    {
+      "id": "overview-rte-item",
+      "fields": []
+    }
+  ],
   "filters": [
     {
       "id": "overview-rte",

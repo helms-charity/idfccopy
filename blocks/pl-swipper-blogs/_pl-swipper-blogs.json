@@ -59,5 +59,14 @@
         }
       ]
     }
+  ],
+  "filters": [
+    {
+      "id": "pl-swipper-blogs",
+      "components": [
+        "pl-swipper-blogs-item"
+      ]
+    }
   ]
 }
+

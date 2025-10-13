@@ -16,7 +16,25 @@
       }
     }
   ],
-  "models": [],
+  "models": [
+    {
+      "id": "faq-accordion-item",
+      "fields": [
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "col_head",
+          "label": "Accordion Head"
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "col1_body",
+          "label": "Accordion Body"
+        }
+      ]
+    }
+  ],
   "filters": [
     {
       "id": "faq-accordion",

@@ -32,7 +32,12 @@
       }
     }
   ],
-  "models": [],
+  "models": [
+    {
+      "id": "secondary-nav-item",
+      "fields": []
+    }
+  ],
   "filters": [
     {
       "id": "secondary-nav",
