@@ -74,6 +74,10 @@
     ]
   },
   {
+    "id": "library-metadata",
+    "components": []
+  },
+  {
     "id": "mid-banner",
     "components": [
       "mid-banner-item"
