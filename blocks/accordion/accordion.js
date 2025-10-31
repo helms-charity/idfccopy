@@ -1,3 +1,5 @@
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
 export default function decorate(block) {
   // const isMobile = window.matchMedia('(max-width: 767px)').matches;
   // if (!isMobile) return; // Skip accordion transformation on desktop
@@ -12,6 +14,7 @@ export default function decorate(block) {
       const body = children[1];
       body.className = 'accordion-item-body';
       const details = document.createElement('details');
+      moveInstrumentation(row, details);
       details.className = 'accordion-item';
       details.append(summary, body);
       row.replaceWith(details);
@@ -21,14 +24,16 @@ export default function decorate(block) {
     }
   });
   // Optional: Only one open at a time
-  const footerAccordion = document.querySelector(".footer-accordion")
-  block.querySelectorAll('details').forEach((detail) => {
-    detail.addEventListener('toggle', () => {
+  const footerAccordion = document.querySelector('.footer-accordion');
+  if (footerAccordion) {
+    block.querySelectorAll('details').forEach((detail) => {
+      detail.addEventListener('toggle', () => {
       // if (detail.open) {
       //   block.querySelectorAll('details').forEach((el) => {
       //     if (el !== detail) el.removeAttribute('open');
       //   });
       // }
+      });
     });
-  });
+  }
 }
