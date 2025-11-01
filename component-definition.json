@@ -92,7 +92,14 @@
                 "template": {
                   "name": "Accordion",
                   "model": "accordion",
-                  "filter": "accordion"
+                  "filter": "accordion",
+                  "item1": {
+                    "sling:resourceType": "blocks/accordion/accordion-item",
+                    "name": "Accordion Item",
+                    "model": "accordion-item",
+                    "col_head": "Lorem Ipsum",
+                    "col1_body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat consequat dui, sit amet ...</p>"
+                  }
                 }
               }
             }
