@@ -74,7 +74,7 @@ export default function decorate(block) {
   window.addEventListener('resize', () => {
     const existingBtn = block.querySelector('.view-toggle');
     if (existingBtn) existingBtn.remove();
-    cards.forEach((card) => (card.style.display = 'flex'));
+    cards.forEach((card) => { card.style.display = 'flex'; });
     setupToggleButton();
   });
 }

@@ -2,6 +2,7 @@
 coverage/*
 logs/*
 node_modules/*
+blocks/swipper/swipper-bundle.min.js
 
 helix-importer-ui
 .DS_Store

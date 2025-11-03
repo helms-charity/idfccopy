@@ -1,8 +1,8 @@
 export function decorateTable(block) {
   const originalClassList = Array.from(block.classList);
 
-  const rows = Array.from(block.children).map((row) =>
-    Array.from(row.children).map((cell) => cell.innerHTML)
+  const rows = Array.from(block.children).map(
+    (row) => Array.from(row.children).map((cell) => cell.innerHTML),
   );
 
   const tableWrapper = document.createElement('div');
@@ -25,8 +25,8 @@ export function decorateTable(block) {
   block.replaceWith(tableWrapper);
 }
 export default function decorate(block) {
-  if(block.classList.contains('table')){
-    decorateTable(block)
+  if (block.classList.contains('table')) {
+    decorateTable(block);
     return block;
   }
   const cols = [...block.firstElementChild.children];
@@ -46,4 +46,3 @@ export default function decorate(block) {
     });
   });
 }
-
