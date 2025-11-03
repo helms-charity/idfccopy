@@ -31,13 +31,20 @@
       "faq-accordion",
       "overview-rte",
       "cf-fragment",
-      "library-metadata"
+      "library-metadata",
+      "banner"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "banner",
+    "components": [
+      "banner-item"
     ]
   },
   {

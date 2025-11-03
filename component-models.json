@@ -187,6 +187,67 @@
     ]
   },
   {
+    "id": "banner-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "bannerHeading",
+        "label": "Banner Heading",
+        "valueType": "string"
+      },
+      {
+        "component": "container",
+        "name": "ctas",
+        "label": "Call to Actions",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "heading",
+            "label": "CTA Heading",
+            "valueType": "string"
+          },
+          {
+            "component": "aem-content",
+            "name": "link",
+            "label": "CTA Link",
+            "valueType": "string"
+          },
+          {
+            "component": "text",
+            "name": "linkText",
+            "label": "CTA Link Text",
+            "valueType": "string"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "bottomText",
+        "label": "Bottom Text",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "bannerImage",
+        "label": "Banner Image (Desktop)",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "bannerImageMobile",
+        "label": "Banner Image (Mobile)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "bannerImageAlt",
+        "label": "Banner Image Alt Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
