@@ -38,7 +38,7 @@ export default async function decorate(block) {
 
   const item = block.querySelector('a');
   if (!item) {
-    console.error('Link element not found in the block.');
+    console.error('Link element not found in the block.'); // eslint-disable-line no-console
     return;
   }
 
@@ -50,7 +50,7 @@ export default async function decorate(block) {
     const response = await fetch(url, { method: 'GET' });
     respData = await response.json();
   } catch (error) {
-    console.log('error while fetching');
+    console.log('error while fetching'); // eslint-disable-line no-console
   }
 
   const itemData = respData?.data?.formByPath?.item;
@@ -231,7 +231,8 @@ export default async function decorate(block) {
 
   interestRateDisplay.addEventListener('change', () => {
     let val = parseFloat(interestRateDisplay.value.replace(/[^0-9.]/g, ''));
-    if (isNaN(val) || val < parseFloat(interestRateRange.min)) val = parseFloat(interestRateRange.min);
+    if (isNaN(val)
+        || val < parseFloat(interestRateRange.min)) val = parseFloat(interestRateRange.min);
     if (val > parseFloat(interestRateRange.max)) val = parseFloat(interestRateRange.max);
     interestRateRange.value = val;
     interestRateDisplay.value = val;

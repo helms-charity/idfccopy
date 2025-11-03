@@ -133,14 +133,14 @@ export default async function decorate(block) {
   // Extract logo from fragment (if exists) or use default
   let logoImgSrc = './media_104481e8050954141720a87a3e4a576a65e2e8774.png';
   let logoImgAlt = 'IDFC FIRST Bank';
-  
+
   // Look for the last image in the fragment (logo should be at the bottom)
   const allImages = fragment.querySelectorAll('img');
   if (allImages.length > 0) {
     const lastImg = allImages[allImages.length - 1];
     const srcFromFragment = lastImg.getAttribute('src');
     logoImgAlt = lastImg.getAttribute('alt') || logoImgAlt;
-    
+
     // Use the image from fragment if it exists and looks valid
     if (srcFromFragment) {
       logoImgSrc = srcFromFragment;
@@ -304,18 +304,19 @@ export default async function decorate(block) {
   block.append(navWrapper);
 
   // Add scroll behavior for collapsing header
+  // eslint-disable-next-line no-unused-vars
   let lastScrollTop = 0;
   const scrollThreshold = 50; // Pixels to scroll before collapsing
 
   function handleScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
+
     if (scrollTop > scrollThreshold) {
       navWrapper.classList.add('scrolled');
     } else {
       navWrapper.classList.remove('scrolled');
     }
-    
+
     lastScrollTop = scrollTop;
   }
 

@@ -1,3 +1,3 @@
-export default function decorate(block){
-    block.id = "benefits"
+export default function decorate(block) {
+  block.id = 'benefits';
 }
