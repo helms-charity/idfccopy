@@ -14,7 +14,7 @@
 :root {
   /* colors */
   --background-color: white;
-  --light-color: #f8f8f8;
+  --light-color: #f5f5f5;
   --dark-color: #505050;
   --text-color: #25243B;
   --link-color: #3b63fb;
@@ -25,7 +25,29 @@
   --gradient-red: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
   --gradient-blue: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
-  --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%)
+  --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
+
+  --blue: #007bff;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #e83e8c;
+  --red: #dc3545;
+  --orange: #fd7e14;
+  --yellow: #ffc107;
+  --green: #28a745;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
 
   /* fonts */
   --body-font-family: 'Inter', sans-serif;
@@ -63,6 +85,15 @@
 
 *{
   font-family: "Inter";
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+.clearfix {
+  display: inline-block;
 }
 
 body {
@@ -175,6 +206,36 @@ a:any-link {
 a:hover {
   color: var(--link-hover-color);
   text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
+  color: var(--dark-red-color);
+}
+
+a:hover {
+  text-decoration: none;
+  color: var(--dark-red-color);
+}
+
+a:focus {
+  text-decoration: none;
+  color: #54565B;
+  outline: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul li {
+  list-style: none;
+}
+
+b,
+strong {
+  font-weight: 700;
 }
 
 /* buttons */
@@ -376,7 +437,7 @@ main .section.highlight {
 }
 
 .section.overview-rte-container {
-  background-color: #F5F5F5;
+  background-color: var(--light-color);
   margin-top: 0;
   padding: 42px 0 23px 0;
 }
@@ -456,7 +517,7 @@ section.faq-accordion-container h4 {
 }
 
 .section.banner-image .default-content-wrapper ol li:nth-child(1) a {
-  color: #9D1D27;
+  color: var(--dark-red-color);
   pointer-events: visible;
 }
 
@@ -472,7 +533,7 @@ section.faq-accordion-container h4 {
   border: 2px solid currentcolor;
   border-radius: 0 1px 0 0;
   border-width: 3px 3px 0 0;
-  color: #9D1D27;
+  color: var(--dark-red-color);
 }
 
 .section.banner-image .default-content-wrapper .button-container a {
@@ -549,7 +610,7 @@ section.faq-accordion-container h4 {
 
 .section.rte-block-container {
   padding: 80px 0;
-  background-color: #F5F5F5;
+  background-color: var(--light-color);
   margin: 0;
 }
 

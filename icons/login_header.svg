@@ -1,7 +1,7 @@
 <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Group 1171280978">
-<path id="Vector" d="M9.50195 1H12.1686C12.5222 1 12.8614 1.14048 13.1114 1.39052C13.3615 1.64057 13.502 1.97971 13.502 2.33333V11.6667C13.502 12.0203 13.3615 12.3594 13.1114 12.6095C12.8614 12.8595 12.5222 13 12.1686 13H9.50195" stroke="#F5F5F5" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M6.16797 10.3332L9.5013 6.99984L6.16797 3.6665" stroke="#F5F5F5" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_3" d="M9.50195 7H1.50195" stroke="#F5F5F5" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector" d="M9.50195 1H12.1686C12.5222 1 12.8614 1.14048 13.1114 1.39052C13.3615 1.64057 13.502 1.97971 13.502 2.33333V11.6667C13.502 12.0203 13.3615 12.3594 13.1114 12.6095C12.8614 12.8595 12.5222 13 12.1686 13H9.50195" stroke="var(--light-color)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M6.16797 10.3332L9.5013 6.99984L6.16797 3.6665" stroke="var(--light-color)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M9.50195 7H1.50195" stroke="var(--light-color)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 </svg>

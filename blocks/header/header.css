@@ -314,7 +314,7 @@ header nav .nav-sections ul>li>ul>li {
   }
 
   header nav .nav-sections .nav-drop:hover>p>a {
-    color: #9d1d27;
+    color: var(--dark-red-color);
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li.nav-drop:first-child::after {
@@ -424,7 +424,7 @@ header nav .nav-sections ul>li>ul>li {
   }
 
   .header nav .nav-sections .default-content-wrapper>ul>li>ul>li:hover a {
-    color: #9d1d27;
+    color: var(--dark-red-color);
     font-weight: 700;
     font-family: "Inter-bold";
     background: #f1f1f1;
@@ -434,7 +434,7 @@ header nav .nav-sections ul>li>ul>li {
   }
 
   /* header nav .nav-sections .default-content-wrapper>ul>li:first-child>ul>li:first-child a {
-    color: #9d1d27;
+    color: var(--dark-red-color);
     font-weight: 700;
     background: #f1f1f1;
     border-radius: 4px;
@@ -443,7 +443,7 @@ header nav .nav-sections ul>li>ul>li {
   } */
 
   header nav .nav-sections .default-content-wrapper>ul>li:first-child>ul>li:first-child:hover a {
-    color: #9d1d27;
+    color: var(--dark-red-color);
     font-weight: 700;
     background: #f1f1f1;
     border-radius: 4px;
@@ -636,7 +636,7 @@ header nav .nav-sections ul>li>ul>li {
 
 .top-nav-left>li.active>a .icon-Down::before,
 .top-nav-left>li:hover>a .icon-Down::before {
-  color: #9d1d27;
+  color: var(--dark-red-color);
   content: ""
 }
 
@@ -663,11 +663,11 @@ header nav .nav-sections ul>li>ul>li {
 }
 
 .top-nav-left>li>a .icon-Down::before {
-  color: #9d1d27
+  color: var(--dark-red-color)
 }
 
 .top-nav-left>li>a:hover {
-  border-bottom: 3px solid #9d1d27
+  border-bottom: 3px solid var(--dark-red-color)
 }
 
 .top-nav-left>li .dfm {

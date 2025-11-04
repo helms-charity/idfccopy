@@ -1,6 +1,6 @@
 
 footer {
-  background: #9D1D27;
+  background: var(--dark-red-color);
   color: #FFFFFF;
   font-size: var(--body-font-size-xs);
   box-sizing: border-box;
@@ -436,7 +436,7 @@ footer .footer>div .section:nth-child(4)>div p a {
     padding: 10px 30px;
     border-radius: 25px;
     background: #FFFFFF;
-    color: #9D1D27 !important;
+    color: var(--dark-red-color) !important;
     text-align: center;
     line-height: 30px;
     white-space: nowrap;
@@ -449,7 +449,7 @@ footer .footer>div .section:nth-child(4)>div p a {
   }
 
   .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:nth-child(2) a {
-    color: #9D1D27
+    color: var(--dark-red-color)
   }
 
   .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:first-child {
