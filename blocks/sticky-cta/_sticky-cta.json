@@ -21,17 +21,17 @@
       "id": "sticky-cta",
       "fields": [
         {
-          "component": "reference",
+          "component": "text",
           "valueType": "string",
-          "name": "ctaUrl",
-          "label": "CTA URL",
+          "name": "ctaLink",
+          "label": "CTA Link",
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "ctaText",
-          "label": "CTA Text"
+          "name": "ctaLinkText",
+          "label": "CTA Button Text"
         },
         {
           "component": "text",

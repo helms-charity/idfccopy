@@ -33,13 +33,20 @@
       "cf-fragment",
       "library-metadata",
       "banner",
-      "sticky-cta"
+      "sticky-cta",
+      "anchor-nav"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "anchor-nav",
+    "components": [
+      "anchor-nav-item"
     ]
   },
   {
