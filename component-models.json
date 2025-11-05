@@ -187,6 +187,10 @@
     ]
   },
   {
+    "id": "anchor-nav-item",
+    "fields": []
+  },
+  {
     "id": "banner-item",
     "fields": [
       {

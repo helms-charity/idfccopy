@@ -121,6 +121,37 @@
           }
         },
         {
+          "title": "Anchor Nav",
+          "id": "anchor-nav",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Anchor Nav",
+                  "model": "anchor-nav",
+                  "filter": "anchor-nav"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Anchor Nav Item",
+          "id": "anchor-nav-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Anchor Nav Item",
+                  "model": "anchor-nav-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Banner",
           "id": "banner",
           "plugins": {
@@ -221,21 +252,6 @@
                 "template": {
                   "columns": "2",
                   "rows": "1"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "FAQ Accordion",
-          "id": "faq-accordion",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "FAQ Accordion",
-                  "filter": "faq-accordion"
                 }
               }
             }

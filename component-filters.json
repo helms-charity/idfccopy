@@ -32,13 +32,20 @@
       "overview-rte",
       "cf-fragment",
       "library-metadata",
-      "banner"
+      "banner",
+      "anchor-nav"
     ]
   },
   {
     "id": "accordion",
     "components": [
       "accordion-item"
+    ]
+  },
+  {
+    "id": "anchor-nav",
+    "components": [
+      "anchor-nav-item"
     ]
   },
   {
@@ -72,12 +79,6 @@
       "image",
       "button",
       "title"
-    ]
-  },
-  {
-    "id": "faq-accordion",
-    "components": [
-      "faq-accordion-item"
     ]
   },
   {
