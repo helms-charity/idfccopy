@@ -104,7 +104,8 @@
         "cf-fragment",
         "library-metadata",
         "banner",
-        "sticky-cta"
+        "sticky-cta",
+        "anchor-nav"
       ]
     }
   ]
