@@ -103,7 +103,8 @@
         "overview-rte",
         "cf-fragment",
         "library-metadata",
-        "banner"
+        "banner",
+        "anchor-nav"
       ]
     }
   ]
