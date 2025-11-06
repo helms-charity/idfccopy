@@ -37,7 +37,7 @@
 /* Button container */
 .sticky-cta-content {
   order: 1;
-  padding-top: 6px;
+  padding-top: 4px;
 }
 
 .sticky-cta-content .button-container {
@@ -49,7 +49,7 @@
 .sticky-cta-content a.button {
   display: inline;
   height: 57px;
-  padding: 11px 54px;
+  padding: 10px 54px;
   min-width: 234px;
   background-color: var(--red-color);
   color: var(--background-color);
@@ -91,23 +91,31 @@
   margin: 0;
   font-size: 11px;
   color: #fff;
+  text-shadow: 0 0 20px rgb(0 0 0 / 25%);
+  font-family: var(--body-font-family-semibold);
   line-height: 1.4;
+  padding-bottom: 6px;
 }
 
 /* Tablet Styles */
 @media (width >= 601px) {
   .sticky-cta.block {
     padding: 20px 30px;
-    gap: 15px;
+    gap: 10px;
+  }
+
+  .sticky-cta-content {
+    padding-top: 8px;
   }
 
   .sticky-cta-link,
   .sticky-cta-content a.button {
-    padding: 11px 54px;
+    padding: 10px 54px;
   }
 
   .sticky-cta-subtitle-content {
     font-size: 12px;
+    padding-bottom: 10px;
   }
 }
 
@@ -115,7 +123,7 @@
 @media (width >= 901px) {
   .sticky-cta.block {
     padding: 25px 40px;
-    gap: 24px;
+    gap: 20px;
     height: 120px;
   }
 
@@ -126,11 +134,12 @@
   .sticky-cta-link,
   .sticky-cta-content a.button {
     font-size: 16px;
-    padding: 20px 28px;
+    padding: 16px 28px;
   }
 
   .sticky-cta-subtitle-content {
     font-size: 14px;
     max-width: 900px;
+    padding-bottom: 10px;
   }
 }
