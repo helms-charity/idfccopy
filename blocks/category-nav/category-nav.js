@@ -23,7 +23,7 @@ function buildCardFromRow(row) {
   if (cells.length === 0) return null;
 
   const card = document.createElement('div');
-  card.classList.add('gradientCard');
+  card.classList.add('gradientCard', 'category-nav-card');
 
   // Extract data from cells
   const title = cells[0]?.textContent?.trim() || '';
@@ -36,6 +36,10 @@ function buildCardFromRow(row) {
   const tag3BgColor = cells[7]?.textContent?.trim() || '';
   const cardBgColor = cells[8]?.textContent?.trim() || '';
 
+  // Add data attributes for easier targeting
+  if (title) card.setAttribute('data-card-title', title);
+  if (cardBgColor) card.setAttribute('data-card-gradient', cardBgColor);
+
   // Add card background color
   if (cardBgColor) {
     card.classList.add(cardBgColor);
@@ -45,11 +49,12 @@ function buildCardFromRow(row) {
 
   const cardLink = document.createElement('a');
   cardLink.href = link;
+  cardLink.classList.add('category-nav-card-link');
   cardLink.setAttribute('data-gtm-desk-l3cards-click', '');
 
   // Tags container
   const tagsContainer = document.createElement('div');
-  tagsContainer.classList.add('tags');
+  tagsContainer.classList.add('tags', 'category-nav-tags');
 
   // Add tags if they exist
   const tags = [];
@@ -58,13 +63,14 @@ function buildCardFromRow(row) {
   if (tag3) tags.push({ text: tag3, colorClass: tag3BgColor });
 
   if (tags.length > 0) {
-    tags.forEach((tag) => {
+    tags.forEach((tag, index) => {
       const tagSpan = document.createElement('span');
-      tagSpan.classList.add('tag');
+      tagSpan.classList.add('tag', 'category-nav-tag');
       if (tag.colorClass) {
         tagSpan.classList.add(tag.colorClass);
       }
       tagSpan.textContent = tag.text;
+      tagSpan.setAttribute('data-tag-index', index + 1);
       tagsContainer.appendChild(tagSpan);
     });
   } else {
@@ -75,11 +81,11 @@ function buildCardFromRow(row) {
 
   // Card title
   const titleDiv = document.createElement('div');
-  titleDiv.classList.add('title');
+  titleDiv.classList.add('title', 'category-nav-card-title');
   titleDiv.textContent = title;
 
   const iconSpan = document.createElement('span');
-  iconSpan.classList.add('icon-Right');
+  iconSpan.classList.add('icon-Right', 'category-nav-card-icon');
   titleDiv.appendChild(iconSpan);
 
   cardLink.appendChild(titleDiv);
@@ -131,14 +137,15 @@ function buildDropdown(categoryData) {
   if (!categoryData.items || categoryData.items.length === 0) return null;
 
   const dropdown = document.createElement('div');
-  dropdown.classList.add('dropdown-content', 'animated', 'fadeIn', 'menu-cardList-cnt');
+  dropdown.classList.add('dropdown-content', 'animated', 'fadeIn', 'menu-cardList-cnt', 'category-nav-dropdown');
+  dropdown.setAttribute('data-category', categoryData.id);
 
   // Header box
   const hdBx = document.createElement('div');
-  hdBx.classList.add('hd-bx');
+  hdBx.classList.add('hd-bx', 'category-nav-dropdown-header');
 
   const h4 = document.createElement('p');
-  h4.classList.add('hd-bx-h4');
+  h4.classList.add('hd-bx-h4', 'category-nav-dropdown-title');
   h4.textContent = categoryData.title;
   hdBx.appendChild(h4);
 
@@ -146,7 +153,7 @@ function buildDropdown(categoryData) {
 
   // Build card list
   const menuCardList = document.createElement('div');
-  menuCardList.classList.add('menu-cardList', 'MT15');
+  menuCardList.classList.add('menu-cardList', 'MT15', 'category-nav-cards-container');
 
   categoryData.items.forEach((card) => {
     menuCardList.appendChild(card);
@@ -161,23 +168,25 @@ function buildDropdown(categoryData) {
  */
 function buildUnifiedNavigation(categoriesData) {
   const topNav = document.createElement('div');
-  topNav.classList.add('top-nav', 'bg-light-white');
+  topNav.classList.add('top-nav', 'bg-light-white', 'category-nav-bar');
 
   const tabsPane = document.createElement('div');
-  tabsPane.classList.add('tabs-pane-js');
+  tabsPane.classList.add('tabs-pane-js', 'category-nav-tabs-pane');
 
   const tabPane = document.createElement('div');
-  tabPane.classList.add('tab-pane', 'top-second-nav-js', 'active');
+  tabPane.classList.add('tab-pane', 'top-second-nav-js', 'active', 'category-nav-tab-pane');
 
   const navList = document.createElement('ul');
-  navList.classList.add('top-nav-left');
+  navList.classList.add('top-nav-left', 'category-nav-list');
 
   categoriesData.forEach((category) => {
     const li = document.createElement('li');
-    li.classList.add('drop-down', 'all-drop-down');
+    li.classList.add('drop-down', 'all-drop-down', 'category-nav-item');
     li.setAttribute('data-header-gtm', category.title);
+    li.setAttribute('data-category', category.id);
 
     const link = document.createElement('a');
+    link.classList.add('category-nav-link');
     link.textContent = category.title;
     link.href = `#${category.id}`;
     link.addEventListener('click', (e) => {
@@ -234,7 +243,7 @@ export default function decorate(block) {
     return;
   }
 
-  // Parse data from all blocks
+  // Parse data from all blocks and add section IDs
   const categoriesData = [];
   allCategoryNavBlocks.forEach((navBlock, index) => {
     const categoryData = parseCategoryNavBlock(navBlock);
@@ -242,6 +251,15 @@ export default function decorate(block) {
     console.log(`[Category Nav Block] Block ${index + 1}: "${categoryData.title}" with ${categoryData.items.length} items`);
     if (categoryData.items.length > 0) {
       categoriesData.push(categoryData);
+
+      // Add ID to the section for anchor navigation
+      const section = navBlock.closest('.section');
+      if (section && !section.id) {
+        section.id = categoryData.id;
+        section.setAttribute('data-category-id', categoryData.id);
+        // eslint-disable-next-line no-console
+        console.log(`[Category Nav Block] Added ID "${categoryData.id}" to section`);
+      }
     }
   });
 

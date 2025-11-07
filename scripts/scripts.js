@@ -399,6 +399,35 @@ async function loadCategoryNavFragment(main) {
     fragmentSections.forEach((section) => {
       // Clone the section to avoid moving it from the fragment
       const sectionClone = section.cloneNode(true);
+
+      // Add semantic classes to sections containing category-nav blocks
+      const categoryNavBlock = sectionClone.querySelector('.category-nav');
+      if (categoryNavBlock) {
+        // Add class to identify this as a category navigation section
+        sectionClone.classList.add('category-nav-section');
+
+        // Find the category title and add a class
+        const titleWrapper = sectionClone.querySelector('.default-content-wrapper');
+        if (titleWrapper) {
+          titleWrapper.classList.add('category-title-wrapper');
+          const titleElement = titleWrapper.querySelector('p, h1, h2, h3, h4, h5, h6');
+          if (titleElement) {
+            titleElement.classList.add('category-title');
+            // Add data attribute with the category name
+            const categoryName = titleElement.textContent.trim();
+            sectionClone.setAttribute('data-category-name', categoryName);
+            // eslint-disable-next-line no-console
+            console.log(`[Category Nav Fragment] Tagged section with category: ${categoryName}`);
+          }
+        }
+
+        // Add class to the wrapper containing the block
+        const blockWrapper = sectionClone.querySelector('.category-nav-wrapper');
+        if (blockWrapper) {
+          blockWrapper.classList.add('category-nav-block-wrapper');
+        }
+      }
+
       if (firstChild) {
         main.insertBefore(sectionClone, firstChild);
       } else {

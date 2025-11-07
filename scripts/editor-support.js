@@ -112,6 +112,31 @@ async function applyChanges(event) {
             const { firstChild } = newMain;
             fragmentSections.forEach((section) => {
               const sectionClone = section.cloneNode(true);
+
+              // Add semantic classes to sections containing category-nav blocks
+              const categoryNavBlock = sectionClone.querySelector('.category-nav');
+              if (categoryNavBlock) {
+                sectionClone.classList.add('category-nav-section');
+
+                const titleWrapper = sectionClone.querySelector('.default-content-wrapper');
+                if (titleWrapper) {
+                  titleWrapper.classList.add('category-title-wrapper');
+                  const titleElement = titleWrapper.querySelector('p, h1, h2, h3, h4, h5, h6');
+                  if (titleElement) {
+                    titleElement.classList.add('category-title');
+                    const categoryName = titleElement.textContent.trim();
+                    sectionClone.setAttribute('data-category-name', categoryName);
+                    // eslint-disable-next-line no-console
+                    console.log(`[Category Nav Editor] Tagged section with category: ${categoryName}`);
+                  }
+                }
+
+                const blockWrapper = sectionClone.querySelector('.category-nav-wrapper');
+                if (blockWrapper) {
+                  blockWrapper.classList.add('category-nav-block-wrapper');
+                }
+              }
+
               if (firstChild) {
                 newMain.insertBefore(sectionClone, firstChild);
               } else {
