@@ -66,7 +66,8 @@ function buildCardFromRow(row) {
     tags.forEach((tag, index) => {
       const tagSpan = document.createElement('span');
       tagSpan.classList.add('tag', 'category-nav-tag');
-      if (tag.colorClass) {
+      // Only add color class if it exists and doesn't contain spaces
+      if (tag.colorClass && tag.colorClass.trim() && !tag.colorClass.includes(' ')) {
         tagSpan.classList.add(tag.colorClass);
       }
       tagSpan.textContent = tag.text;
@@ -217,6 +218,14 @@ function buildUnifiedNavigation(categoriesData) {
 }
 
 export default function decorate(block) {
+  // Skip decoration if this block is in a fragment being loaded
+  // It will be decorated explicitly after injection into the page
+  if (block.hasAttribute('data-fragment-block')) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav Block] Skipping decoration - block is in fragment');
+    return;
+  }
+
   // Only build the unified nav once, from the first block that loads
   if (unifiedNavBuilt) {
     // eslint-disable-next-line no-console

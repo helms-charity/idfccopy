@@ -116,6 +116,11 @@ async function applyChanges(event) {
               // Add semantic classes to sections containing category-nav blocks
               const categoryNavBlock = sectionClone.querySelector('.category-nav');
               if (categoryNavBlock) {
+                // Remove the fragment-block marker so it can be loaded on the page
+                categoryNavBlock.removeAttribute('data-fragment-block');
+                // Reset block status so it can be loaded explicitly later
+                categoryNavBlock.dataset.blockStatus = '';
+
                 sectionClone.classList.add('category-nav-section');
 
                 const titleWrapper = sectionClone.querySelector('.default-content-wrapper');
