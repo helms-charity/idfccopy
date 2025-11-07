@@ -325,6 +325,34 @@
         "description": "URL for the category navigation item."
       },
       {
+        "component": "select",
+        "name": "card-item-bg-color",
+        "label": "Card Background Color",
+        "description": "Background color of the category navigation card item.",
+        "options": [
+          {
+            "name": "Default Tan Gradient",
+            "value": "default-tan-gradient"
+          },
+          {
+            "name": "Gradient Red",
+            "value": "gradient-red"
+          },
+          {
+            "name": "Gradient Blue",
+            "value": "gradient-blue"
+          },
+          {
+            "name": "Gradient Pewter",
+            "value": "gradient-pewter"
+          },
+          {
+            "name": "Gradient Silver",
+            "value": "gradient-silver"
+          }
+        ]
+      },
+      {
         "component": "text",
         "name": "tag-1",
         "label": "Tag 1",
@@ -459,34 +487,6 @@
           {
             "name": "Deep Orange",
             "value": "tg-clr-deep-orange"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "name": "card-item-bg-color",
-        "label": "Card Background Color",
-        "description": "Background color of the category navigation card item.",
-        "options": [
-          {
-            "name": "Default Tan Gradient",
-            "value": "default-tan-gradient"
-          },
-          {
-            "name": "Gradient Red",
-            "value": "gradient-red"
-          },
-          {
-            "name": "Gradient Blue",
-            "value": "gradient-blue"
-          },
-          {
-            "name": "Gradient Pewter",
-            "value": "gradient-pewter"
-          },
-          {
-            "name": "Gradient Silver",
-            "value": "gradient-silver"
           }
         ]
       }
