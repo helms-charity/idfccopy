@@ -217,7 +217,28 @@ function buildUnifiedNavigation(categoriesData) {
   return topNav;
 }
 
+/**
+ * Check if we're editing a framework page in Universal Editor
+ * @returns {boolean} True if editing a framework page
+ */
+function isEditingFrameworkPage() {
+  // Check if we're in Universal Editor (page is in an iframe)
+  const inEditor = window.location !== window.parent.location;
+  // Check if current path is in the framework folder
+  const isFrameworkPath = window.location.pathname.startsWith('/framework');
+
+  return inEditor && isFrameworkPath;
+}
+
 export default function decorate(block) {
+  // Skip decoration when editing framework pages in Universal Editor
+  // This allows content authors to see and edit individual blocks
+  if (isEditingFrameworkPage()) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav Block] Skipping decoration - editing framework page in Universal Editor');
+    return;
+  }
+
   // Skip decoration if this block is in a fragment being loaded
   // It will be decorated explicitly after injection into the page
   if (block.hasAttribute('data-fragment-block')) {

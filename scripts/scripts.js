@@ -365,11 +365,31 @@ export default async function decorateFragment(block) {
 }
 
 /**
+ * Check if we're editing a framework page in Universal Editor
+ * @returns {boolean} True if editing a framework page
+ */
+function isEditingFrameworkPage() {
+  // Check if we're in Universal Editor (page is in an iframe)
+  const inEditor = window.location !== window.parent.location;
+  // Check if current path is in the framework folder
+  const isFrameworkPath = window.location.pathname.startsWith('/framework');
+
+  return inEditor && isFrameworkPath;
+}
+
+/**
  * Load and inject category navigation fragment from page metadata
  * Reads the 'category-nav' page metadata field and injects the referenced fragment
  * @param {Element} main The main element
  */
 async function loadCategoryNavFragment(main) {
+  // Skip loading fragments when editing framework pages in Universal Editor
+  if (isEditingFrameworkPage()) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav Fragment] Skipping - editing framework page in Universal Editor');
+    return;
+  }
+
   // Read the category-nav metadata value from the page
   const categoryNavPath = getMetadata('category-nav');
 
@@ -638,6 +658,13 @@ async function loadEager(doc) {
  * @param {Element} main The main element
  */
 async function loadCategoryNav(main) {
+  // Skip building navigation when editing framework pages in Universal Editor
+  if (isEditingFrameworkPage()) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav] Skipping - editing framework page in Universal Editor');
+    return;
+  }
+
   // Check if there are any category-nav blocks on the page
   // These could be from:
   // - A fragment referenced by the page-level "category-nav" aem-content field
