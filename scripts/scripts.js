@@ -11,6 +11,7 @@ import {
   loadSections,
   loadCSS,
   toClassName,
+  getMetadata,
 } from './aem.js';
 
 /**
@@ -311,6 +312,7 @@ export async function createField(fd, form) {
  * @param {string} path The path to the fragment
  * @returns {HTMLElement} The root element of the fragment
  */
+// eslint-disable-next-line import/prefer-default-export
 export async function loadFragment(path) {
   if (path && path.startsWith('/')) {
     // eslint-disable-next-line no-param-reassign
@@ -348,6 +350,67 @@ export default async function decorateFragment(block) {
       block.classList.remove('section');
       block.replaceChildren(...fragmentSection.childNodes);
     }
+  }
+}
+
+/**
+ * Load and inject category navigation fragment from page metadata
+ * Reads the 'category-nav' page metadata field and injects the referenced fragment
+ * @param {Element} main The main element
+ */
+async function loadCategoryNavFragment(main) {
+  // Read the category-nav metadata value from the page
+  const categoryNavPath = getMetadata('category-nav');
+
+  if (!categoryNavPath) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav Fragment] No category-nav metadata found on page');
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(`[Category Nav Fragment] Found category-nav metadata: ${categoryNavPath}`);
+
+  try {
+    // Load the fragment content
+    const fragment = await loadFragment(categoryNavPath);
+
+    if (!fragment) {
+      // eslint-disable-next-line no-console
+      console.error(`[Category Nav Fragment] Failed to load fragment from: ${categoryNavPath}`);
+      return;
+    }
+
+    // Get all sections from the fragment
+    const fragmentSections = fragment.querySelectorAll(':scope > .section');
+
+    if (fragmentSections.length === 0) {
+      // eslint-disable-next-line no-console
+      console.log('[Category Nav Fragment] No sections found in fragment');
+      return;
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(`[Category Nav Fragment] Injecting ${fragmentSections.length} section(s) from fragment`);
+
+    // Insert all fragment sections at the beginning of main
+    // They should be inserted before any existing content
+    const { firstChild } = main;
+    fragmentSections.forEach((section) => {
+      // Clone the section to avoid moving it from the fragment
+      const sectionClone = section.cloneNode(true);
+      if (firstChild) {
+        main.insertBefore(sectionClone, firstChild);
+      } else {
+        main.appendChild(sectionClone);
+      }
+    });
+
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav Fragment] Fragment sections injected successfully');
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Category Nav Fragment] Error loading fragment:', error);
   }
 }
 
@@ -497,6 +560,10 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    // Load category-nav fragment from page metadata BEFORE decorating main
+    // This ensures the fragment sections are present when decorateMain runs
+    await loadCategoryNavFragment(main);
+
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);

@@ -7,9 +7,10 @@ import {
   loadBlock,
   loadSections,
   loadCSS,
+  getMetadata,
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
-import { decorateMain } from './scripts.js';
+import { decorateMain, loadFragment } from './scripts.js';
 
 /**
  * Reload category navigation after main content updates
@@ -95,6 +96,35 @@ async function applyChanges(event) {
       const newMain = parsedUpdate.querySelector(`[data-aue-resource="${resource}"]`);
       newMain.style.display = 'none';
       element.insertAdjacentElement('afterend', newMain);
+
+      // Load category-nav fragment from page metadata BEFORE decorating
+      // This handles when content authors change the category-nav page property
+      const categoryNavPath = getMetadata('category-nav', parsedUpdate);
+      if (categoryNavPath) {
+        // eslint-disable-next-line no-console
+        console.log(`[Category Nav Editor] Loading fragment from metadata: ${categoryNavPath}`);
+        try {
+          const fragment = await loadFragment(categoryNavPath);
+          if (fragment) {
+            const fragmentSections = fragment.querySelectorAll(':scope > .section');
+            // eslint-disable-next-line no-console
+            console.log(`[Category Nav Editor] Injecting ${fragmentSections.length} section(s) from fragment`);
+            const { firstChild } = newMain;
+            fragmentSections.forEach((section) => {
+              const sectionClone = section.cloneNode(true);
+              if (firstChild) {
+                newMain.insertBefore(sectionClone, firstChild);
+              } else {
+                newMain.appendChild(sectionClone);
+              }
+            });
+          }
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('[Category Nav Editor] Error loading fragment:', error);
+        }
+      }
+
       decorateMain(newMain);
       decorateRichtext(newMain);
       await loadSections(newMain);
