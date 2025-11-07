@@ -513,36 +513,36 @@ async function loadEager(doc) {
 }
 
 /**
- * Auto-inject secondary navbar if mid-banner section exists
+ * Auto-inject category navbar if mid-banner section exists
  * @param {Element} main The main element
  */
-async function loadSecondaryNav(main) {
+async function loadCategoryNav(main) {
   const midBannerSection = document.querySelector('.section.mid-banner');
   if (!midBannerSection) return;
 
-  // Create secondary-navbar block
-  const secondaryNavBlock = document.createElement('div');
-  secondaryNavBlock.classList.add('secondary-navbar-wrapper');
+  // Create category-nav block
+  const categoryNavBlock = document.createElement('div');
+  categoryNavBlock.classList.add('category-nav-wrapper');
 
-  const secondaryNav = document.createElement('div');
-  secondaryNav.classList.add('secondary-navbar', 'block');
-  secondaryNav.setAttribute('data-block-name', 'secondary-navbar');
-  secondaryNav.setAttribute('data-block-status', 'initialized');
+  const categoryNav = document.createElement('div');
+  categoryNav.classList.add('category-nav', 'block');
+  categoryNav.setAttribute('data-block-name', 'category-nav');
+  categoryNav.setAttribute('data-block-status', 'initialized');
 
-  secondaryNavBlock.appendChild(secondaryNav);
+  categoryNavBlock.appendChild(categoryNav);
 
   // Insert at the top of main
-  main.insertBefore(secondaryNavBlock, main.firstChild);
+  main.insertBefore(categoryNavBlock, main.firstChild);
 
   // Load and decorate the block
-  const blockName = 'secondary-navbar';
+  const blockName = 'category-nav';
   const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
   const decorationComplete = new Promise((resolve) => {
     (async () => {
       try {
         const mod = await import(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`);
         if (mod.default) {
-          await mod.default(secondaryNav);
+          await mod.default(categoryNav);
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -552,7 +552,7 @@ async function loadSecondaryNav(main) {
     })();
   });
   await Promise.all([cssLoaded, decorationComplete]);
-  secondaryNav.setAttribute('data-block-status', 'loaded');
+  categoryNav.setAttribute('data-block-status', 'loaded');
 }
 
 /**
@@ -568,12 +568,12 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  // Load header first so nav-wrapper is available for secondary navbar
+  // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
 
-  // Auto-inject secondary navbar if mid-banner section exists
+  // Auto-inject category navbar if mid-banner section exists
   // Must load after header so it can move itself into the header structure
-  await loadSecondaryNav(main);
+  await loadCategoryNav(main);
 
   loadFooter(doc.querySelector('footer'));
 

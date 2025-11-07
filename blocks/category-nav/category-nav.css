@@ -1,15 +1,15 @@
 /* stylelint-disable selector-class-pattern, no-descending-specificity */
 
-/* Secondary Navbar Wrapper - full width gray background */
-.secondary-navbar-wrapper {
+/* Category Nav Wrapper - full width gray background */
+.category-nav-wrapper {
   width: 100%;
   position: relative;
   background: #f7f7f7;
   border-top: 1px solid #e5e5e5;
 }
 
-/* Top Navigation (L2 Nav) - Third row */
-.top-nav {
+/* Top of page navigation (Category Nav) - Third row */
+.category-nav {
   background: transparent;
   position: relative;
   width: 100%;
@@ -32,7 +32,7 @@
 }
 
 /* Navigation list */
-.top-nav-left {
+.category-nav-left {
   display: flex;
   gap: 48px;
   list-style: none;
@@ -43,12 +43,12 @@
   box-sizing: border-box;
 }
 
-.top-nav-left > li {
+.category-nav-left > li {
   position: relative;
   padding: 14px 0;
 }
 
-.top-nav-left > li > a {
+.category-nav-left > li > a {
   color: #333;
   font-size: 13px;
   font-weight: 400;
@@ -59,7 +59,7 @@
   transition: color 0.2s ease;
 }
 
-.top-nav-left > li > a:hover {
+.category-nav-left > li > a:hover {
   color: var(--dark-red-color);
 }
 
@@ -131,12 +131,12 @@
 }
 
 /* Gradient Cards */
-.grdiantCard {
+.gradientCard {
   flex: 0 0 calc(50% - 5px);
   min-width: 0;
 }
 
-.grdiantCard a {
+.gradientCard a {
   display: block;
   padding: 14px 16px;
   border-radius: 6px;
@@ -146,7 +146,7 @@
   transition: all 0.2s ease;
 }
 
-.grdiantCard a:hover {
+.gradientCard a:hover {
   border-color: var(--dark-red-color);
   box-shadow: 0 2px 8px rgb(157 29 39 / 10%);
   transform: translateY(-1px);
@@ -168,17 +168,18 @@
   color: #fff;
 }
 
-.tag.tgclr1 { background-color: var(--dark-red-color); }
-.tag.tgclr2 { background-color: #4caf50; }
-.tag.tgclr3 { background-color: #ff9800; }
-.tag.tgclr4 { background-color: #2196f3; }
-.tag.tgclr5 { background-color: #9c27b0; }
-.tag.tgclr6 { background-color: #00bcd4; }
-.tag.tgclr7 { background-color: #8bc34a; }
-.tag.tgclr8 { background-color: #ff5722; }
+/* Tag Background Colors */
+.tag.tg-clr-dark-red { background-color: var(--dark-red-color); } /* Dark Red (brand color) */
+.tag.tg-clr-green { background-color: #4caf50; } /* Green */
+.tag.tg-clr-orange { background-color: #ff9800; } /* Orange */
+.tag.tg-clr-blue { background-color: #2196f3; } /* Blue */
+.tag.tg-clr-purple { background-color: #9c27b0; } /* Purple */
+.tag.tg-clr-cyan { background-color: #00bcd4; } /* Cyan */
+.tag.tg-clr-light-green { background-color: #8bc34a; } /* Light Green */
+.tag.tg-clr-deep-orange { background-color: #ff5722; } /* Deep Orange */
 
 /* Card Title */
-.grdiantCard .title {
+.gradientCard .title {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -188,7 +189,7 @@
   line-height: 1.5;
 }
 
-.grdiantCard a:hover .title {
+.gradientCard a:hover .title {
   color: var(--dark-red-color);
   font-weight: 500;
 }
@@ -208,7 +209,7 @@
   transition: all 0.2s ease;
 }
 
-.grdiantCard a:hover .icon-Right {
+.gradientCard a:hover .icon-Right {
   background: var(--dark-red-color);
   box-shadow: 0 2px 4px rgb(157 29 39 / 20%);
 }
@@ -224,24 +225,24 @@
   transition: border-color 0.2s ease;
 }
 
-.grdiantCard a:hover .icon-Right::after {
+.gradientCard a:hover .icon-Right::after {
   border-color: #fff;
 }
 
 /* Gradient Card Variants - subtle backgrounds */
-.grdiantCard.grdP1 a,
-.grdiantCard.grdP2 a,
-.grdiantCard.grdP3 a,
-.grdiantCard.grdP4 a,
-.grdiantCard.grdSelect a,
-.grdiantCard.grdWealth a,
-.grdiantCard.grdPrivate a {
+.gradientCard.gradient-p1 a,
+.gradientCard.gradient-p2 a,
+.gradientCard.gradient-p3 a,
+.gradientCard.gradient-p4 a,
+.gradientCard.gradient-select a,
+.gradientCard.gradient-wealth a,
+.gradientCard.gradient-private a {
   background: #fff;
 }
 
 /* Mobile Responsiveness */
 @media (width < 900px) {
-  .secondary-navbar-wrapper {
+  .category-nav-wrapper {
     display: none;
   }
 }
@@ -251,7 +252,7 @@
     min-width: 600px;
   }
 
-  .top-nav-left {
+  .category-nav-left {
     gap: 32px;
   }
 
@@ -295,3 +296,4 @@
 .dropdown-content::-webkit-scrollbar-thumb:hover {
   background: var(--dark-red-color);
 }
+

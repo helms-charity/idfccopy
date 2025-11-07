@@ -70,7 +70,7 @@ export default function decorate(block) {
     cardItems.forEach((liItem, i) => {
       const cardTitle = liItem.textContent?.trim() || 'Card';
       const card = document.createElement('div');
-      card.className = `grdiantCard grdP${(i % 3) + 1}`;
+      card.className = `gradientCard gradient-p${(i % 3) + 1}`;
 
       const anchor = document.createElement('a');
       anchor.href = '#'; // Replace with real URL if possible

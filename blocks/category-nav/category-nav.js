@@ -1,5 +1,5 @@
 /**
- * Top Navigation (L2 Nav) - Third row navigation with dropdowns
+ * Category Navigation - Third row navigation with dropdowns
  * Extracts content from page section with class "mid-banner"
  */
 
@@ -8,7 +8,7 @@
  */
 function buildCard(item) {
   const card = document.createElement('div');
-  card.classList.add('grdiantCard', 'grdP1');
+  card.classList.add('gradientCard', 'gradient-p1');
 
   const link = item.querySelector('a');
   if (!link) {
@@ -202,17 +202,17 @@ export default function decorate(block) {
   block.innerHTML = '';
   block.appendChild(topNav);
 
-  // Move the secondary navbar to the header section
+  // Move the category navbar to the header section
   // Note: Header is guaranteed to be loaded first (see loadLazy in scripts.js)
-  const secondaryNavbarWrapper = block.closest('.secondary-navbar-wrapper');
+  const categoryNavWrapper = block.closest('.category-nav-wrapper');
   const navWrapper = document.querySelector('header.header-wrapper .nav-wrapper');
 
-  if (secondaryNavbarWrapper && navWrapper) {
+  if (categoryNavWrapper && navWrapper) {
     // Move the wrapper from main to inside nav-wrapper (as sibling of <nav>)
-    navWrapper.appendChild(secondaryNavbarWrapper);
+    navWrapper.appendChild(categoryNavWrapper);
 
     // Add a class to identify it as part of the header
-    secondaryNavbarWrapper.classList.add('header-secondary-nav');
+    categoryNavWrapper.classList.add('header-category-nav');
   }
 
   // Optionally hide the mid-banner section since we've extracted its content

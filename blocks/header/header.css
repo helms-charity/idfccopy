@@ -137,8 +137,8 @@ header nav[aria-expanded="true"] {
     order: 1;
   }
 
-  /* Secondary navbar inside header wrapper */
-  header .nav-wrapper .secondary-navbar-wrapper {
+  /* Category navbar inside header wrapper */
+  header .nav-wrapper .category-nav-wrapper {
     width: 100%;
   }
 }
@@ -587,7 +587,7 @@ header nav .nav-sections ul>li>ul>li {
   min-width: 520px
 }
 
-.top-nav-left .dropdown-content.menu-cardList-cnt.two-col .grdiantCard {
+.top-nav-left .dropdown-content.menu-cardList-cnt.two-col .gradientCard {
   width: 46%
 }
 

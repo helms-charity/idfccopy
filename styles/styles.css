@@ -318,7 +318,7 @@ main>.section:first-of-type {
 }
 
 @media (max-width: 767px) {
-  .secondary-navbar-wrapper {
+  .category-nav-wrapper {
     display: none; /* Hide on mobile as per original design */
   }
 
@@ -414,8 +414,8 @@ main .section.highlight {
 
 /* IDFC */
 
-/* Secondary navbar is now part of header, so simpler styling */
-.secondary-navbar-wrapper {
+/* Category navbar is now part of header, so simpler styling */
+.category-nav-wrapper {
   width: 100%;
   background-color: #fff;
   border-top: 1px solid #E0E0E0;
@@ -423,7 +423,7 @@ main .section.highlight {
   box-shadow: 0 2px 4px rgba(37, 36, 59, 0.1);
 }
 
-.section.secondary-navbar-container {
+.section.category-nav-container {
   margin: 0;
   background-color: #fff;
   display: flex;

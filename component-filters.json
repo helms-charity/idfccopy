@@ -20,7 +20,7 @@
       "carousel",
       "table",
       "tabs",
-      "secondary-navbar",
+      "category-nav",
       "swipper-card",
       "rte-block",
       "git-block",
@@ -59,6 +59,12 @@
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "category-nav",
+    "components": [
+      "category-nav-item"
     ]
   },
   {
@@ -138,12 +144,6 @@
     "id": "rte-block",
     "components": [
       "rte-item"
-    ]
-  },
-  {
-    "id": "secondary-nav",
-    "components": [
-      "secondary-nav-item"
     ]
   },
   {

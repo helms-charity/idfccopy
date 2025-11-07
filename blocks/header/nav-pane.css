@@ -368,12 +368,12 @@
     padding: 15px 18px 10px 0
 }
 
-.grdiantCard {
+.gradientCard {
 width: 30%;
 margin: 3px 5px
 }
 
-.grdiantCard a {
+.gradientCard a {
 padding: 7px 10px;
 min-height: 60px;
 font-size: 12px
@@ -383,12 +383,12 @@ font-size: 12px
   min-width: 550px
 }
 
-.grdiantCard {
+.gradientCard {
   width: 30%;
   margin: 3px 5px
 }
 
-.grdiantCard a {
+.gradientCard a {
   padding: 7px 10px;
   min-height: 60px;
   font-size: 12px
@@ -605,7 +605,7 @@ header.sticky .login a {
   min-width: 520px
 }
 
-.top-nav .top-nav-left .dropdown-content.menu-cardList-cnt.two-col .grdiantCard {
+.top-nav .top-nav-left .dropdown-content.menu-cardList-cnt.two-col .gradientCard {
   width: 46%
 }
 
@@ -719,14 +719,14 @@ header.sticky .login a {
   margin-left: -15px
 }
 
-.grdiantCard {
+.gradientCard {
   border-radius: 8px;
   min-width: 31%;
   margin: 0 8px;
   margin-bottom: 15px
 }
 
-.grdiantCard a {
+.gradientCard a {
   position: relative;
   padding: 15px 20px;
   min-height: 72px;
@@ -743,7 +743,7 @@ header.sticky .login a {
   transition: .1s ease-in
 }
 
-.grdiantCard a span {
+.gradientCard a span {
   background: #fff;
   border-radius: 50%;
   height: 30px;
@@ -756,7 +756,7 @@ header.sticky .login a {
   justify-content: center
 }
 
-.grdiantCard a span:before {
+.gradientCard a span:before {
  color: var(--dark-red-color);
     font-weight: 600;
     content: '';
@@ -893,7 +893,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
     min-width: 520px
 }
 
-.top-nav .top-nav-left .dropdown-content.menu-cardList-cnt.two-col .grdiantCard {
+.top-nav .top-nav-left .dropdown-content.menu-cardList-cnt.two-col .gradientCard {
     width: 46%
 }
 
@@ -1033,14 +1033,14 @@ header.d-lg-none .top-nav-right ul li:last-child {
     content: ""
 }
 
-.grdiantCard {
+.gradientCard {
     border-radius: 8px;
     min-width: 31%;
     margin: 0 8px;
     margin-bottom: 15px
 }
 
-.grdiantCard a {
+.gradientCard a {
     position: relative;
     padding: 15px 20px;
     min-height: 72px;
@@ -1057,7 +1057,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
     transition: ease-in .1s
 }
 
-.grdiantCard a span {
+.gradientCard a span {
     background: #fff;
     border-radius: 50%;
     height: 30px;
@@ -1070,7 +1070,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
     justify-content: center
 }
 
-.grdiantCard a span:before {
+.gradientCard a span:before {
     color: var(--dark-red-color);
     font-weight: 600
 }
