@@ -513,46 +513,50 @@ async function loadEager(doc) {
 }
 
 /**
- * Auto-inject secondary navbar if mid-banner section exists
+ * Create category navbar wrapper at top of page
+ * The actual navigation will be built by category-nav.js which collects all category-nav blocks
+ *
+ * Category nav content can come from:
+ * 1. Page-level aem-content field (defined in _page.json) that references a fragment
+ *    - The fragment is injected as sections/blocks directly into main
+ * 2. Directly authored category-nav blocks on the page
+ *
  * @param {Element} main The main element
  */
-async function loadSecondaryNav(main) {
-  const midBannerSection = document.querySelector('.section.mid-banner');
-  if (!midBannerSection) return;
+async function loadCategoryNav(main) {
+  // Check if there are any category-nav blocks on the page
+  // These could be from:
+  // - A fragment referenced by the page-level "category-nav" aem-content field
+  // - Direct authoring of category-nav blocks on the page
+  const categoryNavBlocks = main.querySelectorAll('.category-nav');
 
-  // Create secondary-navbar block
-  const secondaryNavBlock = document.createElement('div');
-  secondaryNavBlock.classList.add('secondary-navbar-wrapper');
+  if (categoryNavBlocks.length === 0) {
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav] No category-nav blocks found on page');
+    return;
+  }
 
-  const secondaryNav = document.createElement('div');
-  secondaryNav.classList.add('secondary-navbar', 'block');
-  secondaryNav.setAttribute('data-block-name', 'secondary-navbar');
-  secondaryNav.setAttribute('data-block-status', 'initialized');
+  // eslint-disable-next-line no-console
+  console.log(`[Category Nav] Found ${categoryNavBlocks.length} block(s), initializing wrapper`);
 
-  secondaryNavBlock.appendChild(secondaryNav);
+  // Create category-nav wrapper at the top of main
+  const categoryNavWrapper = document.createElement('div');
+  categoryNavWrapper.classList.add('category-nav-wrapper');
+  categoryNavWrapper.setAttribute('data-nav-placeholder', 'true');
 
   // Insert at the top of main
-  main.insertBefore(secondaryNavBlock, main.firstChild);
+  main.insertBefore(categoryNavWrapper, main.firstChild);
 
-  // Load and decorate the block
-  const blockName = 'secondary-navbar';
-  const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
-  const decorationComplete = new Promise((resolve) => {
-    (async () => {
-      try {
-        const mod = await import(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`);
-        if (mod.default) {
-          await mod.default(secondaryNav);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`failed to load module for ${blockName}`, error);
-      }
-      resolve();
-    })();
-  });
-  await Promise.all([cssLoaded, decorationComplete]);
-  secondaryNav.setAttribute('data-block-status', 'loaded');
+  // Load CSS for the category nav
+  const blockName = 'category-nav';
+  try {
+    await loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+    // eslint-disable-next-line no-console
+    console.log('[Category Nav] CSS loaded, wrapper ready for population by category-nav.js');
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Category Nav] Failed to load CSS:', error);
+  }
 }
 
 /**
@@ -568,12 +572,11 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  // Load header first so nav-wrapper is available for secondary navbar
+  // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
 
-  // Auto-inject secondary navbar if mid-banner section exists
-  // Must load after header so it can move itself into the header structure
-  await loadSecondaryNav(main);
+  // Create category navbar wrapper (populated later by category-nav.js)
+  await loadCategoryNav(main);
 
   loadFooter(doc.querySelector('footer'));
 

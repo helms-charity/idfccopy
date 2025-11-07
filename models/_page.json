@@ -1,0 +1,25 @@
+{
+  "models": [
+    {
+      "id": "page-metadata",
+      "fields": [
+        {
+          "component": "text",
+          "name": "jcr:title",
+          "valueType": "string",
+          "label": "Title",
+          "description": "Title of the page."
+        },
+        {
+          "component": "aem-content",
+          "name": "category-nav",
+          "label": "Category Nav",
+          "valueType": "string",
+          "validation": {
+            "rootPath": "/content/idfc-edge/framework"
+          }
+        }
+      ]
+    }
+  ]
+}
