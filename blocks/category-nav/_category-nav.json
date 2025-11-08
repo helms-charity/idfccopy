@@ -43,14 +43,11 @@
           "description": "Eyebrow title of the category navigation drop-down panel"
         },
         {
-          "component": "reference",
+          "component": "text",
           "name": "link",
           "label": "Explore Link",
           "description": "Link for exploring the category collection (top-right corner)",
-          "valueType": "string",
-          "validation": {
-            "rootPath": "/content/idfc-edge"
-          }
+          "valueType": "string"
         },
         {
           "component": "text",
