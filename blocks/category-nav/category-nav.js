@@ -137,26 +137,33 @@ function parseCategoryNavBlock(block) {
 
   // Category-level fields are in separate rows with 1 cell each at the top
   // Row 0: eyebrow-title (1 cell, plain text)
-  // Row 1: link (1 cell, contains <a> with href and text)
+  // Row 1: explore-link (1 cell, URL - can be plain text or <a> tag)
+  // Row 2: explore-link-description (1 cell, plain text)
   // Remaining rows: card items (9 cells each)
   let metadataRowCount = 0;
 
+  // Row 0: eyebrow-title
   if (rows.length > 0 && rows[0].children.length === 1) {
     eyebrowTitle = rows[0].children[0]?.textContent?.trim() || '';
     metadataRowCount = 1;
   }
 
+  // Row 1: explore-link (URL)
   if (rows.length > 1 && rows[1].children.length === 1) {
     const linkCell = rows[1].children[0];
     const linkAnchor = linkCell?.querySelector('a');
     if (linkAnchor) {
       linkUrl = linkAnchor.href || '';
-      linkText = linkAnchor.textContent?.trim() || '';
     } else {
-      // Fallback if no anchor tag
       linkUrl = linkCell?.textContent?.trim() || '';
     }
     metadataRowCount = 2;
+  }
+
+  // Row 2: explore-link-description (display text)
+  if (rows.length > 2 && rows[2].children.length === 1) {
+    linkText = rows[2].children[0]?.textContent?.trim() || '';
+    metadataRowCount = 3;
   }
 
   // Get all the category nav items (rows in the block table)
