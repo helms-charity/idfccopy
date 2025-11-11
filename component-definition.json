@@ -290,6 +290,21 @@
           }
         },
         {
+          "title": "FAQ Accordion Item",
+          "id": "faq-accordion-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "FAQ Accordion Item",
+                  "model": "faq-accordion-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {
