@@ -91,7 +91,7 @@
         "carousel",
         "table",
         "tabs",
-        "secondary-navbar",
+        "category-nav",
         "swipper-card",
         "rte-block",
         "git-block",
@@ -104,6 +104,7 @@
         "cf-fragment",
         "library-metadata",
         "banner",
+        "sticky-cta",
         "anchor-nav"
       ]
     }

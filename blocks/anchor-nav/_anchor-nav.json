@@ -15,34 +15,14 @@
             }
           }
         }
-      },
-      {
-        "title": "Anchor Nav Item",
-        "id": "anchor-nav-item",
-        "plugins": {
-          "xwalk": {
-            "page": {
-              "resourceType": "core/franklin/components/block/v1/block/item",
-              "template": {
-                "name": "Anchor Nav Item",
-                "model": "anchor-nav-item"
-              }
-            }
-          }
-        }
       }
     ],
-    "models": [
-      {
-        "id": "anchor-nav-item",
-        "fields": []
-      }
-    ],
+    "models": [],
     "filters": [
       {
         "id": "anchor-nav",
         "components": [
-          "anchor-nav-item"
+          "button"
         ]
       }
     ]

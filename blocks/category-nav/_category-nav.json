@@ -1,0 +1,252 @@
+{
+  "definitions": [
+    {
+      "title": "Category Nav",
+      "id": "category-nav",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Category Nav",
+              "model": "category-nav",
+              "filter": "category-nav"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Category Nav Item",
+      "id": "category-nav-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Category Nav Item",
+              "model": "category-nav-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "category-nav",
+      "fields": [
+        {
+          "component": "text",
+          "name": "eyebrow-title",
+          "label": "Eyebrow Title",
+          "description": "Eyebrow title of the category navigation drop-down panel"
+        },
+        {
+          "component": "text",
+          "name": "explore-link",
+          "label": "Explore Link",
+          "description": "Link for exploring the category collection (top-right corner)"
+        },
+        {
+          "component": "text",
+          "name": "explore-link-description",
+          "label": "Explore Link Description",
+          "description": "Link description text for the explore link (top-right corner)"
+        }
+      ]
+    },
+    {
+      "id": "category-nav-item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "title",
+          "label": "Title",
+          "description": "Title of the category navigation card item."
+        },
+        {
+          "component": "text",
+          "name": "link",
+          "label": "Link",
+          "description": "URL for the category navigation item."
+        },
+        {
+          "component": "select",
+          "name": "card-item-bg-color",
+          "label": "Card Background Color",
+          "description": "Background color of the category navigation card item.",
+          "options": [
+            {
+              "name": "Default Tan Gradient",
+              "value": "default-tan-gradient"
+            },
+            {
+              "name": "Gradient Red",
+              "value": "gradient-red"
+            },
+            {
+              "name": "Gradient Blue",
+              "value": "gradient-blue"
+            },
+            {
+              "name": "Gradient Pewter",
+              "value": "gradient-pewter"
+            },
+            {
+              "name": "Gradient Silver",
+              "value": "gradient-silver"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "tag-1",
+          "label": "Tag 1",
+          "description": "Tag 1 of the category navigation card item."
+        },
+        {
+          "component": "select",
+          "name": "tag-1-bg-color",
+          "label": "Tag 1 Background Color",
+          "description": "Background color of the 1st tag of the category navigation card item.",
+          "options": [
+            {
+              "name": "Pale Yellow",
+              "value": "tg-clr-pale-yellow"
+            },
+            {
+              "name": "Pale Cyan",
+              "value": "tg-clr-pale-cyan"
+            },
+            {
+              "name": "Pale Lavender",
+              "value": "tg-clr-pale-lavender"
+            },
+            {
+              "name": "Pale Rose",
+              "value": "tg-clr-pale-rose"
+            },
+            {
+              "name": "Pale Pink",
+              "value": "tg-clr-pale-pink"
+            },
+            {
+              "name": "Pale Purple",
+              "value": "tg-clr-pale-purple"
+            },
+            {
+              "name": "Pale Mint",
+              "value": "tg-clr-pale-mint"
+            },
+            {
+              "name": "Pale White",
+              "value": "tg-clr-pale-white"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "tag-2",
+          "label": "Tag 2",
+          "description": "Tag 2 of the category navigation card item."
+        },
+        {
+          "component": "select",
+          "name": "tag-2-bg-color",
+          "label": "Tag 2 Background Color",
+          "description": "Background color of the 2nd tag of the category navigation card item.",
+          "options": [
+            {
+              "name": "Pale Yellow",
+              "value": "tg-clr-pale-yellow"
+            },
+            {
+              "name": "Pale Cyan",
+              "value": "tg-clr-pale-cyan"
+            },
+            {
+              "name": "Pale Lavender",
+              "value": "tg-clr-pale-lavender"
+            },
+            {
+              "name": "Pale Rose",
+              "value": "tg-clr-pale-rose"
+            },
+            {
+              "name": "Pale Pink",
+              "value": "tg-clr-pale-pink"
+            },
+            {
+              "name": "Pale Purple",
+              "value": "tg-clr-pale-purple"
+            },
+            {
+              "name": "Pale Mint",
+              "value": "tg-clr-pale-mint"
+            },
+            {
+              "name": "Pale White",
+              "value": "tg-clr-pale-white"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "tag-3",
+          "label": "Tag 3",
+          "description": "Tag 3 of the category navigation card item."
+        },
+        {
+          "component": "select",
+          "name": "tag-3-bg-color",
+          "label": "Tag 3 Background Color",
+          "description": "Background color of the 3rd tag of the category navigation card item.",
+          "options": [
+            {
+              "name": "Pale Yellow",
+              "value": "tg-clr-pale-yellow"
+            },
+            {
+              "name": "Pale Cyan",
+              "value": "tg-clr-pale-cyan"
+            },
+            {
+              "name": "Pale Lavender",
+              "value": "tg-clr-pale-lavender"
+            },
+            {
+              "name": "Pale Rose",
+              "value": "tg-clr-pale-rose"
+            },
+            {
+              "name": "Pale Pink",
+              "value": "tg-clr-pale-pink"
+            },
+            {
+              "name": "Pale Purple",
+              "value": "tg-clr-pale-purple"
+            },
+            {
+              "name": "Pale Mint",
+              "value": "tg-clr-pale-mint"
+            },
+            {
+              "name": "Pale White",
+              "value": "tg-clr-pale-white"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "category-nav",
+      "components": [
+        "category-nav-item"
+      ]
+    }
+  ]
+}
+

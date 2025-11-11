@@ -27,6 +27,7 @@
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
 
+  /* bootstrap colors */
   --blue: #007bff;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -50,7 +51,8 @@
   --dark: #343a40;
 
   /* fonts */
-  --body-font-family: 'Inter', sans-serif;
+  --body-font-family: 'Inter', sans-serif; 
+  --body-font-family-semibold: 'Inter-semiBold', sans-serif;
   --heading-font-family: 'Inter-bold', sans-serif;
 
   /* body sizes */
@@ -316,7 +318,7 @@ main>.section:first-of-type {
 }
 
 @media (max-width: 767px) {
-  .secondary-navbar-wrapper {
+  .category-nav-wrapper {
     display: none; /* Hide on mobile as per original design */
   }
 
@@ -412,8 +414,8 @@ main .section.highlight {
 
 /* IDFC */
 
-/* Secondary navbar is now part of header, so simpler styling */
-.secondary-navbar-wrapper {
+/* Category navbar is now part of header, so simpler styling */
+.category-nav-wrapper {
   width: 100%;
   background-color: #fff;
   border-top: 1px solid #E0E0E0;
@@ -421,7 +423,7 @@ main .section.highlight {
   box-shadow: 0 2px 4px rgba(37, 36, 59, 0.1);
 }
 
-.section.secondary-navbar-container {
+.section.category-nav-container {
   margin: 0;
   background-color: #fff;
   display: flex;
@@ -655,6 +657,11 @@ section.faq-accordion-container h4 {
 
   header {
     height: 160px;
+  }
+
+  /* Increase header height when category navigation is present */
+  header:has(.category-nav-wrapper) {
+    height: 224px; /* 160px base + 64px for category nav */
   }
 
 }

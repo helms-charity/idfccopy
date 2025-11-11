@@ -254,7 +254,7 @@
     align-items: start;
   }
 
-  .nav-sections .grdiantCard {
+  .nav-sections .gradientCard {
     background: linear-gradient(268deg, #FAF5E9 1.27%, #FFF5F3 59.2%);
     background-image: linear-gradient(268deg, rgb(250, 245, 233) 1.27%, rgb(255, 245, 243) 59.2%);
     padding: 8px 5px 10px;
@@ -268,12 +268,12 @@
     margin-bottom: 6px;
   }
 
-  .nav-sections .grdiantCard:last-child {
+  .nav-sections .gradientCard:last-child {
     margin-bottom: 28px;
   }
 
 
-  .header nav .nav-sections .default-content-wrapper .grdiantCard a {
+  .header nav .nav-sections .default-content-wrapper .gradientCard a {
     min-height: unset;
     width: 100%;
     background: transparent;
@@ -297,7 +297,7 @@
     margin: 0 5px;
   }
 
-  .nav-sections .grdiantCard .icon-Right {
+  .nav-sections .gradientCard .icon-Right {
     display: none;
   }
 

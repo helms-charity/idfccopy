@@ -20,7 +20,7 @@
       "carousel",
       "table",
       "tabs",
-      "secondary-navbar",
+      "category-nav",
       "swipper-card",
       "rte-block",
       "git-block",
@@ -33,6 +33,7 @@
       "cf-fragment",
       "library-metadata",
       "banner",
+      "sticky-cta",
       "anchor-nav"
     ]
   },
@@ -45,7 +46,7 @@
   {
     "id": "anchor-nav",
     "components": [
-      "anchor-nav-item"
+      "button"
     ]
   },
   {
@@ -58,6 +59,12 @@
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "category-nav",
+    "components": [
+      "category-nav-item"
     ]
   },
   {
@@ -131,12 +138,6 @@
     "id": "rte-block",
     "components": [
       "rte-item"
-    ]
-  },
-  {
-    "id": "secondary-nav",
-    "components": [
-      "secondary-nav-item"
     ]
   },
   {
