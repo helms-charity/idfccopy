@@ -9,6 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "FAQ Accordion",
+              "model": "faq-accordion",
               "filter": "faq-accordion"
             }
           }
@@ -18,21 +19,73 @@
   ],
   "models": [
     {
-      "id": "faq-accordion-item",
+      "id": "faq-accordion",
+      "title": "FAQ Accordion",
       "fields": [
         {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "col_head",
-          "label": "Accordion Head"
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "show-schema",
+          "label": "Show schema",
+          "description": "TODO - this toggle is inop"
         },
         {
-          "component": "richtext",
-          "valueType": "string",
-          "name": "col1_body",
-          "label": "Accordion Body"
+          "component": "aem-content",
+          "name": "cta",
+          "label": "CTA URL",
+          "value": "#"
+        },
+        {
+          "component": "text",
+          "name": "ctaText",
+          "label": "CTA Text",
+          "value": "More FAQs"
         }
       ]
+    },
+    {
+      "id": "faq-accordion-item",
+      "title": "FAQ Accordion Item",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Styles",
+          "options": [
+            {
+              "name": "Styles",
+              "children": [
+            {
+              "name": "light text on dark",
+              "value": "light-text"
+            }
+          ]
+          },
+          {
+            "name": "Select class",
+            "options": [
+              {
+                "name": "Variations",
+                "children": [
+              {
+                "name": "Target Act Class",
+                "value": "target-act-class"
+              },
+              {
+                "name": "Target Class",
+                "value": "target-class"
+              },
+              {
+                "name": "Target Last Class",
+                "value": "target-last-class"
+              }
+            ]
+            }
+            ]
+          }
+        ]
+      }
+    ]
     }
   ],
   "filters": [
