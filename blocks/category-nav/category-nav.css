@@ -120,7 +120,7 @@
 }
 
 .category-nav-dropdown .category-nav-explore-link {
-  color: var(--dark-red-color);
+  color: var(--dark-red-link-color);
   font-size: 12px;
   text-decoration: none;
   font-weight: 500;
@@ -129,9 +129,10 @@
   gap: 6px;
 }
 
-.category-nav-explore-link > a:hover {
+.category-nav-dropdown .category-nav-explore-link:hover {
   color: var(--dark-red-color);
   text-decoration: underline;
+  font-family: var(--heading-font-family);
 }
 
 /* Add arrow to the explore link */
@@ -176,7 +177,7 @@
 }
 
 .category-nav-card .category-nav-card-link:hover {
-  border-color: var(--dark-red-color);
+  border-color: var(--dark-red-link-color);
   box-shadow: 0 4px 12px rgb(157 29 39 / 15%);
   transform: translateY(-2px);
 }
@@ -231,6 +232,7 @@
 .category-nav-card .category-nav-tag.tg-clr-pale-purple { background-color: #f2e5ff; }
 .category-nav-card .category-nav-tag.tg-clr-pale-mint { background-color: #eefff2; }
 .category-nav-card .category-nav-tag.tg-clr-pale-white { background-color: #fff7f7; }
+.category-nav-card .category-nav-tag.tg-clr-none { background-color: unset; }
 
 /* Card Title */
 .category-nav-card .category-nav-card-title {
@@ -238,8 +240,9 @@
   justify-content: space-between;
   align-items: center;
   color: #333;
-  font-size: 13px;
-  font-weight: 500;
+  font-family: var(--heading-font-family);
+  font-size: 16px;
+  font-weight: 700;
   line-height: 1.4;
   position: relative;
   z-index: 1;
@@ -287,7 +290,7 @@
 
 /* Gradient Card Variants - Card background gradients */
 .category-nav-card.default-tan-gradient .category-nav-card-link {
-  background: linear-gradient(135deg, #f9f7f3 0%, #ede8df 100%);
+  background: linear-gradient(143deg, #ffebeb, #faf2da);
 }
 
 .category-nav-card.gradient-red .category-nav-card-link {

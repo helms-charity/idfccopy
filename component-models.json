@@ -392,6 +392,10 @@
         "description": "Background color of the 1st tag of the category navigation card item.",
         "options": [
           {
+            "name": "None",
+            "value": "tg-clr-none"
+          },
+          {
             "name": "Pale Yellow",
             "value": "tg-clr-pale-yellow"
           },
@@ -438,6 +442,10 @@
         "description": "Background color of the 2nd tag of the category navigation card item.",
         "options": [
           {
+            "name": "None",
+            "value": "tg-clr-none"
+          },
+          {
             "name": "Pale Yellow",
             "value": "tg-clr-pale-yellow"
           },
@@ -483,6 +491,10 @@
         "label": "Tag 3 Background Color",
         "description": "Background color of the 3rd tag of the category navigation card item.",
         "options": [
+          {
+            "name": "None",
+            "value": "tg-clr-none"
+          },
           {
             "name": "Pale Yellow",
             "value": "tg-clr-pale-yellow"
