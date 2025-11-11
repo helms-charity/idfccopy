@@ -137,6 +137,21 @@
           }
         },
         {
+          "title": "Anchor Nav Link",
+          "id": "button",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Anchor Nav Link",
+                  "model": "button"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Banner",
           "id": "banner",
           "plugins": {
