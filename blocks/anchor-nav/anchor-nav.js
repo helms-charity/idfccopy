@@ -6,31 +6,44 @@
 /**
  * Build navigation from block content
  */
-function buildNavigation(navItems) {
+function buildNavigation(navItems, headerHeight) {
   const nav = document.createElement('nav');
   nav.classList.add('anchor-nav-container');
 
   const navList = document.createElement('ul');
   navList.classList.add('anchor-nav-list');
 
+  const fragment = document.createDocumentFragment();
+
   navItems.forEach((item) => {
     const li = document.createElement('li');
     li.classList.add('anchor-nav-item');
 
-    const link = document.createElement('a');
-    link.textContent = item.title;
-    link.href = item.href;
+    const link = item.link.cloneNode(true);
     link.classList.add('anchor-nav-link');
-    link.setAttribute('data-text', item.title);
 
-    // Handle anchor link scrolling with offset for fixed header
+    // Ensure button class is present
+    if (!link.classList.contains('button')) {
+      link.classList.add('button');
+    }
+
+    // Apply button type based on parent element from parsing
+    if (item.parentTag === 'EM') {
+      link.classList.add('secondary');
+    } else if (item.parentTag === 'STRONG') {
+      link.classList.add('primary');
+    }
+
+    link.setAttribute('data-text', link.textContent.trim());
+
     link.addEventListener('click', (e) => {
-      if (item.href.startsWith('#')) {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
         e.preventDefault();
-        const targetId = item.href.substring(1);
+        const targetId = href.substring(1);
         const target = document.getElementById(targetId);
         if (target) {
-          const yOffset = -200; // Offset for fixed header
+          const yOffset = -(headerHeight + 60);
           const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
@@ -38,9 +51,10 @@ function buildNavigation(navItems) {
     });
 
     li.appendChild(link);
-    navList.appendChild(li);
+    fragment.appendChild(li);
   });
 
+  navList.appendChild(fragment);
   nav.appendChild(navList);
   return nav;
 }
@@ -53,15 +67,33 @@ function parseBlockContent(block) {
   const rows = block.querySelectorAll(':scope > div');
 
   rows.forEach((row) => {
-    const cells = row.querySelectorAll(':scope > div');
-    if (cells.length >= 2) {
-      const title = cells[0].textContent.trim();
-      const link = cells[1].querySelector('a');
-      const href = link ? link.getAttribute('href') : '#';
+    // Look for buttons in various formats:
+    // - a.button (primary/default with classes already applied)
+    // - strong > a (primary button from markdown)
+    // - em > a (secondary button from markdown)
+    let link = row.querySelector('a.button');
+    let parentTag = null;
 
-      if (title) {
-        navItems.push({ title, href });
+    if (!link) {
+      // Check for em > a (secondary button)
+      const emLink = row.querySelector('em > a');
+      if (emLink) {
+        link = emLink;
+        parentTag = 'EM';
       }
+    }
+
+    if (!link) {
+      // Check for strong > a (primary button)
+      const strongLink = row.querySelector('strong > a');
+      if (strongLink) {
+        link = strongLink;
+        parentTag = 'STRONG';
+      }
+    }
+
+    if (link) {
+      navItems.push({ link, parentTag });
     }
   });
 
@@ -71,69 +103,59 @@ function parseBlockContent(block) {
 /**
  * Setup sticky behavior - switch to fixed positioning when scrolled to top
  */
-function setupStickyBehavior(wrapper) {
-  const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height'), 10) || 64;
-
-  // Calculate the original offset position (when NOT stuck)
-  const getOriginalOffset = () => wrapper.getBoundingClientRect().top + window.scrollY;
-  let originalOffsetTop = getOriginalOffset();
+function setupStickyBehavior(wrapper, headerHeight) {
+  let originalOffsetTop = wrapper.getBoundingClientRect().top + window.scrollY;
+  let ticking = false;
 
   const updateSticky = () => {
     const { scrollY } = window;
 
-    // If currently stuck, use the stored original position
-    // Otherwise, recalculate it (in case page layout changed)
     if (!wrapper.classList.contains('stuck')) {
-      originalOffsetTop = getOriginalOffset();
+      originalOffsetTop = wrapper.getBoundingClientRect().top + window.scrollY;
     }
 
-    // Should stick when the wrapper would naturally reach the header position
     const shouldStick = scrollY > (originalOffsetTop - headerHeight);
 
-    if (shouldStick) {
-      wrapper.classList.add('stuck');
-    } else {
-      wrapper.classList.remove('stuck');
-    }
+    wrapper.classList.toggle('stuck', shouldStick);
+    ticking = false;
   };
 
-  // Use requestAnimationFrame for smooth performance
-  let ticking = false;
   const onScroll = () => {
     if (!ticking) {
-      window.requestAnimationFrame(() => {
-        updateSticky();
-        ticking = false;
-      });
       ticking = true;
+      window.requestAnimationFrame(updateSticky);
     }
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Don't run initial check - let it stay in natural position until user scrolls
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+  };
 }
 
 export default function decorate(block) {
-  // Parse navigation items from block content
   const navItems = parseBlockContent(block);
 
   if (navItems.length === 0) {
-    // No navigation items found, hide the block
     block.style.display = 'none';
     return;
   }
 
-  // Build navigation
-  const nav = buildNavigation(navItems);
+  const headerHeight = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--nav-height'),
+    10,
+  ) || 64;
 
-  // Replace block content with navigation
+  const nav = buildNavigation(navItems, headerHeight);
+
   block.innerHTML = '';
   block.appendChild(nav);
 
-  // Setup sticky behavior
   const wrapper = block.closest('.anchor-nav-wrapper');
   if (wrapper) {
-    setupStickyBehavior(wrapper);
+    const cleanup = setupStickyBehavior(wrapper, headerHeight);
+    block.dataset.cleanup = 'registered';
+    block.cleanupFunction = cleanup;
   }
 }

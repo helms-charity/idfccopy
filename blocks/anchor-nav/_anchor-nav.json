@@ -17,7 +17,12 @@
         }
       }
     ],
-    "models": [],
+    "models": [
+      {
+        "id": "anchor-nav",
+        "title": "Link"
+      }
+    ],
     "filters": [
       {
         "id": "anchor-nav",

@@ -208,6 +208,10 @@
     ]
   },
   {
+    "id": "anchor-nav",
+    "title": "Link"
+  },
+  {
     "id": "banner-item",
     "fields": [
       {

@@ -1,161 +1,161 @@
 /* stylelint-disable selector-class-pattern */
 
-/* Anchor Nav Wrapper */
+.section:has(.anchor-nav-wrapper) {
+  margin: 0;
+}
+
 .anchor-nav-wrapper {
-  position: relative;
-  z-index: 1;
-  transition: box-shadow 0.3s ease;
+  display: none;
 }
 
-/* Full viewport background layer behind the nav */
-.anchor-nav-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0 -9999px;
-  background: var(--background-color);
-  z-index: -1;
-}
-
-/* When stuck to top - use fixed positioning */
-.anchor-nav-wrapper.stuck {
-  position: fixed;
-  top: 54px; /* Adjusted to account for header shadow and spacing */
-  left: 0;
-  right: 0;
-  margin-top: 0;
-  z-index: 98;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
-}
-
-/* Hide on mobile - only show on desktop (>= 900px) */
-@media (width < 900px) {
+@media (width >= 900px) {
   .anchor-nav-wrapper {
+    display: block;
+    position: relative;
+    z-index: 1;
+    transition: box-shadow 0.3s ease;
+    margin: 0;
+  }
+
+  .anchor-nav-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0 -9999px;
+    background: var(--background-color);
+    z-index: -1;
+  }
+
+  .anchor-nav-wrapper.stuck {
+    position: fixed;
+    top: 54px;
+    left: 0;
+    right: 0;
+    z-index: 98;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
+  }
+
+  .anchor-nav-container {
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  .anchor-nav-wrapper.stuck .anchor-nav-container {
+    max-width: calc(1200px - 64px);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .anchor-nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: space-between;
+    height: 53px;
+    width: 100%;
+  }
+
+  .anchor-nav-item {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .anchor-nav-link.button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    display: inline-block;
+  }
+
+  .anchor-nav-link.button:not(.primary, .secondary)::before {
+    content: attr(data-text);
+    font-family: Inter-bold, sans-serif;
+    font-weight: 700;
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    display: block;
+  }
+
+  .anchor-nav-link.button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -14px;
+    width: 100%;
+    height: 3px;
+    background-color: var(--dark-red-color);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.2s ease;
+  }
+
+  .anchor-nav-link.button:hover,
+  .anchor-nav-link.button:focus {
+    font-family: Inter-bold, sans-serif;
+    font-weight: 700;
+  }
+
+  .anchor-nav-link.button:hover::after,
+  .anchor-nav-link.button:focus::after {
+    transform: scaleX(1);
+  }
+
+  .anchor-nav-link.button.primary,
+  .anchor-nav-link.button.primary:any-link,
+  .anchor-nav-link.button.primary:hover,
+  .anchor-nav-link.button.primary:focus {
+    display: inline-block;
+    border: 2px solid #902a2c !important;
+    border-radius: 2.4em;
+    padding: 0.7em 1.2em;
+    background-color: #902a2c !important;
+    color: #fff !important;
+    font-family: Inter-bold, sans-serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .anchor-nav-link.button.secondary,
+  .anchor-nav-link.button.secondary:hover,
+  .anchor-nav-link.button.secondary:focus {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    background-color: transparent;
+    color: #902a2c;
+    font-family: Inter-bold, sans-serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .anchor-nav-link.button .icon {
+    height: 19px;
+    width: 19px;
+  }
+
+  .anchor-nav-link.button.primary::after,
+  .anchor-nav-link.button.secondary::after {
     display: none;
   }
-}
-
-/* Anchor Nav Container - no max-width since section already provides it */
-.anchor-nav-container {
-  box-sizing: border-box;
-}
-
-/* Ensure container centers content when stuck */
-.anchor-nav-wrapper.stuck .anchor-nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-
-/* Navigation List */
-.anchor-nav-list {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Navigation Items */
-.anchor-nav-item {
-  padding: 14px 0;
-}
-
-/* Navigation Links */
-.anchor-nav-link {
-  color: var(--text-color);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 18px;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 4px;
-}
-
-.anchor-nav-link:any-link {
-  color: var(--text-color);
-}
-
-/* Reserve space for bold text to prevent shifting */
-.anchor-nav-link::before {
-  content: attr(data-text);
-  font-family: Inter-bold, sans-serif;
-  font-weight: 700;
-  height: 0;
-  visibility: hidden;
-  overflow: hidden;
-  user-select: none;
-  pointer-events: none;
-  display: block;
-}
-
-.anchor-nav-link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--dark-red-color);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.2s ease;
-}
-
-.anchor-nav-link:hover,
-.anchor-nav-link:focus {
-  font-family: Inter-bold, sans-serif;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.anchor-nav-link:hover::after,
-.anchor-nav-link:focus::after {
-  transform: scaleX(1);
-}
-
-/* Active state (optional - can be added via JS) */
-.anchor-nav-link.active {
-  font-family: Inter-bold, sans-serif;
-  font-weight: 700;
-}
-
-.anchor-nav-link.active::after {
-  transform: scaleX(1);
-}
-
-/* Special styling for "Apply Now" button */
-.anchor-nav-link[data-text="Apply Now"] {
-  display: inline-block;
-  border: 2px solid #902a2c;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  background-color: #902a2c;
-  color: #fff;
-  font-family: Inter-bold, sans-serif;
-  font-weight: 700;
-  text-align: center;
-}
-
-/* Hide the reserved space pseudo-element for button */
-.anchor-nav-link[data-text="Apply Now"]::before {
-  display: none;
-}
-
-/* Hide the underline animation for button */
-.anchor-nav-link[data-text="Apply Now"]::after {
-  display: none;
-}
-
-/* Button hover state */
-.anchor-nav-link[data-text="Apply Now"]:hover,
-.anchor-nav-link[data-text="Apply Now"]:focus {
-  background-color: #7a2326;
-  border-color: #7a2326;
-  color: #fff;
-  font-family: Inter-bold, sans-serif;
-  font-weight: 700;
 }
