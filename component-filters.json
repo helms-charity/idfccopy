@@ -46,7 +46,7 @@
   {
     "id": "anchor-nav",
     "components": [
-      "anchor-nav-link"
+      "button"
     ]
   },
   {
