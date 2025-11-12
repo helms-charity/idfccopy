@@ -47,8 +47,8 @@
         },
         {
           "component": "select",
-          "name": "animated",
-          "label": "Animate Steps?",
+          "name": "animation",
+          "label": "Animation",
           "options": [
             {
               "name": "Animated",
@@ -64,9 +64,7 @@
           "component": "number",
           "name": "animationDuration",
           "label": "Animation Duration per step (in seconds)",
-          "value": "0.5",
-          "valueType": "number",
-          "placeholder": "0.5"
+          "value": "0.5"
         }
       ]
     },
