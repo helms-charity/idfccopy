@@ -337,8 +337,6 @@ export async function loadFragment(path) {
       const categoryNavBlocks = main.querySelectorAll('.category-nav');
       categoryNavBlocks.forEach((block) => {
         block.setAttribute('data-fragment-block', 'true');
-        // eslint-disable-next-line no-console
-        console.log('[Fragment Load] Marked category-nav block to skip loading in fragment');
       });
 
       // eslint-disable-next-line
@@ -374,11 +372,6 @@ function isEditingFrameworkPage() {
   // The path could be /framework/* or /content/idfc-edge/framework/*
   const isFrameworkPath = window.location.pathname.includes('/framework/');
 
-  if (isFrameworkPath) {
-    // eslint-disable-next-line no-console
-    console.log('[Framework Check] Skipping framework page:', window.location.pathname);
-  }
-
   return isFrameworkPath;
 }
 
@@ -398,13 +391,8 @@ async function loadCategoryNavFragment(main) {
   const categoryNavPath = getMetadata('category-nav');
 
   if (!categoryNavPath) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Fragment] No category-nav metadata found on page');
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav Fragment] Found category-nav metadata: ${categoryNavPath}`);
 
   try {
     // Load the fragment content
@@ -420,13 +408,8 @@ async function loadCategoryNavFragment(main) {
     const fragmentSections = fragment.querySelectorAll(':scope > .section');
 
     if (fragmentSections.length === 0) {
-      // eslint-disable-next-line no-console
-      console.log('[Category Nav Fragment] No sections found in fragment');
       return;
     }
-
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav Fragment] Injecting ${fragmentSections.length} section(s) from fragment`);
 
     // Insert all fragment sections at the beginning of main
     // They should be inserted before any existing content
@@ -442,8 +425,6 @@ async function loadCategoryNavFragment(main) {
         categoryNavBlock.removeAttribute('data-fragment-block');
         // Reset block status so it can be loaded explicitly later
         categoryNavBlock.dataset.blockStatus = '';
-        // eslint-disable-next-line no-console
-        console.log('[Category Nav Fragment] Prepared category-nav block for page loading');
 
         // Add class to identify this as a category navigation section
         sectionClone.classList.add('category-nav-section');
@@ -458,8 +439,6 @@ async function loadCategoryNavFragment(main) {
             // Add data attribute with the category name
             const categoryName = titleElement.textContent.trim();
             sectionClone.setAttribute('data-category-name', categoryName);
-            // eslint-disable-next-line no-console
-            console.log(`[Category Nav Fragment] Tagged section with category: ${categoryName}`);
           }
         }
 
@@ -476,9 +455,6 @@ async function loadCategoryNavFragment(main) {
         main.appendChild(sectionClone);
       }
     });
-
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Fragment] Fragment sections injected successfully');
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('[Category Nav Fragment] Error loading fragment:', error);
@@ -675,13 +651,8 @@ async function loadCategoryNav(main) {
   const categoryNavBlocks = main.querySelectorAll('.category-nav.block');
 
   if (categoryNavBlocks.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav] No category-nav blocks found on page');
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav] Found ${categoryNavBlocks.length} block(s), initializing wrapper and loading blocks`);
 
   // Create category-nav wrapper at the top of main
   const categoryNavWrapper = document.createElement('div');
@@ -695,8 +666,6 @@ async function loadCategoryNav(main) {
   const blockName = 'category-nav';
   try {
     await loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav] CSS loaded, now loading all category-nav blocks');
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('[Category Nav] Failed to load CSS:', error);
@@ -705,8 +674,6 @@ async function loadCategoryNav(main) {
   // Load ALL category-nav blocks together to ensure they all see each other
   // This is critical because the first block to load will build the unified navigation
   const navBlocksArray = Array.from(categoryNavBlocks);
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav] Loading ${navBlocksArray.length} category-nav block(s)...`);
 
   // Reset the unified nav flag in case blocks were partially decorated earlier
   // This ensures the first block we explicitly load will build the unified navigation
@@ -714,8 +681,6 @@ async function loadCategoryNav(main) {
     const categoryNavModule = await import(`${window.hlx.codeBasePath}/blocks/category-nav/category-nav.js`);
     if (categoryNavModule.resetUnifiedNavFlag) {
       categoryNavModule.resetUnifiedNavFlag();
-      // eslint-disable-next-line no-console
-      console.log('[Category Nav] Reset unified nav flag before loading blocks');
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -724,35 +689,21 @@ async function loadCategoryNav(main) {
 
   for (let i = 0; i < navBlocksArray.length; i += 1) {
     const navBlock = navBlocksArray[i];
-    const currentStatus = navBlock.dataset.blockStatus;
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav] Block ${i + 1} status before load: ${currentStatus}`);
-
     // Remove block status entirely to force fresh decoration
     delete navBlock.dataset.blockStatus;
 
     // eslint-disable-next-line no-await-in-loop
     await loadBlock(navBlock);
-
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav] Block ${i + 1} status after load: ${navBlock.dataset.blockStatus}`);
   }
-
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav] All category-nav blocks loaded');
 
   // Clean up: Remove the fragment sections from main
   // These were injected from the fragment but are no longer needed
   // since the navigation has been built and moved to the header
   const categoryNavSections = main.querySelectorAll('.category-nav-container');
   if (categoryNavSections.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav] Removing ${categoryNavSections.length} fragment section(s) from main`);
     categoryNavSections.forEach((section) => {
       section.remove();
     });
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav] Fragment sections cleaned up');
   }
 }
 

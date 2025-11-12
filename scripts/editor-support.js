@@ -18,12 +18,7 @@ import { decorateMain, loadFragment } from './scripts.js';
  */
 function isEditingFrameworkPage() {
   const isFrameworkPath = window.location.pathname.includes('/framework/');
-  const shouldSkip = isFrameworkPath;
-  if (shouldSkip) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Editor] Skipping framework page:', window.location.pathname);
-  }
-  return shouldSkip;
+  return isFrameworkPath;
 }
 
 /**
@@ -38,13 +33,8 @@ async function reloadCategoryNav(main) {
 
   const categoryNavBlocks = main.querySelectorAll('.category-nav');
   if (categoryNavBlocks.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Editor] No blocks found after update');
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav Editor] Reloading with ${categoryNavBlocks.length} block(s)`);
 
   // Reset the unified nav flag so it can be rebuilt
   try {
@@ -60,8 +50,6 @@ async function reloadCategoryNav(main) {
   // Remove existing wrapper if present
   const existingWrapper = document.querySelector('.category-nav-wrapper');
   if (existingWrapper) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Editor] Removing existing wrapper');
     existingWrapper.remove();
   }
 
@@ -70,8 +58,6 @@ async function reloadCategoryNav(main) {
   categoryNavWrapper.classList.add('category-nav-wrapper');
   categoryNavWrapper.setAttribute('data-nav-placeholder', 'true');
   main.insertBefore(categoryNavWrapper, main.firstChild);
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav Editor] New wrapper created');
 
   // Load CSS
   const blockName = 'category-nav';
@@ -84,26 +70,18 @@ async function reloadCategoryNav(main) {
 
   // Load the category-nav blocks to trigger their decoration
   const navBlocks = [...main.querySelectorAll('.category-nav.block')];
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav Editor] Loading ${navBlocks.length} block(s) to trigger decoration`);
   for (let i = 0; i < navBlocks.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
     await loadBlock(navBlocks[i]);
   }
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav Editor] Category navigation reload complete');
 
   // Clean up: Remove the fragment sections from main
   // These were injected from the fragment but are no longer needed
   const categoryNavSections = main.querySelectorAll('.category-nav-container');
   if (categoryNavSections.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav Editor] Removing ${categoryNavSections.length} fragment section(s) from main`);
     categoryNavSections.forEach((section) => {
       section.remove();
     });
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Editor] Fragment sections cleaned up');
   }
 }
 
@@ -133,14 +111,10 @@ async function applyChanges(event) {
       // This handles when content authors change the category-nav page property
       const categoryNavPath = getMetadata('category-nav', parsedUpdate);
       if (categoryNavPath) {
-        // eslint-disable-next-line no-console
-        console.log(`[Category Nav Editor] Loading fragment from metadata: ${categoryNavPath}`);
         try {
           const fragment = await loadFragment(categoryNavPath);
           if (fragment) {
             const fragmentSections = fragment.querySelectorAll(':scope > .section');
-            // eslint-disable-next-line no-console
-            console.log(`[Category Nav Editor] Injecting ${fragmentSections.length} section(s) from fragment`);
             const { firstChild } = newMain;
             fragmentSections.forEach((section) => {
               const sectionClone = section.cloneNode(true);
@@ -163,8 +137,6 @@ async function applyChanges(event) {
                     titleElement.classList.add('category-title');
                     const categoryName = titleElement.textContent.trim();
                     sectionClone.setAttribute('data-category-name', categoryName);
-                    // eslint-disable-next-line no-console
-                    console.log(`[Category Nav Editor] Tagged section with category: ${categoryName}`);
                   }
                 }
 
@@ -192,8 +164,6 @@ async function applyChanges(event) {
       await loadSections(newMain);
 
       // Reload category navigation if present
-      // eslint-disable-next-line no-console
-      console.log('[Category Nav Editor] Main element updated, checking for category-nav');
       await reloadCategoryNav(newMain);
 
       element.remove();
@@ -220,8 +190,6 @@ async function applyChanges(event) {
 
         // If this is a category-nav block, reload the unified navigation
         if (newBlock.classList.contains('category-nav')) {
-          // eslint-disable-next-line no-console
-          console.log('[Category Nav Editor] Category-nav block updated, rebuilding navigation');
           const main = newBlock.closest('main');
           if (main) {
             await reloadCategoryNav(main);
@@ -253,8 +221,6 @@ async function applyChanges(event) {
 
           // If this section contains category-nav blocks, reload the navigation
           if (newSection.querySelector('.category-nav')) {
-            // eslint-disable-next-line no-console
-            console.log('[Category Nav Editor] Section with category-nav updated, rebuilding navigation');
             const main = newSection.closest('main');
             if (main) {
               await reloadCategoryNav(main);

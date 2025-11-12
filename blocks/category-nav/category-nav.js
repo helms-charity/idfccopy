@@ -10,8 +10,6 @@ let unifiedNavBuilt = false;
  * @returns {void}
  */
 export function resetUnifiedNavFlag() {
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav Block] Resetting unified nav flag for rebuild');
   unifiedNavBuilt = false;
 }
 
@@ -126,15 +124,6 @@ function parseCategoryNavBlock(block) {
   let linkText = '';
   let linkUrl = '';
 
-  // Debug: log first few rows to understand structure
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav] Block rows:', rows.length);
-  rows.slice(0, 4).forEach((row, idx) => {
-    const cells = Array.from(row.children);
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav] Row ${idx} cells:`, cells.length, cells.map((c) => c.textContent?.trim()));
-  });
-
   // Category-level fields are in separate rows with 1 cell each at the top
   // Row 0: eyebrow-title (1 cell, plain text)
   // Row 1: explore-link (1 cell, URL - can be plain text or <a> tag)
@@ -174,15 +163,6 @@ function parseCategoryNavBlock(block) {
     if (card) {
       items.push(card);
     }
-  });
-
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav] Parsed category "${categoryName}":`, {
-    eyebrowTitle,
-    linkUrl,
-    linkText,
-    itemCount: items.length,
-    metadataRowCount,
   });
 
   return {
@@ -294,6 +274,42 @@ function buildUnifiedNavigation(categoriesData) {
 }
 
 /**
+ * Smart positioning for dropdown menus to prevent overflow
+ * Positions each dropdown to stay within viewport with 20px padding
+ */
+function positionDropdowns() {
+  const navItems = document.querySelectorAll('.category-nav-item');
+  const viewportWidth = window.innerWidth;
+  const padding = 40; // Extra padding from right edge
+
+  navItems.forEach((item) => {
+    const dropdown = item.querySelector('.category-nav-dropdown');
+    if (!dropdown) return;
+
+    // Get the position of the nav item
+    const itemRect = item.getBoundingClientRect();
+    const dropdownWidth = 860; // Fixed width from CSS
+
+    // Calculate if dropdown would overflow
+    const dropdownRightEdge = itemRect.left + dropdownWidth;
+    const overflow = dropdownRightEdge - (viewportWidth - padding);
+
+    // Reset any previous positioning
+    dropdown.style.left = '';
+    dropdown.style.right = '';
+
+    if (overflow > 0) {
+      // Dropdown would overflow, shift it left
+      const shift = overflow;
+      dropdown.style.left = `-${shift}px`;
+    } else {
+      // Dropdown fits, align to left edge of trigger
+      dropdown.style.left = '0';
+    }
+  });
+}
+
+/**
  * Check if we're viewing a framework page (either in Universal Editor or directly)
  * Framework pages are template/fragment pages and should display their raw content
  * @returns {boolean} True if viewing a framework page
@@ -302,11 +318,6 @@ function isEditingFrameworkPage() {
   // Check if current path is in the framework folder
   // The path could be /framework/* or /content/idfc-edge/framework/*
   const isFrameworkPath = window.location.pathname.includes('/framework/');
-
-  if (isFrameworkPath) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav] Skipping framework page:', window.location.pathname);
-  }
 
   return isFrameworkPath;
 }
@@ -321,43 +332,30 @@ export default function decorate(block) {
   // Skip decoration if this block is in a fragment being loaded
   // It will be decorated explicitly after injection into the page
   if (block.hasAttribute('data-fragment-block')) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] Skipping decoration - block is in fragment');
     return;
   }
 
   // Only build the unified nav once, from the first block that loads
   if (unifiedNavBuilt) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] Skipping - unified nav already built');
     // Hide subsequent blocks
     block.style.display = 'none';
     return;
   }
 
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav Block] Starting decoration - first block loading');
   unifiedNavBuilt = true;
 
   // Find ALL category-nav blocks on the page
   const allCategoryNavBlocks = document.querySelectorAll('.category-nav.block');
 
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav Block] Found ${allCategoryNavBlocks.length} block(s) on page`);
-
   if (allCategoryNavBlocks.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] No blocks found, aborting');
     block.style.display = 'none';
     return;
   }
 
   // Parse data from all blocks and add section IDs
   const categoriesData = [];
-  allCategoryNavBlocks.forEach((navBlock, index) => {
+  allCategoryNavBlocks.forEach((navBlock) => {
     const categoryData = parseCategoryNavBlock(navBlock);
-    // eslint-disable-next-line no-console
-    console.log(`[Category Nav Block] Block ${index + 1}: "${categoryData.title}" with ${categoryData.items.length} items`);
     if (categoryData.items.length > 0) {
       categoriesData.push(categoryData);
 
@@ -366,21 +364,14 @@ export default function decorate(block) {
       if (section && !section.id) {
         section.id = categoryData.id;
         section.setAttribute('data-category-id', categoryData.id);
-        // eslint-disable-next-line no-console
-        console.log(`[Category Nav Block] Added ID "${categoryData.id}" to section`);
       }
     }
   });
 
   if (categoriesData.length === 0) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] No valid categories with items found');
     block.style.display = 'none';
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`[Category Nav Block] Building unified navigation with ${categoriesData.length} categories`);
 
   // Build the unified navigation
   const unifiedNav = buildUnifiedNavigation(categoriesData);
@@ -389,8 +380,6 @@ export default function decorate(block) {
   let categoryNavWrapper = document.querySelector('.category-nav-wrapper[data-nav-placeholder="true"]');
 
   if (!categoryNavWrapper) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] No placeholder wrapper found, creating one');
     // If no placeholder wrapper exists, create one
     categoryNavWrapper = document.createElement('div');
     categoryNavWrapper.classList.add('category-nav-wrapper');
@@ -401,9 +390,6 @@ export default function decorate(block) {
       // eslint-disable-next-line no-console
       console.error('[Category Nav Block] Could not find main element to insert wrapper');
     }
-  } else {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] Found placeholder wrapper, populating it');
   }
 
   // Populate the wrapper with the unified navigation
@@ -416,11 +402,6 @@ export default function decorate(block) {
   if (navWrapper && !navWrapper.contains(categoryNavWrapper)) {
     navWrapper.appendChild(categoryNavWrapper);
     categoryNavWrapper.classList.add('header-category-nav');
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] Moved navigation to header');
-  } else if (!navWrapper) {
-    // eslint-disable-next-line no-console
-    console.log('[Category Nav Block] Header nav-wrapper not found, keeping navigation in main');
   }
 
   // Hide all the individual category-nav blocks in the main content
@@ -438,6 +419,25 @@ export default function decorate(block) {
     }
   });
 
-  // eslint-disable-next-line no-console
-  console.log('[Category Nav Block] Decoration complete - navigation is ready');
+  // Position dropdowns intelligently after a short delay to ensure DOM is fully rendered
+  setTimeout(() => {
+    positionDropdowns();
+  }, 100);
+
+  // Reposition dropdowns on window resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      positionDropdowns();
+    }, 150);
+  });
+
+  // Also reposition on mouseenter for extra accuracy
+  const navItems = document.querySelectorAll('.category-nav-item');
+  navItems.forEach((item) => {
+    item.addEventListener('mouseenter', () => {
+      positionDropdowns();
+    });
+  });
 }
