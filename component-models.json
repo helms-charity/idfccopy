@@ -225,11 +225,6 @@
         "label": "Text"
       },
       {
-        "component": "text",
-        "name": "unused-title",
-        "label": "Title"
-      },
-      {
         "component": "select",
         "name": "button-style-type",
         "label": "Type",
