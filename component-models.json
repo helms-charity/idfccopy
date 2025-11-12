@@ -226,7 +226,7 @@
       },
       {
         "component": "select",
-        "name": "button-style-type",
+        "name": "classes",
         "label": "Type",
         "options": [
           {
