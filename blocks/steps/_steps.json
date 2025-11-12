@@ -53,19 +53,20 @@
           "options": [
             {
               "name": "Animated",
-              "value": "yes"
+              "value": "true"
             },
             {
               "name": "Static",
-              "value": "no"
+              "value": "false"
             }
           ]
         },
         {
-          "component": "number",
+          "component": "text",
           "name": "animationDuration",
           "label": "Animation Duration per step (in seconds)",
-          "value": "0.5"
+          "value": "0.5",
+          "valueType": "number"
         }
       ]
     },

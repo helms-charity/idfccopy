@@ -19,11 +19,11 @@
   background-color: var(--background-color);
 }
 
-.steps .steps-steps-item-body {
+.steps .steps-item-body {
   margin: 16px 0;
 }
 
-.steps .steps-steps-item-image {
+.steps .steps-item-image {
   line-height: 0;
 }
 

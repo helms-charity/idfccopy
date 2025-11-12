@@ -9,9 +9,9 @@ export default function decorate(block) {
     while (row.firstElementChild) li.append(row.firstElementChild);
     [...li.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
-        div.className = 'steps-steps-item-image';
+        div.className = 'steps-item-image';
       } else {
-        div.className = 'steps-steps-item-body';
+        div.className = 'steps-item-body';
       }
     });
     ul.append(li);
@@ -20,7 +20,6 @@ export default function decorate(block) {
   // Append UL to block
   block.textContent = '';
   ul.classList.add('grid-steps');
-  ul.querySelectorAll('li').forEach((li) => li.classList.add('benefit-steps'));
   block.append(ul);
 
   // === View All / View Less Toggle (Mobile Only) ===
