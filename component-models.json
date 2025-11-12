@@ -208,6 +208,26 @@
     ]
   },
   {
+    "id": "anchor-nav",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      }
+    ]
+  },
+  {
+    "id": "anchor-nav-link",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      }
+    ]
+  },
+  {
     "id": "banner-item",
     "fields": [
       {

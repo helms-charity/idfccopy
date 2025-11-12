@@ -22,7 +22,7 @@
         "plugins": {
           "xwalk": {
             "page": {
-              "resourceType": "core/franklin/components/block/v1/block/item",
+              "resourceType": "core/franklin/components/button/v1/button",
               "template": {
                 "name": "Anchor Nav Link",
                 "model": "button"
@@ -32,7 +32,28 @@
         }
       }
     ],
-    "models": [],
+    "models": [
+      {
+        "id": "anchor-nav",
+        "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title"
+          }
+        ]
+      },
+      {
+        "id": "anchor-nav-link",
+        "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title"
+          }
+        ]
+      }
+    ],
     "filters": [
       {
         "id": "anchor-nav",
