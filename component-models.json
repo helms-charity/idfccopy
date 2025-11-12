@@ -213,17 +213,20 @@
       {
         "component": "aem-content",
         "name": "link",
+        "valueType": "string",
         "label": "Link"
       },
       {
         "component": "text",
         "name": "description-text",
+        "valueType": "string",
         "label": "Text"
       },
       {
         "component": "select",
         "name": "classes",
         "label": "Type",
+        "valueType": "string",
         "options": [
           {
             "name": "default",
