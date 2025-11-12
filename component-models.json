@@ -211,7 +211,7 @@
     "id": "anchor-nav-link",
     "fields": [
       {
-        "component": "aem-content",
+        "component": "text",
         "name": "link",
         "valueType": "string",
         "label": "Link"
@@ -224,7 +224,7 @@
       },
       {
         "component": "select",
-        "name": "classes",
+        "name": "button-style-text",
         "label": "Type",
         "valueType": "string",
         "options": [
