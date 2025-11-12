@@ -50,6 +50,7 @@
           "component": "select",
           "name": "animation",
           "label": "Animation",
+          "valueType": "boolean",
           "options": [
             {
               "name": "Animated",
