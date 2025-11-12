@@ -275,12 +275,19 @@ function buildUnifiedNavigation(categoriesData) {
 
 /**
  * Smart positioning for dropdown menus to prevent overflow
- * Positions each dropdown to stay within viewport with 20px padding
+ * Positions each dropdown to stay within viewport with padding
+ * Accounts for responsive dropdown widths based on viewport size
  */
 function positionDropdowns() {
   const navItems = document.querySelectorAll('.category-nav-item');
   const viewportWidth = window.innerWidth;
   const padding = 40; // Extra padding from right edge
+
+  // Determine dropdown width based on viewport (matches CSS media queries)
+  let dropdownWidth = 860; // Default width for >= 1200px
+  if (viewportWidth >= 900 && viewportWidth < 1200) {
+    dropdownWidth = 720; // Medium screens
+  }
 
   navItems.forEach((item) => {
     const dropdown = item.querySelector('.category-nav-dropdown');
@@ -288,7 +295,6 @@ function positionDropdowns() {
 
     // Get the position of the nav item
     const itemRect = item.getBoundingClientRect();
-    const dropdownWidth = 860; // Fixed width from CSS
 
     // Calculate if dropdown would overflow
     const dropdownRightEdge = itemRect.left + dropdownWidth;
