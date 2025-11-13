@@ -208,6 +208,40 @@
     ]
   },
   {
+    "id": "anchor-nav-link",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Link"
+      },
+      {
+        "component": "text",
+        "name": "description-text",
+        "label": "Text"
+      },
+      {
+        "component": "select",
+        "name": "button-style-type",
+        "label": "Type",
+        "options": [
+          {
+            "name": "default",
+            "value": ""
+          },
+          {
+            "name": "primary",
+            "value": "primary"
+          },
+          {
+            "name": "secondary",
+            "value": "secondary"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "banner-item",
     "fields": [
       {
