@@ -1,7 +1,7 @@
 import {
   decorateBlock,
   decorateBlocks,
-  decorateButtons,
+//  decorateButtons,
   decorateIcons,
   decorateSections,
   loadBlock,
