@@ -208,10 +208,6 @@
     ]
   },
   {
-    "id": "anchor-nav",
-    "fields": []
-  },
-  {
     "id": "anchor-nav-link",
     "fields": [
       {

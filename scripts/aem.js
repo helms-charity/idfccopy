@@ -408,7 +408,11 @@ function wrapTextNodes(block) {
 function decorateButtons(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
-    if (a.href !== a.textContent) {
+    // if (a.href !== a.textContent) {
+    // adding lines 413-415 as a quick sanity check
+    const shouldSkip = a.href === a.textContent && a.textContent.trim().length > 0
+    && !a.closest('.button-container') && !a.classList.contains('button');
+    if (!shouldSkip) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
       if (!a.querySelector('img')) {
