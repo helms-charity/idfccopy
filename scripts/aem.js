@@ -506,6 +506,17 @@ function decorateSections(main) {
             .filter((style) => style)
             .map((style) => toClassName(style.trim()));
           styles.forEach((style) => section.classList.add(style));
+        } else if (key === 'background-color') {
+          // Handle backgroundColor field from section metadata
+          let bgValue = meta[key].trim();
+          // If it looks like a hex color (3 or 6 characters, alphanumeric), prepend with #
+          if (bgValue && /^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
+            bgValue = `#${bgValue}`;
+          }
+          // Set as inline style
+          if (bgValue) {
+            section.style.backgroundColor = bgValue;
+          }
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
         }

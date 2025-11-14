@@ -1,8 +1,8 @@
-/* Steps Block - Mobile First - Dark theme with circular icons */
+/* Steps Block - Mobile First - Light text for use on dark backgrounds with circular icons */
 
 /* ===== BASE STYLES (MOBILE < 600px) ===== */
 .steps {
-  background: #000;
+  background: unset;
   padding: 40px 15px;
   margin: 0;
 }
@@ -10,6 +10,16 @@
 .steps .steps-title {
   color: #fff;
   font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 30px;
+  line-height: normal;
+  text-shadow: 0 4px 8.8px rgba(0 0 0 / 76%);
+}
+
+.steps .steps-subtitle {
+  color: #fff;
+  font-size: 26px;
   font-weight: 600;
   text-align: center;
   margin: 0 0 30px;
@@ -114,6 +124,11 @@
     margin: 0 0 40px;
   }
 
+  .steps .steps-subtitle {
+    font-size: 20px;
+    margin: 0 0 40px;
+  }
+
   .steps .grid-steps {
     flex-flow: row nowrap;
     justify-content: center;
@@ -177,6 +192,11 @@
     margin: 0 0 72px;
   }
 
+  .steps .steps-subtitle {
+    font-size: 36px;
+    margin: 0 0 72px;
+  }
+
   .steps .grid-steps {
     gap: 0;
   }
@@ -204,5 +224,73 @@
 
   .steps .steps-item-body {
     font-size: 16px;
+  }
+}
+
+/* ===== ANIMATION STYLES ===== */
+
+/* Initially hide steps and connectors when animation is enabled */
+.steps[data-animation="true"] .grid-steps > li {
+  opacity: 0;
+}
+
+.steps[data-animation="true"] .grid-steps > li::after {
+  opacity: 0;
+}
+
+/* Animation states controlled by JS */
+.steps .grid-steps > li.step-animating {
+  animation: fade-in-step 1s ease-in-out forwards;
+}
+
+.steps .grid-steps > li.step-visible {
+  opacity: 1;
+}
+
+.steps .grid-steps > li.connector-animating::after {
+  animation: draw-connector 1s ease-in-out forwards;
+}
+
+.steps .grid-steps > li.connector-visible::after {
+  opacity: 1;
+}
+
+/* Keyframe animations */
+@keyframes fade-in-step {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes draw-connector {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Mobile vertical connector animation */
+@media (width < 600px) {
+  @keyframes draw-connector {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+    }
   }
 }

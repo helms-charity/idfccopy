@@ -42,6 +42,13 @@
           "label": "Title"
         },
         {
+          "component": "richtext",
+          "name": "subtitle",
+          "label": "Subtitle",
+          "value": "",
+          "valueType": "string"
+        },
+        {
           "component": "text",
           "name": "componentId",
           "label": "Component ID"

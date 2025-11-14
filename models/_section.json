@@ -26,6 +26,22 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
+          "component": "text",
+          "name": "backgroundColor",
+          "label": "Background Color",
+          "value": "000000",
+          "valueType": "string",
+          "description": "The background color of the section in hex color notation (e.g. 000000)"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "sectionBackgroundImage",
+          "label": "Background Image",
+          "description": "The background image of the section, displayed on top of the background color if specified",
+          "multi": false          
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",
@@ -35,40 +51,8 @@
               "value": "highlight"
             },
             {
-              "name": "Banner Image",
-              "value": "banner-image"
-            },
-            {
-              "name": "Hero Banner",
-              "value": "hero-banner"
-            },
-            {
-              "name": "Benefits PL Calculator",
-              "value": "personalLoanBenefits"
-            },
-            {
-              "name": "Types of Personal loan",
-              "value": "typeOfPersonalLoan"
-            },
-            {
-              "name": "Bank Products",
-              "value": "bankProducts"
-            },
-            {
-              "name": "Mid Banner",
-              "value": "mid-banner"
-            },
-            {
-              "name": "PL Faqs",
-              "value": "pl-faqs"
-            },
-            {
-              "name": "Banner Breadcrumb",
-              "value": "banner-breadcrumb"
-            },
-            {
-              "name": "Top Nav Menu (special section)",
-              "value": "top-nav"
+              "name": "UPI steps red background",
+              "value": "upi-steps-red-bg"
             }
           ]
         }
