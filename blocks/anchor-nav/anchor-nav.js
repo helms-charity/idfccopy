@@ -99,8 +99,6 @@ export default function decorate(block) {
   // Setup sticky behavior
   const wrapper = block.closest('.anchor-nav-wrapper');
   if (wrapper) {
-    const cleanup = setupStickyBehavior(wrapper, headerHeight);
-    block.dataset.cleanup = 'registered';
-    block.cleanupFunction = cleanup;
+    setupStickyBehavior(wrapper, headerHeight);
   }
 }

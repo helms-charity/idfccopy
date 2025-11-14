@@ -13,7 +13,6 @@
     display: block;
     position: relative;
     z-index: 1;
-    transition: box-shadow 0.3s ease;
     margin: 0;
   }
 
@@ -43,13 +42,11 @@
     justify-content: space-between;
     height: 53px;
     width: 100%;
-    gap: 0;
   }
 
   .anchor-nav-wrapper.stuck .anchor-nav-container {
     max-width: calc(1200px - 64px);
     margin: 0 auto;
-    padding: 0;
   }
 
   /* Style Universal Editor's row divs as nav items */
@@ -59,11 +56,27 @@
     display: flex;
     align-items: center;
     height: 100%;
-    flex: 1;
+    flex: 0 1 auto;
+  }
+
+  /* Ensure nested div and button-container align properly */
+  .anchor-nav-item > div {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .anchor-nav-item .button-container,
+  .anchor-nav-item p:has(.anchor-nav-link) {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
   }
 
   .anchor-nav-link.button {
-    margin: 0;
+    margin: 0 !important;
     padding: 0;
     border: none;
     border-radius: 0;
@@ -143,6 +156,7 @@
     color: #902a2c;
     font-family: Inter-bold, sans-serif;
     font-weight: 700;
+    font-style: normal;
     text-align: center;
     line-height: 1;
   }
