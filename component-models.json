@@ -217,12 +217,17 @@
       },
       {
         "component": "text",
-        "name": "description-text",
+        "name": "linkText",
         "label": "Text"
       },
       {
+        "component": "text",
+        "name": "linkTitle",
+        "label": "Title"
+      },
+      {
         "component": "select",
-        "name": "button-style-type",
+        "name": "linkType",
         "label": "Type",
         "options": [
           {
