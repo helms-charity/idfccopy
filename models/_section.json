@@ -27,7 +27,7 @@
         },
         {
           "component": "select",
-          "name": "background-color",
+          "name": "backgroundColor",
           "label": "Background Color",
           "value": "",
           "valueType": "string",
