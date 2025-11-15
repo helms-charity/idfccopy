@@ -577,14 +577,14 @@ function loadAutoBlock(doc) {
  */
 function extractSectionPropertiesFromEditor(section) {
   const props = {};
-  
+
   // Check for data-aue-prop attributes that might contain section properties
   const aueProps = Array.from(section.attributes).filter((attr) => attr.name.startsWith('data-aue-prop-'));
   aueProps.forEach((attr) => {
     const propName = attr.name.replace('data-aue-prop-', '');
     props[propName] = attr.value;
   });
-  
+
   return props;
 }
 
@@ -593,66 +593,33 @@ function extractSectionPropertiesFromEditor(section) {
  * @param {Element} main The main element containing sections
  */
 export function applySectionBackgroundColors(main) {
-  // eslint-disable-next-line no-console
-  console.log('[applySectionBackgroundColors] Starting background color application');
-  
-  main.querySelectorAll('.section').forEach((section, index) => {
+  main.querySelectorAll('.section').forEach((section) => {
     let bgValue = null;
-    
-    // DEBUG: Log all available data
-    // eslint-disable-next-line no-console
-    console.log(`[applySectionBackgroundColors] Section ${index}:`, {
-      classList: Array.from(section.classList),
-      datasetKeys: Object.keys(section.dataset),
-      dataset: { ...section.dataset },
-      hasAueResource: section.hasAttribute('data-aue-resource'),
-      aueResource: section.getAttribute('data-aue-resource'),
-      allAttributes: Array.from(section.attributes).map((attr) => ({
-        name: attr.name,
-        value: attr.value,
-      })),
-    });
-    
-    // First, check if background-color is in dataset (from section-metadata block)
+
+    // Check if backgroundColor is in dataset (from section-metadata block or data attribute)
     if (section.dataset.backgroundColor) {
       bgValue = section.dataset.backgroundColor.trim();
-      // eslint-disable-next-line no-console
-      console.log(`[applySectionBackgroundColors] Section ${index} found backgroundColor in dataset:`, bgValue);
     }
-    
+
     // If not found, try to extract from Universal Editor properties (editor mode only)
     if (!bgValue && section.hasAttribute('data-aue-resource')) {
       const editorProps = extractSectionPropertiesFromEditor(section);
-      // eslint-disable-next-line no-console
-      console.log(`[applySectionBackgroundColors] Section ${index} editor props:`, editorProps);
-      
       if (editorProps['background-color'] || editorProps.backgroundColor) {
         bgValue = (editorProps['background-color'] || editorProps.backgroundColor).trim();
-        // eslint-disable-next-line no-console
-        console.log(`[applySectionBackgroundColors] Section ${index} found backgroundColor in editor props:`, bgValue);
       }
     }
-    
+
     // If we found a value, process and apply it
     if (bgValue) {
       // If it looks like a hex color (3 or 6 characters, alphanumeric), prepend with #
       if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
         bgValue = `#${bgValue}`;
       }
-      
-      // eslint-disable-next-line no-console
-      console.log(`[applySectionBackgroundColors] Section ${index} applying background color:`, bgValue);
-      
+
       // Set as inline style
       section.style.backgroundColor = bgValue;
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(`[applySectionBackgroundColors] Section ${index} NO background color found`);
     }
   });
-  
-  // eslint-disable-next-line no-console
-  console.log('[applySectionBackgroundColors] Finished background color application');
 }
 
 /**

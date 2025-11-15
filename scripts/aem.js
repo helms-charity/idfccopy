@@ -478,21 +478,7 @@ function decorateIcons(element, prefix = '') {
  * @param {Element} main The container element
  */
 function decorateSections(main) {
-  main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section, index) => {
-    // DEBUG: Inspect all section attributes at the earliest point
-    // eslint-disable-next-line no-console
-    console.log(`[decorateSections] Section ${index}:`, {
-      allAttributes: Array.from(section.attributes).map((attr) => ({
-        name: attr.name,
-        value: attr.value,
-      })),
-      datasetKeys: Object.keys(section.dataset),
-      dataset: { ...section.dataset },
-      hasAueResource: section.hasAttribute('data-aue-resource'),
-      aueResource: section.getAttribute('data-aue-resource'),
-      classList: Array.from(section.classList),
-    });
-
+  main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
     [...section.children].forEach((e) => {
@@ -513,8 +499,6 @@ function decorateSections(main) {
     const sectionMeta = section.querySelector('div.section-metadata');
     if (sectionMeta) {
       const meta = readBlockConfig(sectionMeta);
-      // eslint-disable-next-line no-console
-      console.log(`[decorateSections] Section ${index} metadata:`, meta);
       Object.keys(meta).forEach((key) => {
         if (key === 'style') {
           const styles = meta.style
@@ -528,37 +512,6 @@ function decorateSections(main) {
       });
       sectionMeta.parentNode.remove();
     }
-
-    // Process section properties from data attributes (if present)
-    // This handles properties that might be serialized directly on the section element
-    const sectionDataAttrs = section.dataset;
-    if (sectionDataAttrs) {
-      // Check for specific section properties we want to handle
-      const propertyMappings = {
-        backgroundColor: 'background-color',
-        backgroundcolor: 'background-color',  // lowercase variant
-        'background-color': 'background-color', // kebab-case variant
-      };
-
-      Object.keys(sectionDataAttrs).forEach((key) => {
-        if (propertyMappings[key]) {
-          // Map to the canonical data attribute name
-          section.dataset.backgroundColor = sectionDataAttrs[key];
-          // eslint-disable-next-line no-console
-          console.log(`[decorateSections] Section ${index} found background-color:`, sectionDataAttrs[key]);
-        }
-      });
-    }
-
-    // DEBUG: Final state after processing
-    // eslint-disable-next-line no-console
-    console.log(`[decorateSections] Section ${index} after processing:`, {
-      datasetKeys: Object.keys(section.dataset),
-      dataset: { ...section.dataset },
-      classList: Array.from(section.classList),
-      hasBackgroundColor: 'backgroundColor' in section.dataset,
-      backgroundColorValue: section.dataset.backgroundColor,
-    });
   });
 }
 
