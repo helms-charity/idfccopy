@@ -144,7 +144,7 @@ export default function decorate(block) {
   block.append(ul);
 
   // Initialize animation if enabled
-  if (animation === 'true' || animation === 'True') {
+  if (animation === 'animated') {
     initializeStepsAnimation(block, ul, animationDuration);
   }
 }
