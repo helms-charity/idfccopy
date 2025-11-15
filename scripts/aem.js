@@ -512,6 +512,16 @@ function decorateSections(main) {
       });
       sectionMeta.parentNode.remove();
     }
+
+    // Normalize backgroundColor data attribute variations
+    // The HTML may serialize as data-backgroundcolor, data-background-color, or data-backgroundColor
+    // Ensure we always have section.dataset.backgroundColor set for the JavaScript to use
+    const bgColorVariants = ['backgroundcolor', 'background-color'];
+    bgColorVariants.forEach((variant) => {
+      if (section.dataset[variant] && !section.dataset.backgroundColor) {
+        section.dataset.backgroundColor = section.dataset[variant];
+      }
+    });
   });
 }
 
