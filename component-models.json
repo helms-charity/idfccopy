@@ -941,8 +941,8 @@
       {
         "component": "text",
         "name": "animationDuration",
-        "label": "Animation Duration per step (in seconds)",
-        "value": "0.5",
+        "label": "Total Animation Duration (in seconds)",
+        "value": "3",
         "valueType": "number"
       }
     ]

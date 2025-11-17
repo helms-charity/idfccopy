@@ -4,55 +4,115 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * Recursively animate steps in sequence
  * @param {Array<HTMLElement>} steps - Array of step li elements
  * @param {number} index - Current step index
+ * @param {number} duration - Animation duration per phase in milliseconds
  */
-function animateStepsSequence(steps, index) {
+function animateStepsSequence(steps, index, duration) {
   // Base case: all steps animated
   if (index >= steps.length) {
     return;
   }
 
   const currentStep = steps[index];
+  const image = currentStep.querySelector('.steps-item-image');
+  const body = currentStep.querySelector('.steps-item-body');
   const hasConnector = index < steps.length - 1; // Not the last step
 
-  // 1. Fade in the current step (1s)
-  currentStep.classList.add('step-animating');
+  // 1. Fade in the image
+  if (image) {
+    image.classList.add('animating');
+  }
 
-  // Wait 1s for step fade-in to complete
+  // Wait for image animation to complete
   setTimeout(() => {
-    currentStep.classList.remove('step-animating');
-    currentStep.classList.add('step-visible');
-
-    // 2. Animate the connector line (1s) if not the last step
-    if (hasConnector) {
-      currentStep.classList.add('connector-animating');
-
-      // Wait 1s for connector animation to complete
-      setTimeout(() => {
-        currentStep.classList.remove('connector-animating');
-        currentStep.classList.add('connector-visible');
-
-        // 3. Move to next step
-        animateStepsSequence(steps, index + 1);
-      }, 1000); // Connector animation duration
+    if (image) {
+      image.classList.remove('animating');
+      image.classList.add('visible');
     }
-    // Last step, animation complete
-  }, 1000); // Step fade-in duration
+
+    // 2. Fade in the body text
+    if (body) {
+      body.classList.add('animating');
+    }
+
+    setTimeout(() => {
+      if (body) {
+        body.classList.remove('animating');
+        body.classList.add('visible');
+      }
+
+      // 3. Animate the connector line if not the last step
+      if (hasConnector) {
+        currentStep.classList.add('connector-animating');
+
+        setTimeout(() => {
+          currentStep.classList.remove('connector-animating');
+          currentStep.classList.add('connector-visible');
+
+          // 4. Move to next step
+          animateStepsSequence(steps, index + 1, duration);
+        }, duration);
+      }
+    }, duration);
+  }, duration);
 }
 
 /**
- * Animate steps sequentially: fade in step, then animate connector, then next step
+ * Animate steps sequentially using IntersectionObserver
  * @param {HTMLElement} block - The steps block element
  * @param {HTMLElement} ul - The UL element containing step items
- * @param {string} animationDuration - Initial delay in milliseconds before animation starts
+ * @param {string} animationDuration - Total animation duration in seconds
  */
 function initializeStepsAnimation(block, ul, animationDuration) {
   const steps = Array.from(ul.children);
-  const initialDelay = parseInt(animationDuration, 10) || 0;
 
-  // Wait for initial delay, then start the animation sequence
-  setTimeout(() => {
-    animateStepsSequence(steps, 0);
-  }, initialDelay);
+  // Calculate total number of animation phases
+  // Each step has: image (1) + body (1) + connector (1, except last step)
+  // So total phases = (steps.length * 2) + (steps.length - 1) = steps.length * 3 - 1
+  const totalPhases = steps.length * 3 - 1;
+
+  // Calculate duration per phase
+  const totalDuration = parseFloat(animationDuration) * 1000 || 3000; // Convert to milliseconds
+  const duration = totalDuration / totalPhases;
+
+  // Set CSS custom property for animation duration (per phase, in seconds)
+  const durationInSeconds = duration / 1000;
+  block.style.setProperty('--animation-duration', `${durationInSeconds}s`);
+
+  /**
+   * Start the animation sequence
+   */
+  function startAnimation() {
+    setTimeout(() => {
+      animateStepsSequence(steps, 0, duration);
+    }, 1000);
+  }
+
+  // Check if block is already in viewport (for elements visible on page load)
+  const rect = block.getBoundingClientRect();
+  const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+
+  if (isInViewport) {
+    // Element is already visible, start animation immediately
+    startAnimation();
+  } else {
+    // Use IntersectionObserver to detect when block scrolls into view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startAnimation();
+            // Unobserve after animation starts (only animate once)
+            observer.unobserve(block);
+          }
+        });
+      },
+      {
+        threshold: 0.2, // Trigger when 20% of the block is visible
+      },
+    );
+
+    observer.observe(block);
+  }
 }
 
 export default function decorate(block) {
@@ -98,10 +158,18 @@ export default function decorate(block) {
     metadataRowCount = 5;
   }
 
+  // Check if block already has 'animated' class (set by 'classes' field in model)
+  const hasAnimatedClass = block.classList.contains('animated');
+
   // Store config as data attributes on the block for CSS/JS use
   if (componentId) block.dataset.componentId = componentId;
-  if (animation) block.dataset.animation = animation;
+  if (animation) {
+    block.dataset.animation = animation;
+  }
   if (animationDuration) block.dataset.animationDuration = animationDuration;
+
+  // Determine if animation should be enabled (either from metadata or class)
+  const shouldAnimate = animation === 'animated' || hasAnimatedClass;
 
   // Build UL structure - only process rows that are actual step items
   // Skip the metadata rows and process only the item rows (which have multiple cells)
@@ -143,8 +211,8 @@ export default function decorate(block) {
   ul.classList.add('grid-steps');
   block.append(ul);
 
-  // Initialize animation if enabled
-  if (animation === 'animated') {
+  // Initialize animation if enabled (check both metadata field and class)
+  if (shouldAnimate) {
     initializeStepsAnimation(block, ul, animationDuration);
   }
 }

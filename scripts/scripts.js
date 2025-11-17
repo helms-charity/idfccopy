@@ -589,27 +589,48 @@ function extractSectionPropertiesFromEditor(section) {
 }
 
 /**
- * Apply dynamic background colors to sections based on backgroundColor metadata
+ * Apply dynamic background colors and images to sections based on metadata
  * @param {Element} main The main element containing sections
  */
 export function applySectionBackgroundColors(main) {
   main.querySelectorAll('.section').forEach((section) => {
+    // Normalize sectionBackgroundImage data attribute variations
+    // The HTML may serialize as data-sectionbackgroundimage, data-section-background-image, etc.
+    // Ensure we always have section.dataset.sectionBackgroundImage set for the JavaScript to use
+    const bgImageVariants = ['sectionbackgroundimage', 'section-background-image'];
+    bgImageVariants.forEach((variant) => {
+      if (section.dataset[variant] && !section.dataset.sectionBackgroundImage) {
+        section.dataset.sectionBackgroundImage = section.dataset[variant];
+      }
+    });
+
     let bgValue = null;
+    let bgImageValue = null;
 
     // Check if backgroundColor is in dataset (from section-metadata block or data attribute)
     if (section.dataset.backgroundColor) {
       bgValue = section.dataset.backgroundColor.trim();
     }
 
+    // Check if sectionBackgroundImage is in dataset
+    if (section.dataset.sectionBackgroundImage) {
+      bgImageValue = section.dataset.sectionBackgroundImage.trim();
+    }
+
     // If not found, try to extract from Universal Editor properties (editor mode only)
-    if (!bgValue && section.hasAttribute('data-aue-resource')) {
+    if (section.hasAttribute('data-aue-resource')) {
       const editorProps = extractSectionPropertiesFromEditor(section);
-      if (editorProps['background-color'] || editorProps.backgroundColor) {
+
+      if (!bgValue && (editorProps['background-color'] || editorProps.backgroundColor)) {
         bgValue = (editorProps['background-color'] || editorProps.backgroundColor).trim();
+      }
+
+      if (!bgImageValue && (editorProps['section-background-image'] || editorProps.sectionBackgroundImage)) {
+        bgImageValue = (editorProps['section-background-image'] || editorProps.sectionBackgroundImage).trim();
       }
     }
 
-    // If we found a value, process and apply it
+    // If we found a background color value, process and apply it
     if (bgValue) {
       // If it looks like a hex color (3 or 6 characters, alphanumeric), prepend with #
       if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
@@ -618,6 +639,14 @@ export function applySectionBackgroundColors(main) {
 
       // Set as inline style
       section.style.backgroundColor = bgValue;
+    }
+
+    // If we found a background image value, apply it
+    if (bgImageValue) {
+      section.style.backgroundImage = `url('${bgImageValue}')`;
+      section.style.backgroundSize = 'cover';
+      section.style.backgroundPosition = 'center';
+      section.style.backgroundRepeat = 'no-repeat';
     }
   });
 }
