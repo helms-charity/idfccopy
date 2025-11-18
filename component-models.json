@@ -308,6 +308,24 @@
             "value": "testimonial-card"
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "name": "swipable",
+        "label": "Enable Swiper",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "number",
+        "name": "startingCard",
+        "label": "Starting Card (Index)",
+        "valueType": "number",
+        "value": 0,
+        "validation": {
+          "numberMin": 0,
+          "customErrorMsg": "Starting card index must be 0 or greater"
+        }
       }
     ]
   },

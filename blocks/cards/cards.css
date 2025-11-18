@@ -1,3 +1,4 @@
+/* BASE STYLING (mobile first) */
 .cards > ul {
   list-style: none;
   margin: 0;
@@ -11,6 +12,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  
   /* justify-content: center; */
 }
 
@@ -40,7 +42,7 @@
   gap: 16px;
   border-radius: 8px;
   background: #FFF;
-  box-shadow: 0 4px 8px 2px rgba(37, 36, 59, 0.15);
+  box-shadow: 0 4px 8px 2px rgba(37 36 59 / 15%);
   width: calc(50% - 1rem); /* desktop: 2 per row */
   box-sizing: border-box;
   transition: all 0.3s ease;
@@ -77,6 +79,7 @@
   letter-spacing: -0.262px;
   margin: 0;
 }
+
 .cards .benefit-cards .cards-card-body p u{
   color: #1c1c1c;
 }
@@ -100,8 +103,8 @@
   text-decoration: underline;
 }
 
-/* MOBILE VIEW: SINGLE COLUMN + toggleable */
-@media (max-width: 768px) {
+/* DESKTOP VIEW: Multiple Columns + toggleable */
+@media (width >= 900px) {
   .cards .benefit-cards {
     /* width: 100%;
     flex-direction: column;
@@ -112,7 +115,7 @@
     width: 100%;
     border-radius: 8px;
     background: #FFF;
-    box-shadow: 0 0 8px 0 rgba(37, 36, 59, 0.15);
+    box-shadow: 0 0 8px 0 rgba(37 36 59 / 15%);
   }
 
   .cards .benefit-cards .cards-card-body h3{
@@ -132,4 +135,76 @@
   .cards .benefit-cards .cards-card-body {
     margin-top: 12px;
   }
+}
+
+/* === SWIPER INTEGRATION STYLES === */
+.cards.swiper {
+  width: 100%;
+  height: auto;
+  padding-bottom: 60px; /* Space for pagination */
+  position: relative;
+}
+
+.cards .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.cards .swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+.cards .swiper-slide .benefit-cards {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* Swiper Navigation Buttons */
+.cards .swiper-button-next,
+.cards .swiper-button-prev {
+  color: #B31B1B;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0 0 0 / 15%);
+}
+
+.cards .swiper-button-next::after,
+.cards .swiper-button-prev::after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cards .swiper-button-next:hover,
+.cards .swiper-button-prev:hover {
+  background: #f5f5f5;
+}
+
+/* Hide navigation on mobile */
+@media (width <= 768px) {
+  .cards .swiper-button-next,
+  .cards .swiper-button-prev {
+    display: none;
+  }
+}
+
+/* Swiper Pagination */
+.cards .swiper-pagination {
+  bottom: 20px;
+}
+
+.cards .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.cards .swiper-pagination-bullet-active {
+  background: #B31B1B;
+  width: 24px;
+  border-radius: 5px;
 }
