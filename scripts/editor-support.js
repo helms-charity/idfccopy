@@ -10,7 +10,7 @@ import {
   getMetadata,
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
-import { decorateMain, loadFragment } from './scripts.js';
+import { decorateMain, loadFragment, applySectionBackgroundColors } from './scripts.js';
 
 /**
  * Check if we're editing a framework page (should skip nav building)
@@ -214,6 +214,7 @@ async function applyChanges(event) {
           decorateIcons(newSection);
           decorateRichtext(newSection);
           decorateSections(parentElement);
+          applySectionBackgroundColors(parentElement);
           decorateBlocks(parentElement);
           await loadSections(parentElement);
           element.remove();

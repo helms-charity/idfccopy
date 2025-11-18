@@ -55,25 +55,25 @@
         },
         {
           "component": "select",
-          "name": "animation",
+          "name": "classes",
           "label": "Animation",
-          "valueType": "boolean",
+          "valueType": "string",
           "options": [
             {
-              "name": "Animated",
-              "value": "true"
+              "name": "Static",
+              "value": "static"
             },
             {
-              "name": "Static",
-              "value": "false"
+              "name": "Animated",
+              "value": "animated"
             }
           ]
         },
         {
           "component": "text",
           "name": "animationDuration",
-          "label": "Animation Duration per step (in seconds)",
-          "value": "0.5",
+          "label": "Total Animation Duration (in seconds)",
+          "value": "3",
           "valueType": "number"
         }
       ]
