@@ -13,6 +13,6 @@
   ],
   "includes": [
     "/content/idfc-edge/",
-    "/content/dam/idfc-edge/icons"
+    "/content/dam/idfc-edge/icons/"
   ]
 }
