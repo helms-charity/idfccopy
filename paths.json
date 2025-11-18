@@ -8,7 +8,8 @@
     "/content/idfc-edge/metadata:/metadata.json",
     "/content/idfc-edge/experiment-metadata:/experiment-metadata.json",
     "/content/idfc-edge/api/test:/api/test.json",
-    "/content/idfc-edge/dept-best-practice/form/contact-form:/dept-best-practice/form/contact-form.json"
+    "/content/idfc-edge/dept-best-practice/form/contact-form:/dept-best-practice/form/contact-form.json",
+    "/content/idfc-edge/dam/icons:/icons"
   ],
   "includes": [
     "/content/idfc-edge/",
