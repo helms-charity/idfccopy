@@ -502,7 +502,7 @@ export function buildFragmentBlocks(main) {
  * @param {Element} main The container element
  */
 export function buildEmbedBlocks(main) {
-  const embedPlatforms = /youtu|vimeo|twitter\.com/;
+  const embedPlatforms = /youtu\.be|youtu|vimeo|twitter\.com/;
   main.querySelectorAll('a[href]').forEach((a) => {
     if (embedPlatforms.test(a.href) && linkTextIncludesHref(a)) {
       const embedBlock = buildBlock('embed', a.cloneNode(true));
@@ -739,6 +739,8 @@ export function decorateMain(main) {
   decorateSections(main);
   applySectionBackgroundColors(main);
   decorateBlocks(main);
+  buildFragmentBlocks(main);
+  buildEmbedBlocks(main);
 }
 
 /**
