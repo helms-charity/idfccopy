@@ -67,7 +67,7 @@
             {
               "component": "number",
               "name": "startingCard",
-              "label": "Starting Card (Index)",
+              "label": "Starting Card (Index, default is 0)",
               "valueType": "number",
               "value": 0,
               "validation": {
