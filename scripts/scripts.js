@@ -1,6 +1,8 @@
 import {
   loadHeader,
   loadFooter,
+  buildBlock,
+  decorateBlock,
   decorateButtons,
   decorateIcons,
   decorateSections,
@@ -459,6 +461,55 @@ async function loadCategoryNavFragment(main) {
     // eslint-disable-next-line no-console
     console.error('[Category Nav Fragment] Error loading fragment:', error);
   }
+}
+
+/**
+ * check if link text is same as the href
+ * @param {Element} link the link element
+ * @returns {boolean} true or false
+ */
+export function linkTextIncludesHref(link) {
+  const href = link.getAttribute('href');
+  const textcontent = link.textContent;
+
+  return textcontent.includes(href);
+}
+
+/**
+   * Builds fragment blocks from links to fragments
+   * @param {Element} main The container element
+   */
+export function buildFragmentBlocks(main) {
+  main.querySelectorAll('a[href]').forEach((a) => {
+    const url = new URL(a.href);
+    if (linkTextIncludesHref(a) && url.pathname.includes('/fragments/')) {
+      const block = buildBlock('fragment', url.pathname);
+      const parent = a.parentElement;
+      a.replaceWith(block);
+      decorateBlock(block);
+      if (parent.tagName === 'P' && parent.querySelector('.block')) {
+        const div = document.createElement('div');
+        div.className = parent.className;
+        while (parent.firstChild) div.appendChild(parent.firstChild);
+        parent.replaceWith(div);
+      }
+    }
+  });
+}
+
+/**
+ * Builds 'embed' blocks when non-fragment links are encountered
+ * @param {Element} main The container element
+ */
+export function buildEmbedBlocks(main) {
+  const embedPlatforms = /youtu|vimeo|twitter\.com/;
+  main.querySelectorAll('a[href]').forEach((a) => {
+    if (embedPlatforms.test(a.href) && linkTextIncludesHref(a)) {
+      const embedBlock = buildBlock('embed', a.cloneNode(true));
+      a.replaceWith(embedBlock);
+      decorateBlock(embedBlock);
+    }
+  });
 }
 
 async function createForm(formHref, submitHref) {
