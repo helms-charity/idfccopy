@@ -120,8 +120,6 @@
 
 /* TESTIMONIAL CARD STYLING */
 
-/* Note: Testimonial cards always use Swiper when enabled. Non-Swiper styles removed for simplicity. */
-
 /* Desktop styles for benefit cards */
 @media (width >= 600px) {
   .cards .benefit-cards {
@@ -149,7 +147,6 @@
   }
 }
 
-/* Note: Responsive breakpoints for testimonial cards are handled by Swiper configuration */
 
 /* === SWIPER INTEGRATION STYLES === */
 .cards.swiper {
@@ -161,7 +158,8 @@
 }
 
 .cards.testimonial-card.swiper {
-  overflow: visible;
+  overflow: hidden;
+  position: relative;
 }
 
 .cards .swiper-wrapper {
@@ -216,7 +214,6 @@
   background: #ccc;
   opacity: 1;
   transition: all 0.3s ease;
-  vertical-align: middle;
 }
 
 .cards .swiper-pagination-bullet-active {
@@ -250,8 +247,7 @@
   height: auto;
   overflow: visible;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  visibility: visible;
-  opacity: 1;
+  transform: scale(0.9);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body {
@@ -260,6 +256,7 @@
 
 .cards.testimonial-card.swiper .swiper-slide-active {
   background-color: var(--purple-color);
+  transform: scale(1);
   z-index: 10;
   box-shadow: 0 8px 16px 4px rgb(37 36 59 / 25%);
 }

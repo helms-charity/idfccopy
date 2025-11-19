@@ -56,12 +56,9 @@ function extractBlockProperties(block, ul) {
     }
   }
 
-  // Set data attributes on block (convert camelCase to kebab-case)
+  // Set data attributes on block (dataset automatically handles kebab-case conversion)
   Object.keys(propertyValues).forEach((key) => {
-    const kebabCase = key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     block.dataset[key] = propertyValues[key];
-    // Also set as kebab-case attribute for consistency
-    block.setAttribute(`data-${kebabCase}`, propertyValues[key]);
   });
 
   // Remove placeholder items
@@ -137,53 +134,50 @@ export default async function decorate(block) {
     swiperPagination.className = 'swiper-pagination';
     block.appendChild(swiperPagination);
 
-    // Navigation arrows (commented out for now)
-    // const swiperButtonPrev = document.createElement('div');
-    // swiperButtonPrev.className = 'swiper-button-prev';
-    // block.appendChild(swiperButtonPrev);
-
-    // const swiperButtonNext = document.createElement('div');
-    // swiperButtonNext.className = 'swiper-button-next';
-    // block.appendChild(swiperButtonNext);
-
-    // Initialize Swiper
     // Build Swiper configuration
     const swiperConfig = {
       slidesPerView: 1,
       spaceBetween: 16,
       initialSlide: startingCard,
-      // navigation: {
-      //   nextEl: '.swiper-button-next',
-      //   prevEl: '.swiper-button-prev',
-      // },
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
       },
-      breakpoints: {
-        600: { // tablet
-          slidesPerView: 2,
-          spaceBetween: 20,
-        },
-        900: { // desktop
-          slidesPerView: 3,
-          spaceBetween: 36,
-        },
-      },
     };
 
-    // Add centeredSlides for testimonial cards
+    // Configure breakpoints based on card type
     if (isTestimonial) {
-      swiperConfig.centeredSlides = true;
-      // Ensure all slides are accessible and rendered
+      // For testimonial cards: show edges on both sides on mobile, 3 cards at larger breakpoints
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.observer = true;
-      swiperConfig.observeParents = true;
-      // Prevent Swiper from hiding slides
-      swiperConfig.slidesOffsetBefore = 0;
-      swiperConfig.slidesOffsetAfter = 0;
+      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.centeredSlides = true; // Keep centered to show edges on both sides
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 1.5,
+          spaceBetween: 20,
+          centeredSlides: true,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 36,
+          centeredSlides: true,
+        },
+      };
+    } else {
+      // For benefit cards: standard breakpoints
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 36,
+        },
+      };
     }
 
     // eslint-disable-next-line no-undef
@@ -224,9 +218,8 @@ export default async function decorate(block) {
       // Update on initial load
       updateStarIcons();
 
-      // Update when slide change transition ends (ensures DOM is fully updated)
+      // Update when slide changes (both events for reliability)
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
-      // Also update on slideChange for immediate feedback
       swiper.on('slideChange', updateStarIcons);
     }
   } else if (!isTestimonial) {
