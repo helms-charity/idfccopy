@@ -306,6 +306,10 @@
           {
             "name": "Testimonial",
             "value": "testimonial-card"
+          },
+          {
+            "name": "All About",
+            "value": "all-about-card"
           }
         ]
       },
