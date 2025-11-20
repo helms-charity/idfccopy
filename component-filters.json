@@ -160,6 +160,12 @@
     ]
   },
   {
+    "id": "tabs-upi-link",
+    "components": [
+      "tabs-upi-link-item"
+    ]
+  },
+  {
     "id": "tabs",
     "components": [
       "tabs-item"
