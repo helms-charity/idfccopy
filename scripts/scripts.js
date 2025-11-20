@@ -476,28 +476,6 @@ export function linkTextIncludesHref(link) {
 }
 
 /**
-   * Builds fragment blocks from links to fragments
-   * @param {Element} main The container element
-   */
-export function buildFragmentBlocks(main) {
-  main.querySelectorAll('a[href]').forEach((a) => {
-    const url = new URL(a.href);
-    if (linkTextIncludesHref(a) && url.pathname.includes('/fragments/')) {
-      const block = buildBlock('fragment', url.pathname);
-      const parent = a.parentElement;
-      a.replaceWith(block);
-      decorateBlock(block);
-      if (parent.tagName === 'P' && parent.querySelector('.block')) {
-        const div = document.createElement('div');
-        div.className = parent.className;
-        while (parent.firstChild) div.appendChild(parent.firstChild);
-        parent.replaceWith(div);
-      }
-    }
-  });
-}
-
-/**
  * Builds 'embed' blocks when non-fragment links are encountered
  * @param {Element} main The container element
  */
@@ -739,7 +717,6 @@ export function decorateMain(main) {
   decorateSections(main);
   applySectionBackgroundColors(main);
   decorateBlocks(main);
-  buildFragmentBlocks(main);
   buildEmbedBlocks(main);
 }
 
