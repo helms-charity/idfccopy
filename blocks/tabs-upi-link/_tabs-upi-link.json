@@ -36,7 +36,7 @@
     ],
     "models": [
       {
-        "id": "tabs",
+        "id": "tabs-upi-link",
         "fields": [
           {
             "component": "reference",
@@ -61,7 +61,7 @@
         ]
       },
       {
-        "id": "tabs-item",
+        "id": "tabs-upi-link-item",
         "fields": [
           {
             "component": "text",
