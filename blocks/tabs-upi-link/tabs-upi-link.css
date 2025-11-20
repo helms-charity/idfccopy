@@ -1,58 +1,142 @@
-.tabs .tabs-list {
-    display: flex;
-    gap: 0.5ch;
+/* Title at top */
+.tabs-upi-link .tabs-upi-link-title {
+  margin-bottom: 24px;
+}
+
+.tabs-upi-link .tabs-upi-link-title h2 {
+  margin: 0;
+}
+
+/* Content wrapper - contains image and tabs */
+.tabs-upi-link .tabs-upi-link-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Image wrapper - hidden on mobile, shown on larger screens */
+.tabs-upi-link .tabs-upi-link-image {
+  display: none;
+}
+
+/* Mobile: Tab panel layout - image on left, content on right */
+@media (width < 1200px) {
+  .tabs-upi-link .tabs-panel {
+    flex-direction: row !important;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .tabs-upi-link .tabs-upi-link-panel-image {
+    flex-shrink: 0;
+    width: auto;
+  }
+
+  .tabs-upi-link .tabs-upi-link-panel-image picture,
+  .tabs-upi-link .tabs-upi-link-panel-image img {
+    width: auto;
+    height: auto;
     max-width: 100%;
-    font-size: var(--body-font-size-xs);
-    overflow-x: auto;
+    display: block;
   }
-  
-  @media (width >= 600px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-s);
-    }
+
+  /* Content wrapper inside panel */
+  .tabs-upi-link .tabs-panel > div:not(.tabs-upi-link-panel-image) {
+    flex: 1;
+    min-width: 0; /* Allows flex item to shrink below content size */
   }
-  
-  @media (width >= 900px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-m);
-    }
-  }
-  
-  .tabs .tabs-list button {
-    flex: 0 0 max-content;
-    margin: 0;
-    border: 1px solid #dadada;
-    border-radius: 0;
-    padding: 0.5em;
-    background-color: var(--light-color);
-    color: initial;
-    font-weight: bold;
-    line-height: unset;
-    text-align: initial;
-    text-overflow: unset;
-    overflow: unset;
-    white-space: unset;
-    transition: background-color 0.2s;
-  }
-  
-  .tabs .tabs-list button p {
-    margin: 0;
-  }
-  
-  
-  .tabs .tabs-list button[aria-selected='true'] {
-    border-bottom: 1px solid var(--background-color);
-    background-color: var(--background-color);
-    cursor: initial;
-  }
-  
-  .tabs .tabs-panel {
-    margin-top: -1px;
-    padding: 24px;
-    border: 1px solid #dadada;
-    overflow: auto;
-  }
-  
-  .tabs .tabs-panel[aria-hidden='true'] {
+}
+
+/* Tabs container */
+.tabs-upi-link .tabs-upi-link-tabs {
+  width: 100%;
+}
+
+.tabs-upi-link .tabs-list {
+  display: flex;
+  gap: 0.5ch;
+  max-width: 100%;
+  font-size: var(--body-font-size-xs);
+  overflow-x: auto;
+}
+
+.tabs-upi-link .tabs-list button {
+  flex: 0 0 max-content;
+  margin: 0;
+  border: 1px solid #dadada;
+  border-radius: 0;
+  padding: 0.5em;
+  background-color: var(--light-color);
+  color: initial;
+  font-weight: bold;
+  line-height: unset;
+  text-align: initial;
+  text-overflow: unset;
+  overflow: unset;
+  white-space: unset;
+  transition: background-color 0.2s;
+}
+
+.tabs-upi-link .tabs-list button p {
+  margin: 0;
+}
+
+.tabs-upi-link .tabs-list button[aria-selected='true'] {
+  border-bottom: 1px solid var(--background-color);
+  background-color: var(--background-color);
+  cursor: initial;
+}
+
+.tabs-upi-link .tabs-panel {
+  margin-top: -1px;
+  padding: 24px;
+  border: 1px solid #dadada;
+  overflow: auto;
+  display: flex;
+  flex-direction: row; /* Default to row for mobile */
+  gap: 16px;
+}
+
+/* Mobile: Image inside each tab panel (left side), content on right */
+.tabs-upi-link .tabs-upi-link-panel-image {
+  display: block;
+  flex-shrink: 0;
+}
+
+.tabs-upi-link .tabs-upi-link-panel-content {
+  flex: 1;
+  min-width: 0; /* Allows flex item to shrink below content size */
+}
+
+/* Desktop: Hide panel images, show main image outside */
+@media (width >= 1200px) {
+  .tabs-upi-link .tabs-upi-link-panel-image {
     display: none;
   }
+
+  .tabs-upi-link .tabs-panel {
+    flex-direction: column;
+  }
+}
+
+.tabs-upi-link .tabs-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* Desktop layout - image on left, tabs on right */
+@media (width >= 1200px) {
+  .tabs-upi-link .tabs-upi-link-content {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 36px;
+  }
+
+  .tabs-upi-link .tabs-upi-link-image {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .tabs-upi-link .tabs-upi-link-tabs {
+    flex: 1;
+  }
+}
