@@ -1,3 +1,4 @@
+/* Mobile-first base styles */
 .hero-container .hero-wrapper {
   max-width: unset;
   padding: 0;
@@ -6,32 +7,263 @@
 .hero {
   position: relative;
   padding: 40px 24px;
-  min-height: 300px;
+  min-height: 400px;
+  background-color: #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.hero h1 {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--background-color);
+.hero > div {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  order: 2;
+}
+
+.hero h1,
+.hero h2 {
+  margin-left: 0;
+  margin-right: 0;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.hero p {
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.2;
+  margin-bottom: 0;
+  margin-top: 0;
+  text-align: center;
+}
+
+.hero p strong {
+  font-weight: 700;
+  font-family: Inter-bold, sans-serif;
+  font-size: 14px;
+  margin-top: 0;
 }
 
 .hero picture {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
+  position: static;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  margin: -30px auto 0;
+  display: block;
+  order: 1;
+  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .hero img {
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 
+/* Button groups wrapper */
+.hero .button-groups-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: center;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Individual button group */
+.hero .button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  width: auto;
+  flex: 1;
+}
+
+.hero .button-group p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+/* Button container styling */
+.hero .button-container {
+  margin: 0;
+}
+
+.hero .button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  height: auto;
+  line-height: 1.3;
+}
+
+.hero a.button.primary {
+  background-color: var(--red-color);
+  color: #fff;
+  border: 1px solid var(--red-color);
+  padding: 12px 16px;
+  margin: 0;
+  font-family: Inter-bold, sans-serif;
+}
+
+.hero .button.primary:hover {
+  background-color: var(--dark-red-color);
+  border-color: var(--dark-red-color);
+}
+
+.hero .button.secondary {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  font-family: Inter-bold, sans-serif;
+  font-style: normal;
+}
+
+.hero .button.secondary:hover {
+  background-color: var(--dark-red-color);
+  border-color: var(--dark-red-color);
+}
+
+/* Tablet: 600px and up */
+@media (width >= 600px) {
+  .hero {
+    padding: 60px 24px;
+    display: block;
+  }
+
+  .hero > div {
+    max-width: 650px;
+    order: unset;
+  }
+
+  .hero h1,
+  .hero h2 {
+    font-size: 48px;
+    text-align: left;
+  }
+
+  .hero p {
+    font-size: 16px;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .hero p strong {
+    font-size: 18px;
+  }
+
+  .hero picture {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    max-width: 600px;
+    margin: 0;
+    order: unset;
+  }
+
+  .hero .button-groups-wrapper {
+    flex-flow: row nowrap;
+    gap: 20px;
+    align-items: flex-start;
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .hero .button-group {
+    width: auto;
+    text-align: left;
+    flex: 0 0 auto;
+  }
+
+  .hero .button-group p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0 auto;
+  }
+
+  .hero .button {
+    display: inline-block;
+    width: auto;
+    padding: 14px 18px;
+    font-size: 15px;
+    height: 52px;
+    line-height: 1.5;
+  }
+
+  .hero a.button.primary {
+    padding: 14px 18px;
+  }
+}
+
+/* Desktop: 900px and up */
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    padding: 10px 60px 80px;
+  }
+
+  .hero-container .hero-wrapper {
+    max-width: 1200px;
+  }
+
+  .hero > div {
+    max-width: 700px;
+  }
+
+  .hero h1,
+  .hero h2 {
+    font-size: 36px;
+  }
+
+  .hero picture {
+    width: 50%;
+    max-width: 650px;
+  }
+}
+
+/* Animation: slide in from right */
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Desktop animation needs to preserve translateY */
+@media (width >= 600px) {
+  @keyframes slide-in-right {
+    0% {
+      transform: translateX(1000px) translateY(-50%);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateX(0) translateY(-50%);
+      opacity: 1;
+    }
   }
 }
