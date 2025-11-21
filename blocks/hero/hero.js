@@ -10,7 +10,7 @@ export default function decorate(block) {
     block.appendChild(picture);
   }
 
-  // Group button labels with their buttons
+  // Group button labels with their buttons based on HTML structure
   // After removing picture parent, find the remaining content div
   const contentDivs = Array.from(block.querySelectorAll('div > div'));
   const contentDiv = contentDivs.find((div) => div.children.length > 0);
@@ -19,47 +19,63 @@ export default function decorate(block) {
     const allParagraphs = Array.from(contentDiv.querySelectorAll('p'));
     const heading = contentDiv.querySelector('h1, h2');
 
-    // Find the label and button pairs
-    const label1 = allParagraphs.find((p) => !p.classList.contains('button-container')
-      && p.textContent.includes("Don't have"));
-    const button1Container = allParagraphs.find((p) => p.classList.contains('button-container')
-      && p.querySelector('.button.secondary'));
-    const label2 = allParagraphs.find((p) => !p.classList.contains('button-container')
-      && p.textContent.includes('Have an'));
-    const button2Container = allParagraphs.find((p) => p.classList.contains('button-container')
-      && p.querySelector('.button.primary'));
+    // Find button pairs by looking for <em><a> or <strong><a> patterns
+    const buttonPairs = [];
+    const processedIndices = new Set();
 
-    // Find footer paragraphs (the last two)
+    allParagraphs.forEach((p, index) => {
+      // Check if paragraph contains a link wrapped in em or strong
+      const emLink = p.querySelector('em > a');
+      const strongLink = p.querySelector('strong > a');
+
+      if (emLink || strongLink) {
+        const link = emLink || strongLink;
+        const isSecondary = !!emLink;
+
+        // Apply button styling
+        link.classList.add('button');
+        link.classList.add(isSecondary ? 'secondary' : 'primary');
+        p.classList.add('button-container');
+
+        // Find the label (previous paragraph without a link)
+        let label = null;
+        if (index > 0) {
+          const prevP = allParagraphs[index - 1];
+          if (!prevP.querySelector('a') && !processedIndices.has(index - 1)) {
+            label = prevP;
+            processedIndices.add(index - 1);
+          }
+        }
+
+        buttonPairs.push({ label, buttonContainer: p });
+        processedIndices.add(index);
+      }
+    });
+
+    // Find footer paragraphs (not labels, not buttons, not headings)
     const footerParagraphs = allParagraphs.filter(
-      (p) => !p.classList.contains('button-container')
-        && !p.textContent.includes("Don't have")
-        && !p.textContent.includes('Have an'),
+      (p, index) => !processedIndices.has(index) && !p.querySelector('a'),
     );
 
-    if (label1 && button1Container && label2 && button2Container) {
+    if (buttonPairs.length > 0) {
       // Create wrapper for button groups
       const buttonGroupsWrapper = document.createElement('div');
       buttonGroupsWrapper.className = 'button-groups-wrapper';
 
-      // Create first button group
-      const buttonGroup1 = document.createElement('div');
-      buttonGroup1.className = 'button-group';
-      const label1Clone = label1.cloneNode(true);
-      label1Clone.removeAttribute('class');
-      buttonGroup1.appendChild(label1Clone);
-      buttonGroup1.appendChild(button1Container.cloneNode(true));
+      // Create button groups for each pair
+      buttonPairs.forEach(({ label, buttonContainer }) => {
+        const buttonGroup = document.createElement('div');
+        buttonGroup.className = 'button-group';
 
-      // Create second button group
-      const buttonGroup2 = document.createElement('div');
-      buttonGroup2.className = 'button-group';
-      const label2Clone = label2.cloneNode(true);
-      label2Clone.removeAttribute('class');
-      buttonGroup2.appendChild(label2Clone);
-      buttonGroup2.appendChild(button2Container.cloneNode(true));
+        if (label) {
+          const labelClone = label.cloneNode(true);
+          labelClone.removeAttribute('class');
+          buttonGroup.appendChild(labelClone);
+        }
 
-      // Add groups to wrapper
-      buttonGroupsWrapper.appendChild(buttonGroup1);
-      buttonGroupsWrapper.appendChild(buttonGroup2);
+        buttonGroup.appendChild(buttonContainer.cloneNode(true));
+        buttonGroupsWrapper.appendChild(buttonGroup);
+      });
 
       // Clear content and rebuild
       contentDiv.innerHTML = '';
