@@ -888,9 +888,9 @@ async function loadLazy(doc) {
   // eslint-disable-next-line no-console
   console.log('[DEBUG loadLazy] About to loadHeader');
   // Load header first so nav-wrapper is available for category navbar
-  // await loadHeader(doc.querySelector('header'));
+  await loadHeader(doc.querySelector('header'));
   // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] SKIPPING Header loaded');
+  console.log('[DEBUG loadLazy] Header loaded');
 
   // eslint-disable-next-line no-console
   console.log('[DEBUG loadLazy] About to loadCategoryNav');
