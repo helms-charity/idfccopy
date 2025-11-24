@@ -14,10 +14,24 @@ export default async function decorate(block) {
   block.textContent = '';
   const footer = document.createElement('div');
 
-  // Extract content without transferring section elements with data-aue-resource
+  // Build footer DOM from fragment content without transferring section elements
   // This prevents footer sections from appearing in the Universal Editor content tree
   if (fragment) {
-    footer.innerHTML = fragment.innerHTML;
+    // Get all sections from the fragment
+    const sections = fragment.querySelectorAll(':scope > div');
+    sections.forEach((section) => {
+      // Create a new section div (without data-aue attributes)
+      const newSection = document.createElement('div');
+      newSection.className = section.className;
+
+      // Move the inner content (blocks, wrappers, etc.) from the section
+      // The section element itself (with data-aue-resource) stays in fragment
+      while (section.firstChild) {
+        newSection.appendChild(section.firstChild);
+      }
+
+      footer.append(newSection);
+    });
   }
 
   block.append(footer);
