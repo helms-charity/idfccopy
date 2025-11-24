@@ -10,14 +10,12 @@ export default async function decorate(block) {
   block.textContent = '';
 
   const footerMeta = getMetadata('footer');
-  let footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
 
   // Fetch footer content directly without using loadFragment
   // This avoids adding data-aue-* attributes from the footer fragment
   if (footerPath && footerPath.startsWith('/')) {
-    // Ensure we're fetching the .plain.html version
-    footerPath = footerPath.replace(/\.html$/, '');
-    const resp = await fetch(`${footerPath}.plain.html`);
+    const resp = await fetch(footerPath);
 
     if (resp.ok) {
       const html = await resp.text();
