@@ -1,39 +1,41 @@
-import {
-  getMetadata, decorateIcons, decorateBlock, loadBlock,
-} from '../../scripts/aem.js';
+import { getMetadata } from '../../scripts/aem.js';
+import { loadFragment } from '../../scripts/scripts.js';
 
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  block.textContent = '';
-
+  // load footer as fragment
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  const fragment = await loadFragment(footerPath);
 
-  // Fetch footer content without using loadFragment (which adds data-aue-* attributes)
-  if (footerPath && footerPath.startsWith('/')) {
-    const resp = await fetch(footerPath);
+  // decorate footer DOM
+  block.textContent = '';
+  const footer = document.createElement('div');
 
-    if (resp.ok) {
-      const html = await resp.text();
-      const footer = document.createElement('div');
-      footer.innerHTML = html;
+  // Extract inner content from sections without transferring the section elements
+  // This prevents footer sections from appearing in the Universal Editor content tree
+  if (fragment) {
+    const sections = fragment.querySelectorAll(':scope > div');
+    sections.forEach((section) => {
+      // Create a new div to hold this section's content
+      const newSection = document.createElement('div');
+      // Copy the class names to preserve styling
+      newSection.className = section.className;
 
-      // Decorate icons in the footer content
-      decorateIcons(footer);
+      // Move the children (blocks, content wrappers) from the original section
+      // but not the section element itself (which has data-aue-resource)
+      while (section.firstChild) {
+        newSection.appendChild(section.firstChild);
+      }
 
-      // Decorate and load accordion blocks
-      const accordions = footer.querySelectorAll('.accordion');
-      accordions.forEach((accordion) => {
-        decorateBlock(accordion);
-        loadBlock(accordion);
-      });
-
-      block.append(footer);
-    }
+      footer.append(newSection);
+    });
   }
+
+  block.append(footer);
 
   // Open accordion details on desktop
   const details = block.querySelectorAll('footer .section.accordion-container:first-of-type details');
