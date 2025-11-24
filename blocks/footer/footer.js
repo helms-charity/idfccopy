@@ -1,50 +1,41 @@
-import { getMetadata, decorateBlock, loadBlock } from '../../scripts/aem.js';
+import {
+  getMetadata, decorateIcons, decorateBlock, loadBlock,
+} from '../../scripts/aem.js';
 
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  // load footer fragment directly from .plain.html (without decoration)
+  block.textContent = '';
+
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
 
-  block.textContent = '';
-  const footer = document.createElement('div');
-
-  // Fetch the plain HTML directly to avoid Universal Editor instrumentation
+  // Fetch footer content without using loadFragment (which adds data-aue-* attributes)
   if (footerPath && footerPath.startsWith('/')) {
-    const path = footerPath.replace(/(\.plain)?\.html/, '');
-    const resp = await fetch(`${path}.plain.html`);
+    const resp = await fetch(footerPath);
 
     if (resp.ok) {
       const html = await resp.text();
+      const footer = document.createElement('div');
+      footer.innerHTML = html;
 
-      // Create a temporary container to parse the HTML
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
+      // Decorate icons in the footer content
+      decorateIcons(footer);
 
-      // Extract sections and their content (no data-aue-* attributes in plain HTML)
-      const sections = temp.querySelectorAll(':scope > div');
-      sections.forEach((section) => {
-        const newSection = document.createElement('div');
-        newSection.className = section.className;
-        newSection.innerHTML = section.innerHTML;
-
-        // Decorate any blocks within this section
-        const blocks = newSection.querySelectorAll('.accordion');
-        blocks.forEach((blockEl) => {
-          decorateBlock(blockEl);
-          loadBlock(blockEl);
-        });
-
-        footer.append(newSection);
+      // Decorate and load accordion blocks
+      const accordions = footer.querySelectorAll('.accordion');
+      accordions.forEach((accordion) => {
+        decorateBlock(accordion);
+        loadBlock(accordion);
       });
+
+      block.append(footer);
     }
   }
 
-  block.append(footer);
-
+  // Open accordion details on desktop
   const details = block.querySelectorAll('footer .section.accordion-container:first-of-type details');
   if (window.innerWidth > 768) {
     details.forEach((detail) => {
