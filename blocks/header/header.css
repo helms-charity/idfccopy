@@ -772,3 +772,45 @@ header nav .nav-tools {
     line-height: 46px
   }
 }
+
+/* breadcrumbs */
+header .breadcrumbs {
+  display: block;
+  margin: auto;
+  max-width: 1248px;
+  height: var(--breadcrumbs-height, 40px);
+  padding: 0 24px;
+  font-size: var(--body-font-size-xs, 12px);
+  overflow: scroll;
+}
+
+header .breadcrumbs ol {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  gap: 1ch;
+  white-space: nowrap;
+}
+
+header .breadcrumbs ol li {
+  padding: 0;
+  color: var(--dark-color, #666);
+}
+
+header .breadcrumbs ol li:not(:last-child)::after {
+  content: '/';
+  padding-left: 1ch;
+}
+
+header .breadcrumbs ol li[aria-current] {
+  color: var(--text-color, #000);
+}
+
+@media (width >= 900px) {
+  header .breadcrumbs {
+    max-width: 1264px;
+    padding: 0 32px;
+  }
+}

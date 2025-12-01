@@ -3,6 +3,12 @@
     "id": "page-metadata",
     "fields": [
       {
+        "component": "boolean",
+        "name": "breadcrumbs",
+        "label": "Show Breadcrumbs",
+        "description": "Show the breadcrumbs on the page."
+      },
+      {
         "component": "text",
         "name": "jcr:title",
         "valueType": "string",
