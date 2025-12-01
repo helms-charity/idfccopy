@@ -830,7 +830,7 @@
     ]
   },
   {
-    "id": "linkToUPI",
+    "id": "link-to-upi",
     "fields": [
       {
         "component": "text",
