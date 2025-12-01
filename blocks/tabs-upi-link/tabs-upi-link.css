@@ -1,58 +1,498 @@
-.tabs .tabs-list {
-    display: flex;
-    gap: 0.5ch;
-    max-width: 100%;
-    font-size: var(--body-font-size-xs);
-    overflow-x: auto;
+/* Section container with gradient background */
+.section:has(.tabs-upi-link),
+.section.tabs-upi-link-container {
+  background: var(--gradient-tabs-upi-link-red);
+  padding: 24px 16px;
+}
+
+.tabs-upi-link {
+  background: transparent;
+}
+
+/* Title at top - centered */
+.tabs-upi-link .tabs-upi-link-title {
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.tabs-upi-link .tabs-upi-link-title h2 {
+  margin: 0 0 24px;
+  font-size: var(--heading-font-size-s);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+/* Content wrapper - contains image and tabs */
+.tabs-upi-link .tabs-upi-link-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Image wrapper - hidden on mobile, shown on larger screens */
+.tabs-upi-link .tabs-upi-link-image {
+  display: none;
+}
+
+/* Tabs container */
+.tabs-upi-link .tabs-upi-link-tabs {
+  width: 100%;
+  position: relative;
+}
+
+/* Horizontal separator bar underneath tab list with filled ends */
+.tabs-upi-link .tabs-list::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgb(255 255 255 / 20%);
+  background-image: 
+    linear-gradient(to right, rgb(255 255 255 / 40%) 0%, rgb(255 255 255 / 40%) 2px, transparent 2px, transparent calc(100% - 2px), rgb(255 255 255 / 40%) calc(100% - 2px), rgb(255 255 255 / 40%) 100%);
+}
+
+/* Tab list styling - matches source page card-header-l2 */
+.tabs-upi-link .tabs-list {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  font-size: 12px;
+  overflow: visible;
+  padding: 0 0 8px;
+  margin-bottom: 0;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  position: relative;
+}
+
+/* Tab button styling - matches source page card-image */
+.tabs-upi-link .tabs-list button {
+  flex: 1 1 0;
+  margin: 0;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 8px;
+  background-color: transparent;
+  color: rgb(255 255 255 / 40%);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  white-space: normal;
+  min-width: 0;
+  position: relative;
+}
+
+.tabs-upi-link .tabs-list button:hover {
+  background-color: transparent;
+  opacity: 0.8;
+}
+
+.tabs-upi-link .tabs-list button p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.tabs-upi-link .tabs-list button p .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 15%);
+  transition: all 0.3s ease;
+}
+
+.tabs-upi-link .tabs-list button[aria-selected='true'] p .icon {
+  background-color: var(--white);
+  border-color: var(--white);
+}
+
+.tabs-upi-link .tabs-upi-link-image img,
+.tabs-upi-link .tabs-upi-link-panel-image img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.tabs-upi-link .tabs-list button img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+}
+
+.tabs-upi-link .tabs-list button[aria-selected='true'] {
+  background-color: transparent;
+  color: var(--white);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: default;
+}
+
+/* Tab panel styling - matches source page tab-content */
+.tabs-upi-link .tabs-panel {
+  margin-top: 24px;
+  padding: 14px;
+  border: none;
+  border-radius: 16px;
+  background-color: rgb(255 255 255 / 10%);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
+  overflow: visible;
+  display: flex;
+  flex-direction: column; /* Mobile: column layout with button at bottom */
+  align-items: stretch;
+  justify-content: center;
+  gap: 24px;
+  position: relative;
+}
+
+/* Top section: image and content side by side */
+.tabs-upi-link .tabs-upi-link-panel-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Mobile: Image inside each tab panel (left side), content on right */
+.tabs-upi-link .tabs-upi-link-panel-image {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  max-width: 40%;
+}
+
+.tabs-upi-link .tabs-upi-link-panel-image picture {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.tabs-upi-link .tabs-upi-link-panel-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* Content styling inside tab panels */
+.tabs-upi-link .tabs-panel h3 {
+  margin: 0 0 8px;
+  font-size: var(--heading-font-size-l);
+  font-weight: 700;
+  color: var(--white);
+  opacity: 0.5;
+  line-height: 1.2;
+}
+
+.tabs-upi-link .tabs-panel h3 + h3 {
+  margin-top: -4px;
+  margin-bottom: 16px;
+}
+
+.tabs-upi-link .tabs-panel p:not(.tabs-list button p) {
+  font-size: var(--body-font-size-xs);
+  line-height: 1.7;
+  color: var(--white);
+}
+
+/* Mobile: Hide QR code images in tab panels (but keep panel image visible), show buttons */
+
+/* Hide QR code pictures that are NOT inside the panel-image wrapper */
+.tabs-upi-link .tabs-panel .tabs-upi-link-panel-content picture {
+  display: none;
+  flex-shrink: 0;
+}
+
+/* Hide QR code text wrapper on mobile/tablet */
+.tabs-upi-link .tabs-panel .tabs-upi-link-panel-content .tabs-upi-link-qr-wrapper {
+  display: none;
+}
+
+.tabs-upi-link .tabs-panel .tabs-upi-link-panel-content picture img {
+  max-width: 180px;
+  height: auto;
+  display: block;
+}
+
+.tabs-upi-link .tabs-panel .button-container {
+  display: block;
+  width: 100%;
+  margin-top: 0;
+}
+
+.tabs-upi-link .tabs-panel .button-container a {
+  display: block;
+  width: 100%;
+  padding: 14px 32px;
+  background-color: var(--dark-red-link-color);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 30px;
+  font-family: var(--heading-font-family);
+  font-size: var(--body-font-size-xs);
+  transition: all 0.2s ease;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.tabs-upi-link .tabs-panel .button-container a:hover {
+  background-color: var(--dark-red-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(128 28 30 / 30%);
+}
+
+/* Tablet and up: Button standard width (not full width), centered */
+@media (width >= 600px) {
+  .section:has(.tabs-upi-link) > div,
+  .section.tabs-upi-link-container > div {
+    max-width: 720px;
+    margin: 0 auto;
   }
-  
-  @media (width >= 600px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-s);
-    }
+
+  .tabs-upi-link .tabs-upi-link-title h2 {
+    font-size: var(--heading-font-size-xl);
   }
-  
-  @media (width >= 900px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-m);
-    }
+
+  /* Keep panel image visible and same size at tablet size */
+  .tabs-upi-link .tabs-upi-link-panel-image {
+    display: block;
+    max-width: 40%;
   }
-  
-  .tabs .tabs-list button {
-    flex: 0 0 max-content;
-    margin: 0;
-    border: 1px solid #dadada;
-    border-radius: 0;
-    padding: 0.5em;
-    background-color: var(--light-color);
-    color: initial;
-    font-weight: bold;
-    line-height: unset;
-    text-align: initial;
-    text-overflow: unset;
-    overflow: unset;
-    white-space: unset;
-    transition: background-color 0.2s;
+
+  .tabs-upi-link .tabs-upi-link-panel-image picture {
+    width: 80%;
+    height: auto;
+    max-width: 80%;
+    display: block;
   }
-  
-  .tabs .tabs-list button p {
-    margin: 0;
+
+  .tabs-upi-link .tabs-panel .button-container {
+    width: 35%;
+    text-align: center;
+    margin: 0 auto;
   }
-  
-  
-  .tabs .tabs-list button[aria-selected='true'] {
-    border-bottom: 1px solid var(--background-color);
-    background-color: var(--background-color);
-    cursor: initial;
+
+  .tabs-upi-link .tabs-panel .button-container a {
+    display: block;
+    width: 100%;
   }
-  
-  .tabs .tabs-panel {
-    margin-top: -1px;
-    padding: 24px;
-    border: 1px solid #dadada;
-    overflow: auto;
+}
+
+.tabs-upi-link .tabs-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* Desktop: Hide panel images, show main image outside, show QR codes, hide buttons */
+@media (width >= 900px) {
+  .section:has(.tabs-upi-link) > div,
+  .section.tabs-upi-link-container > div {
+    max-width: 1000px;
+    margin: 0 auto;
   }
-  
-  .tabs .tabs-panel[aria-hidden='true'] {
+
+  .tabs-upi-link .tabs-upi-link-title h2 {
+    font-size: var(--heading-font-size-xxl);
+  }
+
+  .tabs-upi-link .tabs-upi-link-panel-image {
     display: none;
   }
+
+  /* Desktop layout - image on left, tabs on right */
+  .tabs-upi-link .tabs-upi-link-content {
+    flex-direction: row;
+    align-items: flex-start;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .tabs-upi-link .tabs-upi-link-image {
+    display: block;
+    flex-shrink: 0;
+    position: sticky;
+    top: 160px;
+    align-self: flex-start;
+    padding-top: 30px;
+  }
+
+  .tabs-upi-link .tabs-upi-link-image picture {
+    padding-top: 40px;
+    display: block;
+  }
+
+  .tabs-upi-link .tabs-upi-link-image picture,
+  .tabs-upi-link .tabs-upi-link-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .tabs-upi-link .tabs-panel {
+    flex-direction: column;
+    padding: 40px;
+    gap: 24px;
+    height: 350px;
+    border-radius: 0 16px 16px 0;
+  }
+
+  .tabs-upi-link .tabs-upi-link-panel-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  /* Show QR code images in tab panels - positioned on right side */
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content .tabs-upi-link-qr-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin: 0 32px 24px 0;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content picture {
+    display: block;
+    padding: 10px 10px 6px;
+    background-color: var(--white);
+    border-radius: 15px 15px 0 0;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content .tabs-upi-link-qr-text {
+    margin: 0;
+    padding: 8px 32px 12px;
+    font-size: 10px;
+    color: var(--text-color);
+    background-color: var(--white);
+    border-radius: 0 0 15px 15px;
+    text-align: center;
+  }
+
+  /* Hide buttons on desktop */
+  .tabs-upi-link .tabs-panel .button-container {
+    display: none;
+  }
+
+  .tabs-upi-link .tabs-upi-link-tabs {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tabs-upi-link .tabs-list {
+    justify-content: flex-start;
+    margin-bottom: 40px;
+    gap: 0;
+  }
+
+  .tabs-upi-link .tabs-list::after {
+    left: 12px;
+    right: 0;
+    background-color: var(--white);
+    background-image:
+      linear-gradient(to right, var(--white) 0%, var(--white) 2px, transparent 2px, transparent calc(100% - 2px), var(--white) calc(100% - 2px), var(--white) 100%);
+  }
+
+  .tabs-upi-link .tabs-list button {
+    flex: 0 1 auto;
+    min-width: auto;
+    flex-direction: row;
+    gap: 12px;
+    border-radius: 30px;
+    text-align: left;
+    padding-bottom: 4px;
+  }
+
+  .tabs-upi-link .tabs-list button p {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    color: var(--white);
+    text-align: left;
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 40px;
+    background-color: rgb(255 255 255 / 15%);
+    transition: all 0.3s ease;
+    font-family: var(--heading-font-family);
+  }
+
+  .tabs-upi-link .tabs-list button[aria-selected='true'] p {
+    background-color: var(--white);
+    color: var(--text-color);
+  }
+
+  .tabs-upi-link .tabs-list button p .icon {
+    width: auto;
+    height: auto;
+    min-width: 48px;
+    min-height: 48px;
+    flex-shrink: 0;
+    display: inline-flex;
+    background-color: transparent;
+  }
+
+  .tabs-upi-link .tabs-list button img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Desktop content layout */
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content > div:first-child {
+    margin-right: 0;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content picture img {
+    max-width: 200px;
+  }
+
+  .tabs-upi-link .tabs-panel h3 {
+    font-size: var(--heading-font-size-xl);
+    margin-bottom: 12px;
+  }
+
+  .tabs-upi-link .tabs-panel p:not(.tabs-list button p) {
+    font-size: var(--body-font-size-s);
+    margin-bottom: 24px;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content > div:first-child h3 {
+    max-width: 80%;
+  }
+
+  .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content > div:first-child p {
+    max-width: 80%;
+  }
+}
