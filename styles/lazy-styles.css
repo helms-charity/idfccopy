@@ -1,1 +1,93 @@
 /* add global styles that can be loaded post LCP here */
+
+/* breadcrumbs */
+main .breadcrumbs {
+  display: none; /* Hidden on mobile */
+  margin: 16px 24px;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-family: var(--body-font-family-semibold);
+  position: relative;
+  z-index: 10;
+  background-color: rgb(232 232 232 / 90%);
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+
+main .breadcrumbs ol {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+  white-space: nowrap;
+  align-items: center;
+}
+
+main .breadcrumbs ol li {
+  padding: 0;
+  color: #767676;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+main .breadcrumbs ol li a {
+  color: var(--text-color);
+  font-family: var(--body-font-family-semibold);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+main .breadcrumbs ol li a:hover {
+  color: var(--dark-red-color, #9c1d26);
+  text-decoration: none;
+}
+
+main .breadcrumbs ol li:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border: solid var(--dark-red-color, #9c1d26);
+  border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+  margin-left: 8px;
+}
+
+main .breadcrumbs ol li[aria-current] {
+  color: var(--dark-color);
+  font-family: var(--body-font-family-semibold);
+  font-weight: 400;
+}
+
+@media (width >= 900px) {
+  main .breadcrumbs {
+    display: inline-block; /* Show on desktop */
+    margin: 10px 40px 0;
+    padding: 4px 20px;
+    font-size: 12px;
+  }
+
+  main:has(.hero-wrapper) .breadcrumbs {
+    margin-left: 60px;
+  }
+
+  main .breadcrumbs ol {
+    gap: 10px;
+  }
+
+  main .breadcrumbs ol li {
+    font-size: 12px;
+  }
+
+  main .breadcrumbs ol li:not(:last-child)::after {
+    width: 7px;
+    height: 7px;
+    border-width: 1px 1px 0 0;
+    margin-left: 10px;
+  }
+}

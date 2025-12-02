@@ -830,6 +830,177 @@ async function loadCategoryNav(main) {
 }
 
 /**
+ * Get direct text content from a menu item (excluding nested elements)
+ * @param {Element} menuItem The menu item element
+ * @returns {string} The direct text content
+ */
+function getDirectTextContent(menuItem) {
+  const menuLink = menuItem.querySelector(':scope > a');
+  if (menuLink) {
+    return menuLink.textContent.trim();
+  }
+  return Array.from(menuItem.childNodes)
+    .filter((n) => n.nodeType === Node.TEXT_NODE)
+    .map((n) => n.textContent)
+    .join(' ');
+}
+
+/**
+ * Build breadcrumbs from navigation tree
+ * @param {Element} nav The navigation element
+ * @param {string} currentUrl The current page URL
+ * @returns {Promise<Array>} Array of breadcrumb objects
+ */
+async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
+  const crumbs = [];
+
+  const homeUrl = document.querySelector('.nav-brand a[href]')?.href;
+  if (!homeUrl) return crumbs;
+
+  let menuItem = Array.from(nav.querySelectorAll('a')).find((a) => a.href === currentUrl);
+  if (menuItem) {
+    do {
+      const link = menuItem.querySelector(':scope > a');
+      crumbs.unshift({ title: getDirectTextContent(menuItem), url: link ? link.href : null });
+      menuItem = menuItem.closest('ul')?.closest('li');
+    } while (menuItem);
+  } else if (currentUrl !== homeUrl) {
+    // Page not found in nav, build breadcrumbs from URL path
+    const url = new URL(currentUrl);
+    const pathSegments = url.pathname.split('/').filter((segment) => segment !== '');
+
+    // Build breadcrumb trail from URL path segments
+    let currentPath = '';
+    pathSegments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      const isLastSegment = index === pathSegments.length - 1;
+
+      if (isLastSegment) {
+        // For the last segment (current page), use page title
+        let pageTitle = getMetadata('og:title') || document.title;
+        // Strip out site name suffix (anything after |, -, or : followed by site name)
+        pageTitle = pageTitle.split('|')[0].split(' - ')[0].trim();
+        crumbs.push({ title: pageTitle, url: currentUrl });
+      } else {
+        // For intermediate segments, convert path to readable title
+        let title = segment
+          .split('-')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        // Pluralize "card" to "cards" for better grammar in breadcrumbs
+        title = title.replace(/\bCard\b/g, 'Cards');
+        const segmentUrl = `${url.origin}${currentPath}`;
+        crumbs.push({ title, url: segmentUrl });
+      }
+    });
+  }
+
+  // Don't add "Home" to breadcrumbs - start with first level after home
+  // const placeholders = await fetchPlaceholders();
+  // const homePlaceholder = placeholders.breadcrumbsHomeLabel || 'Home';
+  // crumbs.unshift({ title: homePlaceholder, url: homeUrl });
+
+  // last link is current page and should not be linked
+  if (crumbs.length > 1) {
+    crumbs[crumbs.length - 1].url = null;
+  }
+  if (crumbs.length > 0) {
+    crumbs[crumbs.length - 1]['aria-current'] = 'page';
+  }
+  return crumbs;
+}
+
+/**
+ * Build breadcrumbs navigation element
+ * @returns {Promise<Element>} The breadcrumbs nav element
+ */
+async function buildBreadcrumbs() {
+  const breadcrumbs = document.createElement('nav');
+  breadcrumbs.className = 'breadcrumbs';
+  breadcrumbs.ariaLabel = 'Breadcrumb';
+
+  // Look for nav-sections within the header navigation
+  const navSections = document.querySelector('header nav .nav-sections');
+  if (!navSections) {
+    return null;
+  }
+
+  const crumbs = await buildBreadcrumbsFromNavTree(navSections, document.location.href);
+
+  if (crumbs.length === 0) {
+    return null;
+  }
+
+  const ol = document.createElement('ol');
+  ol.append(...crumbs.map((item) => {
+    const li = document.createElement('li');
+    if (item['aria-current']) li.setAttribute('aria-current', item['aria-current']);
+    if (item.url) {
+      const a = document.createElement('a');
+      a.href = item.url;
+      a.textContent = item.title;
+      li.append(a);
+    } else {
+      li.textContent = item.title;
+    }
+    return li;
+  }));
+
+  breadcrumbs.append(ol);
+  return breadcrumbs;
+}
+
+/**
+ * Load and inject breadcrumbs into the first section of main
+ * @param {Element} main The main element
+ */
+async function loadBreadcrumbs(main) {
+  // Check if breadcrumbs are enabled via page metadata
+  const breadcrumbsMeta = getMetadata('breadcrumbs');
+
+  if (!breadcrumbsMeta || breadcrumbsMeta.toLowerCase() !== 'true') {
+    return;
+  }
+
+  try {
+    const breadcrumbs = await buildBreadcrumbs();
+    if (breadcrumbs) {
+      // Find the first content section in main (skip category-nav sections)
+      const sections = main.querySelectorAll(':scope > div.section');
+      let targetSection = null;
+
+      // Find the first section that is NOT a category-nav section
+      for (let i = 0; i < sections.length; i += 1) {
+        const section = sections[i];
+        if (!section.classList.contains('category-nav-container')
+            && !section.classList.contains('category-nav-section')) {
+          targetSection = section;
+          break;
+        }
+      }
+
+      if (targetSection) {
+        // Look for a wrapper div inside the section (e.g., hero-wrapper, cards-wrapper)
+        const wrapperDiv = targetSection.querySelector(':scope > div[class*="-wrapper"]');
+
+        if (wrapperDiv) {
+          // Insert breadcrumbs as the first element inside the wrapper
+          wrapperDiv.insertBefore(breadcrumbs, wrapperDiv.firstChild);
+        } else {
+          // Fallback: insert into section if no wrapper found
+          targetSection.insertBefore(breadcrumbs, targetSection.firstChild);
+        }
+      } else {
+        // Fallback: insert as first element in main if no suitable section found
+        main.insertBefore(breadcrumbs, main.firstChild);
+      }
+    }
+  } catch (error) {
+    // Silently fail - breadcrumbs are optional enhancement
+  }
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
@@ -839,6 +1010,9 @@ async function loadLazy(doc) {
 
   // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
+
+  // Load breadcrumbs after header is available and insert as first element in main
+  await loadBreadcrumbs(main);
 
   // Create category navbar wrapper BEFORE loading sections
   // This ensures the placeholder is in place when blocks are decorated
