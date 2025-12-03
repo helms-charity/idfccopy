@@ -7,13 +7,13 @@
           "component": "boolean",
           "name": "breadcrumbs",
           "label": "Show Breadcrumbs",
-          "description": "Show the breadcrumbs trail on the page (default: off)"
+          "description": "Show the breadcrumbs trail above page content"
         },
         {
           "component": "text",
           "name": "breadcrumbsTitle",
           "label": "Breadcrumbs Title",
-          "description": "Title for page's breadcrumb entry when breadcrumbs are enabled",
+          "description": "Title for breadcrumb entry",
           "condition": {
             "==": [
               {
@@ -27,14 +27,13 @@
           "component": "text",
           "name": "jcr:title",
           "valueType": "string",
-          "label": "Title",
-          "description": "Title of the page."
+          "label": "Title"
         },
         {
           "component": "aem-content",
           "name": "category-nav",
           "label": "Category Nav",
-          "description": "Category navigation from framework to display for the page",
+          "description": "Category navigation displayed above page content",
           "valueType": "string",
           "validation": {
             "rootPath": "/content/idfc-edge/framework"
