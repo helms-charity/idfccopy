@@ -52,6 +52,10 @@
             {
               "name": "All About",
               "value": "all-about-card"
+            },
+            {
+              "name": "Important Documents",
+              "value": "important-documents"
             }
           ]
         },
