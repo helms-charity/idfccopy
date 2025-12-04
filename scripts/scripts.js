@@ -391,7 +391,7 @@ async function loadCategoryNavFragment(main) {
 
   // Read the category-nav metadata value from the page
   const categoryNavPath = getMetadata('category-nav');
-
+ 
   if (!categoryNavPath) {
     return;
   }
