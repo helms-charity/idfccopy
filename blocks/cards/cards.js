@@ -357,10 +357,50 @@ export default async function decorate(block) {
 
   // Check if testimonial-card variant
   const isTestimonial = block.classList.contains('testimonial-card');
+  // Check if important-documents variant
+  const isImportantDocuments = block.classList.contains('important-documents');
 
-  // Only add benefit-cards class if NOT testimonial-card variant
+  // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
-    if (!isTestimonial) {
+    if (isImportantDocuments) {
+      li.classList.add('important-documents-card');
+
+      // Make entire card clickable - wrap card content in link
+      const link = li.querySelector('.cards-card-body a');
+      if (link && link.href) {
+        const linkUrl = link.href;
+        const linkTitle = link.getAttribute('title') || link.textContent.trim();
+        const imageDiv = li.querySelector('.cards-card-image');
+        const bodyDiv = li.querySelector('.cards-card-body');
+
+        // Create new link wrapper
+        const cardLink = document.createElement('a');
+        cardLink.href = linkUrl;
+        cardLink.title = linkTitle;
+        cardLink.className = 'important-documents-card-link';
+
+        // Move image into link
+        if (imageDiv) {
+          cardLink.appendChild(imageDiv.cloneNode(true));
+        }
+
+        // Move body content into link, but replace nested link with just text
+        if (bodyDiv) {
+          const newBodyDiv = bodyDiv.cloneNode(true);
+          const nestedLink = newBodyDiv.querySelector('a');
+          if (nestedLink) {
+            // Replace link with its text content
+            const linkContent = nestedLink.innerHTML;
+            nestedLink.outerHTML = linkContent;
+          }
+          cardLink.appendChild(newBodyDiv);
+        }
+
+        // Replace li content with the link wrapper
+        li.innerHTML = '';
+        li.appendChild(cardLink);
+      }
+    } else if (!isTestimonial) {
       li.classList.add('benefit-cards');
     }
   });
@@ -477,7 +517,7 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
       swiper.on('slideChange', updateStarIcons);
     }
-  } else if (!isTestimonial) {
+  } else if (!isTestimonial && !isImportantDocuments) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const cards = ul.querySelectorAll('li');
     const maxVisible = 3;

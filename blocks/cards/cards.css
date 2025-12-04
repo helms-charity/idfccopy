@@ -112,10 +112,169 @@
   padding: 40px 0;
 }
 
+.section:has(.cards.all-about-card) h2 {
+  font-size: var(--heading-font-size-xl);
+  margin: 0 auto;
+  text-align: center;
+}
+
 .section.cards-container:has(.cards.testimonial-card) .default-content-wrapper h2 {
   color: #fff;
   font-weight: 700;
   text-align: center;
+}
+
+/* IMPORTANT DOCUMENTS CARD CONTAINER STYLING */
+.section:has(.cards.important-documents) {
+  background: var(--gradient-important-documents);
+  padding: 24px 0;
+}
+
+/* Hide View All button for important-documents */
+.cards.important-documents .view-toggle {
+  display: none;
+}
+
+/* Important Documents Cards - Mobile Grid Layout */
+.cards.important-documents .grid-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0;
+  margin-bottom: 32px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Important Documents Card Styling */
+.cards.important-documents li,
+.cards.important-documents .important-documents-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 10px;
+  background: #FFF;
+  border-radius: 8px;
+  box-shadow: 0 0 8px 0 rgb(37 36 59 / 15%);
+  width: 100%;
+  gap: 10px;
+  min-height: 140px;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.cards.important-documents .important-documents-card-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.cards.important-documents .important-documents-card-link:hover {
+  text-decoration: none;
+}
+
+/* Important Documents Card Image */
+.cards.important-documents .cards-card-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.cards.important-documents .cards-card-image img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* Important Documents Card Body */
+.cards.important-documents .cards-card-body {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  /* Base font styling for all text elements */
+  color: #000;
+  font-family: var(--heading-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.cards.important-documents .cards-card-body p {
+  margin: 0;
+}
+
+/* Link text styling (when link wraps card) */
+.cards.important-documents .cards-card-body strong,
+.cards.important-documents .cards-card-body .button-container,
+.cards.important-documents .cards-card-body a,
+.cards.important-documents .cards-card-body a.button.primary {
+  color: #000;
+  font-family: var(--heading-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.cards.important-documents .cards-card-body .button-container {
+  margin: 0;
+}
+
+.cards.important-documents .cards-card-body a,
+.cards.important-documents .cards-card-body a.button.primary {
+  text-decoration: none;
+  display: block;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cards.important-documents .cards-card-body a:hover,
+.cards.important-documents .cards-card-body a.button.primary:hover {
+  text-decoration: none;
+}
+
+
+/* Important Documents Section Title */
+.section:has(.cards.all-about-card) h3 {
+  font-size: var(--heading-font-size-m);
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.cards.all-about-card .cards-card-body h3 {
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.3px;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.section:has(.cards.important-documents) .default-content-wrapper h3 {
+  color: #FFF;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin: 32px 0;
+  padding: 0 16px;
 }
 
 /* TESTIMONIAL CARD STYLING */
@@ -144,6 +303,28 @@
   .cards .benefit-cards .cards-card-body p {
     font-size: 14px;
     line-height: 24px;
+  }
+
+  /* Important Documents Cards - Tablet View (600px+) */
+  .cards.important-documents .grid-cards {
+    gap: 10px;
+    padding: 0;
+    max-width: 80%;
+  }
+
+  .cards.important-documents li,
+  .cards.important-documents .important-documents-card {
+    padding: 20px 12px;
+    gap: 6px;
+  }
+
+  .cards.important-documents .cards-card-image img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .cards.important-documents .cards-card-image {
+    margin-bottom: 3px;
   }
 }
 
@@ -231,18 +412,6 @@
 .section:has(.cards.all-about-card) :is(h1, h2, h3, h4, h5, h6, p) {
   color: #fff;
   font-family: var(--heading-font-family);
-}
-
-.section:has(.cards.all-about-card) h2 {
-  font-size: var(--heading-font-size-xl);
-  margin: 0 auto;
-  text-align: center;
-}
-
-.section:has(.cards.all-about-card) h3 {
-  font-size: var(--heading-font-size-m);
-  margin: 20px auto 0;
-  text-align: center;
 }
 
 .cards.all-about-card .swiper-pagination-bullet-active {
@@ -334,16 +503,6 @@
   z-index: 4;
 }
 
-.cards.all-about-card .cards-card-body h3 {
-  color: #FFF;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -0.3px;
-  margin: 0;
-  text-align: left;
-  width: 100%;
-}
 
 .cards.all-about-card .cards-card-body p {
   color: rgb(255 255 255 / 90%);
@@ -354,6 +513,25 @@
 
 /* Desktop adjustments for All About variant */
 @media (width >= 900px) {
+  /* Important Documents Cards - Desktop View (900px+) */
+  .cards.important-documents .grid-cards {
+    grid-template-columns: repeat(4, 175px);
+    grid-auto-rows: 175px;
+    gap: 40px;
+    padding: 0;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cards.important-documents li,
+  .cards.important-documents .important-documents-card {
+    width: 175px;
+    height: 175px;
+    padding: 24px 26px;
+  }
+
+  /* All About Card Desktop Styles */
   .cards.all-about-card .swiper-slide {
     height: 462px;
     min-height: 462px;
@@ -370,6 +548,24 @@
     width: 250px;
     height: 462px;
     min-height: 462px;
+  }
+
+  .cards.important-documents .grid-cards > li {
+    grid-row: 1;
+    width: 175px;
+    height: 175px;
+  }
+
+  .cards.important-documents .cards-card-image img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .cards.important-documents .cards-card-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .cards.all-about-card > ul > li::after {
@@ -394,10 +590,6 @@
   .cards.all-about-card .cards-card-body h3 {
     font-size: 16px;
   }
-  background: #ccc;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
 }
 
 /* Testimonial cards with Swiper - override general Swiper styles */
