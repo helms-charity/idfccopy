@@ -1033,6 +1033,83 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
 }
 
 /**
+ * Generates BreadcrumbList JSON-LD schema
+ * @param {Array} crumbs Array of breadcrumb objects with title and url
+ */
+function generateBreadcrumbSchema(crumbs) {
+  if (!crumbs || crumbs.length === 0) {
+    return null;
+  }
+
+  // Get site origin for constructing absolute URLs
+  const siteOrigin = window.location.origin;
+
+  // Build itemListElement array
+  const itemListElement = crumbs.map((crumb, index) => {
+    // Ensure URL is absolute
+    let itemUrl = crumb.url;
+    if (itemUrl && !itemUrl.startsWith('http')) {
+      itemUrl = `${siteOrigin}${itemUrl}`;
+    }
+
+    const item = {
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.title,
+    };
+
+    // Only add item URL if it's a link (not the current page)
+    if (crumb.url) {
+      item.item = itemUrl;
+    }
+
+    return item;
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement,
+  };
+}
+
+/**
+ * Injects BreadcrumbList JSON-LD schema into the document head
+ * @param {Object} schema The schema object to inject
+ */
+function injectBreadcrumbSchema(schema) {
+  if (!schema) {
+    return;
+  }
+
+  // Remove existing breadcrumb schema if present
+  const existingSchema = document.querySelector('script[type="application/ld+json"][data-schema-type="breadcrumb"]');
+  if (existingSchema) {
+    existingSchema.remove();
+  }
+
+  try {
+    // Stringify with pretty printing
+    const jsonString = JSON.stringify(schema, null, 2);
+
+    // Validate JSON
+    JSON.parse(jsonString);
+
+    // Create and inject schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema-type', 'breadcrumb');
+    script.text = jsonString;
+
+    document.head.appendChild(script);
+  } catch (error) {
+    // Silently fail
+    // eslint-disable-next-line no-console
+    console.error('Failed to inject breadcrumb schema:', error);
+  }
+}
+
+/**
  * Build breadcrumbs navigation element
  * @returns {Promise<Element>} The breadcrumbs nav element
  */
@@ -1069,6 +1146,13 @@ async function buildBreadcrumbs() {
   }));
 
   breadcrumbs.append(ol);
+
+  // Generate and inject BreadcrumbList JSON-LD schema
+  const breadcrumbSchema = generateBreadcrumbSchema(crumbs);
+  if (breadcrumbSchema) {
+    injectBreadcrumbSchema(breadcrumbSchema);
+  }
+
   return breadcrumbs;
 }
 
