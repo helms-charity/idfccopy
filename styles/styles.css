@@ -395,7 +395,7 @@ main .breadcrumbs {
   }
 
   main .breadcrumbs ol li a:hover {
-    color: var(--dark-red-color, #9c1d26);
+    color: var(--dark-red-color);
     text-decoration: none;
   }
 
@@ -404,7 +404,7 @@ main .breadcrumbs {
     display: inline-block;
     width: 7px;
     height: 7px;
-    border: solid var(--dark-red-color, #9c1d26);
+    border: solid var(--dark-red-color);
     border-width: 1px 1px 0 0;
     transform: rotate(45deg);
     margin-left: 10px;
@@ -419,7 +419,7 @@ main .breadcrumbs {
   main:has(.hero-wrapper) .breadcrumbs {
     margin-left: 60px;
   }
-  
+
 @media (width <= 767px) {
   .category-nav-wrapper {
     display: none; /* Hide on mobile as per original design */

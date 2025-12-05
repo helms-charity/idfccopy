@@ -2,6 +2,6 @@
 
 /* breadcrumbs - make visible (all layout styles already in styles.css to prevent CLS) */
 main .breadcrumbs {
-  opacity: 1; /* Fade in */
-  visibility: visible; /* Show breadcrumbs - space already reserved to prevent CLS */
+  opacity: 1;
+  visibility: visible; /* Show breadcrumbs */
 }
