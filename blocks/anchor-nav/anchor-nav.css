@@ -93,7 +93,6 @@
 
   .anchor-nav-link.button:not(.primary, .secondary)::before {
     content: attr(data-text);
-    font-family: Inter-bold, sans-serif;
     font-weight: 700;
     height: 0;
     visibility: hidden;
@@ -118,7 +117,6 @@
 
   .anchor-nav-link.button:hover,
   .anchor-nav-link.button:focus {
-    font-family: Inter-bold, sans-serif;
     font-weight: 700;
   }
 
@@ -137,7 +135,6 @@
     padding: 0.7em 1.2em;
     background-color: #902a2c !important;
     color: #fff !important;
-    font-family: Inter-bold, sans-serif;
     font-weight: 700;
     text-align: center;
     line-height: 1;
@@ -154,7 +151,6 @@
     padding: 0;
     background-color: transparent;
     color: #902a2c;
-    font-family: Inter-bold, sans-serif;
     font-weight: 700;
     font-style: normal;
     text-align: center;

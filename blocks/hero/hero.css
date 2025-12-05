@@ -44,16 +44,14 @@
 
 .hero p strong {
   font-weight: 700;
-  font-family: Inter-bold, sans-serif;
   font-size: 14px;
   margin-top: 0;
 }
 
 .hero p em {
-font-weight: 700;
-    font-family: Inter-bold, sans-serif;
-    font-size: 14px;
-    margin-top: 0;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 0;
 }
 
 .hero picture {
@@ -129,7 +127,7 @@ font-weight: 700;
   border: 1px solid var(--red-color);
   padding: 12px 16px;
   margin: 0;
-  font-family: Inter-bold, sans-serif;
+  font-weight: 700;
 }
 
 .hero .button.primary:hover {
@@ -141,7 +139,7 @@ font-weight: 700;
   background-color: transparent;
   color: #fff;
   border: 1px solid #fff;
-  font-family: Inter-bold, sans-serif;
+  font-weight: 700;
   font-style: normal;
   display: inline-block;
   overflow: hidden;
