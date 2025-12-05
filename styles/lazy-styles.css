@@ -1,66 +1,7 @@
 /* add global styles that can be loaded post LCP here */
 
-/* breadcrumbs - make visible (space already reserved in styles.css) */
+/* breadcrumbs - make visible (all layout styles already in styles.css to prevent CLS) */
 main .breadcrumbs {
   opacity: 1; /* Fade in */
   visibility: visible; /* Show breadcrumbs - space already reserved to prevent CLS */
-}
-
-main .breadcrumbs ol {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 8px;
-  white-space: nowrap;
-  align-items: center;
-}
-
-main .breadcrumbs ol li {
-  padding: 0;
-  color: #767676;
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-weight: 400;
-  font-size: 11px;
-}
-
-main .breadcrumbs ol li a {
-  color: var(--text-color);
-  font-family: var(--body-font-family-semibold);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-main .breadcrumbs ol li a:hover {
-  color: var(--dark-red-color, #9c1d26);
-  text-decoration: none;
-}
-
-main .breadcrumbs ol li:not(:last-child)::after {
-  content: '';
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border: solid var(--dark-red-color, #9c1d26);
-  border-width: 1.5px 1.5px 0 0;
-  transform: rotate(45deg);
-  margin-left: 8px;
-}
-
-main .breadcrumbs ol li[aria-current] {
-  color: var(--dark-color);
-  font-family: var(--body-font-family-semibold);
-  font-weight: 400;
-}
-
-@media (width >= 900px) {
-  /* Breadcrumb sizing already defined in styles.css to prevent CLS */
-
-  /* Just ensure visibility is set */
-  main .breadcrumbs {
-    visibility: visible;
-  }
 }

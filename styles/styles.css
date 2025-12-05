@@ -357,6 +357,57 @@ main .breadcrumbs {
   transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */
 }
 
+/* Breadcrumb list styles - must be in eager CSS to prevent CLS */
+main .breadcrumbs ol {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 10px;
+  white-space: nowrap;
+  align-items: center;
+}
+
+main .breadcrumbs ol li {
+  padding: 0;
+  color: #767676;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+main .breadcrumbs ol li a {
+  color: var(--text-color);
+  font-family: var(--body-font-family-semibold);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+main .breadcrumbs ol li a:hover {
+  color: var(--dark-red-color, #9c1d26);
+  text-decoration: none;
+}
+
+main .breadcrumbs ol li:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border: solid var(--dark-red-color, #9c1d26);
+  border-width: 1px 1px 0 0;
+  transform: rotate(45deg);
+  margin-left: 10px;
+}
+
+main .breadcrumbs ol li[aria-current] {
+  color: var(--dark-color);
+  font-family: var(--body-font-family-semibold);
+  font-weight: 400;
+}
+
 main:has(.hero-wrapper) .breadcrumbs {
   margin-left: 60px;
 }
