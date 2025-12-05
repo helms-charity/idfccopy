@@ -770,9 +770,15 @@ section.faq-accordion-container h4 {
     height: 140px;
   }
 
-  /* Increase header height when category navigation is present */
+  /* Reserve space for category navigation to prevent CLS */
+  /* Category nav wrapper is always present as placeholder, so always reserve space */
   header:has(.category-nav-wrapper) {
     height: 204px; /* 140px base + 64px for category nav */
+  }
+  
+  /* If category-nav-wrapper exists but is empty, still reserve the space */
+  header .category-nav-wrapper {
+    min-height: 64px; /* Ensure consistent height even when empty */
   }
 
 }

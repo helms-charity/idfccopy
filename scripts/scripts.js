@@ -890,13 +890,20 @@ async function loadCategoryNav(main) {
     return;
   }
 
-  // Create category-nav wrapper at the top of main
+  // Create category-nav wrapper directly in header to prevent CLS
+  // This ensures header height is correct from the start
+  const navWrapper = document.querySelector('header.header-wrapper .nav-wrapper');
   const categoryNavWrapper = document.createElement('div');
   categoryNavWrapper.classList.add('category-nav-wrapper');
   categoryNavWrapper.setAttribute('data-nav-placeholder', 'true');
 
-  // Insert at the top of main
-  main.insertBefore(categoryNavWrapper, main.firstChild);
+  // Insert into header nav-wrapper (not main) to prevent layout shift
+  if (navWrapper) {
+    navWrapper.appendChild(categoryNavWrapper);
+  } else {
+    // Fallback: insert at top of main if header not found
+    main.insertBefore(categoryNavWrapper, main.firstChild);
+  }
 
   // Load CSS for the category nav
   const blockName = 'category-nav';
