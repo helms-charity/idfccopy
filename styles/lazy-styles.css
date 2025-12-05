@@ -6,7 +6,8 @@ main .breadcrumbs {
   margin: 16px 24px;
   padding: 8px 16px;
   font-size: 11px;
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
+  font-weight: 500;
   position: relative;
   z-index: 3; /* stay under navigation */
   background-color: rgb(232 232 232 / 90%);
@@ -37,7 +38,8 @@ main .breadcrumbs ol li {
 
 main .breadcrumbs ol li a {
   color: var(--text-color);
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
+  font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -60,8 +62,8 @@ main .breadcrumbs ol li:not(:last-child)::after {
 
 main .breadcrumbs ol li[aria-current] {
   color: var(--dark-color);
-  font-family: var(--body-font-family-semibold);
-  font-weight: 400;
+  font-family: var(--body-font-family);
+  font-weight: 500;
 }
 
 @media (width >= 900px) {

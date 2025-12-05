@@ -56,9 +56,8 @@
   --dark: #343a40;
 
   /* fonts */
-  --body-font-family: 'Inter', sans-serif; 
-  --body-font-family-semibold: 'Inter-semiBold', sans-serif;
-  --heading-font-family: 'Inter-bold', sans-serif;
+  --body-font-family: 'Inter', sans-serif;
+  --heading-font-family: 'Inter', sans-serif;
 
   /* body sizes */
   --body-font-size-m: 22px;

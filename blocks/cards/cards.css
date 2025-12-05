@@ -640,7 +640,8 @@
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 {
   font-size: var(--body-font-size-m);
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
+  font-weight: 500;
   margin: 36px 0 11px;
 }
 
@@ -658,7 +659,8 @@
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p:not(:has(.icon-inverted-commas), :has(.icon-star), :has(u)) {
   font-size: var(--body-font-size-s);
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
+  font-weight: 500;
   line-height: 24px;
   margin: 0;
 }

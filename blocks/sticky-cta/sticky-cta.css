@@ -92,7 +92,8 @@
   font-size: 11px;
   color: #fff;
   text-shadow: 0 0 20px rgb(0 0 0 / 25%);
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
+  font-weight: 500;
   line-height: 1.4;
   padding-bottom: 6px;
 }

@@ -61,7 +61,7 @@
 
 .link-to-upi .link-to-upi-text strong {
   font-weight: 700;
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
 }
 
 .link-to-upi .link-to-upi-text a u {
@@ -117,7 +117,7 @@
 
 .link-to-upi .link-to-upi-text ol li strong {
   color: #fff;
-  font-family: var(--body-font-family-semibold);
+  font-family: var(--body-font-family);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
@@ -199,7 +199,7 @@
 
   .link-to-upi .link-to-upi-text ol li strong {
     font-size: 22px;
-    font-family: var(--body-font-family-semibold);
+    font-family: var(--body-font-family);
     font-weight: 700;
     line-height: normal;
   }
@@ -211,7 +211,8 @@
   .link-to-upi .link-to-upi-text > p:last-of-type strong{
     font-size: 13px;
     margin-top: 24px;
-    font-family: var(--body-font-family-semibold);
+    font-family: var(--body-font-family);
+    font-weight: 500;
     text-align: left;
   }
 
