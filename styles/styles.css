@@ -339,92 +339,92 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
-/* Reserve space for breadcrumbs to prevent CLS */
+/* Reserve space for breadcrumbs to prevent CLS - Mobile First */
+
+/* Mobile: hidden by default */
 main .breadcrumbs {
-  display: inline-block;
-  margin: 10px 40px 0;
-  padding: 4px 20px;
-  font-size: 12px;
-  font-family: var(--body-font-family-semibold);
-  position: relative;
-  z-index: 3;
-  background-color: rgb(232 232 232 / 90%);
-  border-radius: 20px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
-  min-height: 28px;
-  opacity: 0; /* Start hidden */
-  visibility: hidden; /* Hide but reserve space until lazy-styles loads */
-  transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */
+  display: none;
 }
 
-/* Breadcrumb list styles - must be in eager CSS to prevent CLS */
-main .breadcrumbs ol {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 10px;
-  white-space: nowrap;
-  align-items: center;
-}
-
-main .breadcrumbs ol li {
-  padding: 0;
-  color: #767676;
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-weight: 400;
-  font-size: 12px;
-}
-
-main .breadcrumbs ol li a {
-  color: var(--text-color);
-  font-family: var(--body-font-family-semibold);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-main .breadcrumbs ol li a:hover {
-  color: var(--dark-red-color, #9c1d26);
-  text-decoration: none;
-}
-
-main .breadcrumbs ol li:not(:last-child)::after {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border: solid var(--dark-red-color, #9c1d26);
-  border-width: 1px 1px 0 0;
-  transform: rotate(45deg);
-  margin-left: 10px;
-}
-
-main .breadcrumbs ol li[aria-current] {
-  color: var(--dark-color);
-  font-family: var(--body-font-family-semibold);
-  font-weight: 400;
-}
-
-main:has(.hero-wrapper) .breadcrumbs {
-  margin-left: 60px;
-}
-
-@media (max-width: 899px) {
+/* Desktop: show breadcrumbs with full styling */
+@media (width >= 900px) {
   main .breadcrumbs {
-    display: none; /* Truly hide on mobile - no space needed */
-    min-height: 0;
-    margin: 0;
-    padding: 0;
+    display: inline-block;
+    margin: 10px 40px 0;
+    padding: 4px 20px;
+    font-size: 12px;
+    font-family: var(--body-font-family-semibold);
+    position: relative;
+    z-index: 3;
+    background-color: rgb(232 232 232 / 90%);
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+    min-height: 28px;
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Hide but reserve space until lazy-styles loads */
+    transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */
   }
-}
 
-@media (max-width: 767px) {
+  /* Breadcrumb list styles - must be in eager CSS to prevent CLS */
+  main .breadcrumbs ol {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 10px;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  main .breadcrumbs ol li {
+    padding: 0;
+    color: #767676;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  main .breadcrumbs ol li a {
+    color: var(--text-color);
+    font-family: var(--body-font-family-semibold);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  main .breadcrumbs ol li a:hover {
+    color: var(--dark-red-color, #9c1d26);
+    text-decoration: none;
+  }
+
+  main .breadcrumbs ol li:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border: solid var(--dark-red-color, #9c1d26);
+    border-width: 1px 1px 0 0;
+    transform: rotate(45deg);
+    margin-left: 10px;
+  }
+
+  main .breadcrumbs ol li[aria-current] {
+    color: var(--dark-color);
+    font-family: var(--body-font-family-semibold);
+    font-weight: 400;
+  }
+
+  main:has(.hero-wrapper) .breadcrumbs {
+    margin-left: 60px;
+  }
+  
+@media (width <= 767px) {
   .category-nav-wrapper {
     display: none; /* Hide on mobile as per original design */
   }
+}
 
   .section.pl-blogs-container h2,
   .section.swipper-card-container h2 {
