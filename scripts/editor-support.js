@@ -86,23 +86,17 @@ async function reloadCategoryNav(main) {
 }
 
 async function applyChanges(event) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG editor-support applyChanges] Event received:', event.type, event);
   // redecorate default content and blocks on patches (in the properties rail)
   const { detail } = event;
 
   const resource = detail?.request?.target?.resource // update, patch components
     || detail?.request?.target?.container?.resource // update, patch, add to sections
     || detail?.request?.to?.container?.resource; // move in sections
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG editor-support applyChanges] Resource:', resource);
   if (!resource) return false;
   const updates = detail?.response?.updates;
   if (!updates.length) return false;
   const { content } = updates[0];
   if (!content) return false;
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG editor-support applyChanges] Processing update for resource:', resource);
 
   const parsedUpdate = new DOMParser().parseFromString(content, 'text/html');
   const element = document.querySelector(`[data-aue-resource="${resource}"]`);
@@ -251,8 +245,6 @@ async function applyChanges(event) {
 }
 
 function attachEventListners(main) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG editor-support attachEventListners] Attaching Universal Editor event listeners to:', main);
   [
     'aue:content-patch',
     'aue:content-update',
@@ -267,45 +259,4 @@ function attachEventListners(main) {
   }));
 }
 
-// eslint-disable-next-line no-console
-console.log('[DEBUG editor-support] editor-support.js loaded, attaching event listeners');
-// eslint-disable-next-line no-console
-console.log('[DEBUG editor-support] Current data-aue-resource elements in document:', document.querySelectorAll('[data-aue-resource]').length);
 attachEventListners(document.querySelector('main'));
-
-// Monitor when elements with data-aue-resource are added to the document
-// This helps track when Universal Editor might pick up new content
-if (typeof MutationObserver !== 'undefined') {
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === 1) { // Element node
-          // Check if the added node or any of its descendants have data-aue-resource
-          const elements = [];
-          if (node.hasAttribute && node.hasAttribute('data-aue-resource')) {
-            elements.push(node);
-          }
-          if (node.querySelectorAll) {
-            elements.push(...node.querySelectorAll('[data-aue-resource]'));
-          }
-          
-          if (elements.length > 0) {
-            // eslint-disable-next-line no-console
-            console.log('[DEBUG editor-support MutationObserver] Elements with data-aue-resource added to DOM:', elements.length);
-            elements.forEach((el) => {
-              // eslint-disable-next-line no-console
-              console.log('  - Element:', el.tagName, el.className, 'resource:', el.getAttribute('data-aue-resource'));
-            });
-          }
-        }
-      });
-    });
-  });
-  
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG editor-support] MutationObserver set up to track data-aue-resource elements');
-}

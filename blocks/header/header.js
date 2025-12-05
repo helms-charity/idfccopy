@@ -102,23 +102,34 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Recursively removes all data-aue-* attributes from an element and its descendants
+ * This prevents header content from appearing in Universal Editor content tree
+ * @param {Element} element The element to strip attributes from
+ */
+function stripAueAttributes(element) {
+  // Remove data-aue-* attributes from this element
+  [...element.attributes]
+    .filter((attr) => attr.name.startsWith('data-aue-'))
+    .forEach((attr) => element.removeAttribute(attr.name));
+
+  // Recursively strip from all children
+  Array.from(element.children).forEach((child) => stripAueAttributes(child));
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG header.js decorate] START - Decorating header block');
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG header.js decorate] Block element:', block);
-  
   // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG header.js decorate] Loading nav fragment from:', navPath);
   const fragment = await loadFragment(navPath);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG header.js decorate] Nav fragment loaded, building header DOM');
+
+  // Prevent header content from appearing in Universal Editor content tree
+  if (fragment) {
+    stripAueAttributes(fragment);
+  }
 
   // decorate nav DOM
   block.textContent = '';
@@ -346,7 +357,4 @@ export default async function decorate(block) {
       navWrapper.classList.remove('scrolled');
     }
   });
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG header.js decorate] COMPLETE - Header decoration finished');
 }

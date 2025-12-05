@@ -317,11 +317,6 @@ export async function createField(fd, form) {
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function loadFragment(path) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFragment] Called with path:', path);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFragment] Stack trace:', new Error().stack);
-  
   if (path && path.startsWith('/')) {
     // eslint-disable-next-line no-param-reassign
     path = path.replace(/(\.plain)?\.html/, '');
@@ -329,15 +324,6 @@ export async function loadFragment(path) {
     if (resp.ok) {
       const main = document.createElement('main');
       main.innerHTML = await resp.text();
-
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] Fragment HTML loaded for:', path);
-      
-      // Count sections and blocks before decoration
-      const sectionsBeforeDecorate = main.querySelectorAll('.section, :scope > div').length;
-      const aueElementsBeforeDecorate = main.querySelectorAll('[data-aue-resource]').length;
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] Before decoration - sections:', sectionsBeforeDecorate, 'elements with data-aue-resource:', aueElementsBeforeDecorate);
 
       // reset base path for media to fragment base
       const resetAttributeBase = (tag, attr) => {
@@ -355,29 +341,9 @@ export async function loadFragment(path) {
         block.setAttribute('data-fragment-block', 'true');
       });
 
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] About to decorateMain for:', path);
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-use-before-define
       decorateMain(main);
-      
-      // Count after decoration
-      const sectionsAfterDecorate = main.querySelectorAll('.section').length;
-      const blocksAfterDecorate = main.querySelectorAll('.block').length;
-      const aueElementsAfterDecorate = main.querySelectorAll('[data-aue-resource]').length;
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] After decorateMain - sections:', sectionsAfterDecorate, 'blocks:', blocksAfterDecorate, 'elements with data-aue-resource:', aueElementsAfterDecorate);
-      
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] About to loadSections for:', path);
       await loadSections(main);
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] Completed loadSections for:', path);
-      
-      // Check if main is attached to document
-      const isAttached = document.contains(main);
-      // eslint-disable-next-line no-console
-      console.log('[DEBUG loadFragment] Fragment main element attached to document?', isAttached);
-      
       return main;
     }
   }
@@ -872,28 +838,18 @@ async function loadThemeSpreadSheetConfig() {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadEager] START - Loading eager content');
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
   loadThemeSpreadSheetConfig();
   const main = doc.querySelector('main');
   if (main) {
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadEager] Main element found, about to loadCategoryNavFragment');
     // Load category-nav fragment from page metadata BEFORE decorating main
     // This ensures the fragment sections are present when decorateMain runs
     await loadCategoryNavFragment(main);
 
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadEager] About to decorateMain');
     decorateMain(main);
     document.body.classList.add('appear');
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadEager] About to loadSection (first section)');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadEager] First section loaded');
   }
 
   try {
@@ -904,8 +860,6 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadEager] COMPLETE');
 }
 
 /**
@@ -1264,52 +1218,32 @@ async function loadBreadcrumbs(main) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] START - Loading lazy content');
   autolinkModals(doc);
   const main = doc.querySelector('main');
 
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] About to loadHeader');
   // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
 
   // Load breadcrumbs after header is available and insert as first element in main
   await loadBreadcrumbs(main);
 
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] About to loadCategoryNav');
   // Create category navbar wrapper BEFORE loading sections
   // This ensures the placeholder is in place when blocks are decorated
   await loadCategoryNav(main);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] Category nav loaded');
 
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] About to loadSections (main)');
   // Now load all sections including category-nav blocks
   // The category-nav blocks will find the wrapper and populate it
   await loadSections(main);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] Main sections loaded');
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] About to loadFooter');
   loadFooter(doc.querySelector('footer'));
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] Footer load initiated (async)');
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] About to loadAutoBlock');
   loadAutoBlock(doc);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadLazy] COMPLETE');
 }
 
 /**
@@ -1320,41 +1254,12 @@ function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
-  
-  // Debug: Check what's in the DOM after everything loads
-  window.setTimeout(() => {
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] ===== DOM STATE AFTER LOAD =====');
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] Total data-aue-resource elements:', document.querySelectorAll('[data-aue-resource]').length);
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] Sections in main:', document.querySelectorAll('main .section').length);
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] Sections in header:', document.querySelectorAll('header .section').length);
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] Sections in footer:', document.querySelectorAll('footer .section').length);
-    
-    // List all data-aue-resource elements
-    const aueElements = document.querySelectorAll('[data-aue-resource]');
-    // eslint-disable-next-line no-console
-    console.log('[DEBUG loadDelayed] All data-aue-resource elements:');
-    aueElements.forEach((el, idx) => {
-      // eslint-disable-next-line no-console
-      console.log(`  ${idx + 1}. ${el.tagName}.${el.className || '(no class)'} in ${el.closest('header, footer, main')?.tagName || 'unknown'} - resource: ${el.getAttribute('data-aue-resource')}`);
-    });
-  }, 5000);
 }
 
 async function loadPage() {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadPage] ========== PAGE LOAD START ==========');
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadPage] ========== PAGE LOAD COMPLETE ==========');
 }
 
-// eslint-disable-next-line no-console
-console.log('[DEBUG] scripts.js loaded, calling loadPage()');
 loadPage();

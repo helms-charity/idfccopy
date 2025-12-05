@@ -594,24 +594,16 @@ async function loadBlock(block) {
   if (status !== 'loading' && status !== 'loaded') {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
-    // eslint-disable-next-line no-console
-    console.log(`[DEBUG loadBlock] Loading block: ${blockName}, status: ${status}`);
     try {
       const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            // eslint-disable-next-line no-console
-            console.log(`[DEBUG loadBlock] Importing JS module for: ${blockName}`);
             const mod = await import(
               `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
             );
             if (mod.default) {
-              // eslint-disable-next-line no-console
-              console.log(`[DEBUG loadBlock] Calling default export (decorate) for: ${blockName}`);
               await mod.default(block);
-              // eslint-disable-next-line no-console
-              console.log(`[DEBUG loadBlock] Decoration complete for: ${blockName}`);
             }
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -626,11 +618,6 @@ async function loadBlock(block) {
       console.log(`failed to load block ${blockName}`, error);
     }
     block.dataset.blockStatus = 'loaded';
-    // eslint-disable-next-line no-console
-    console.log(`[DEBUG loadBlock] Block fully loaded: ${blockName}`);
-  } else {
-    // eslint-disable-next-line no-console
-    console.log(`[DEBUG loadBlock] Block already ${status}: ${block.dataset.blockName}`);
   }
   return block;
 }
@@ -669,29 +656,10 @@ function decorateBlocks(main) {
  * @returns {Promise}
  */
 async function loadHeader(header) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] START - Creating header block');
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] Header element:', header);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] Existing children in header:', header.children.length);
-  
   const headerBlock = buildBlock('header', '');
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] Built header block, appending to header element');
   header.append(headerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] Decorating header block');
   decorateBlock(headerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] Loading header block (will call header.js decorate)');
-  const result = await loadBlock(headerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadHeader] COMPLETE - Header block loaded');
-  return result;
+  return loadBlock(headerBlock);
 }
 
 /**
@@ -700,29 +668,10 @@ async function loadHeader(header) {
  * @returns {Promise}
  */
 async function loadFooter(footer) {
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] START - Creating footer block');
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] Footer element:', footer);
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] Existing children in footer:', footer.children.length);
-  
   const footerBlock = buildBlock('footer', '');
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] Built footer block, appending to footer element');
   footer.append(footerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] Decorating footer block');
   decorateBlock(footerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] Loading footer block (will call footer.js decorate)');
-  const result = await loadBlock(footerBlock);
-  
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadFooter] COMPLETE - Footer block loaded');
-  return result;
+  return loadBlock(footerBlock);
 }
 
 /**
@@ -769,19 +718,13 @@ async function loadSection(section, loadCallback) {
 
 async function loadSections(element) {
   const sections = [...element.querySelectorAll('div.section')];
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadSections] Loading', sections.length, 'sections in element:', element.tagName, element.className || '(no class)');
   for (let i = 0; i < sections.length; i += 1) {
-    // eslint-disable-next-line no-console
-    console.log(`[DEBUG loadSections] Loading section ${i + 1}/${sections.length}`);
     // eslint-disable-next-line no-await-in-loop
     await loadSection(sections[i]);
     if (i === 0 && sampleRUM.enhance) {
       sampleRUM.enhance();
     }
   }
-  // eslint-disable-next-line no-console
-  console.log('[DEBUG loadSections] All sections loaded for element:', element.tagName);
 }
 
 init();
