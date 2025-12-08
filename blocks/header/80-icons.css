@@ -1,0 +1,95 @@
+/**
+ * 80-icons.css - Icon styles for header navigation
+ *
+ * Styles for icons placed before navigation titles:
+ * - icon-search → "what are you looking for"
+ * - icon-special → "what's special about us"
+ * - icon-login_header → "login"
+ */
+
+/* Base icon styles for nav-tools */
+.nav-tools .default-content-wrapper .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-tools .default-content-wrapper .icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Search icon - "what are you looking for" */
+.nav-tools .default-content-wrapper > p:first-child .icon-search {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Special icon - "What's special about us" */
+.nav-tools .default-content-wrapper > p:nth-child(2) .icon-special {
+  width: 17px;
+  height: 17px;
+  margin-right: 8px;
+}
+
+/* Login icon */
+.nav-tools .default-content-wrapper > ul > li:last-child .icon-login_header {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+}
+
+/* Ensure flex alignment for login button with icon */
+.nav-tools .default-content-wrapper > ul > li:last-child {
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile styles - hide icons on smaller screens if needed */
+@media (width < 900px) {
+  .nav-tools .default-content-wrapper .icon-search,
+  .nav-tools .default-content-wrapper .icon-special,
+  .nav-tools .default-content-wrapper .icon-login_header {
+    /* Icons visible on mobile when nav-tools is displayed */
+  }
+}
+
+/* Desktop styles */
+@media (width >= 900px) {
+  /* Search bar icon alignment */
+  .nav-tools .default-content-wrapper > p:first-child {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-tools .default-content-wrapper > p:first-child .icon-search {
+    flex-shrink: 0;
+  }
+
+  /* Special button icon alignment */
+  .nav-tools .default-content-wrapper > p:nth-child(2) {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-tools .default-content-wrapper > p:nth-child(2) .icon-special {
+    flex-shrink: 0;
+  }
+
+  /* Login button styling with icon */
+  .nav-tools .default-content-wrapper > ul > li:last-child {
+    color: #fff;
+    background-color: #902a2c;
+    border-color: #902a2c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-tools .default-content-wrapper > ul > li:last-child .icon-login_header img {
+    filter: brightness(0) invert(1); /* Make icon white to match button text */
+  }
+}
