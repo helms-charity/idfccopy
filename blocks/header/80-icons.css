@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 /**
  * 80-icons.css - Icon styles for header navigation
  *
@@ -46,15 +48,6 @@
 .nav-tools .default-content-wrapper > ul > li:last-child {
   display: flex;
   align-items: center;
-}
-
-/* Mobile styles - hide icons on smaller screens if needed */
-@media (width < 900px) {
-  .nav-tools .default-content-wrapper .icon-search,
-  .nav-tools .default-content-wrapper .icon-special,
-  .nav-tools .default-content-wrapper .icon-login_header {
-    /* Icons visible on mobile when nav-tools is displayed */
-  }
 }
 
 /* Desktop styles */
