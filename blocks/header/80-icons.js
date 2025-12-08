@@ -1,82 +1,90 @@
 /**
- * 80-icons.js - Icon enhancements for header navigation
- *
- * This module adds icons before navigation titles in the nav-tools section:
- * - icon-search.svg → "what are you looking for"
- * - special-icon.svg → "what's special about us"
- * - login_header_icon.svg → "login"
- *
- * Import and call addNavToolsIcons(navToolsWrapper) after building the nav-tools section.
+ * 80-icons.js - Icon decoration for header navigation
+ * This module adds icons to the "what are you looking for", "what's special about us",
+ * and "login" navigation items using DAM-hosted SVG images.
  */
+
+// DAM paths for header icons
+const ICON_PATHS = {
+  search: '/content/dam/idfcfirstbank/images/sr-revamp/icons/search-icon.svg',
+  special: '/content/dam/idfcfirstbank/images/homepage-redesign/special-icon.svg',
+  login: '/content/dam/idfcfirstbank/images/homepage-redesign/login_header_icon.svg',
+};
 
 /**
- * Adds icon to the Login item in the nav-tools list
- * @param {Element} navToolsWrapper - The nav-tools wrapper element
+ * Creates an icon image element with the specified DAM path
+ * @param {string} iconKey - The key from ICON_PATHS (search, special, login)
+ * @param {string} alt - Alt text for the icon
+ * @returns {HTMLImageElement} The created image element
  */
-export function addLoginIcon(navToolsWrapper) {
-  if (!navToolsWrapper) return;
+function createIconImage(iconKey, alt = '') {
+  const img = document.createElement('img');
+  img.src = ICON_PATHS[iconKey];
+  img.alt = alt;
+  img.loading = 'lazy';
+  img.classList.add('nav-icon');
+  img.dataset.iconName = iconKey;
+  return img;
+}
 
-  // Find the Login list item
-  const toolsUl = navToolsWrapper.querySelector('ul');
-  if (!toolsUl) return;
-
-  const loginLi = Array.from(toolsUl.querySelectorAll('li')).find(
-    (li) => li.textContent.trim().toLowerCase() === 'login',
-  );
-
-  if (loginLi) {
-    // Create the icon span
-    const iconSpan = document.createElement('span');
-    iconSpan.classList.add('icon', 'icon-login_header');
-
-    // Insert icon before the text content
-    const textContent = loginLi.textContent.trim();
-    loginLi.textContent = '';
-    loginLi.appendChild(iconSpan);
-    loginLi.appendChild(document.createTextNode(textContent));
+/**
+ * Decorates the search icon in the nav-tools section
+ * @param {Element} navTools - The nav-tools container element
+ */
+function decorateSearchIcon(navTools) {
+  const searchSpan = navTools.querySelector('.icon-search');
+  if (searchSpan && !searchSpan.querySelector('img')) {
+    const img = createIconImage('search', 'Search');
+    searchSpan.appendChild(img);
   }
 }
 
 /**
- * Ensures search icon is present in the search bar
- * @param {Element} navToolsWrapper - The nav-tools wrapper element
+ * Decorates the special icon in the nav-tools section
+ * @param {Element} navTools - The nav-tools container element
  */
-export function ensureSearchIcon(navToolsWrapper) {
-  if (!navToolsWrapper) return;
-
-  const searchP = navToolsWrapper.querySelector('p:first-child');
-  if (searchP && !searchP.querySelector('.icon-search')) {
-    const iconSpan = document.createElement('span');
-    iconSpan.classList.add('icon', 'icon-search');
-    searchP.insertBefore(iconSpan, searchP.firstChild);
+function decorateSpecialIcon(navTools) {
+  const specialSpan = navTools.querySelector('.icon-special');
+  if (specialSpan && !specialSpan.querySelector('img')) {
+    const img = createIconImage('special', "What's special about us");
+    specialSpan.appendChild(img);
   }
 }
 
 /**
- * Ensures special icon is present in "What's special about us"
- * @param {Element} navToolsWrapper - The nav-tools wrapper element
+ * Decorates the login icon in the nav-tools section
+ * Adds the icon before the "Login" text in the last list item
+ * @param {Element} navTools - The nav-tools container element
  */
-export function ensureSpecialIcon(navToolsWrapper) {
-  if (!navToolsWrapper) return;
-
-  const specialP = navToolsWrapper.querySelector('p:nth-child(2)');
-  if (specialP && !specialP.querySelector('.icon-special')) {
-    const iconSpan = document.createElement('span');
-    iconSpan.classList.add('icon', 'icon-special');
-    specialP.insertBefore(iconSpan, specialP.firstChild);
+function decorateLoginIcon(navTools) {
+  const toolsUl = navTools.querySelector('.default-content-wrapper > ul');
+  if (toolsUl) {
+    const lastLi = toolsUl.querySelector('li:last-child');
+    if (lastLi && lastLi.textContent.toLowerCase().includes('login')) {
+      // Check if icon already exists
+      if (!lastLi.querySelector('.icon-login-header')) {
+        const iconSpan = document.createElement('span');
+        iconSpan.classList.add('icon', 'icon-login-header');
+        const img = createIconImage('login', 'Login');
+        iconSpan.appendChild(img);
+        lastLi.prepend(iconSpan);
+      }
+    }
   }
 }
 
 /**
- * Adds all nav-tools icons (search, special, login)
- * Call this function after building the nav-tools section in header.js
- * @param {Element} navToolsWrapper - The nav-tools wrapper element
+ * Main function to decorate all header navigation icons
+ * Call this after the header has been built
+ * @param {Element} nav - The nav element or document if not provided
  */
-export function addNavToolsIcons(navToolsWrapper) {
-  ensureSearchIcon(navToolsWrapper);
-  ensureSpecialIcon(navToolsWrapper);
-  addLoginIcon(navToolsWrapper);
+export function decorateHeaderIcons(nav = document) {
+  const navTools = nav.querySelector('.nav-tools');
+  if (navTools) {
+    decorateSearchIcon(navTools);
+    decorateSpecialIcon(navTools);
+    decorateLoginIcon(navTools);
+  }
 }
 
-export default addNavToolsIcons;
-
+export default decorateHeaderIcons;
