@@ -56,6 +56,18 @@
             {
               "name": "Important Documents",
               "value": "important-documents"
+            },
+            {
+              "name": "Key Benefits (with Modal)",
+              "value": "key-benefits-with-modal"
+            },
+            {
+              "name": "Experience Life (with Modal)",
+              "value": "experience-life-with-modal"
+            },
+            {
+              "name": "Reward Points (with Modal)",
+              "value": "reward-points-with-modal"
             }
           ]
         },
@@ -103,10 +115,33 @@
           "label": "Alt Text"
         },
         {
+          "component": "reference",
+          "name": "dividerImage",
+          "label": "Divider Image",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "cardTag",
+          "label": "Card Tag (optional)"
+        },
+        {
+          "component": "reference",
+          "name": "backgroundImageTexture",
+          "label": "Background Image Texture",
+          "valueType": "string"
+        },
+        {
           "component": "richtext",
           "name": "text",
           "value": "",
           "label": "Text",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "name": "modalPopup",
+          "label": "Modal Popup",
           "valueType": "string"
         }
       ]
