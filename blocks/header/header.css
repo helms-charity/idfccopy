@@ -690,7 +690,7 @@ header nav .nav-tools {
     width: 14px;
     height: 14px;
     display: inline-block;
-    background-image: url("data:image/svg+xml,%3Csvg width='15' height='14' viewBox='0 0 15 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.50195 1H12.1686C12.5222 1 12.8614 1.14048 13.1114 1.39052C13.3615 1.64057 13.502 1.97971 13.502 2.33333V11.6667C13.502 12.0203 13.3615 12.3594 13.1114 12.6095C12.8614 12.8595 12.5222 13 12.1686 13H9.50195' stroke='%23ffffff' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6.16797 10.3332L9.5013 6.99984L6.16797 3.6665' stroke='%23ffffff' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M9.50195 7H1.50195' stroke='%23ffffff' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url('/icons/login_header.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
