@@ -342,16 +342,16 @@
             "value": "important-documents"
           },
           {
-            "name": "Key Benefits (with Modal)",
-            "value": "key-benefits-with-modal"
+            "name": "Key Benefits",
+            "value": "key-benefits"
           },
           {
-            "name": "Experience Life (with Modal)",
-            "value": "experience-life-with-modal"
+            "name": "Experience Life",
+            "value": "experience-life"
           },
           {
-            "name": "Reward Points (with Modal)",
-            "value": "reward-points-with-modal"
+            "name": "Reward Points",
+            "value": "reward-points"
           }
         ]
       },
