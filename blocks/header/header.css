@@ -621,6 +621,11 @@ header nav .nav-tools {
   .nav-tools .default-content-wrapper .icon-search {
     width: 20px;
     height: 20px;
+    display: inline-block;
+    background-image: url('/icons/search.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .nav-tools .default-content-wrapper>p:nth-child(2) {
@@ -642,6 +647,11 @@ header nav .nav-tools {
     width: 17px;
     height: 17px;
     margin-right: 8px;
+    display: inline-block;
+    background-image: url('/icons/special.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .nav-tools .default-content-wrapper>ul {
