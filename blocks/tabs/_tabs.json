@@ -39,8 +39,7 @@
         "id": "tabs",
         "fields": [
           {
-            "component": "text",
-            "valueType": "string",
+            "component": "select",
             "name": "classes",
             "label": "Style",
             "options": [
