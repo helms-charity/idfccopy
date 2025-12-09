@@ -1224,7 +1224,29 @@
         "component": "text",
         "valueType": "string",
         "name": "classes",
-        "label": "Style"
+        "label": "Style",
+        "options": [
+          {
+            "name": "Standard",
+            "value": ""
+          },
+          {
+            "name": "Silver with Blue Text",
+            "value": "silver-blue-text"
+          },
+          {
+            "name": "Silver with Red Text",
+            "value": "silver-red-text"
+          },
+          {
+            "name": "Blue with White Text",
+            "value": "blue-white-text"
+          },
+          {
+            "name": "Red with White Text",
+            "value": "red-white-text"
+          }
+        ]
       }
     ]
   },
