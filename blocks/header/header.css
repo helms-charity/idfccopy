@@ -689,5 +689,10 @@ header nav .nav-tools {
   .nav-tools .default-content-wrapper .icon-login_header {
     width: 14px;
     height: 14px;
+    display: inline-block;
+    background-image: url('/icons/login_header.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 }

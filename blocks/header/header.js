@@ -247,6 +247,13 @@ export default async function decorate(block) {
 
   if (toolsUl) {
     const toolsUlClone = toolsUl.cloneNode(true);
+    // Add login icon to the Login li (last child)
+    const loginLi = toolsUlClone.querySelector('li:last-child');
+    if (loginLi && loginLi.textContent.includes('Login')) {
+      const loginIcon = document.createElement('span');
+      loginIcon.classList.add('icon', 'icon-login_header');
+      loginLi.prepend(loginIcon);
+    }
     navToolsWrapper.appendChild(toolsUlClone);
   }
 
