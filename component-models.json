@@ -423,9 +423,16 @@
         "valueType": "string"
       },
       {
-        "component": "reference",
-        "name": "modalPopup",
-        "label": "Modal Popup",
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link (optional)",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "modalContent",
+        "label": "Modal Content (optional)",
+        "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
         "valueType": "string"
       }
     ]
