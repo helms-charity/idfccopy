@@ -340,6 +340,18 @@
           {
             "name": "Important Documents",
             "value": "important-documents"
+          },
+          {
+            "name": "Key Benefits",
+            "value": "key-benefits"
+          },
+          {
+            "name": "Experience Life",
+            "value": "experience-life"
+          },
+          {
+            "name": "Reward Points",
+            "value": "reward-points"
           }
         ]
       },
@@ -387,10 +399,40 @@
         "label": "Alt Text"
       },
       {
+        "component": "reference",
+        "name": "dividerImage",
+        "label": "Divider Image",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "cardTag",
+        "label": "Card Tag (optional)"
+      },
+      {
+        "component": "reference",
+        "name": "backgroundImageTexture",
+        "label": "Background Image Texture",
+        "valueType": "string"
+      },
+      {
         "component": "richtext",
         "name": "text",
         "value": "",
         "label": "Text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link (optional)",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "modalContent",
+        "label": "Modal Content (optional)",
+        "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
         "valueType": "string"
       }
     ]
