@@ -726,25 +726,15 @@ function extractSectionPropertiesFromEditor(section) {
  */
 export function applySectionBackgroundColors(main) {
   main.querySelectorAll('.section').forEach((section) => {
-    // Normalize backgroundColor data attribute variations
-    // The HTML may serialize as data-backgroundcolor, data-background-color,
-    // or data-backgroundColor. Ensure section.dataset.backgroundColor is set.
-    const bgColorVariants = ['backgroundcolor', 'background-color'];
-    bgColorVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.backgroundColor) {
-        section.dataset.backgroundColor = section.dataset[variant];
-      }
-    });
+    // Normalize backgroundColor data attribute
+    if (section.dataset.backgroundcolor && !section.dataset.backgroundColor) {
+      section.dataset.backgroundColor = section.dataset.backgroundcolor;
+    }
 
-    // Normalize sectionBackgroundImage data attribute variations
-    // The HTML may serialize as data-sectionbackgroundimage, data-section-background-image, etc.
-    // Ensure we always have section.dataset.sectionBackgroundImage set for the JavaScript to use
-    const bgImageVariants = ['sectionbackgroundimage', 'section-background-image'];
-    bgImageVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.sectionBackgroundImage) {
-        section.dataset.sectionBackgroundImage = section.dataset[variant];
-      }
-    });
+    // Normalize sectionBackgroundImage data attribute
+    if (section.dataset.sectionbackgroundimage && !section.dataset.sectionBackgroundImage) {
+      section.dataset.sectionBackgroundImage = section.dataset.sectionbackgroundimage;
+    }
 
     let bgValue = null;
     let bgImageValue = null;
@@ -763,12 +753,12 @@ export function applySectionBackgroundColors(main) {
     if (section.hasAttribute('data-aue-resource')) {
       const editorProps = extractSectionPropertiesFromEditor(section);
 
-      if (!bgValue && (editorProps['background-color'] || editorProps.backgroundColor)) {
-        bgValue = (editorProps['background-color'] || editorProps.backgroundColor).trim();
+      if (!bgValue && editorProps.backgroundColor) {
+        bgValue = editorProps.backgroundColor.trim();
       }
 
-      if (!bgImageValue && (editorProps['section-background-image'] || editorProps.sectionBackgroundImage)) {
-        bgImageValue = (editorProps['section-background-image'] || editorProps.sectionBackgroundImage).trim();
+      if (!bgImageValue && editorProps.sectionBackgroundImage) {
+        bgImageValue = editorProps.sectionBackgroundImage.trim();
       }
     }
 
