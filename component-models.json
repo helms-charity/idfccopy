@@ -692,9 +692,11 @@
       },
       {
         "component": "text",
-        "name": "bannerImageAlt",
-        "label": "Banner Image Alt Text",
-        "valueType": "string"
+        "valueType": "string",
+        "name": "columnsBackgroundColor",
+        "label": "Background Color",
+        "value": "",
+        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
       }
     ]
   },
