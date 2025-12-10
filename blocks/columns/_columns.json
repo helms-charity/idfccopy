@@ -52,6 +52,14 @@
           "name": "rows",
           "value": "",
           "label": "Rows"
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "columnsBackgroundImage",
+          "label": "Background Image",
+          "description": "The background image of the block, displayed on top of the section background if specified",
+          "multi": false
         }
       ]
     }

@@ -676,6 +676,25 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "columnsBackgroundImageMobile",
+        "label": "Background Image (Mobile)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "columnsBackgroundImage",
+        "label": "Background Image (Desktop)",
+        "description": "The background image of the columns, displayed on top of the section background if specified"
+      },
+      {
+        "component": "text",
+        "name": "bannerImageAlt",
+        "label": "Banner Image Alt Text",
+        "valueType": "string"
       }
     ]
   },
