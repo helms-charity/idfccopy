@@ -1,58 +1,174 @@
 .tabs .tabs-list {
-    display: flex;
-    gap: 0.5ch;
+  display: flex;
+  gap: 0.5ch;
+  max-width: 100%;
+  font-size: var(--body-font-size-xs);
+  overflow-x: auto;
+}
+
+@media (width >= 600px) {
+  .tabs .tabs-list {
+    font-size: var(--body-font-size-s);
+  }
+}
+
+@media (width >= 900px) {
+  .tabs .tabs-list {
+    font-size: var(--body-font-size-m);
+  }
+}
+
+.tabs .tabs-list button {
+  flex: 0 0 max-content;
+  margin: 0;
+  border: 1px solid #dadada;
+  border-radius: 0;
+  padding: 0.5em;
+  background-color: var(--light-color);
+  color: initial;
+  font-weight: bold;
+  line-height: unset;
+  text-align: initial;
+  text-overflow: unset;
+  overflow: unset;
+  white-space: unset;
+  transition: background-color 0.2s;
+}
+
+.tabs .tabs-list button p {
+  margin: 0;
+}
+
+.tabs .tabs-list button[aria-selected='true'] {
+  border-bottom: 1px solid var(--background-color);
+  background-color: var(--background-color);
+  cursor: initial;
+}
+
+.tabs .tabs-panel {
+  margin-top: -1px;
+  padding: 24px;
+  border: 1px solid #dadada;
+  overflow: auto;
+}
+
+.tabs .tabs-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* Blue-White-Text Tab Style */
+.tabs.blue-white-text .tabs-list {
+  gap: 12px;
+  padding: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.tabs.blue-white-text .tabs-tab,
+.tabs.silver-blue-text .tabs-tab {
+  border: 1px solid #2E3E79;
+  border-radius: 10px;
+  padding: 8px 16px;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.tabs.blue-white-text .tabs-tab {
+  background: var(--gradient-silver);
+  color: #08133C;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.tabs.silver-blue-text .tabs-tab {
+  background: rgb(255 255 255 / 70%);
+  color: #08133C;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.tabs.blue-white-text .tabs-tab:hover {
+  opacity: 0.9;
+}
+
+.tabs.blue-white-text .tabs-tab[aria-selected='true'] {
+  border: 1px solid #2E3E79;
+  background: var(--gradient-blue);
+  color: var(--white);
+  cursor: default;
+}
+
+.tabs.blue-white-text .tabs-tab p,
+.tabs.silver-blue-text .tabs-tab p {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.tabs.blue-white-text .tabs-panel,
+.tabs.silver-blue-text .tabs-panel {
+  border: none;
+}
+
+@media (width >= 900px) {
+  .tabs.blue-white-text .tabs-list {
+    font-size: 18px;
+  }
+
+  .tabs.blue-white-text .tabs-tab {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+
+  .tabs.blue-white-text .tabs-tab[aria-selected='true'] {
+    font-weight: 600;
+  }
+}
+
+/* Silver-Blue-Text Tab Style */
+.tabs.silver-blue-text .tabs-list {
+  gap: 18px;
+  padding: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.tabs.silver-blue-text .tabs-tab:hover {
+  background: rgb(255 255 255 / 80%);
+}
+
+.tabs.silver-blue-text .tabs-tab[aria-selected='true'] {
+  border: 1px solid #2E3E79;
+  background: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
+  color: #08133C;
+  font-weight: 600;
+  cursor: default;
+}
+
+@media (width >= 900px) {
+  .tabs.silver-blue-text .tabs-list {
+    font-size: 18px;
+    justify-content: center;
+  }
+
+  .tabs.silver-blue-text .tabs-tab {
+    font-size: 18px;
+    padding: 8px 16px;
+    flex: 0 1 auto;
+    white-space: normal;
+    box-sizing: border-box;
+  }
+
+  .tabs.silver-blue-text .tabs-tab p {
+    white-space: normal;
+    text-align: left;
     max-width: 100%;
-    font-size: var(--body-font-size-xs);
-    overflow-x: auto;
+    overflow-wrap: break-word;
+    word-break: normal;
+    display: inline-block;
+    width: 100%;
   }
-  
-  @media (width >= 600px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-s);
-    }
-  }
-  
-  @media (width >= 900px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-m);
-    }
-  }
-  
-  .tabs .tabs-list button {
-    flex: 0 0 max-content;
-    margin: 0;
-    border: 1px solid #dadada;
-    border-radius: 0;
-    padding: 0.5em;
-    background-color: var(--light-color);
-    color: initial;
-    font-weight: bold;
-    line-height: unset;
-    text-align: initial;
-    text-overflow: unset;
-    overflow: unset;
-    white-space: unset;
-    transition: background-color 0.2s;
-  }
-  
-  .tabs .tabs-list button p {
-    margin: 0;
-  }
-  
-  
-  .tabs .tabs-list button[aria-selected='true'] {
-    border-bottom: 1px solid var(--background-color);
-    background-color: var(--background-color);
-    cursor: initial;
-  }
-  
-  .tabs .tabs-panel {
-    margin-top: -1px;
-    padding: 24px;
-    border: 1px solid #dadada;
-    overflow: auto;
-  }
-  
-  .tabs .tabs-panel[aria-hidden='true'] {
-    display: none;
-  }
+}
