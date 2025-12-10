@@ -2,6 +2,7 @@ import {
   createOptimizedPicture, loadScript, loadCSS, getMetadata,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { createModal } from '../modal/modal.js';
 
 /**
  * Sanitizes text for JSON-LD by removing/replacing problematic characters
@@ -320,6 +321,125 @@ function extractBlockProperties(block, ul) {
   itemsToRemove.forEach((li) => li.remove());
 }
 
+/**
+ * Sets up card interactivity based on card type:
+ * 1. Standard card: No link, no modal - not clickable
+ * 2. Easy modal card: No link, has modalContent - opens inline modal on click
+ * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
+ * @param {HTMLElement} li The card list item element
+ */
+function setupCardInteractivity(li) {
+  const cardBodies = li.querySelectorAll('.cards-card-body');
+  if (cardBodies.length === 0) return;
+
+  // The first cards-card-body is the main text content
+  // The last cards-card-body (if different) is the modal content
+  const mainBody = cardBodies[0];
+  const modalContentDiv = cardBodies.length > 1 ? cardBodies[cardBodies.length - 1] : null;
+
+  // Check if modal content div has actual content
+  const hasModalContent = modalContentDiv
+    && modalContentDiv.textContent.trim().length > 0
+    && modalContentDiv !== mainBody;
+
+  // Mark the modal content div with a specific class for styling/hiding
+  if (hasModalContent) {
+    modalContentDiv.classList.add('cards-modal-content');
+  }
+
+  // Check for card link (could be in main body or as a standalone link)
+  const cardLink = li.querySelector('a[href]');
+  const hasModalPath = cardLink && cardLink.href && cardLink.href.includes('/modals/');
+  const hasRegularLink = cardLink && !hasModalPath;
+
+  // Type 3: Complex modal with /modals/ path - make entire card clickable
+  // The autolinkModals function in scripts.js will handle the actual modal opening
+  if (hasModalPath) {
+    li.classList.add('card-clickable');
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+
+    const handleClick = (e) => {
+      // Don't intercept if clicking on the actual link
+      if (e.target.closest('a')) return;
+      // Trigger click on the link to let autolinkModals handle it
+      cardLink.click();
+    };
+
+    li.addEventListener('click', handleClick);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cardLink.click();
+      }
+    });
+
+    // Hide the original link text but keep it functional
+    const buttonContainer = cardLink.closest('.button-container');
+    if (buttonContainer) {
+      buttonContainer.classList.add('sr-only');
+    }
+    return; // Don't process further if this is a complex modal card
+  }
+
+  // Type 2: Easy modal with inline content (no link to /modals/)
+  if (hasModalContent) {
+    li.classList.add('card-clickable', 'card-modal');
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+
+    // Store the modal content (already hidden via CSS .cards-modal-content class)
+    const modalContent = modalContentDiv.cloneNode(true);
+
+    const openCardModal = async () => {
+      const contentWrapper = document.createElement('div');
+      contentWrapper.innerHTML = modalContent.innerHTML;
+      const { showModal } = await createModal([contentWrapper]);
+      showModal();
+    };
+
+    li.addEventListener('click', (e) => {
+      // Don't trigger modal if clicking on a regular link within the card
+      if (e.target.closest('a')) return;
+      openCardModal();
+    });
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCardModal();
+      }
+    });
+    return;
+  }
+
+  // Type 1 variant: Card with regular link (not /modals/) - make entire card clickable
+  if (hasRegularLink) {
+    li.classList.add('card-clickable');
+    li.setAttribute('role', 'link');
+    li.setAttribute('tabindex', '0');
+
+    const handleClick = (e) => {
+      if (e.target.closest('a')) return;
+      cardLink.click();
+    };
+
+    li.addEventListener('click', handleClick);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cardLink.click();
+      }
+    });
+
+    // Hide the original link text but keep it functional
+    const buttonContainer = cardLink.closest('.button-container');
+    if (buttonContainer) {
+      buttonContainer.classList.add('sr-only');
+    }
+  }
+  // Type 1: Standard card with no link - no additional interactivity needed
+}
+
 export default async function decorate(block) {
   // Build UL structure
   const ul = document.createElement('ul');
@@ -407,6 +527,9 @@ export default async function decorate(block) {
     } else if (!isTestimonial) {
       li.classList.add('benefit-cards');
     }
+
+    // Setup interactivity for all card types (links, modals)
+    setupCardInteractivity(li);
   });
 
   block.append(ul);
