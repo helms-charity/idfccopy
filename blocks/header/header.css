@@ -718,3 +718,26 @@ header nav .nav-tools {
   line-height: 20px;
   white-space: nowrap;
 }
+
+/* Typewriter Animation for Search Bar */
+.typewriter-text {
+  display: inline-block;
+  min-width: 1px;
+}
+
+.typewriter-text::after {
+  content: '|';
+  animation: typewriter-blink 0.7s infinite;
+  margin-left: 1px;
+  font-weight: 300;
+}
+
+@keyframes typewriter-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+
+  51%, 100% {
+    opacity: 0;
+  }
+}

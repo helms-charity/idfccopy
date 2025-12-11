@@ -236,8 +236,37 @@ export default async function decorate(block) {
   });
 
   if (searchP) {
-    navToolsWrapper.innerHTML = `<p><span class="icon icon-search"></span><strong>${searchP.querySelector('strong').textContent}</strong></p>`;
+    navToolsWrapper.innerHTML = '<p><span class="icon icon-search"></span><strong class="typewriter-text"></strong></p>';
   }
+
+  // Typewriter animation for "What are you looking for..."
+  function startTypewriterAnimation() {
+    const typewriterEl = navToolsWrapper.querySelector('.typewriter-text');
+    if (!typewriterEl) return;
+
+    const fullText = 'What are you looking for...';
+    let charIndex = 0;
+
+    function typeNextChar() {
+      if (charIndex <= fullText.length) {
+        typewriterEl.textContent = fullText.slice(0, charIndex);
+        charIndex += 1;
+        setTimeout(typeNextChar, 80); // Speed of typing
+      } else {
+        // Finished typing, wait 2 seconds then restart
+        setTimeout(() => {
+          charIndex = 0;
+          typewriterEl.textContent = '';
+          typeNextChar();
+        }, 2000);
+      }
+    }
+
+    typeNextChar();
+  }
+
+  // Initialize typewriter after DOM is ready
+  setTimeout(startTypewriterAnimation, 100);
 
   if (specialP) {
     const specialPClone = specialP.cloneNode(true);
