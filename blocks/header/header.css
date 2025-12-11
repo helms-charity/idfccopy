@@ -696,3 +696,25 @@ header nav .nav-tools {
     background-position: center;
   }
 }
+
+/* Odometer Animation for Customer Service */
+.grnt-animation-odometer {
+  display: inline-block;
+  height: 20px;
+  overflow: hidden;
+  vertical-align: middle;
+  line-height: 20px;
+}
+
+.grnt-odometer-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s ease-in-out;
+}
+
+.grnt-odometer-track span {
+  display: block;
+  height: 20px;
+  line-height: 20px;
+  white-space: nowrap;
+}

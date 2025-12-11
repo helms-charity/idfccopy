@@ -254,10 +254,61 @@ export default async function decorate(block) {
       loginIcon.classList.add('icon', 'icon-login_header');
       loginLi.prepend(loginIcon);
     }
+
+    // Add odometer animation to Customer Service li (first child)
+    const customerServiceLi = toolsUlClone.querySelector('li:first-child');
+    if (customerServiceLi && customerServiceLi.textContent.includes('Customer service')) {
+      customerServiceLi.innerHTML = `
+        <div class="grnt-animation-odometer">
+          <div class="grnt-odometer-track">
+            <span>Customer Service</span>
+            <span>Contact us</span>
+            <span>Service request</span>
+            <span>Locate a branch</span>
+            <span>Complaints</span>
+            <span>Customer Service</span>
+          </div>
+        </div>
+      `;
+    }
+
     navToolsWrapper.appendChild(toolsUlClone);
   }
 
   navTools.appendChild(navToolsWrapper);
+
+  // Start odometer animation for Customer Service
+  function startOdometerAnimation() {
+    const odometerTrack = navTools.querySelector('.grnt-odometer-track');
+    if (!odometerTrack) return;
+
+    const spans = odometerTrack.querySelectorAll('span');
+    const spanHeight = 20; // Height of each span in pixels
+    const totalItems = spans.length - 1; // Exclude the duplicate last item
+    let currentIndex = 0;
+
+    setInterval(() => {
+      currentIndex += 1;
+      const translateY = currentIndex * spanHeight;
+      odometerTrack.style.transform = `translateY(-${translateY}px)`;
+
+      // Reset to first item when reaching the duplicate last item
+      if (currentIndex >= totalItems) {
+        setTimeout(() => {
+          odometerTrack.style.transition = 'none';
+          odometerTrack.style.transform = 'translateY(0)';
+          currentIndex = 0;
+          // Re-enable transition after reset
+          setTimeout(() => {
+            odometerTrack.style.transition = 'transform 0.6s ease-in-out';
+          }, 50);
+        }, 600); // Wait for the transition to complete
+      }
+    }, 1000);
+  }
+
+  // Initialize odometer after DOM is ready
+  setTimeout(startOdometerAnimation, 100);
 
   // Assemble the navigation
   nav.appendChild(navBrand);
