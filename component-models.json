@@ -718,27 +718,6 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "columnsBackgroundImageMobile",
-        "label": "Background Image (Mobile)"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "columnsBackgroundImage",
-        "label": "Background Image (Desktop)",
-        "description": "The background image of the columns, displayed on top of the section background if specified"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "columnsBackgroundColor",
-        "label": "Background Color",
-        "value": "",
-        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
       }
     ]
   },
