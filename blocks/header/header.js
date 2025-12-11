@@ -251,7 +251,7 @@ export default async function decorate(block) {
       if (charIndex <= fullText.length) {
         typewriterEl.textContent = fullText.slice(0, charIndex);
         charIndex += 1;
-        setTimeout(typeNextChar, 500); // Speed of typing - 0.5 seconds per letter
+        setTimeout(typeNextChar, 300); // Speed of typing - 0.3 seconds per letter
       } else {
         // Finished typing, wait 2 seconds then restart
         setTimeout(() => {
