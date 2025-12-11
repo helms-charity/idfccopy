@@ -300,11 +300,11 @@ export default async function decorate(block) {
           currentIndex = 0;
           // Re-enable transition after reset
           setTimeout(() => {
-            odometerTrack.style.transition = 'transform 0.6s ease-in-out';
+            odometerTrack.style.transition = 'transform 1.0s ease-in-out';
           }, 50);
         }, 800); // Wait for the transition to complete
       }
-    }, 1000);
+    }, 1200);
   }
 
   // Initialize odometer after DOM is ready
