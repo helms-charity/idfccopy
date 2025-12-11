@@ -988,6 +988,32 @@
     "fields": []
   },
   {
+    "id": "overview",
+    "fields": [
+      {
+        "component": "text",
+        "name": "Title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "name": "Text",
+        "label": "Text"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      }
+    ]
+  },
+  {
     "id": "personal-loan-item",
     "fields": [
       {
