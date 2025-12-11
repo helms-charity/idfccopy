@@ -727,7 +727,7 @@ header nav .nav-tools {
 
 .typewriter-text::after {
   content: '|';
-  animation: typewriter-blink 0.8s infinite;
+  animation: typewriter-blink 1.2s infinite;
   margin-left: 1px;
   font-weight: 300;
 }
