@@ -333,7 +333,7 @@ export default async function decorate(block) {
           }, 50);
         }, 600); // Wait for the transition to complete
       }
-    }, 1300);
+    }, 1500);
   }
 
   // Initialize odometer after DOM is ready
