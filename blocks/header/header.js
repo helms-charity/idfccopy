@@ -302,7 +302,7 @@ export default async function decorate(block) {
           setTimeout(() => {
             odometerTrack.style.transition = 'transform 0.6s ease-in-out';
           }, 50);
-        }, 600); // Wait for the transition to complete
+        }, 800); // Wait for the transition to complete
       }
     }, 1000);
   }
