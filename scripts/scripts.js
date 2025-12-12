@@ -713,6 +713,25 @@ function loadAutoBlock(doc) {
 /** SECTIONS */
 
 /**
+ * Helper to extract pathname from URL
+ * @param {string} src - URL string
+ * @returns {string} pathname
+ */
+function getImagePathname(src) {
+  const url = new URL(src, window.location.href);
+  return url.pathname;
+}
+
+/**
+ * Helper to extract file extension
+ * @param {string} pathname - File pathname
+ * @returns {string} extension
+ */
+function getImageExtension(pathname) {
+  return pathname.substring(pathname.lastIndexOf('.') + 1);
+}
+
+/**
  * Creates a responsive picture element for background images with optimization
  * Similar to createOptimizedPicture, but for 2 background images
  * @param {string} desktopSrc - URL for desktop image
@@ -722,20 +741,13 @@ function loadAutoBlock(doc) {
 function createResponsiveBackgroundPicture(desktopSrc, mobileSrc = null) {
   const picture = document.createElement('picture');
 
-  const getPathname = (src) => {
-    const url = new URL(src, window.location.href);
-    return url.pathname;
-  };
-
-  const getExt = (pathname) => pathname.substring(pathname.lastIndexOf('.') + 1);
-
-  const desktopPath = getPathname(desktopSrc);
-  const desktopExt = getExt(desktopPath);
+  const desktopPath = getImagePathname(desktopSrc);
+  const desktopExt = getImageExtension(desktopPath);
 
   // If mobile source exists, use it for mobile breakpoint
   if (mobileSrc) {
-    const mobilePath = getPathname(mobileSrc);
-    const mobileExt = getExt(mobilePath);
+    const mobilePath = getImagePathname(mobileSrc);
+    const mobileExt = getImageExtension(mobilePath);
 
     const mobileWebpSource = document.createElement('source');
     mobileWebpSource.setAttribute('media', MEDIA_QUERIES.mobile.media);
@@ -776,6 +788,8 @@ function createResponsiveBackgroundPicture(desktopSrc, mobileSrc = null) {
  * @param {Element} main The container element
  */
 export function decorateSections(main) {
+  const sectionsWithHeight = [];
+
   main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section) => {
     const wrappers = [];
     let defaultContent = false;
@@ -817,7 +831,7 @@ export function decorateSections(main) {
           backgroundImageMobile = meta[key];
         } else if (key === 'height') {
           heightDesktop = meta[key];
-        } else if (key === 'height_mobile') {
+        } else if (key === 'heightmobile') {
           heightMobile = meta[key];
         } else {
           section.dataset[toCamelCase(key)] = meta[key];
@@ -853,20 +867,32 @@ export function decorateSections(main) {
       section.style.background = bgValue;
     }
 
-    // Apply responsive min-height if specified
+    // Store sections with height for batch processing all on page
     if (heightDesktop || heightMobile) {
-      const updateMinHeight = () => {
-        const isMobile = MEDIA_QUERIES.mobile.matches;
+      sectionsWithHeight.push({
+        section,
+        heightDesktop,
+        heightMobile,
+      });
+    }
+  });
+
+  // Set up single event listener for all sections with height
+  if (sectionsWithHeight.length > 0) {
+    const updateAllHeights = () => {
+      const isMobile = MEDIA_QUERIES.mobile.matches;
+      sectionsWithHeight.forEach(({ section, heightDesktop, heightMobile }) => {
         const height = isMobile && heightMobile ? heightMobile : heightDesktop;
         if (height) {
           section.style.minHeight = height;
         }
-      };
-      updateMinHeight();
-      MEDIA_QUERIES.mobile.addEventListener('change', updateMinHeight);
-      MEDIA_QUERIES.desktop.addEventListener('change', updateMinHeight);
-    }
-  });
+      });
+    };
+
+    updateAllHeights();
+    MEDIA_QUERIES.mobile.addEventListener('change', updateAllHeights);
+    MEDIA_QUERIES.desktop.addEventListener('change', updateAllHeights);
+  }
 }
 
 /**

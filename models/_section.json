@@ -59,7 +59,7 @@
         },
         {
           "component": "text",
-          "name": "height_mobile",
+          "name": "heightmobile",
           "label": "Mobile Height",
           "value": "",
           "valueType": "string",
