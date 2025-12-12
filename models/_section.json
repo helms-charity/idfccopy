@@ -42,6 +42,30 @@
           "multi": false
         },
         {
+          "component": "reference",
+          "valueType": "string",
+          "name": "sectionBackgroundImageMobile",
+          "label": "Background Image Mobile",
+          "description": "The background image of the section, displayed on top of the background color if specified",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "height",
+          "label": "Desktop Height",
+          "value": "",
+          "valueType": "string",
+          "description": "optional minimum height when in desktop, e.g. 400px"
+        },
+        {
+          "component": "text",
+          "name": "height_mobile",
+          "label": "Mobile Height",
+          "value": "",
+          "valueType": "string",
+          "description": "optional minimum height when in mobile, e.g. 400px"
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",
