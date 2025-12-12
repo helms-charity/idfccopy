@@ -613,9 +613,8 @@ header nav .nav-tools {
 
   .nav-tools .default-content-wrapper>p:first-child>strong {
     margin-left: 8px;
-    color: #3a3a3a;
+    color: #353535;
     font-weight: 400;
-    opacity: 0.6;
   }
 
   .nav-tools .default-content-wrapper .icon-search {
