@@ -621,11 +621,14 @@ header nav .nav-tools {
   .nav-tools .default-content-wrapper .icon-search {
     width: 20px;
     height: 20px;
-    display: inline-block;
-    background-image: url('/icons/search.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper .icon-search img {
+    width: 20px;
+    height: 20px;
   }
 
   .nav-tools .default-content-wrapper>p:nth-child(2) {
@@ -647,11 +650,14 @@ header nav .nav-tools {
     width: 17px;
     height: 17px;
     margin-right: 8px;
-    display: inline-block;
-    background-image: url('/icons/special.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper>p:nth-child(2) .icon-special img {
+    width: 17px;
+    height: 17px;
   }
 
   .nav-tools .default-content-wrapper>ul {
@@ -689,11 +695,14 @@ header nav .nav-tools {
   .nav-tools .default-content-wrapper .icon-login_header {
     width: 14px;
     height: 14px;
-    display: inline-block;
-    background-image: url('/icons/login_header.svg');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper .icon-login_header img {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -717,6 +726,7 @@ header nav .nav-tools {
   height: 20px;
   line-height: 20px;
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Typewriter Animation for Search Bar */

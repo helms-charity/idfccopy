@@ -306,6 +306,9 @@ export default async function decorate(block) {
 
   navTools.appendChild(navToolsWrapper);
 
+  // Decorate icons in nav-tools to add actual icon images
+  decorateIcons(navTools);
+
   // Start odometer animation for Customer Service
   function startOdometerAnimation() {
     const odometerTrack = navTools.querySelector('.grnt-odometer-track');
@@ -343,9 +346,6 @@ export default async function decorate(block) {
   nav.appendChild(navBrand);
   nav.appendChild(navSections);
   nav.appendChild(navTools);
-
-  // Decorate icons in nav-tools (adds <img> elements inside icon spans)
-  decorateIcons(nav);
 
   // Add dropdown behavior to nav sections
   navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
