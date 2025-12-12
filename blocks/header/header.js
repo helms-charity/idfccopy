@@ -225,7 +225,7 @@ export default async function decorate(block) {
   // Find the search bar and other tools
   const searchP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => {
     const strong = p.querySelector('strong');
-    return strong && strong.textContent.includes('what are you looking for');
+    return strong && strong.textContent.toLowerCase().includes('what are you looking for');
   });
 
   const specialP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => p.textContent.trim() === "What's special about us" && !p.querySelector('strong'));
