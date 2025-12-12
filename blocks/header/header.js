@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../../scripts/scripts.js';
 
 // media query match that indicates mobile/tablet width
@@ -343,6 +343,9 @@ export default async function decorate(block) {
   nav.appendChild(navBrand);
   nav.appendChild(navSections);
   nav.appendChild(navTools);
+
+  // Decorate icons in nav-tools (adds <img> elements inside icon spans)
+  decorateIcons(nav);
 
   // Add dropdown behavior to nav sections
   navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
