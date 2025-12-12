@@ -883,9 +883,8 @@ export function decorateSections(main) {
       const isMobile = MEDIA_QUERIES.mobile.matches;
       sectionsWithHeight.forEach(({ section, heightDesktop, heightMobile }) => {
         const height = isMobile && heightMobile ? heightMobile : heightDesktop;
-        if (height) {
-          section.style.minHeight = height;
-        }
+        // Always set minHeight (or clear it with empty string if no value for current breakpoint)
+        section.style.minHeight = height || '';
       });
     };
 
