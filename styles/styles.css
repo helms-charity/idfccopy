@@ -326,6 +326,8 @@ main img {
 /* sections */
 main>.section {
   margin: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 main>.section>div {
@@ -520,6 +522,17 @@ main .section.upi-steps-red-bg {
   background: var(--gradient-upi-steps-red);
   margin: 0;
   padding: 40px 0 56px;
+}
+
+.section .bg-images picture {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.section:has(.bg-images) > div:not(.bg-images) {
+  position: relative;
+  z-index: 1;
 }
 
 /* IDFC */

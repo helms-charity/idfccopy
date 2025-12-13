@@ -5,7 +5,6 @@ import {
   decorateBlock,
   decorateButtons,
   decorateIcons,
-  decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
@@ -15,7 +14,15 @@ import {
   loadCSS,
   toClassName,
   getMetadata,
+  readBlockConfig,
+  toCamelCase,
 } from './aem.js';
+
+// Cached media query results for performance
+const MEDIA_QUERIES = {
+  mobile: window.matchMedia('(max-width: 599px)'),
+  desktop: window.matchMedia('(min-width: 600px)'),
+};
 
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -702,95 +709,189 @@ function loadAutoBlock(doc) {
     }
   });
 }
+
+/** SECTIONS */
+
 /**
- * Extract section properties from Universal Editor data attributes
- * @param {Element} section The section element
- * @returns {Object} Object containing extracted properties
+ * Helper to extract pathname from URL
+ * @param {string} src - URL string
+ * @returns {string} pathname
  */
-function extractSectionPropertiesFromEditor(section) {
-  const props = {};
-
-  // Check for data-aue-prop attributes that might contain section properties
-  const aueProps = Array.from(section.attributes).filter((attr) => attr.name.startsWith('data-aue-prop-'));
-  aueProps.forEach((attr) => {
-    const propName = attr.name.replace('data-aue-prop-', '');
-    props[propName] = attr.value;
-  });
-
-  return props;
+function getImagePathname(src) {
+  const url = new URL(src, window.location.href);
+  return url.pathname;
 }
 
 /**
- * Apply dynamic background colors and images to sections based on metadata
- * @param {Element} main The main element containing sections
+ * Helper to extract file extension
+ * @param {string} pathname - File pathname
+ * @returns {string} extension
  */
-export function applySectionBackgroundColors(main) {
-  main.querySelectorAll('.section').forEach((section) => {
-    // Normalize backgroundColor data attribute variations
-    // The HTML may serialize as data-backgroundcolor, data-background-color,
-    // or data-backgroundColor. Ensure section.dataset.backgroundColor is set.
-    const bgColorVariants = ['backgroundcolor', 'background-color'];
-    bgColorVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.backgroundColor) {
-        section.dataset.backgroundColor = section.dataset[variant];
+function getImageExtension(pathname) {
+  return pathname.substring(pathname.lastIndexOf('.') + 1);
+}
+
+/**
+ * Creates a responsive picture element for background images with optimization
+ * Similar to createOptimizedPicture, but for 2 background images
+ * @param {string} desktopSrc - URL for desktop image
+ * @param {string} mobileSrc - URL for mobile image (optional)
+ * @returns {HTMLPictureElement} - The picture element with optimized responsive sources
+ */
+function createResponsiveBackgroundPicture(desktopSrc, mobileSrc = null) {
+  const picture = document.createElement('picture');
+
+  const desktopPath = getImagePathname(desktopSrc);
+  const desktopExt = getImageExtension(desktopPath);
+
+  // If mobile source exists, use it for mobile breakpoint
+  if (mobileSrc) {
+    const mobilePath = getImagePathname(mobileSrc);
+    const mobileExt = getImageExtension(mobilePath);
+
+    const mobileWebpSource = document.createElement('source');
+    mobileWebpSource.setAttribute('media', MEDIA_QUERIES.mobile.media);
+    mobileWebpSource.setAttribute('type', 'image/webp');
+    mobileWebpSource.setAttribute('srcset', `${mobilePath}?width=750&format=webply&optimize=medium`);
+    picture.appendChild(mobileWebpSource);
+
+    const mobileFallbackSource = document.createElement('source');
+    mobileFallbackSource.setAttribute('media', MEDIA_QUERIES.mobile.media);
+    mobileFallbackSource.setAttribute('srcset', `${mobilePath}?width=750&format=${mobileExt}&optimize=medium`);
+    picture.appendChild(mobileFallbackSource);
+  }
+
+  // Desktop
+  const desktopWebpSource = document.createElement('source');
+  desktopWebpSource.setAttribute('media', MEDIA_QUERIES.desktop.media);
+  desktopWebpSource.setAttribute('type', 'image/webp');
+  desktopWebpSource.setAttribute('srcset', `${desktopPath}?width=2000&format=webply&optimize=medium`);
+  picture.appendChild(desktopWebpSource);
+
+  const desktopFallbackSource = document.createElement('source');
+  desktopFallbackSource.setAttribute('media', MEDIA_QUERIES.desktop.media);
+  desktopFallbackSource.setAttribute('srcset', `${desktopPath}?width=2000&format=${desktopExt}&optimize=medium`);
+  picture.appendChild(desktopFallbackSource);
+
+  // Fallback img element
+  const img = document.createElement('img');
+  img.setAttribute('loading', 'lazy');
+  img.setAttribute('alt', '');
+  img.setAttribute('src', `${desktopPath}?width=2000&format=${desktopExt}&optimize=medium`);
+  picture.appendChild(img);
+
+  return picture;
+}
+
+/**
+ * Decorates all sections in a container element. Moved from aem.js
+ * @param {Element} main The container element
+ */
+export function decorateSections(main) {
+  const sectionsWithHeight = [];
+
+  main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section) => {
+    const wrappers = [];
+    let defaultContent = false;
+    [...section.children].forEach((e) => {
+      if ((e.tagName === 'DIV' && e.className) || !defaultContent) {
+        const wrapper = document.createElement('div');
+        wrappers.push(wrapper);
+        defaultContent = e.tagName !== 'DIV' || !e.className;
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
       }
+      wrappers[wrappers.length - 1].append(e);
     });
+    wrappers.forEach((wrapper) => section.append(wrapper));
+    section.classList.add('section');
+    section.dataset.sectionStatus = 'initialized';
+    section.style.display = 'none';
 
-    // Normalize sectionBackgroundImage data attribute variations
-    // The HTML may serialize as data-sectionbackgroundimage, data-section-background-image, etc.
-    // Ensure we always have section.dataset.sectionBackgroundImage set for the JavaScript to use
-    const bgImageVariants = ['sectionbackgroundimage', 'section-background-image'];
-    bgImageVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.sectionBackgroundImage) {
-        section.dataset.sectionBackgroundImage = section.dataset[variant];
-      }
-    });
+    // Process section metadata
+    const sectionMeta = section.querySelector('div.section-metadata');
+    let backgroundImageDesktop = null;
+    let backgroundImageMobile = null;
+    let heightDesktop = null;
+    let heightMobile = null;
 
-    let bgValue = null;
-    let bgImageValue = null;
-
-    // Check if backgroundColor is in dataset (from section-metadata block or data attribute)
-    if (section.dataset.backgroundColor) {
-      bgValue = section.dataset.backgroundColor.trim();
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      Object.keys(meta).forEach((key) => {
+        if (key === 'style') {
+          const styles = meta.style
+            .split(',')
+            .filter((style) => style)
+            .map((style) => toClassName(style.trim()));
+          styles.forEach((style) => section.classList.add(style));
+        } else if (key === 'id') {
+          section.id = meta[key];
+        } else if (key === 'sectionbackgroundimage') {
+          backgroundImageDesktop = meta[key];
+        } else if (key === 'sectionbackgroundimagemobile') {
+          backgroundImageMobile = meta[key];
+        } else if (key === 'height') {
+          heightDesktop = meta[key];
+        } else if (key === 'heightmobile') {
+          heightMobile = meta[key];
+        } else {
+          section.dataset[toCamelCase(key)] = meta[key];
+        }
+      });
+      sectionMeta.parentNode.remove();
     }
 
-    // Check if sectionBackgroundImage is in dataset
-    if (section.dataset.sectionBackgroundImage) {
-      bgImageValue = section.dataset.sectionBackgroundImage.trim();
+    // Create background image container if we have background images
+    if (backgroundImageDesktop) {
+      const bgImagesDiv = document.createElement('div');
+      bgImagesDiv.classList.add('bg-images');
+
+      const picture = createResponsiveBackgroundPicture(
+        backgroundImageDesktop,
+        backgroundImageMobile,
+      );
+
+      bgImagesDiv.appendChild(picture);
+      section.prepend(bgImagesDiv);
     }
 
-    // If not found, try to extract from Universal Editor properties (editor mode only)
-    if (section.hasAttribute('data-aue-resource')) {
-      const editorProps = extractSectionPropertiesFromEditor(section);
+    // Apply background color if specified
+    if (section.dataset.backgroundcolor) {
+      let bgValue = section.dataset.backgroundcolor.trim();
 
-      if (!bgValue && (editorProps['background-color'] || editorProps.backgroundColor)) {
-        bgValue = (editorProps['background-color'] || editorProps.backgroundColor).trim();
-      }
-
-      if (!bgImageValue && (editorProps['section-background-image'] || editorProps.sectionBackgroundImage)) {
-        bgImageValue = (editorProps['section-background-image'] || editorProps.sectionBackgroundImage).trim();
-      }
-    }
-
-    // If we found a background color value, process and apply it
-    if (bgValue) {
       // If it looks like a hex color (3 or 6 characters, alphanumeric), prepend with #
       if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
         bgValue = `#${bgValue}`;
       }
 
       // Set as inline style
-      section.style.backgroundColor = bgValue;
+      section.style.background = bgValue;
     }
 
-    // If we found a background image value, apply it
-    if (bgImageValue) {
-      section.style.backgroundImage = `url('${bgImageValue}')`;
-      section.style.backgroundSize = 'cover';
-      section.style.backgroundPosition = 'center';
-      section.style.backgroundRepeat = 'no-repeat';
+    // Store sections with height for batch processing all on page
+    if (heightDesktop || heightMobile) {
+      sectionsWithHeight.push({
+        section,
+        heightDesktop,
+        heightMobile,
+      });
     }
   });
+
+  // Set up single event listener for all sections with height
+  if (sectionsWithHeight.length > 0) {
+    const updateAllHeights = () => {
+      const isMobile = MEDIA_QUERIES.mobile.matches;
+      sectionsWithHeight.forEach(({ section, heightDesktop, heightMobile }) => {
+        const height = isMobile && heightMobile ? heightMobile : heightDesktop;
+        // Always set minHeight (or clear it with empty string if no value for current breakpoint)
+        section.style.minHeight = height || '';
+      });
+    };
+
+    updateAllHeights();
+    MEDIA_QUERIES.mobile.addEventListener('change', updateAllHeights);
+    MEDIA_QUERIES.desktop.addEventListener('change', updateAllHeights);
+  }
 }
 
 /**
@@ -819,7 +920,6 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  applySectionBackgroundColors(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
 }
