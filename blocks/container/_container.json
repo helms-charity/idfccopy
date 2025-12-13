@@ -88,7 +88,7 @@
     ],
     "filters": [
       {
-        "id": "section",
+        "id": "container",
         "components": [
           "text",
           "section"
