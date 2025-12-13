@@ -21,7 +21,8 @@ import {
 // Cached media query results for performance
 const MEDIA_QUERIES = {
   mobile: window.matchMedia('(max-width: 599px)'),
-  desktop: window.matchMedia('(min-width: 600px)'),
+  tablet: window.matchMedia('(min-width: 600px) and (max-width: 899px)'),
+  desktop: window.matchMedia('(min-width: 900px)'),
 };
 
 /**
@@ -713,74 +714,69 @@ function loadAutoBlock(doc) {
 /** SECTIONS */
 
 /**
- * Helper to extract pathname from URL
- * @param {string} src - URL string
- * @returns {string} pathname
+ * Helper function to create a <source> element
+ * @param {string} src the image url
+ * @param {number} width the width of the image
+ * @param {MediaQueryList} mediaQuery the media query to apply to the source
+ *
+ * @returns imageSource
  */
-function getImagePathname(src) {
-  const url = new URL(src, window.location.href);
-  return url.pathname;
-}
+export function createSource(src, width, mediaQuery) {
+  const { pathname } = new URL(src, window.location.href);
+  const source = document.createElement('source');
+  source.type = 'image/webp';
+  source.srcset = `${pathname}?width=${width}&format=webply&optimize=medium`;
+  source.media = mediaQuery;
 
-/**
- * Helper to extract file extension
- * @param {string} pathname - File pathname
- * @returns {string} extension
- */
-function getImageExtension(pathname) {
-  return pathname.substring(pathname.lastIndexOf('.') + 1);
+  return source;
 }
 
 /**
  * Creates a responsive picture element for background images with optimization
- * Similar to createOptimizedPicture, but for 2 background images
- * @param {string} desktopSrc - URL for desktop image
- * @param {string} mobileSrc - URL for mobile image (optional)
- * @returns {HTMLPictureElement} - The picture element with optimized responsive sources
+ * Similar to createOptimizedPicture, but for 2 background image options
+ * @param {Element} main the main element
  */
-function createResponsiveBackgroundPicture(desktopSrc, mobileSrc = null) {
-  const picture = document.createElement('picture');
+function createResponsiveBackgroundPicture(main) {
+  const sectionImgContainers = main.querySelectorAll(':scope > .section[data-sectionbackgroundimage]');
+  sectionImgContainers.forEach((sectionImgContainer) => {
+    const sectionImg = sectionImgContainer.dataset.sectionbackgroundimage;
+    const sectionMobImg = sectionImgContainer.dataset.sectionbackgroundimagemobile;
+    let defaultImgUrl = null;
 
-  const desktopPath = getImagePathname(desktopSrc);
-  const desktopExt = getImageExtension(desktopPath);
+    const bgImagesDiv = document.createElement('div');
+    bgImagesDiv.classList.add('bg-images');
+    sectionImgContainer.prepend(bgImagesDiv);
 
-  // If mobile source exists, use it for mobile breakpoint
-  if (mobileSrc) {
-    const mobilePath = getImagePathname(mobileSrc);
-    const mobileExt = getImageExtension(mobilePath);
+    const newPic = document.createElement('picture');
+    if (sectionImg) {
+      newPic.appendChild(createSource(sectionImg, 1920, MEDIA_QUERIES.desktop.media));
+      newPic.appendChild(createSource(sectionImg, 899, MEDIA_QUERIES.tablet.media));
+      defaultImgUrl = sectionImg;
+    }
 
-    const mobileWebpSource = document.createElement('source');
-    mobileWebpSource.setAttribute('media', MEDIA_QUERIES.mobile.media);
-    mobileWebpSource.setAttribute('type', 'image/webp');
-    mobileWebpSource.setAttribute('srcset', `${mobilePath}?width=750&format=webply&optimize=medium`);
-    picture.appendChild(mobileWebpSource);
+    if (sectionMobImg) {
+      newPic.appendChild(createSource(sectionMobImg, 600, MEDIA_QUERIES.mobile.media));
+      defaultImgUrl = sectionMobImg;
+    }
 
-    const mobileFallbackSource = document.createElement('source');
-    mobileFallbackSource.setAttribute('media', MEDIA_QUERIES.mobile.media);
-    mobileFallbackSource.setAttribute('srcset', `${mobilePath}?width=750&format=${mobileExt}&optimize=medium`);
-    picture.appendChild(mobileFallbackSource);
-  }
+    const newImg = document.createElement('img');
+    newImg.alt = '';
+    newImg.className = 'section-img';
+    newImg.loading = 'lazy';
 
-  // Desktop
-  const desktopWebpSource = document.createElement('source');
-  desktopWebpSource.setAttribute('media', MEDIA_QUERIES.desktop.media);
-  desktopWebpSource.setAttribute('type', 'image/webp');
-  desktopWebpSource.setAttribute('srcset', `${desktopPath}?width=2000&format=webply&optimize=medium`);
-  picture.appendChild(desktopWebpSource);
+    if (defaultImgUrl) {
+      // Set width and height once image loads to get native dimensions
+      newImg.onload = () => {
+        newImg.width = newImg.naturalWidth;
+        newImg.height = newImg.naturalHeight;
+      };
+      newImg.src = defaultImgUrl;
 
-  const desktopFallbackSource = document.createElement('source');
-  desktopFallbackSource.setAttribute('media', MEDIA_QUERIES.desktop.media);
-  desktopFallbackSource.setAttribute('srcset', `${desktopPath}?width=2000&format=${desktopExt}&optimize=medium`);
-  picture.appendChild(desktopFallbackSource);
-
-  // Fallback img element
-  const img = document.createElement('img');
-  img.setAttribute('loading', 'lazy');
-  img.setAttribute('alt', '');
-  img.setAttribute('src', `${desktopPath}?width=2000&format=${desktopExt}&optimize=medium`);
-  picture.appendChild(img);
-
-  return picture;
+      newPic.appendChild(newImg);
+      sectionImgContainer.prepend(newPic);
+      bgImagesDiv.appendChild(newPic);
+    }
+  });
 }
 
 /**
@@ -809,8 +805,6 @@ export function decorateSections(main) {
 
     // Process section metadata
     const sectionMeta = section.querySelector('div.section-metadata');
-    let backgroundImageDesktop = null;
-    let backgroundImageMobile = null;
     let heightDesktop = null;
     let heightMobile = null;
 
@@ -825,10 +819,6 @@ export function decorateSections(main) {
           styles.forEach((style) => section.classList.add(style));
         } else if (key === 'id') {
           section.id = meta[key];
-        } else if (key === 'sectionbackgroundimage') {
-          backgroundImageDesktop = meta[key];
-        } else if (key === 'sectionbackgroundimagemobile') {
-          backgroundImageMobile = meta[key];
         } else if (key === 'height') {
           heightDesktop = meta[key];
         } else if (key === 'heightmobile') {
@@ -840,20 +830,6 @@ export function decorateSections(main) {
       sectionMeta.parentNode.remove();
     }
 
-    // Create background image container if we have background images
-    if (backgroundImageDesktop) {
-      const bgImagesDiv = document.createElement('div');
-      bgImagesDiv.classList.add('bg-images');
-
-      const picture = createResponsiveBackgroundPicture(
-        backgroundImageDesktop,
-        backgroundImageMobile,
-      );
-
-      bgImagesDiv.appendChild(picture);
-      section.prepend(bgImagesDiv);
-    }
-
     // Apply background color if specified
     if (section.dataset.backgroundcolor) {
       let bgValue = section.dataset.backgroundcolor.trim();
@@ -862,8 +838,6 @@ export function decorateSections(main) {
       if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
         bgValue = `#${bgValue}`;
       }
-
-      // Set as inline style
       section.style.background = bgValue;
     }
 
@@ -1416,6 +1390,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
+  createResponsiveBackgroundPicture(main);
 }
 
 /**
