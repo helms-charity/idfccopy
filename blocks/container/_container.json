@@ -8,7 +8,8 @@
             "page": {
               "resourceType": "core/franklin/components/section/v1/section",
               "template": {
-                "model": "container"
+                "model": "container",
+                "name": "Container"
               }
             }
           }
@@ -23,8 +24,7 @@
             "component": "text",
             "name": "name",
             "label": "Container Name",
-            "description": "The label shown for this container in the Content Tree",
-            "value": "Container"
+            "description": "The label shown for this container in the Content Tree"
           },
           {
             "component": "text",
