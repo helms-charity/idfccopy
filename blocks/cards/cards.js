@@ -479,6 +479,8 @@ export default async function decorate(block) {
   const isTestimonial = block.classList.contains('testimonial-card');
   // Check if important-documents variant
   const isImportantDocuments = block.classList.contains('important-documents');
+  // Check if experience-life variant
+  const isExperienceLife = block.classList.contains('experience-life');
 
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
@@ -539,6 +541,26 @@ export default async function decorate(block) {
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
 
+    // Wait for Swiper to be available (script may need time to execute)
+    const waitForSwiper = () => new Promise((resolve) => {
+      if (typeof Swiper !== 'undefined') {
+        resolve();
+      } else {
+        const checkInterval = setInterval(() => {
+          if (typeof Swiper !== 'undefined') {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 10);
+        // Timeout after 2 seconds
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          resolve();
+        }, 2000);
+      }
+    });
+    await waitForSwiper();
+
     // Add Swiper classes
     block.classList.add('swiper');
     ul.classList.add('swiper-wrapper');
@@ -584,18 +606,49 @@ export default async function decorate(block) {
           centeredSlides: true,
         },
       };
-    } else {
-      // For benefit cards: standard breakpoints
+    } else if (isExperienceLife) {
+      // For experience-life cards: tighter spacing
+      const slideCount = ul.querySelectorAll('li').length;
+      const shouldCenter = slideCount < 3;
+      swiperConfig.centeredSlides = shouldCenter;
       swiperConfig.breakpoints = {
         600: {
-          slidesPerView: 2,
+          slidesPerView: Math.min(2, slideCount),
+          spaceBetween: 16,
+          centeredSlides: slideCount < 2,
+        },
+        900: {
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 20,
+          centeredSlides: shouldCenter,
+        },
+      };
+    } else {
+      // For benefit cards: standard breakpoints
+      const slideCount = ul.querySelectorAll('li').length;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: Math.min(2, slideCount),
           spaceBetween: 20,
         },
         900: {
-          slidesPerView: 3,
-          spaceBetween: 60,
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 40,
         },
       };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
+    }
+
+    // Initialize Swiper if available
+    if (typeof Swiper === 'undefined') {
+      // eslint-disable-next-line no-console
+      console.warn('Swiper library not available, cards will display without slider');
+      return;
     }
 
     // eslint-disable-next-line no-undef
