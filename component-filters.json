@@ -96,8 +96,8 @@
   {
     "id": "container",
     "components": [
-      "text",
-      "section"
+      "section",
+      "library-metadata"
     ]
   },
   {
