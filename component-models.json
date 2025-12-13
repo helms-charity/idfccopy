@@ -752,7 +752,8 @@
         "component": "text",
         "name": "name",
         "label": "Container Name",
-        "description": "The label shown for this container in the Content Tree"
+        "description": "The label shown for this container in the Content Tree",
+        "value": "Container"
       },
       {
         "component": "text",
