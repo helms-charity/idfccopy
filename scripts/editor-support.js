@@ -205,7 +205,7 @@ async function applyChanges(event) {
       const newElements = parsedUpdate.querySelectorAll(`[data-aue-resource="${resource}"],[data-richtext-resource="${resource}"]`);
       if (newElements.length) {
         const { parentElement } = element;
-        if (element.matches('.section') || element.matches('.container')) {
+        if (element.matches('.section')) {
           const [newSection] = newElements;
           newSection.style.display = 'none';
           element.insertAdjacentElement('afterend', newSection);

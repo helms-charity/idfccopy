@@ -907,7 +907,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  //includeNextSections(main);
+  // includeNextSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
 }
