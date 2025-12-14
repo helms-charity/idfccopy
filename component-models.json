@@ -167,44 +167,53 @@
         ]
       },
       {
-        "component": "text",
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "value": "",
+        "component": "container",
+        "label": "Optional background properties",
+        "name": "container",
         "valueType": "string",
-        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImage",
-        "label": "Background Image",
-        "description": "The background image of the section, displayed on top of the background color if specified",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImageMobile",
-        "label": "Background Image Mobile",
-        "description": "The background image of the section, displayed on top of the background color if specified",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "name": "height",
-        "label": "Desktop Height",
-        "value": "",
-        "valueType": "string",
-        "description": "optional minimum height when in desktop, e.g. 400px"
-      },
-      {
-        "component": "text",
-        "name": "heightmobile",
-        "label": "Mobile Height",
-        "value": "",
-        "valueType": "string",
-        "description": "optional minimum height when in mobile, e.g. 400px"
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "backgroundColor",
+            "label": "Background Color/gradient",
+            "value": "",
+            "valueType": "string",
+            "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "sectionBackgroundImage",
+            "label": "Background Image",
+            "description": "Background image of the section, displayed on top of the background color if specified",
+            "multi": false
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "sectionBackgroundImageMobile",
+            "label": "Background Image Mobile",
+            "description": "Background image for mobile",
+            "multi": false
+          },
+          {
+            "component": "text",
+            "name": "height",
+            "label": "Desktop Height",
+            "value": "",
+            "valueType": "string",
+            "description": "optional minimum height when in desktop, e.g. 400px"
+          },
+          {
+            "component": "text",
+            "name": "heightmobile",
+            "label": "Mobile Height",
+            "value": "",
+            "valueType": "string",
+            "description": "optional minimum height when in mobile, e.g. 400px"
+          }
+        ]
       }
     ]
   },
