@@ -895,8 +895,6 @@ function decorateContainerSections(main) {
   });
 }
 
-// Call from your main decorate() / init
-decorateContainerSections();
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -923,7 +921,6 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  decorateContainerSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
 }
@@ -1420,6 +1417,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
+  decorateContainerSections(main);
   createResponsiveBackgroundPicture(main);
 }
 
