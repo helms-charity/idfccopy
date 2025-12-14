@@ -868,6 +868,19 @@ export function decorateSections(main) {
   }
 }
 
+function includeNextSections(container) {
+  const { includeNextSections: includeNextSectionsValue } = container.dataset;
+  if (includeNextSectionsValue && includeNextSectionsValue > 0) {
+  // find the next number of .section elements append them to container
+    const nextSections = [...container.querySelectorAll('.section')];
+    for (let i = 0; i < includeNextSectionsValue; i += 1) {
+      if (nextSections[i]) {
+        container.appendChild(nextSections[i]);
+      }
+    }
+  }
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -894,6 +907,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  //includeNextSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
 }
