@@ -147,6 +147,27 @@
       },
       {
         "component": "text",
+        "name": "id",
+        "label": "ID",
+        "description": "Adds an ID value to the section"
+      },
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "UPI steps red background",
+            "value": "upi-steps-red-bg"
+          }
+        ]
+      },
+      {
+        "component": "text",
         "name": "backgroundColor",
         "label": "Background Color",
         "value": "",
@@ -184,27 +205,6 @@
         "value": "",
         "valueType": "string",
         "description": "optional minimum height when in mobile, e.g. 400px"
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style",
-        "options": [
-          {
-            "name": "Highlight",
-            "value": "highlight"
-          },
-          {
-            "name": "UPI steps red background",
-            "value": "upi-steps-red-bg"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "id",
-        "label": "ID",
-        "description": "Adds an ID value to the section"
       }
     ]
   },
@@ -742,6 +742,74 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "container",
+    "fields": [
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Container Name",
+        "description": "The label shown for this container in the Content Tree"
+      },
+      {
+        "component": "text",
+        "name": "id",
+        "label": "ID",
+        "description": "Adds an ID value to the container"
+      },
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Center",
+            "value": "center"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "value": "",
+        "valueType": "string",
+        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImage",
+        "label": "Background Image",
+        "description": "The background image of the container, displayed on top of the background color if specified",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImageMobile",
+        "label": "Background Image Mobile",
+        "description": "The background image of the container, displayed on top of the background color if specified",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "height",
+        "label": "Desktop Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in desktop, e.g. 400px"
+      },
+      {
+        "component": "text",
+        "name": "heightmobile",
+        "label": "Mobile Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in mobile, e.g. 400px"
       }
     ]
   },
