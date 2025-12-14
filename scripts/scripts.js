@@ -868,19 +868,35 @@ export function decorateSections(main) {
   }
 }
 
-// function includeNextSections(container) {
-//   const { includeNextSections: includeNextSectionsValue } = container.dataset;
-//   if (includeNextSectionsValue && includeNextSectionsValue > 0) {
-//   // find the next number of .section elements append them to container
-//     const nextSections = [...container.querySelectorAll('.section')];
-//     for (let i = 0; i < includeNextSectionsValue; i += 1) {
-//       if (nextSections[i]) {
-//         container.appendChild(nextSections[i]);
-//       }
-//     }
-//   }
-// }
+function decorateContainerSections(main) {
+  const sections = Array.from(main.querySelectorAll('.section'));
 
+  sections.forEach((section, index) => {
+    const includeNext = parseInt(
+      section.dataset.includeNextSections || '0',
+      10,
+    );
+    if (!includeNext || includeNext <= 0) {
+      return;
+    }
+
+    // Mark the container
+    section.classList.add('container-section--merged');
+
+    // Collect next N sibling sections
+    for (let i = 1; i <= includeNext; i += 1) {
+      const sibling = sections[index + i];
+      if (!sibling) break;
+      sibling.classList.add('container-section--merged-sibling');
+
+      // Optionally mark which container they belong to
+      // e.g. sibling.dataset.mergedContainerId = section.id;
+    }
+  });
+}
+
+// Call from your main decorate() / init
+decorateContainerSections();
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -907,7 +923,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  // includeNextSections(main);
+  decorateContainerSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
 }

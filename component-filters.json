@@ -43,13 +43,6 @@
     ]
   },
   {
-    "id": "container",
-    "components": [
-      "section",
-      "library-metadata"
-    ]
-  },
-  {
     "id": "accordion",
     "components": [
       "accordion-item"

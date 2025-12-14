@@ -85,8 +85,7 @@
                 "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
                   "model": "container",
-                  "name": "Container",
-                  "filter": "container"
+                  "name": "Container"
                 }
               }
             }

@@ -340,6 +340,25 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
+/* Container with a large background */
+.section.container-section--merged {
+  position: relative;
+}
+
+/* All merged siblings share positioning context */
+.section.container-section--merged,
+.section.container-section--merged-sibling {
+  position: relative;
+  z-index: 0;
+}
+
+/* If you want content to sit “on top” of the shared background: */
+.section.container-section--merged > div,
+.section.container-section--merged-sibling > div {
+  position: relative;
+  z-index: 1;
+}
+
 /* Reserve space for breadcrumbs to prevent CLS - Mobile First */
 
 /* Mobile: hidden by default */
