@@ -806,7 +806,7 @@ function decorateContainerSections(main) {
 
   sections.forEach((section, index) => {
     const includeNext = parseInt(
-      section.dataset.includeNextSections || '0',
+      section.dataset.includenextsections || '0',
       10,
     );
     if (!includeNext || includeNext <= 0) {
@@ -856,6 +856,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
+  decorateContainerSections(main);
 }
 
 function addOverlayRule(ruleSet, selector, property, value) {
@@ -1350,7 +1351,6 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
-  decorateContainerSections(main);
   createResponsiveBackgroundPicture(main);
 }
 

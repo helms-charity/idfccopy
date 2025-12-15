@@ -343,6 +343,7 @@ main>.section:first-of-type {
 /* Container with a large background */
 .section.container-section--merged {
   position: relative;
+  overflow: visible;
 }
 
 /* All merged siblings share positioning context */
