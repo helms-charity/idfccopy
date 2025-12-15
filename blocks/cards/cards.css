@@ -1118,7 +1118,7 @@
   /* Experience Life & Reward Points - Desktop */
   .cards.experience-life .benefit-cards,
   .cards.reward-points .benefit-cards {
-    min-height: 420px;
+    min-height: 400px;
   }
 
   .cards.reward-points .benefit-cards .cards-card-image {
