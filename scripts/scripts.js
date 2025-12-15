@@ -323,64 +323,6 @@ export async function createField(fd, form) {
 }
 
 /**
- * Recursively removes all data-aue-* attributes from an element and its descendants.
- * This prevents fragment content from appearing in Universal Editor content tree.
- * @param {Element} element The element to strip attributes from
- */
-export function stripAueAttributes(element) {
-  if (!element || !element.attributes) return;
-
-  // Remove data-aue-* attributes from this element
-  [...element.attributes]
-    .filter((attr) => attr.name.startsWith('data-aue-'))
-    .forEach((attr) => element.removeAttribute(attr.name));
-
-  // Recursively strip from all children
-  if (element.children) {
-    Array.from(element.children).forEach((child) => stripAueAttributes(child));
-  }
-}
-
-/**
- * Checks if we're in Universal Editor context
- * @returns {boolean} True if in Universal Editor
- */
-function isUniversalEditorContext() {
-  // Check for UE-specific indicators
-  return !!(
-    document.body?.hasAttribute('data-aue-resource')
-    || window.hlx?.aemRoot
-    || new URLSearchParams(window.location.search).has('aue')
-  );
-}
-
-/**
- * Checks if a fragment path matches the current page being edited
- * @param {string} fragmentPath The path of the fragment being loaded
- * @returns {boolean} True if the fragment is the main content being edited
- */
-function isFragmentTheMainContent(fragmentPath) {
-  // Get current page path from the data-aue-resource on body or main
-  const bodyResource = document.body?.getAttribute('data-aue-resource') || '';
-  const mainResource = document.querySelector('main')?.getAttribute('data-aue-resource') || '';
-
-  // Extract path from URN
-  // e.g., "urn:aemconnection:/content/site/page/jcr:content" -> "/content/site/page"
-  const extractPath = (urn) => {
-    const match = urn.match(/urn:aemconnection:([^/]*\/content\/[^/]+)?(\/.*?)\/jcr:content/);
-    return match ? match[2] : '';
-  };
-
-  const currentPagePath = extractPath(bodyResource) || extractPath(mainResource);
-
-  // Normalize fragment path for comparison
-  const normalizedFragmentPath = fragmentPath.replace(/(\.plain)?\.html$/, '');
-
-  // Check if the fragment path matches the current page being edited
-  return currentPagePath && normalizedFragmentPath === currentPagePath;
-}
-
-/**
  * Loads a fragment.
  * @param {string} path The path to the fragment
  * @returns {HTMLElement} The root element of the fragment
@@ -411,18 +353,9 @@ export async function loadFragment(path) {
         block.setAttribute('data-fragment-block', 'true');
       });
 
-      // eslint-disable-next-line no-use-before-define
+      // eslint-disable-next-line
       decorateMain(main);
       await loadSections(main);
-
-      // Strip data-aue-* attributes from fragments when in Universal Editor,
-      // UNLESS the fragment is the main content being edited
-      // (e.g., editing /nav or /footer directly).
-      // This prevents header, footer, breadcrumbs, category-nav, and other
-      // fragments from appearing in the UE content tree as partials
-      if (isUniversalEditorContext() && !isFragmentTheMainContent(path)) {
-        stripAueAttributes(main);
-      }
 
       return main;
     }

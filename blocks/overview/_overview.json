@@ -23,12 +23,12 @@
         "fields": [
          {
             "component": "text",
-            "name": "Title",
+            "name": "title",
             "label": "Title"
          },
          {
             "component": "richtext",
-            "name": "Text",
+            "name": "text",
             "label": "Text"
          },
          {

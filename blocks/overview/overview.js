@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-/* placeholder-script */
+/* placeholder-script for merge */
 $(document).ready(function () {
   var length = $("#gcoverview").data("words") || 150;
   cHtml = sanitize($("#gcoverview").html());
