@@ -689,6 +689,7 @@ export default async function decorate(block) {
     } else {
       // For benefit cards: standard breakpoints
       const slideCount = ul.querySelectorAll('li').length;
+      swiperConfig.spaceBetween = 32;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
