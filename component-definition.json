@@ -75,6 +75,21 @@
               }
             }
           }
+        },
+        {
+          "title": "Container",
+          "id": "container",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/section/v1/section",
+                "template": {
+                  "model": "container",
+                  "name": "Container"
+                }
+              }
+            }
+          }
         }
       ]
     },
@@ -284,21 +299,6 @@
                 "template": {
                   "columns": "2",
                   "rows": "1"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Container",
-          "id": "container",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/section/v1/section",
-                "template": {
-                  "model": "container",
-                  "name": "Container"
                 }
               }
             }

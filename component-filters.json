@@ -94,13 +94,6 @@
     ]
   },
   {
-    "id": "container",
-    "components": [
-      "section",
-      "library-metadata"
-    ]
-  },
-  {
     "id": "faq-accordion",
     "components": [
       "faq-accordion-item"

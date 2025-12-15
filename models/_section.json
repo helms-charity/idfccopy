@@ -47,9 +47,16 @@
           ]
         },
         {
+          "component": "container",
+          "label": "Optional background properties",
+          "name": "container",
+          "valueType": "string",
+          "collapsible": true,
+          "fields": [
+        {
           "component": "text",
           "name": "backgroundColor",
-          "label": "Background Color",
+          "label": "Background Color/gradient",
           "value": "",
           "valueType": "string",
           "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
@@ -59,7 +66,7 @@
           "valueType": "string",
           "name": "sectionBackgroundImage",
           "label": "Background Image",
-          "description": "The background image of the section, displayed on top of the background color if specified",
+          "description": "Background image of the section, displayed on top of the background color if specified",
           "multi": false
         },
         {
@@ -67,7 +74,7 @@
           "valueType": "string",
           "name": "sectionBackgroundImageMobile",
           "label": "Background Image Mobile",
-          "description": "The background image of the section, displayed on top of the background color if specified",
+          "description": "Background image for mobile",
           "multi": false
         },
         {
@@ -85,6 +92,8 @@
           "value": "",
           "valueType": "string",
           "description": "optional minimum height when in mobile, e.g. 400px"
+        }
+          ]
         }
       ]
     }
