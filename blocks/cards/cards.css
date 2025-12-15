@@ -328,7 +328,7 @@
 }
 
 .section:has(.cards.key-benefits) .default-content-wrapper h2 {
-  background: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
+  background: var(--gradient-red);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -355,7 +355,7 @@
 .cards.key-benefits .benefit-cards {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
+  background: var(--gradient-blue);
   border-radius: 20px;
   overflow: hidden;
   position: relative;
@@ -522,6 +522,7 @@
 }
 
 /* === EXPERIENCE LIFE & REWARD POINTS VARIANTS === */
+
 /* Shared styling with key-benefits - just add the selectors */
 .cards.experience-life.swiper,
 .cards.reward-points.swiper {
@@ -593,7 +594,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
-  background: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
+  background: var(--gradient-silver);
 }
 
 /* Experience Life - Text content positioned below tag */
@@ -609,7 +610,7 @@
 
 /* Reward Points - Same blue as Key Benefits */
 .cards.reward-points .benefit-cards {
-  background: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
+  background: var(--gradient-blue);
 }
 
 /* Ensure parent has relative positioning for absolute children */
@@ -675,7 +676,7 @@
   font-weight: 700;
   line-height: 1.3;
   margin: 0 0 12px;
-  background: var(--Linear-01, linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%));
+  background: var(--gradient-silver);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -715,7 +716,7 @@
 
 /* Experience Life section title - silver/gray */
 .section:has(.cards.experience-life) .default-content-wrapper h2 {
-  background: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
+  background: var(--gradient-silver);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -729,7 +730,7 @@
 
 /* Reward Points section title - red gradient */
 .section:has(.cards.reward-points) .default-content-wrapper h2 {
-  background: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
+  background: var(--gradient-red);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
