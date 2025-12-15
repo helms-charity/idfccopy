@@ -84,11 +84,6 @@
       "fields": [
         {
           "component": "text",
-          "name": "tab",
-          "label": "tab title"
-        },
-        {
-          "component": "text",
           "name": "tab_question",
           "label": "Question"
         },
@@ -96,6 +91,11 @@
           "component": "richtext",
           "name": "tab_answer",
           "label": "Answer"
+        },
+        {
+          "component": "text",
+          "name": "tab",
+          "label": "tab title"
         }
     ]
     }
