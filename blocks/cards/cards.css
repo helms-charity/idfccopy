@@ -342,7 +342,7 @@
 /* Key Benefits Cards Container */
 .cards.key-benefits.swiper {
   overflow: clip;
-  overflow-clip-margin: 20px;
+  overflow-clip-margin: 10px;
 }
 
 .cards.key-benefits .swiper-wrapper {
@@ -361,7 +361,7 @@
   position: relative;
   min-height: 380px;
   width: 100%;
-  box-shadow: 0 8px 20px rgba(0 0 0 / 30%);
+  box-shadow: 0 8px 10px rgba(0 0 0 / 30%);
 }
 
 /* Ensure parent has relative positioning for absolute children */
@@ -511,21 +511,22 @@
   max-width: calc(33% + 40px);
   margin-left: auto;
   margin-right: auto;
-  padding: 15px 20px;
+  padding: 15px;
 }
 
 .cards.cards-two-slides {
   max-width: calc(66% + 40px);
   margin-left: auto;
   margin-right: auto;
-  padding: 15px 20px;
+  padding: 15px;
 }
 
 /* === EXPERIENCE LIFE & REWARD POINTS VARIANTS === */
 /* Shared styling with key-benefits - just add the selectors */
 .cards.experience-life.swiper,
 .cards.reward-points.swiper {
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 10px;
   padding-top: 10px;
 }
 
@@ -540,7 +541,7 @@
   position: relative;
   min-height: 380px;
   width: 100%;
-  box-shadow: 0 8px 24px rgba(0 0 0 / 30%);
+  box-shadow: 0 8px 12px rgba(0 0 0 / 30%);
 }
 
 .cards.experience-life > ul > li,
@@ -577,6 +578,7 @@
   position: relative;
   z-index: 3;
   padding: 0 24px;
+  top: 20px;
 }
 
 .cards.experience-life .benefit-cards .cards-card-tag p,
@@ -1160,8 +1162,24 @@
   }
 
   .cards.swiper {
-    width:1050px;
+    max-width:1050px;
   }
+
+/* Key Benefits Cards Container */
+.cards.key-benefits.swiper {
+  overflow-clip-margin: 20px;
+}
+
+.cards.key-benefits .swiper-wrapper {
+  align-items: stretch;
+}
+
+/* Key Benefits Card Base Styling */
+.cards.key-benefits > ul > li,
+.cards.key-benefits .swiper-slide > li,
+.cards.key-benefits .benefit-cards {
+  box-shadow: 0 8px 20px rgba(0 0 0 / 30%);
+}
 
   /* All About Card Desktop Styles */
   .cards.all-about-card .swiper-slide {
