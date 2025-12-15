@@ -263,7 +263,7 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['swipable', 'startingCard'];
+  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard'];
   const propertyValues = {};
   const itemsToRemove = [];
 
@@ -602,6 +602,7 @@ export default async function decorate(block) {
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
+  const isAutoplayEnabled = block.dataset.autoplayEnabled === 'true';
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (isSwipable) {
@@ -710,6 +711,16 @@ export default async function decorate(block) {
       } else if (slideCount === 2) {
         block.classList.add('cards-two-slides');
       }
+    }
+
+    // Add autoplay configuration if enabled
+    if (isAutoplayEnabled) {
+      swiperConfig.autoplay = {
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      };
+      swiperConfig.loop = true;
     }
 
     // Initialize Swiper if available
