@@ -55,13 +55,7 @@
           "name": "ctaText",
           "label": "CTA Text",
           "value": "More FAQs"
-        }
-      ]
-    },
-    {
-      "id": "faq-accordion-item",
-      "title": "FAQ Accordion Item",
-      "fields": [
+        },
         {
           "component": "multiselect",
           "name": "style",
@@ -73,33 +67,36 @@
             {
               "name": "light text on dark",
               "value": "light-text"
+            },
+            {
+              "name": "dark text on light",
+              "value": "dark-text-on-light"
             }
           ]
-          },
-          {
-            "name": "Select class",
-            "options": [
-              {
-                "name": "Variations",
-                "children": [
-              {
-                "name": "Target Act Class",
-                "value": "target-act-class"
-              },
-              {
-                "name": "Target Class",
-                "value": "target-class"
-              },
-              {
-                "name": "Target Last Class",
-                "value": "target-last-class"
-              }
-            ]
-            }
-            ]
           }
         ]
       }
+      ]
+    },
+    {
+      "id": "faq-accordion-item",
+      "title": "FAQ Accordion Item",
+      "fields": [
+        {
+          "component": "text",
+          "name": "tab",
+          "label": "tab title"
+        },
+        {
+          "component": "text",
+          "name": "tab_question",
+          "label": "Question"
+        },
+        {
+          "component": "richtext",
+          "name": "tab_answer",
+          "label": "Answer"
+        }
     ]
     }
   ],
