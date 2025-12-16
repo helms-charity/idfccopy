@@ -445,6 +445,13 @@
             "value": false
           },
           {
+            "component": "boolean",
+            "name": "autoplayEnabled",
+            "label": "Autoplay",
+            "valueType": "boolean",
+            "value": false
+          },
+          {
             "component": "number",
             "name": "startingCard",
             "label": "Starting Card (Index, default is 0)",

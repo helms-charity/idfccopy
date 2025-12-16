@@ -46,7 +46,7 @@
 .tabs .tabs-panel {
   border: none;
   padding: 24px 0;
-  overflow: auto;
+  overflow: hidden; /* Needed for swiper cards inside tabs */
 }
 
 .tabs .tabs-panel[aria-hidden='true'] {

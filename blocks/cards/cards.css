@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 /* BASE STYLING (mobile first) */
 .cards > ul {
   list-style: none;
@@ -84,6 +86,49 @@
 
 .cards .benefit-cards .cards-card-body p u {
   color: #1c1c1c;
+}
+
+/* CLICKABLE CARD STYLES */
+.cards .card-clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cards .card-clickable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px 0 rgb(137 137 137 / 100%);
+}
+
+.cards .card-clickable:focus {
+  outline: 2px solid var(--link-color, #B31B1B);
+  outline-offset: 2px;
+}
+
+.cards .card-clickable:active {
+  transform: translateY(0);
+}
+
+/* Screen reader only - hide link text but keep accessible */
+.cards .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Hide modal content source - content is stored in JS for modal display */
+.cards .cards-card-body.cards-modal-content {
+  display: none !important; /* "important" is, in fact, needed for this application */
+}
+
+/* Hide modal content in Universal Editor authoring mode */
+.aem-editing .cards .cards-card-body.cards-modal-content {
+  display: none !important; /* "important" is, in fact, needed for this application */
 }
 
 /* VIEW ALL / LESS BUTTON */
@@ -277,6 +322,426 @@
   padding: 0 16px;
 }
 
+/* === KEY BENEFITS CARD VARIANT === */
+.section:has(.cards.key-benefits) {
+  padding: 40px 0 60px;
+}
+
+.section:has(.cards.key-benefits) .default-content-wrapper h2 {
+  background: var(--gradient-red);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--heading-font-family);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+/* Key Benefits Cards Container */
+.cards.key-benefits.swiper {
+  overflow: clip;
+  overflow-clip-margin: 10px;
+}
+
+.cards.key-benefits .swiper-wrapper {
+  align-items: stretch;
+}
+
+/* Key Benefits Card Base Styling */
+.cards.key-benefits > ul > li,
+.cards.key-benefits .swiper-slide > li,
+.cards.key-benefits .benefit-cards {
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient-blue);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  min-height: 380px;
+  width: 100%;
+  box-shadow: 0 8px 10px rgba(0 0 0 / 30%);
+}
+
+/* Ensure parent has relative positioning for absolute children */
+.cards.key-benefits .benefit-cards.swiper-slide,
+.cards.key-benefits li.benefit-cards {
+  position: relative !important;
+}
+
+/* Authored background texture overlay (replaces hardcoded metal.png) */
+.cards.key-benefits .benefit-cards .cards-card-bg-texture {
+  position: absolute !important;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-bg-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+/* Key Benefits Card Image - Icon at top left */
+.cards.key-benefits .benefit-cards .cards-card-image {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 24px 24px 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-image img {
+  width: auto;
+  height: auto;
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* Key Benefits Divider Image */
+.cards.key-benefits .benefit-cards .cards-card-divider,
+.cards.experience-life .benefit-cards .cards-card-divider,
+.cards.reward-points .benefit-cards .cards-card-divider {
+  position: relative;
+  z-index: 2;
+  padding: 0 28px;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-divider img {
+  width: 100%;
+  max-width: unset;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Key Benefits Card Body */
+.cards.key-benefits .benefit-cards .cards-card-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  margin: 0;
+  flex: 1;
+}
+
+/* Title styling */
+.cards.key-benefits .benefit-cards .cards-card-body h3 {
+  color: #fff;
+  font-family: var(--heading-font-family);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 12px;
+  background: conic-gradient(from 142deg at 50% 35.29%, #999 0deg, #EFEFEF 48.6000019312deg, #CACACA 104.3999969959deg, #EFEFEF 163.8000047207deg, #CACACA 230.3999948502deg, #999 288.0000042915deg, #EFEFEF 320.3999948502deg);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Light weight text within title (for "of rewards" style) */
+.cards.key-benefits .benefit-cards .cards-card-body h3 em {
+  font-weight: 300;
+  font-style: normal;
+  opacity: 0.85;
+}
+
+/* Description text */
+.cards.key-benefits .benefit-cards .cards-card-body p {
+  color: rgba(255 255 255 / 80%);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+/* Links within key-benefits cards */
+.cards.key-benefits .benefit-cards .cards-card-body h3 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-body h3 a:hover {
+  text-decoration: none;
+}
+
+/* Arrow icon container - positioned at bottom right */
+.cards.key-benefits .benefit-cards .cards-card-body p:has(.icon-arrow-right-white) {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  margin: 0;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-body .icon-arrow-right-white {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards.key-benefits .benefit-cards .cards-card-body .icon-arrow-right-white img {
+  width: 36px;
+  height: 36px;
+  opacity: 0.8;
+}
+
+/* Hide button containers in key-benefits cards */
+.cards.key-benefits .benefit-cards .cards-card-body .button-container {
+  display: none;
+}
+
+/* Key Benefits Swiper Pagination */
+.cards.key-benefits .swiper-pagination-bullet {
+  background: rgba(100 100 100 / 40%);
+}
+
+.cards.key-benefits .swiper-pagination-bullet-active {
+  background: #666;
+}
+
+/* Center cards when fewer than 3 slides */
+.cards.cards-single-slide {
+  max-width: calc(33% + 40px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+}
+
+.cards.cards-two-slides {
+  max-width: calc(66% + 40px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+}
+
+/* === EXPERIENCE LIFE & REWARD POINTS VARIANTS === */
+
+/* Shared styling with key-benefits - just add the selectors */
+.cards.experience-life.swiper,
+.cards.reward-points.swiper {
+  overflow: clip;
+  overflow-clip-margin: 10px;
+  padding-top: 10px;
+}
+
+.cards.experience-life > ul > li,
+.cards.experience-life .benefit-cards,
+.cards.reward-points > ul > li,
+.cards.reward-points .benefit-cards {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  min-height: 380px;
+  width: 100%;
+  box-shadow: 0 8px 12px rgba(0 0 0 / 30%);
+}
+
+.cards.experience-life > ul > li,
+.cards.experience-life .benefit-cards {
+  padding-top: 220px;
+}
+
+/* Experience Life - Gray/silver gradient with image as background */
+.cards.experience-life .benefit-cards {
+  background: linear-gradient(137deg, #3D3D3D 4.07%, #5A5A5A 50%, #4A4A4A 75.46%);
+  border: 1px solid rgba(255 255 255 / 100%);
+}
+
+/* Experience Life - Image becomes full card background */
+.cards.experience-life .benefit-cards .cards-card-image {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.cards.experience-life .benefit-cards .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  opacity: 0.4;
+}
+
+/* Experience Life - Card Tag (e.g., "Travel") */
+.cards.experience-life .benefit-cards .cards-card-tag,
+.cards.reward-points .benefit-cards .cards-card-tag {
+  position: relative;
+  z-index: 3;
+  padding: 0 24px;
+  top: 20px;
+}
+
+.cards.experience-life .benefit-cards .cards-card-tag p,
+.cards.reward-points .benefit-cards .cards-card-tag p {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid rgba(255 255 255 / 60%);
+  border-radius: 4px;
+  color: #2E3E79;
+  font-family: var(--heading-font-family);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  background: var(--gradient-silver);
+}
+
+/* Experience Life - Text content positioned below tag */
+.cards.experience-life .benefit-cards .cards-card-body {
+  position: static; /* Allow arrow to position relative to card, not body */
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  margin-top: 12px;
+  flex: 1;
+}
+
+/* Reward Points - Same blue as Key Benefits */
+.cards.reward-points .benefit-cards {
+  background: var(--gradient-blue);
+}
+
+/* Ensure parent has relative positioning for absolute children */
+.cards.experience-life .benefit-cards.swiper-slide,
+.cards.experience-life li.benefit-cards,
+.cards.reward-points .benefit-cards.swiper-slide,
+.cards.reward-points li.benefit-cards {
+  position: relative !important;
+}
+
+/* Authored background texture overlay for experience-life and reward-points */
+.cards.experience-life .benefit-cards .cards-card-bg-texture,
+.cards.reward-points .benefit-cards .cards-card-bg-texture {
+  position: absolute !important;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.cards.experience-life .benefit-cards .cards-card-bg-texture img,
+.cards.reward-points .benefit-cards .cards-card-bg-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+/* Card image/icon styling (reward-points only - experience-life uses background image) */
+.cards.reward-points .benefit-cards .cards-card-image {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 24px 24px 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.cards.reward-points .benefit-cards .cards-card-image img {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* Card body styling (reward-points only - experience-life has custom positioning) */
+.cards.reward-points .benefit-cards .cards-card-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  margin: 0;
+  flex: 1;
+}
+
+.cards.experience-life .benefit-cards .cards-card-body h3,
+.cards.reward-points .benefit-cards .cards-card-body h3 {
+  color: #fff;
+  font-family: var(--heading-font-family);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 12px;
+  background: var(--gradient-silver);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cards.experience-life .benefit-cards .cards-card-body p,
+.cards.reward-points .benefit-cards .cards-card-body p {
+  color: rgba(255 255 255 / 80%);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.cards.experience-life .benefit-cards .cards-card-body h3 a,
+.cards.reward-points .benefit-cards .cards-card-body h3 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Arrow positioning */
+
+/* Arrow positioned at bottom right of card */
+.cards.experience-life .benefit-cards .cards-card-body p:has(.icon-arrow-right-white),
+.cards.reward-points .benefit-cards .cards-card-body p:has(.icon-arrow-right-white) {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  margin: 0;
+}
+
+.cards.experience-life .benefit-cards .cards-card-body .icon-arrow-right-white img,
+.cards.reward-points .benefit-cards .cards-card-body .icon-arrow-right-white img {
+  width: 36px;
+  height: 36px;
+  opacity: 0.8;
+}
+
+/* Experience Life section title - silver/gray */
+.section:has(.cards.experience-life) .default-content-wrapper h2 {
+  background: var(--gradient-silver);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--heading-font-family);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 40px;
+  padding: 40px 0 0;
+}
+
+/* Reward Points section title - red gradient */
+.section:has(.cards.reward-points) .default-content-wrapper h2 {
+  background: var(--gradient-red);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--heading-font-family);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 40px;
+  padding: 40px 0 0;
+}
+
 /* TESTIMONIAL CARD STYLING */
 
 /* Desktop styles for benefit cards */
@@ -325,6 +790,15 @@
 
   .cards.important-documents .cards-card-image {
     margin-bottom: 3px;
+  }
+
+  /* Key Benefits Cards - Tablet adjustments */
+  .cards.key-benefits .benefit-cards .cards-card-body h3 {
+    font-size: 24px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body p {
+    font-size: 15px;
   }
 }
 
@@ -531,6 +1005,26 @@
     padding: 24px 26px;
   }
 
+  .cards.swiper {
+    max-width:1050px;
+  }
+
+/* Key Benefits Cards Container */
+.cards.key-benefits.swiper {
+  overflow-clip-margin: 20px;
+}
+
+.cards.key-benefits .swiper-wrapper {
+  align-items: stretch;
+}
+
+/* Key Benefits Card Base Styling */
+.cards.key-benefits > ul > li,
+.cards.key-benefits .swiper-slide > li,
+.cards.key-benefits .benefit-cards {
+  box-shadow: 0 8px 20px rgba(0 0 0 / 30%);
+}
+
   /* All About Card Desktop Styles */
   .cards.all-about-card .swiper-slide {
     height: 462px;
@@ -589,6 +1083,101 @@
 
   .cards.all-about-card .cards-card-body h3 {
     font-size: 16px;
+  }
+
+  /* Key Benefits Cards - Desktop adjustments */
+  .section:has(.cards.key-benefits) .default-content-wrapper h2 {
+    font-size: 40px;
+    margin-bottom: 50px;
+  }
+
+  .cards.key-benefits > ul > li,
+  .cards.key-benefits .benefit-cards {
+    min-height: 420px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-image {
+    padding: 64px 28px 20px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-image img {
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body {
+    padding: 0 28px 28px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body h3 {
+    font-size: 28px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-body p {
+    font-size: 16px;
+  }
+  
+  .cards.reward-points .benefit-cards .cards-card-body p {
+    font-size: 16px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body p:has(.icon-arrow-right-white) {
+    bottom: 28px;
+    right: 28px;
+  }
+
+  .cards.key-benefits .benefit-cards .cards-card-body .icon-arrow-right-white img {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Experience Life & Reward Points - Desktop */
+  .cards.experience-life .benefit-cards,
+  .cards.reward-points .benefit-cards {
+    min-height: 400px;
+  }
+
+  .cards.reward-points .benefit-cards .cards-card-image {
+    padding: 64px 28px 20px;
+  }
+
+  .cards.reward-points .benefit-cards .cards-card-body {
+    padding: 0 28px 28px;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-tag,
+  .cards.reward-points .benefit-cards .cards-card-tag {
+    padding: 0 28px;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-body {
+    padding: 0 28px 28px;
+    margin-top: 12px;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-body h3 {
+    font-size: 24px;
+  }
+
+  .cards.reward-points .benefit-cards .cards-card-body h3 {
+    font-size: 32px;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-body p:has(.icon-arrow-right-white),
+  .cards.reward-points .benefit-cards .cards-card-body p:has(.icon-arrow-right-white) {
+    bottom: 10px;
+    right: 30px;
+  }
+
+  .cards.experience-life .benefit-cards .cards-card-body .icon-arrow-right-white img,
+  .cards.reward-points .benefit-cards .cards-card-body .icon-arrow-right-white img {
+    width: 40px;
+    height: 40px;
   }
 }
 
