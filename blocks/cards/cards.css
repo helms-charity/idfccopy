@@ -308,6 +308,22 @@
   line-height: 1.5;
 }
 
+/* Blog Posts - UPI steps red background variant text colors */
+.section.upi-steps-red-bg:has(.cards.blog-posts) h1{
+  color: #fff;
+  background: unset;
+  -webkit-text-fill-color: unset;
+}
+
+.section.upi-steps-red-bg:has(.cards.blog-posts) h1 + p {
+  color: #fff;
+}
+
+.section.upi-steps-red-bg:has(.cards.blog-posts) .cards.blog-posts .blog-post-card .cards-card-body h3,
+.section.upi-steps-red-bg:has(.cards.blog-posts) .cards.blog-posts .blog-post-card .cards-card-body p {
+  color: #fff;
+}
+
 .cards.blog-posts .default-content-wrapper h2 {
   color: #000;
   font-size: var(--heading-font-size-xl);
@@ -397,6 +413,11 @@
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary:hover {
   background: #7a151b;
   text-decoration: none;
+}
+
+.cards.blog-posts .blog-post-card .cards-card-body .button-container .icon-arrow-right-white {
+  position: relative;
+  left: 10px;
 }
 
 .cards.blog-posts .blog-post-card .cards-card-body .button-container .icon-arrow-right-white img {
