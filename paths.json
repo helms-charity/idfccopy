@@ -6,7 +6,7 @@
     "/content/idfc-edge/configuration:/.helix/config.json",
     "/content/idfc-edge/redirects:/redirects.json",
     "/content/idfc-edge/metadata:/metadata.json",
-    "/content/idfc-edge/design:/design.json",
+    "/content/idfc-edge/designs/design:/design.json",
     "/content/idfc-edge/credit-card/metal-credit-card/mayura/design:/credit-card/metal-credit-card/mayura/design.json",
     "/content/idfc-edge/experiment-metadata:/experiment-metadata.json",
     "/content/idfc-edge/api/test:/api/test.json",
