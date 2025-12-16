@@ -595,7 +595,10 @@ export default async function decorate(block) {
     }
 
     // Setup interactivity for all card types (links, modals)
-    setupCardInteractivity(li);
+    // Skip for blog-posts - uses standard link behavior
+    if (!isBlogPosts) {
+      setupCardInteractivity(li);
+    }
   });
 
   block.append(ul);
