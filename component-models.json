@@ -428,6 +428,10 @@
           {
             "name": "Reward Points",
             "value": "reward-points"
+          },
+          {
+            "name": "Blog Posts",
+            "value": "blog-posts"
           }
         ]
       },

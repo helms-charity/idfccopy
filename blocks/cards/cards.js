@@ -359,6 +359,8 @@ export default async function decorate(block) {
   const isTestimonial = block.classList.contains('testimonial-card');
   // Check if important-documents variant
   const isImportantDocuments = block.classList.contains('important-documents');
+  // Check if blog-posts variant
+  const isBlogPosts = block.classList.contains('blog-posts');
 
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
@@ -400,6 +402,8 @@ export default async function decorate(block) {
         li.innerHTML = '';
         li.appendChild(cardLink);
       }
+    } else if (isBlogPosts) {
+      li.classList.add('blog-post-card');
     } else if (!isTestimonial) {
       li.classList.add('benefit-cards');
     }
@@ -459,6 +463,20 @@ export default async function decorate(block) {
           slidesPerView: 3,
           spaceBetween: 36,
           centeredSlides: true,
+        },
+      };
+    } else if (isBlogPosts) {
+      // For blog-posts cards: 1 on mobile, 2 on tablet, 3 on desktop
+      swiperConfig.slidesPerView = 1;
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 40,
         },
       };
     } else {
