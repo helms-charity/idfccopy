@@ -546,6 +546,8 @@ export default async function decorate(block) {
   const isImportantDocuments = block.classList.contains('important-documents');
   // Check if experience-life variant
   const isExperienceLife = block.classList.contains('experience-life');
+  // Check if blog-posts variant
+  const isBlogPosts = block.classList.contains('blog-posts');
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
     if (isImportantDocuments) {
@@ -586,12 +588,17 @@ export default async function decorate(block) {
         li.innerHTML = '';
         li.appendChild(cardLink);
       }
+    } else if (isBlogPosts) {
+      li.classList.add('blog-post-card');
     } else if (!isTestimonial) {
       li.classList.add('benefit-cards');
     }
 
     // Setup interactivity for all card types (links, modals)
-    setupCardInteractivity(li);
+    // Skip for blog-posts - uses standard link behavior
+    if (!isBlogPosts) {
+      setupCardInteractivity(li);
+    }
   });
 
   block.append(ul);
