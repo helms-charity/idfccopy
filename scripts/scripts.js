@@ -950,10 +950,6 @@ async function loadEager(doc) {
   loadThemeSpreadSheetConfig();
   const main = doc.querySelector('main');
   if (main) {
-    // Load category-nav fragment from page metadata BEFORE decorating main
-    // This ensures the fragment sections are present when decorateMain runs
-    await loadCategoryNavFragment(main);
-
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
@@ -1333,6 +1329,10 @@ async function loadLazy(doc) {
 
   // Load breadcrumbs after header is available and insert as first element in main
   await loadBreadcrumbs(main);
+
+  // Load category-nav fragment from page metadata BEFORE decorating main
+  // This ensures the fragment sections are present when decorateMain runs
+  await loadCategoryNavFragment(main);
 
   // Create category navbar wrapper BEFORE loading sections
   // This ensures the placeholder is in place when blocks are decorated
