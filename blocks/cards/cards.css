@@ -319,8 +319,8 @@
   color: #fff;
 }
 
-.section.upi-steps-red-bg:has(.cards.blog-posts) .cards.blog-posts .blog-post-card .cards-card-body h3,
-.section.upi-steps-red-bg:has(.cards.blog-posts) .cards.blog-posts .blog-post-card .cards-card-body p {
+.upi-steps-red-bg .cards.blog-posts .blog-post-card .cards-card-body h3, 
+.upi-steps-red-bg .cards.blog-posts .blog-post-card .cards-card-body p {
   color: #fff;
 }
 
