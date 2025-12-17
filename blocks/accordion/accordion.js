@@ -10,12 +10,21 @@ export default function decorate(block) {
       const label = children[0];
       const summary = document.createElement('summary');
       summary.className = 'accordion-item-label';
+      summary.setAttribute('itemscope', '');
+      summary.setAttribute('itemprop', 'mainEntity');
+      summary.setAttribute('itemtype', 'https://schema.org/Question');
       summary.append(...label.childNodes);
+      if (summary.firstElementChild) {
+        summary.firstElementChild.setAttribute('itemprop', 'name');
+      }
       const body = children[1];
       body.className = 'accordion-item-body';
       const details = document.createElement('details');
       moveInstrumentation(row, details);
       details.className = 'accordion-item';
+      details.setAttribute('itemscope', '');
+      details.setAttribute('itemprop', 'acceptedAnswer');
+      details.setAttribute('itemtype', 'https://schema.org/Answer');
       details.append(summary, body);
       row.replaceWith(details);
     } else {
