@@ -68,6 +68,10 @@
             {
               "name": "Reward Points",
               "value": "reward-points"
+            },
+            {
+              "name": "Blog Posts",
+              "value": "blog-posts"
             }
           ]
         },
@@ -81,6 +85,13 @@
               "component": "boolean",
               "name": "swipable",
               "label": "Enable Swiper",
+              "valueType": "boolean",
+              "value": false
+            },
+            {
+              "component": "boolean",
+              "name": "autoplayEnabled",
+              "label": "Autoplay",
               "valueType": "boolean",
               "value": false
             },

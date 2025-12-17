@@ -22,7 +22,11 @@
 }
 
 .hero h1,
-.hero h2 {
+.hero h2,
+.hero h3,
+.hero h4,
+.hero h5,
+.hero h6 {
   margin-left: 0;
   margin-right: 0;
   color: #fff;
@@ -62,7 +66,6 @@
   margin: -30px auto 0;
   display: block;
   order: 1;
-  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   aspect-ratio: 4 / 3;
 }
 
@@ -163,7 +166,11 @@
   }
 
   .hero h1,
-  .hero h2 {
+  .hero h2,
+  .hero h3,
+  .hero h4,
+  .hero h5,
+  .hero h6 {
     font-size: 48px;
     text-align: left;
   }
@@ -187,6 +194,7 @@
     max-width: 600px;
     margin: 0;
     order: unset;
+    animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
 
   .hero .button-groups-wrapper {
@@ -239,7 +247,11 @@
   }
 
   .hero h1,
-  .hero h2 {
+  .hero h2,
+  .hero h3,
+  .hero h4,
+  .hero h5,
+  .hero h6 {
     font-size: 36px;
     margin-top: 0;
   }

@@ -613,12 +613,19 @@ header nav .nav-tools {
 
   .nav-tools .default-content-wrapper>p:first-child>strong {
     margin-left: 8px;
-    color: #3a3a3a;
+    color: #353535;
     font-weight: 400;
-    opacity: 0.6;
   }
 
   .nav-tools .default-content-wrapper .icon-search {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper .icon-search img {
     width: 20px;
     height: 20px;
   }
@@ -642,6 +649,14 @@ header nav .nav-tools {
     width: 17px;
     height: 17px;
     margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper>p:nth-child(2) .icon-special img {
+    width: 17px;
+    height: 17px;
   }
 
   .nav-tools .default-content-wrapper>ul {
@@ -679,5 +694,59 @@ header nav .nav-tools {
   .nav-tools .default-content-wrapper .icon-login_header {
     width: 14px;
     height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-tools .default-content-wrapper .icon-login_header img {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Odometer Animation for Customer Service */
+.grnt-animation-odometer {
+  display: inline-block;
+  height: 20px;
+  overflow: hidden;
+  vertical-align: middle;
+  line-height: 20px;
+}
+
+.grnt-odometer-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s ease-in-out;
+}
+
+.grnt-odometer-track span {
+  display: block;
+  height: 20px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Typewriter Animation for Search Bar */
+.typewriter-text {
+  display: inline-block;
+  min-width: 1px;
+}
+
+.typewriter-text::after {
+  content: '|';
+  animation: typewriter-blink 1.2s infinite;
+  margin-left: 1px;
+  font-weight: 300;
+}
+
+@keyframes typewriter-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+
+  51%, 100% {
+    opacity: 0;
   }
 }
