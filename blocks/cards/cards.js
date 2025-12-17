@@ -548,6 +548,8 @@ export default async function decorate(block) {
   const isExperienceLife = block.classList.contains('experience-life');
   // Check if blog-posts variant
   const isBlogPosts = block.classList.contains('blog-posts');
+  // Check if earn-rewards variant
+  const isEarnRewards = block.classList.contains('earn-rewards');
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
     if (isImportantDocuments) {
@@ -590,7 +592,7 @@ export default async function decorate(block) {
       }
     } else if (isBlogPosts) {
       li.classList.add('blog-post-card');
-    } else if (!isTestimonial) {
+    } else if (!isTestimonial && !isEarnRewards) {
       li.classList.add('benefit-cards');
     }
 
@@ -775,7 +777,7 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
       swiper.on('slideChange', updateStarIcons);
     }
-  } else if (!isTestimonial && !isImportantDocuments) {
+  } else if (!isTestimonial && !isImportantDocuments && !isEarnRewards) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const cards = ul.querySelectorAll('li');
     const maxVisible = 3;
