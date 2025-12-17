@@ -185,22 +185,25 @@
   text-align: center;
 }
 
-.section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h2 {
+.section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h2,
+.section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h3 {
   color: var(--white);
+  margin: 0;
+}
+
+.section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h2 {
   font-family: var(--heading-font-family);
   font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.2;
-  margin: 0 0 8px;
+  margin-bottom: 8px;
 }
 
 .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h3 {
-  color: var(--white);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-xs);
   font-weight: 400;
   line-height: 1.4;
-  margin: 0;
   text-transform: lowercase;
 }
 
@@ -208,7 +211,7 @@
 .cards.earn-rewards .grid-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 30px;
+  gap: 30px;
   margin-bottom: 32px;
 }
 
@@ -252,6 +255,7 @@
   height: auto;
   object-fit: contain;
   transition: transform 0.3s ease-in-out;
+  will-change: transform;
 }
 
 .cards.earn-rewards .grid-cards > li:hover .cards-card-image img {
@@ -266,14 +270,13 @@
   text-align: left;
   position: relative;
   z-index: 1;
-  width: 100%;
   box-sizing: border-box;
 }
 
 .cards.earn-rewards .cards-card-body p {
   color: var(--white);
   font-family: var(--body-font-family);
-  font-size: 12px;
+  font-size: var(--body-font-size-s);
   font-weight: 500;
   line-height: 1.4;
   margin: 0;
@@ -287,7 +290,7 @@
 .section:has(.cards.earn-rewards) .default-content-wrapper:last-of-type p {
   color: var(--white);
   font-family: var(--body-font-family);
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
   font-weight: 400;
   line-height: 1.5;
   margin: 0;
@@ -295,7 +298,6 @@
 
 .section:has(.cards.earn-rewards) .default-content-wrapper:last-of-type p strong {
   font-weight: 600;
-  display: inline;
 }
 
 /* IMPORTANT DOCUMENTS CARD CONTAINER STYLING */
@@ -1300,7 +1302,37 @@
   }
 
   /* Earn Rewards Cards - Desktop View (900px+) */
-  /* Add desktop-specific styles here */
+  .section:has(.cards.earn-rewards) {
+    padding: 40px 0;
+  }
+
+  /* Shared width constraint for content alignment */
+  .cards.earn-rewards .grid-cards,
+  .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type,
+  .section:has(.cards.earn-rewards) .default-content-wrapper:last-of-type {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 32px;
+  }
+
+  .cards.earn-rewards .grid-cards {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+
+  .cards.earn-rewards .grid-cards > li {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h2 {
+    font-size: var(--heading-font-size-xxl);
+  }
+
+  .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h3 {
+    font-size: 24px;
+  }
 
   .cards.swiper {
     max-width:1050px;
