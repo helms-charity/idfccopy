@@ -19,6 +19,26 @@
   transition: background-color 0.2s ease;
 }
 
+.accordion.light-text details summary {
+  border: none;
+  border-bottom: 1px solid #9A9A9A;
+  color: #c7c7c7;
+  transition: all 0.2s ease-in-out;
+  padding: 20px 0;
+  font-weight: 400;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .22);
+}
+
+.accordion.light-text details[open] summary {
+  box-shadow: none;
+  background-color: var(--white);
+  color: var(--text-color);
+  border-radius: 5px 5px 0 0;
+  border-bottom: 0;
+  transition: all 0.2s ease-in-out;
+  font-weight: unset;
+}
+
 .accordion details summary::-webkit-details-marker {
   display: none;
 }
@@ -29,15 +49,21 @@
   top: 50%;
   right: 18px;
   transform: translateY(-50%) rotate(135deg);
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border: 2px solid;
   border-width: 2px 2px 0 0;
   transition: transform 0.2s;
 }
-
 .accordion details[open] summary::after {
   transform: translateY(-50%) rotate(-45deg);
+}
+
+.accordion.light-text details[open] summary::after {
+  background-color: var(--white);
+  color: var(--text-color);
+  border-radius: 5px 5px 0 0;
+  border-bottom: 0;
 }
 
 .accordion .accordion-item-body {

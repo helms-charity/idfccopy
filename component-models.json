@@ -269,10 +269,45 @@
         "label": "Style",
         "options": [
           {
-            "name": "FAQs Calculator",
-            "value": "faqs-calculator"
+            "name": "Styles",
+            "children": [
+              {
+                "name": "light text on dark",
+                "value": "light-text"
+              },
+              {
+                "name": "dark text on light",
+                "value": "dark-text-on-light"
+              }
+            ]
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "no-schema",
+        "label": "No LD+JSON schema",
+        "description": "TODO - this toggle is inop"
+      },
+      {
+        "component": "aem-content",
+        "name": "cta",
+        "label": "CTA URL",
+        "value": "#"
+      },
+      {
+        "component": "text",
+        "name": "ctaText",
+        "label": "CTA Text",
+        "value": "More FAQs"
+      },
+      {
+        "component": "text",
+        "name": "cta_location",
+        "label": "CTA location (number of items before the CTA)",
+        "valueType": "number",
+        "value": ""
       }
     ]
   },
