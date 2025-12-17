@@ -22,7 +22,11 @@
 }
 
 .hero h1,
-.hero h2 {
+.hero h2,
+.hero h3,
+.hero h4,
+.hero h5,
+.hero h6 {
   margin-left: 0;
   margin-right: 0;
   color: #fff;
@@ -163,7 +167,11 @@
   }
 
   .hero h1,
-  .hero h2 {
+  .hero h2,
+  .hero h3,
+  .hero h4,
+  .hero h5,
+  .hero h6 {
     font-size: 48px;
     text-align: left;
   }
@@ -239,7 +247,11 @@
   }
 
   .hero h1,
-  .hero h2 {
+  .hero h2,
+  .hero h3,
+  .hero h4,
+  .hero h5,
+  .hero h6 {
     font-size: 36px;
     margin-top: 0;
   }
