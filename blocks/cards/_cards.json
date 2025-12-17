@@ -72,6 +72,14 @@
             {
               "name": "Blog Posts",
               "value": "blog-posts"
+            },
+            {
+              "name": "Earn Rewards",
+              "value": "earn-rewards"
+            },
+            {
+              "name": "Related Search",
+              "value": "related-search"
             }
           ]
         },
