@@ -337,13 +337,19 @@ function setupCardInteractivity(li) {
   const mainBody = cardBodies[0];
   const modalContentDiv = cardBodies.length > 1 ? cardBodies[cardBodies.length - 1] : null;
 
-  // Check if modal content div has actual content
+  // Check if modal content div has actual content (not just a link from cardLink field)
+  // If the div only contains a single link with no other text, it's a cardLink, not modal content
+  const isJustALink = modalContentDiv
+    && modalContentDiv.querySelector('a')
+    && modalContentDiv.textContent.trim() === modalContentDiv.querySelector('a')?.textContent.trim();
+
   const hasModalContent = modalContentDiv
     && modalContentDiv.textContent.trim().length > 0
-    && modalContentDiv !== mainBody;
+    && modalContentDiv !== mainBody
+    && !isJustALink;
 
-  // Mark the modal content div with a specific class for styling/hiding
-  if (hasModalContent) {
+  // Hide the secondary body div (whether it's modal content or just a cardLink)
+  if (modalContentDiv && modalContentDiv !== mainBody) {
     modalContentDiv.classList.add('cards-modal-content');
   }
 
@@ -544,6 +550,8 @@ export default async function decorate(block) {
   const isTestimonial = block.classList.contains('testimonial-card');
   // Check if important-documents variant
   const isImportantDocuments = block.classList.contains('important-documents');
+  // Check if related-search variant
+  const isRelatedSearch = block.classList.contains('related-search');
   // Check if experience-life variant
   const isExperienceLife = block.classList.contains('experience-life');
   // Check if blog-posts variant
@@ -775,7 +783,7 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
       swiper.on('slideChange', updateStarIcons);
     }
-  } else if (!isTestimonial && !isImportantDocuments) {
+  } else if (!isTestimonial && !isImportantDocuments && !isRelatedSearch) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const cards = ul.querySelectorAll('li');
     const maxVisible = 3;
