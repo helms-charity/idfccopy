@@ -800,13 +800,7 @@ section.faq-accordion-container h4 {
   }
 
   header {
-    height: 140px;
-  }
-
-  /* Reserve space for category navigation to prevent CLS */
-  /* Category nav wrapper is always present as placeholder, so always reserve space */
-  header:has(.category-nav-wrapper) {
-    height: 204px; /* 140px base + 64px for category nav */
+    height: 204px;
   }
   
   /* If category-nav-wrapper exists but is empty, still reserve the space */
