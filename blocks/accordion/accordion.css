@@ -4,9 +4,17 @@
   overflow: hidden;
 }
 
+.accordion.light-text details {
+  border: none;
+}
+
 /* spacing between items */
 .accordion details + details {
   margin-top: 16px;
+}
+
+.accordion.light-text details + details {
+  margin-top: 0;
 }
 
 .accordion details summary {
@@ -19,6 +27,41 @@
   transition: background-color 0.2s ease;
 }
 
+.accordion.light-text details summary {
+  border-bottom: 1px solid #9A9A9A;
+  color: #c7c7c7;
+  transition: all 0.2s ease-in-out;
+  padding: 20px 16px 0;
+  font-weight: 400;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .22);
+
+  > p > strong {
+    font-weight: 400;
+  }
+}
+
+.accordion.light-text details[open]{
+  border-bottom: 1px solid;
+  border-radius: 5px;
+}
+
+
+.accordion.light-text details[open] summary {
+  font-weight: 600;
+  border-bottom: 0;
+
+  > p > strong {
+    font-weight: 600;
+  }
+}
+
+.accordion.light-text details[open], .accordion.light-text details[open] summary {
+  box-shadow: none;
+  background-color: var(--white);
+  color: var(--text-color);
+  transition: all 0.2s ease-in-out;
+}
+
 .accordion details summary::-webkit-details-marker {
   display: none;
 }
@@ -29,21 +72,28 @@
   top: 50%;
   right: 18px;
   transform: translateY(-50%) rotate(135deg);
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border: 2px solid;
   border-width: 2px 2px 0 0;
   transition: transform 0.2s;
 }
-
 .accordion details[open] summary::after {
   transform: translateY(-50%) rotate(-45deg);
 }
 
+.accordion.light-text details[open] summary::after {
+  background-color: var(--white);
+  color: var(--text-color);
+}
+
 .accordion .accordion-item-body {
   padding: 12px 16px;
-  /* background-color: var(--background-color, #fff); */
   border-top: 1px solid #dadada;
+}
+
+.accordion.light-text .accordion-item-body {
+  border-top: none;
 }
 
 .accordion details p {

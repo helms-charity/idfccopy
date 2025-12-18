@@ -100,7 +100,7 @@
 }
 
 .cards .card-clickable:focus {
-  outline: 2px solid var(--link-color, #B31B1B);
+  outline: 2px solid #B31B1B;
   outline-offset: 2px;
 }
 
@@ -456,6 +456,113 @@
   text-align: center;
   margin: 32px 0;
   padding: 0 16px;
+}
+
+/* === RELATED SEARCH CARD VARIANT === */
+.section:has(.cards.related-search) {
+  padding: 40px 16px 60px;
+}
+
+.section:has(.cards.related-search) .default-content-wrapper h2 {
+  color: #54565b;
+  font-size: 21px;
+  font-weight: 600;
+  margin: 0 0 24px;
+}
+
+.section:has(.cards.related-search) .cards-wrapper {
+  padding: 0 12px;
+}
+
+/* Hide View All button for related-search */
+.cards.related-search .view-toggle {
+  display: none;
+}
+
+/* Related Search Cards Container */
+.cards.related-search .grid-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* Related Search Card Styling */
+.cards.related-search .benefit-cards {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 90px;
+  padding: 0 16px;
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0 0 0 / 8%);
+  width: 100%;
+  gap: 16px;
+  position: relative;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cards.related-search .benefit-cards:hover {
+  box-shadow: 0 4px 16px rgba(0 0 0 / 12%);
+  transform: translateY(-2px);
+}
+
+/* Related Search Card Image */
+.cards.related-search .benefit-cards .cards-card-image {
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards.related-search .benefit-cards .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Related Search Card Body */
+.cards.related-search .benefit-cards .cards-card-body {
+  flex: 1;
+  margin: 0;
+  padding-right: 40px;
+}
+
+.cards.related-search .benefit-cards .cards-card-body h3 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cards.related-search .benefit-cards .cards-card-body h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards.related-search .benefit-cards .cards-card-body h3 a:hover {
+  text-decoration: none;
+}
+
+/* Related Search Arrow Circle */
+.cards.related-search .benefit-cards::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238B1B2D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px 24px;
 }
 
 /* === KEY BENEFITS CARD VARIANT === */
@@ -1095,6 +1202,34 @@
   .cards.blog-posts .blog-post-card .cards-card-body p {
     font-size: 13px;
   }
+
+  /* Related Search Cards - Tablet (2 columns) */
+  .section:has(.cards.related-search) {
+    padding: 40px 24px 60px;
+  }
+
+  .section:has(.cards.related-search) .default-content-wrapper h2 {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+
+  .cards.related-search .grid-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 30px;
+  }
+
+  .cards.related-search .benefit-cards {
+    margin-bottom: 0;
+  }
+
+  .cards.related-search .benefit-cards .cards-card-image {
+    width: 80px;
+    height: 70px;
+  }
+
+  .cards.related-search .benefit-cards .cards-card-body h3 {
+    font-size: 15px;
+  }
 }
 
 
@@ -1517,6 +1652,37 @@
 
   .cards.blog-posts .blog-post-card .cards-card-body p {
     font-size: 14px;
+  }
+
+  /* Related Search Cards - Desktop (3 columns) */
+  .section:has(.cards.related-search) {
+    padding: 48px 40px 72px;
+  }
+
+  .section:has(.cards.related-search) .default-content-wrapper h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+
+  .cards.related-search .grid-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 30px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .cards.related-search .benefit-cards {
+    padding: 0 20px;
+    margin-bottom: 0;
+  }
+
+  .cards.related-search .benefit-cards .cards-card-image {
+    width: 90px;
+    height: 75px;
+  }
+
+  .cards.related-search .benefit-cards .cards-card-body h3 {
+    font-size: 16px;
   }
 }
 
