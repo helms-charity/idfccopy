@@ -1,0 +1,6 @@
+/* stylelint-disable no-descending-specificity */
+.table.block {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
