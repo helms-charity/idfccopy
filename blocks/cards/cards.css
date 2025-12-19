@@ -1426,7 +1426,7 @@
 .cards.joining-perks .cards-card-body,
 .cards.joining-perks .benefit-cards .cards-card-body {
   padding: 0 20px 40px;
-  margin: 0 0 20px;
+  margin: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1638,6 +1638,11 @@
 }
 
   /* Joining Perks Card Desktop Styles */
+  .cards.joining-perks .cards-card-body,
+  .cards.joining-perks .benefit-cards .cards-card-body {
+  margin: 0 0 20px;
+}
+
   .cards.joining-perks .swiper-slide {
     height: 460px;
     min-height: 460px;
