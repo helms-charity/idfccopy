@@ -558,6 +558,8 @@ export default async function decorate(block) {
   const isBlogPosts = block.classList.contains('blog-posts');
   // Check if earn-rewards variant
   const isEarnRewards = block.classList.contains('earn-rewards');
+  // Check if joining-perks variant
+  const isJoiningPerks = block.classList.contains('joining-perks');
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
     if (isImportantDocuments) {
@@ -600,7 +602,7 @@ export default async function decorate(block) {
       }
     } else if (isBlogPosts) {
       li.classList.add('blog-post-card');
-    } else if (!isTestimonial && !isEarnRewards) {
+    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks) {
       li.classList.add('benefit-cards');
     }
 
@@ -704,6 +706,23 @@ export default async function decorate(block) {
           spaceBetween: 20,
         },
       };
+    } else if (isJoiningPerks) {
+      // For joining perks cards: show edges on both sides on mobile, 3 cards at larger breakpoints
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
+      swiperConfig.spaceBetween = 30;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 60,
+        },
+      };
     } else {
       // For benefit cards: standard breakpoints
       const slideCount = ul.querySelectorAll('li').length;
@@ -785,7 +804,10 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
       swiper.on('slideChange', updateStarIcons);
     }
-  } else if (!isTestimonial && !isImportantDocuments && !isRelatedSearch && !isEarnRewards) {
+  } else if (
+    !isTestimonial && !isImportantDocuments && !isRelatedSearch
+    && !isEarnRewards && !isJoiningPerks
+  ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const cards = ul.querySelectorAll('li');
     const maxVisible = 3;

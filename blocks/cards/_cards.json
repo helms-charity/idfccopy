@@ -80,6 +80,10 @@
             {
               "name": "Related Search",
               "value": "related-search"
+            },
+            {
+              "name": "Joining Perks",
+              "value": "joining-perks"
             }
           ]
         },
