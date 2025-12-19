@@ -1365,61 +1365,10 @@
     "id": "table",
     "fields": [
       {
-        "component": "multiselect",
-        "name": "classes",
-        "value": "",
-        "label": "Options",
-        "valueType": "string",
-        "maxSize": 3,
-        "options": [
-          {
-            "name": "Border",
-            "children": [
-              {
-                "name": "None",
-                "value": "no-border"
-              }
-            ]
-          },
-          {
-            "name": "Header",
-            "children": [
-              {
-                "name": "No Header",
-                "value": "no-header"
-              }
-            ]
-          },
-          {
-            "name": "Width",
-            "children": [
-              {
-                "name": "Largura 25%",
-                "value": "width-25"
-              },
-              {
-                "name": "Largura 33%",
-                "value": "width-33"
-              },
-              {
-                "name": "Largura 50%",
-                "value": "width-50"
-              },
-              {
-                "name": "Largura 66%",
-                "value": "width-66"
-              },
-              {
-                "name": "Largura 75%",
-                "value": "width-75"
-              },
-              {
-                "name": "Centro/Center",
-                "value": "center"
-              }
-            ]
-          }
-        ]
+        "component": "text",
+        "name": "id",
+        "label": "Table ID",
+        "description": "Adds an ID value to the table"
       },
       {
         "component": "select",
@@ -1427,6 +1376,7 @@
         "label": "Columns",
         "valueType": "string",
         "value": "table",
+        "description": "Sets the number of columns in the table",
         "options": [
           {
             "name": "1 Column",
@@ -1449,6 +1399,39 @@
             "value": "table-5-columns"
           }
         ]
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image (Desktop)",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "imageMobile",
+        "label": "Image (Mobile)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "tableRowMaxWidth",
+        "label": "Table Row Max Width",
+        "valueType": "string",
+        "description": "ex. 600px"
+      },
+      {
+        "component": "boolean",
+        "name": "noHeader",
+        "label": "No Header",
+        "valueType": "boolean",
+        "value": false,
+        "description": "Remove the header row from the table"
       }
     ]
   },
