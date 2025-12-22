@@ -1405,12 +1405,12 @@
         ]
       },
       {
-        "component": "reference",
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color/gradient",
+        "value": "",
         "valueType": "string",
-        "name": "tableBackgroundImage",
-        "label": "Background Image",
-        "description": "Background image of the table, displayed behind image options below",
-        "multi": false
+        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
       },
       {
         "component": "reference",

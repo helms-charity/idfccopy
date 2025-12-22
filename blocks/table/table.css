@@ -55,7 +55,6 @@
 
 /* Fees and Charges Table Specific Styles */
 .table.block#fees-and-charges .table-background-image {
-  background-image: var(--metal-blue);
   border-radius: 20px;
   overflow: hidden;
 }
