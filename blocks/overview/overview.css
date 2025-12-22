@@ -1,0 +1,5 @@
+/* placeholder for merge */
+
+.section:has(.overview) {
+    margin: 0;
+  }

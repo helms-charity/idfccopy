@@ -2,6 +2,7 @@ import {
   createOptimizedPicture, loadScript, loadCSS, getMetadata,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { createModal } from '../modal/modal.js';
 
 /**
  * Sanitizes text for JSON-LD by removing/replacing problematic characters
@@ -262,7 +263,7 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['swipable', 'startingCard'];
+  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard'];
   const propertyValues = {};
   const itemsToRemove = [];
 
@@ -320,6 +321,185 @@ function extractBlockProperties(block, ul) {
   itemsToRemove.forEach((li) => li.remove());
 }
 
+/**
+ * Sets up card interactivity based on card type:
+ * 1. Standard card: No link, no modal - not clickable
+ * 2. Easy modal card: No link, has modalContent - opens inline modal on click
+ * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
+ * @param {HTMLElement} li The card list item element
+ */
+function setupCardInteractivity(li) {
+  const cardBodies = li.querySelectorAll('.cards-card-body');
+  if (cardBodies.length === 0) return;
+
+  // The first cards-card-body is the main text content
+  // The last cards-card-body (if different) is the modal content
+  const mainBody = cardBodies[0];
+  const modalContentDiv = cardBodies.length > 1 ? cardBodies[cardBodies.length - 1] : null;
+
+  // Check if modal content div has actual content (not just a link from cardLink field)
+  // If the div only contains a single link with no other text, it's a cardLink, not modal content
+  const isJustALink = modalContentDiv
+    && modalContentDiv.querySelector('a')
+    && modalContentDiv.textContent.trim() === modalContentDiv.querySelector('a')?.textContent.trim();
+
+  const hasModalContent = modalContentDiv
+    && modalContentDiv.textContent.trim().length > 0
+    && modalContentDiv !== mainBody
+    && !isJustALink;
+
+  // Hide the secondary body div (whether it's modal content or just a cardLink)
+  if (modalContentDiv && modalContentDiv !== mainBody) {
+    modalContentDiv.classList.add('cards-modal-content');
+  }
+
+  // Check for card link (could be in main body or as a standalone link)
+  const cardLink = li.querySelector('a[href]');
+  const hasModalPath = cardLink && cardLink.href && cardLink.href.includes('/modals/');
+  const hasRegularLink = cardLink && !hasModalPath;
+
+  // Type 3: Complex modal with /modals/ path - make entire card clickable
+  // The autolinkModals function in scripts.js will handle the actual modal opening
+  if (hasModalPath) {
+    li.classList.add('card-clickable');
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+
+    const handleClick = (e) => {
+      // Don't intercept if clicking on the actual link
+      if (e.target.closest('a')) return;
+      // Trigger click on the link to let autolinkModals handle it
+      cardLink.click();
+    };
+
+    li.addEventListener('click', handleClick);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cardLink.click();
+      }
+    });
+
+    // Hide the original link text but keep it functional
+    const buttonContainer = cardLink.closest('.button-container');
+    if (buttonContainer) {
+      buttonContainer.classList.add('sr-only');
+    }
+    return; // Don't process further if this is a complex modal card
+  }
+
+  // Type 2: Easy modal with inline content (no link to /modals/)
+  if (hasModalContent) {
+    li.classList.add('card-clickable', 'card-modal');
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+
+    // Store the modal content (already hidden via CSS .cards-modal-content class)
+    const modalContent = modalContentDiv.cloneNode(true);
+
+    const openCardModal = async () => {
+      const contentWrapper = document.createElement('div');
+      contentWrapper.innerHTML = modalContent.innerHTML;
+      const { showModal } = await createModal([contentWrapper]);
+      showModal();
+    };
+
+    li.addEventListener('click', (e) => {
+      // Don't trigger modal if clicking on a regular link within the card
+      if (e.target.closest('a')) return;
+      openCardModal();
+    });
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCardModal();
+      }
+    });
+    return;
+  }
+
+  // Type 1 variant: Card with regular link (not /modals/) - make entire card clickable
+  if (hasRegularLink) {
+    li.classList.add('card-clickable');
+    li.setAttribute('role', 'link');
+    li.setAttribute('tabindex', '0');
+
+    const handleClick = (e) => {
+      if (e.target.closest('a')) return;
+      cardLink.click();
+    };
+
+    li.addEventListener('click', handleClick);
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cardLink.click();
+      }
+    });
+
+    // Hide the original link text but keep it functional
+    const buttonContainer = cardLink.closest('.button-container');
+    if (buttonContainer) {
+      buttonContainer.classList.add('sr-only');
+    }
+  }
+  // Type 1: Standard card with no link - no additional interactivity needed
+}
+
+/**
+ * Identifies and marks semantic elements within a card:
+ * - dividerImage: thin horizontal image (cards-card-divider)
+ * - backgroundImageTexture: large texture image (cards-card-bg-texture)
+ * - cardTag: simple text tag before main content (cards-card-tag)
+ * @param {HTMLElement} li The card list item element
+ */
+function identifySemanticCardElements(li) {
+  const children = [...li.children];
+
+  // Process all cards-card-image elements to identify dividers and textures
+  children.forEach((div) => {
+    if (!div.classList.contains('cards-card-image')) return;
+
+    const img = div.querySelector('img');
+    if (!img) return;
+
+    const width = parseInt(img.getAttribute('width'), 10) || 0;
+    const height = parseInt(img.getAttribute('height'), 10) || 0;
+
+    // Divider: thin horizontal image (height < 50px, width much greater than height)
+    if (height > 0 && height < 50 && width > height * 3) {
+      div.classList.remove('cards-card-image');
+      div.classList.add('cards-card-divider');
+      return;
+    }
+
+    // Texture: large image (both dimensions > 100px)
+    if (width > 100 && height > 100) {
+      div.classList.remove('cards-card-image');
+      div.classList.add('cards-card-bg-texture');
+    }
+  });
+
+  // Identify cardTag: a simple text body that appears before the main content body
+  // The cardTag has just text (p tag) without headings, and the next body has headings
+  const bodyDivs = children.filter((div) => div.classList.contains('cards-card-body'));
+  if (bodyDivs.length >= 2) {
+    const firstBody = bodyDivs[0];
+    const secondBody = bodyDivs[1];
+
+    // Check if first body is a simple tag (no headings, just text)
+    // and second body has headings (the main content)
+    const firstHasHeading = firstBody.querySelector('h1, h2, h3, h4, h5, h6');
+    const secondHasHeading = secondBody.querySelector('h1, h2, h3, h4, h5, h6');
+
+    if (!firstHasHeading && secondHasHeading) {
+      // First body is the cardTag
+      firstBody.classList.remove('cards-card-body');
+      firstBody.classList.add('cards-card-tag');
+    }
+  }
+}
+
 export default async function decorate(block) {
   // Build UL structure
   const ul = document.createElement('ul');
@@ -341,6 +521,17 @@ export default async function decorate(block) {
     ul.append(li);
   });
 
+  // For card variants that support semantic elements (divider, texture), identify and mark them
+  // This must happen BEFORE createOptimizedPicture replaces images (doesn't preserve dimensions)
+  const supportsSemanticElements = block.classList.contains('key-benefits')
+    || block.classList.contains('experience-life')
+    || block.classList.contains('reward-points');
+  if (supportsSemanticElements) {
+    ul.querySelectorAll('li').forEach((li) => {
+      identifySemanticCardElements(li);
+    });
+  }
+
   // Replace images with optimized pictures
   ul.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
@@ -359,7 +550,16 @@ export default async function decorate(block) {
   const isTestimonial = block.classList.contains('testimonial-card');
   // Check if important-documents variant
   const isImportantDocuments = block.classList.contains('important-documents');
-
+  // Check if related-search variant
+  const isRelatedSearch = block.classList.contains('related-search');
+  // Check if experience-life variant
+  const isExperienceLife = block.classList.contains('experience-life');
+  // Check if blog-posts variant
+  const isBlogPosts = block.classList.contains('blog-posts');
+  // Check if earn-rewards variant
+  const isEarnRewards = block.classList.contains('earn-rewards');
+  // Check if joining-perks variant
+  const isJoiningPerks = block.classList.contains('joining-perks');
   // Add appropriate class to card items
   ul.querySelectorAll('li').forEach((li) => {
     if (isImportantDocuments) {
@@ -400,8 +600,16 @@ export default async function decorate(block) {
         li.innerHTML = '';
         li.appendChild(cardLink);
       }
-    } else if (!isTestimonial) {
+    } else if (isBlogPosts) {
+      li.classList.add('blog-post-card');
+    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks) {
       li.classList.add('benefit-cards');
+    }
+
+    // Setup interactivity for all card types (links, modals)
+    // Skip for blog-posts - uses standard link behavior
+    if (!isBlogPosts) {
+      setupCardInteractivity(li);
     }
   });
 
@@ -409,12 +617,33 @@ export default async function decorate(block) {
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
+  const isAutoplayEnabled = block.dataset.autoplayEnabled === 'true';
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (isSwipable) {
     // Load Swiper library
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
+
+    // Wait for Swiper to be available (script may need time to execute)
+    const waitForSwiper = () => new Promise((resolve) => {
+      if (typeof Swiper !== 'undefined') {
+        resolve();
+      } else {
+        const checkInterval = setInterval(() => {
+          if (typeof Swiper !== 'undefined') {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 10);
+        // Timeout after 2 seconds
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          resolve();
+        }, 2000);
+      }
+    });
+    await waitForSwiper();
 
     // Add Swiper classes
     block.classList.add('swiper');
@@ -461,18 +690,76 @@ export default async function decorate(block) {
           centeredSlides: true,
         },
       };
-    } else {
-      // For benefit cards: standard breakpoints
+    } else if (isExperienceLife) {
+      // For experience-life cards: tighter spacing
+      const slideCount = ul.querySelectorAll('li').length;
+      const shouldCenter = slideCount < 3;
+      swiperConfig.centeredSlides = shouldCenter;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: Math.min(2, slideCount),
+          spaceBetween: 16,
+          centeredSlides: slideCount < 2,
+        },
+        900: {
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 20,
+        },
+      };
+    } else if (isJoiningPerks) {
+      // For joining perks cards: show edges on both sides on mobile, 3 cards at larger breakpoints
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
+      swiperConfig.spaceBetween = 30;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: 2,
-          spaceBetween: 20,
+          spaceBetween: 30,
         },
         900: {
           slidesPerView: 3,
           spaceBetween: 60,
         },
       };
+    } else {
+      // For benefit cards: standard breakpoints
+      const slideCount = ul.querySelectorAll('li').length;
+      swiperConfig.spaceBetween = 32;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: Math.min(2, slideCount),
+          spaceBetween: 20,
+        },
+        900: {
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 40,
+        },
+      };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
+    }
+
+    // Add autoplay configuration if enabled
+    if (isAutoplayEnabled) {
+      swiperConfig.autoplay = {
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      };
+      swiperConfig.loop = true;
+    }
+
+    // Initialize Swiper if available
+    if (typeof Swiper === 'undefined') {
+      // eslint-disable-next-line no-console
+      console.warn('Swiper library not available, cards will display without slider');
+      return;
     }
 
     // eslint-disable-next-line no-undef
@@ -517,7 +804,10 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
       swiper.on('slideChange', updateStarIcons);
     }
-  } else if (!isTestimonial && !isImportantDocuments) {
+  } else if (
+    !isTestimonial && !isImportantDocuments && !isRelatedSearch
+    && !isEarnRewards && !isJoiningPerks
+  ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const cards = ul.querySelectorAll('li');
     const maxVisible = 3;

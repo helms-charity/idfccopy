@@ -14,15 +14,7 @@ export default async function decorate(block) {
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
-
-  if (fragment) {
-    // Append all sections from fragment
-    // Note: data-aue-* attributes are automatically stripped by loadFragment
-    // when in Universal Editor context (unless editing the fragment directly)
-    while (fragment.firstElementChild) {
-      footer.append(fragment.firstElementChild);
-    }
-  }
+  while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
   block.append(footer);
 

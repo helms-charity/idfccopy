@@ -26,6 +26,7 @@
   --gradient-upi-steps-red: linear-gradient(165deg, #ca0919 0%, #8C2034 40%, #732C53 80%, #513873 100%);
   --gradient-tabs-upi-link-red: radial-gradient(at top left, #AC2A34 0%, #661E2A 50%, #140F23 100%);
   --gradient-important-documents: linear-gradient(to bottom, #C5767D, #9E1E29);
+  --gradient-earn-rewards: radial-gradient(231% 135.8% at 0.9% 2.98%, #FFF6 0%, #FFF0 100%);
   --gradient-red: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
   --gradient-blue: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
@@ -326,6 +327,8 @@ main img {
 /* sections */
 main>.section {
   margin: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 main>.section>div {
@@ -336,6 +339,26 @@ main>.section>div {
 
 main>.section:first-of-type {
   margin-top: 0;
+}
+
+/* Container with a large background */
+.section.container-section--merged {
+  position: relative;
+  overflow: visible;
+}
+
+/* All merged siblings share positioning context */
+.section.container-section--merged,
+.section.container-section--merged-sibling {
+  position: relative;
+  z-index: 0;
+}
+
+/* If you want content to sit “on top” of the shared background: */
+.section.container-section--merged > div,
+.section.container-section--merged-sibling > div {
+  position: relative;
+  z-index: 1;
 }
 
 /* Reserve space for breadcrumbs to prevent CLS - Mobile First */
@@ -520,6 +543,17 @@ main .section.upi-steps-red-bg {
   background: var(--gradient-upi-steps-red);
   margin: 0;
   padding: 40px 0 56px;
+}
+
+.section .bg-images picture {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.section:has(.bg-images) > div:not(.bg-images) {
+  position: relative;
+  z-index: 1;
 }
 
 /* IDFC */
@@ -766,13 +800,7 @@ section.faq-accordion-container h4 {
   }
 
   header {
-    height: 140px;
-  }
-
-  /* Reserve space for category navigation to prevent CLS */
-  /* Category nav wrapper is always present as placeholder, so always reserve space */
-  header:has(.category-nav-wrapper) {
-    height: 204px; /* 140px base + 64px for category nav */
+    height: 204px;
   }
   
   /* If category-nav-wrapper exists but is empty, still reserve the space */

@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../../scripts/scripts.js';
 
 // media query match that indicates mobile/tablet width
@@ -225,7 +225,7 @@ export default async function decorate(block) {
   // Find the search bar and other tools
   const searchP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => {
     const strong = p.querySelector('strong');
-    return strong && strong.textContent.includes('what are you looking for');
+    return strong && strong.textContent.toLowerCase().includes('what are you looking for');
   });
 
   const specialP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => p.textContent.trim() === "What's special about us" && !p.querySelector('strong'));
@@ -236,8 +236,37 @@ export default async function decorate(block) {
   });
 
   if (searchP) {
-    navToolsWrapper.innerHTML = `<p><span class="icon icon-search"></span><strong>${searchP.querySelector('strong').textContent}</strong></p>`;
+    navToolsWrapper.innerHTML = '<p><span class="icon icon-search"></span><strong class="typewriter-text"></strong></p>';
   }
+
+  // Typewriter animation for "What are you looking for..."
+  function startTypewriterAnimation() {
+    const typewriterEl = navToolsWrapper.querySelector('.typewriter-text');
+    if (!typewriterEl) return;
+
+    const fullText = 'What are you looking for...';
+    let charIndex = 0;
+
+    function typeNextChar() {
+      if (charIndex <= fullText.length) {
+        typewriterEl.textContent = fullText.slice(0, charIndex);
+        charIndex += 1;
+        setTimeout(typeNextChar, 200); // Speed of typing (0.2s per letter)
+      } else {
+        // Finished typing, wait 2 seconds then restart
+        setTimeout(() => {
+          charIndex = 0;
+          typewriterEl.textContent = '';
+          typeNextChar();
+        }, 2000);
+      }
+    }
+
+    typeNextChar();
+  }
+
+  // Initialize typewriter after DOM is ready
+  setTimeout(startTypewriterAnimation, 100);
 
   if (specialP) {
     const specialPClone = specialP.cloneNode(true);
@@ -247,10 +276,71 @@ export default async function decorate(block) {
 
   if (toolsUl) {
     const toolsUlClone = toolsUl.cloneNode(true);
+    // Add login icon to the Login li (last child)
+    const loginLi = toolsUlClone.querySelector('li:last-child');
+    if (loginLi && loginLi.textContent.includes('Login')) {
+      const loginIcon = document.createElement('span');
+      loginIcon.classList.add('icon', 'icon-login_header');
+      loginLi.prepend(loginIcon);
+    }
+
+    // Add odometer animation to Customer Service li (first child)
+    const customerServiceLi = toolsUlClone.querySelector('li:first-child');
+    if (customerServiceLi && customerServiceLi.textContent.includes('Customer service')) {
+      customerServiceLi.innerHTML = `
+        <div class="grnt-animation-odometer">
+          <div class="grnt-odometer-track">
+            <span>Customer Service</span>
+            <span>Contact us</span>
+            <span>Service request</span>
+            <span>Locate a branch</span>
+            <span>Complaints</span>
+            <span>Customer Service</span>
+          </div>
+        </div>
+      `;
+    }
+
     navToolsWrapper.appendChild(toolsUlClone);
   }
 
   navTools.appendChild(navToolsWrapper);
+
+  // Decorate icons in nav-tools to add actual icon images
+  decorateIcons(navTools);
+
+  // Start odometer animation for Customer Service
+  function startOdometerAnimation() {
+    const odometerTrack = navTools.querySelector('.grnt-odometer-track');
+    if (!odometerTrack) return;
+
+    const spans = odometerTrack.querySelectorAll('span');
+    const spanHeight = 20; // Height of each span in pixels
+    const totalItems = spans.length - 1; // Exclude the duplicate last item
+    let currentIndex = 0;
+
+    setInterval(() => {
+      currentIndex += 1;
+      const translateY = currentIndex * spanHeight;
+      odometerTrack.style.transform = `translateY(-${translateY}px)`;
+
+      // Reset to first item when reaching the duplicate last item
+      if (currentIndex >= totalItems) {
+        setTimeout(() => {
+          odometerTrack.style.transition = 'none';
+          odometerTrack.style.transform = 'translateY(0)';
+          currentIndex = 0;
+          // Re-enable transition after reset
+          setTimeout(() => {
+            odometerTrack.style.transition = 'transform 0.6s ease-in-out';
+          }, 50);
+        }, 600); // Wait for the transition to complete
+      }
+    }, 1500);
+  }
+
+  // Initialize odometer after DOM is ready
+  setTimeout(startOdometerAnimation, 100);
 
   // Assemble the navigation
   nav.appendChild(navBrand);

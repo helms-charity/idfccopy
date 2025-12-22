@@ -147,6 +147,95 @@
       },
       {
         "component": "text",
+        "name": "id",
+        "label": "ID",
+        "description": "Adds an ID value to the section"
+      },
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "UPI steps red background",
+            "value": "upi-steps-red-bg"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "label": "Optional background properties",
+        "name": "container",
+        "valueType": "string",
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "backgroundColor",
+            "label": "Background Color/gradient",
+            "value": "",
+            "valueType": "string",
+            "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "sectionBackgroundImage",
+            "label": "Background Image",
+            "description": "Background image of the section, displayed on top of the background color if specified",
+            "multi": false
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "sectionBackgroundImageMobile",
+            "label": "Background Image Mobile",
+            "description": "Background image for mobile",
+            "multi": false
+          },
+          {
+            "component": "text",
+            "name": "height",
+            "label": "Desktop Height",
+            "value": "",
+            "valueType": "string",
+            "description": "optional minimum height when in desktop, e.g. 400px"
+          },
+          {
+            "component": "text",
+            "name": "heightmobile",
+            "label": "Mobile Height",
+            "value": "",
+            "valueType": "string",
+            "description": "optional minimum height when in mobile, e.g. 400px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "container",
+    "fields": [
+      {
+        "component": "text",
+        "name": "name",
+        "label": "Container Name",
+        "description": "The label shown for this container in the Content Tree"
+      },
+      {
+        "component": "text",
+        "name": "includeNextSections",
+        "label": "Include Next Sections",
+        "value": "",
+        "valueType": "number",
+        "description": "The number of sibling sections to display as a group"
+      },
+      {
+        "component": "text",
         "name": "backgroundColor",
         "label": "Background Color",
         "value": "",
@@ -158,29 +247,16 @@
         "valueType": "string",
         "name": "sectionBackgroundImage",
         "label": "Background Image",
-        "description": "The background image of the section, displayed on top of the background color if specified",
+        "description": "The background image of the container, displayed on top of the background color if specified",
         "multi": false
       },
       {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style",
-        "options": [
-          {
-            "name": "Highlight",
-            "value": "highlight"
-          },
-          {
-            "name": "UPI steps red background",
-            "value": "upi-steps-red-bg"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "id",
-        "label": "ID",
-        "description": "Adds an ID value to the section"
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImageMobile",
+        "label": "Background Image Mobile",
+        "description": "The background image of the container, displayed on top of the background color if specified",
+        "multi": false
       }
     ]
   },
@@ -189,14 +265,49 @@
     "fields": [
       {
         "component": "multiselect",
-        "name": "style",
+        "name": "classes",
         "label": "Style",
         "options": [
           {
-            "name": "FAQs Calculator",
-            "value": "faqs-calculator"
+            "name": "Styles",
+            "children": [
+              {
+                "name": "light text on dark",
+                "value": "light-text"
+              },
+              {
+                "name": "dark text on light",
+                "value": "dark-text-on-light"
+              }
+            ]
           }
         ]
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "no-schema",
+        "label": "No LD+JSON schema",
+        "description": "TODO - this toggle is inop"
+      },
+      {
+        "component": "aem-content",
+        "name": "cta",
+        "label": "CTA URL",
+        "value": "#"
+      },
+      {
+        "component": "text",
+        "name": "ctaText",
+        "label": "CTA Text",
+        "value": "More FAQs"
+      },
+      {
+        "component": "text",
+        "name": "cta_location",
+        "label": "CTA location (number of items before the CTA)",
+        "valueType": "number",
+        "value": ""
       }
     ]
   },
@@ -340,6 +451,34 @@
           {
             "name": "Important Documents",
             "value": "important-documents"
+          },
+          {
+            "name": "Key Benefits",
+            "value": "key-benefits"
+          },
+          {
+            "name": "Experience Life",
+            "value": "experience-life"
+          },
+          {
+            "name": "Reward Points",
+            "value": "reward-points"
+          },
+          {
+            "name": "Blog Posts",
+            "value": "blog-posts"
+          },
+          {
+            "name": "Earn Rewards",
+            "value": "earn-rewards"
+          },
+          {
+            "name": "Related Search",
+            "value": "related-search"
+          },
+          {
+            "name": "Joining Perks",
+            "value": "joining-perks"
           }
         ]
       },
@@ -353,6 +492,13 @@
             "component": "boolean",
             "name": "swipable",
             "label": "Enable Swiper",
+            "valueType": "boolean",
+            "value": false
+          },
+          {
+            "component": "boolean",
+            "name": "autoplayEnabled",
+            "label": "Autoplay",
             "valueType": "boolean",
             "value": false
           },
@@ -387,10 +533,40 @@
         "label": "Alt Text"
       },
       {
+        "component": "reference",
+        "name": "dividerImage",
+        "label": "Divider Image",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "cardTag",
+        "label": "Card Tag (optional)"
+      },
+      {
+        "component": "reference",
+        "name": "backgroundImageTexture",
+        "label": "Background Image Texture",
+        "valueType": "string"
+      },
+      {
         "component": "richtext",
         "name": "text",
         "value": "",
         "label": "Text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "cardLink",
+        "label": "Card Link (optional)",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "modalContent",
+        "label": "Modal Content (optional)",
+        "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
         "valueType": "string"
       }
     ]
@@ -726,13 +902,7 @@
         "name": "ctaText",
         "label": "CTA Text",
         "value": "More FAQs"
-      }
-    ]
-  },
-  {
-    "id": "faq-accordion-item",
-    "title": "FAQ Accordion Item",
-    "fields": [
+      },
       {
         "component": "multiselect",
         "name": "style",
@@ -744,32 +914,35 @@
               {
                 "name": "light text on dark",
                 "value": "light-text"
-              }
-            ]
-          },
-          {
-            "name": "Select class",
-            "options": [
+              },
               {
-                "name": "Variations",
-                "children": [
-                  {
-                    "name": "Target Act Class",
-                    "value": "target-act-class"
-                  },
-                  {
-                    "name": "Target Class",
-                    "value": "target-class"
-                  },
-                  {
-                    "name": "Target Last Class",
-                    "value": "target-last-class"
-                  }
-                ]
+                "name": "dark text on light",
+                "value": "dark-text-on-light"
               }
             ]
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "faq-accordion-item",
+    "title": "FAQ Accordion Item",
+    "fields": [
+      {
+        "component": "text",
+        "name": "tab_question",
+        "label": "Question"
+      },
+      {
+        "component": "richtext",
+        "name": "tab_answer",
+        "label": "Answer"
+      },
+      {
+        "component": "text",
+        "name": "tab",
+        "label": "tab title"
       }
     ]
   },
@@ -944,6 +1117,32 @@
   {
     "id": "overview-rte-item",
     "fields": []
+  },
+  {
+    "id": "overview",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Text"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      }
+    ]
   },
   {
     "id": "personal-loan-item",
@@ -1167,6 +1366,160 @@
     ]
   },
   {
+    "id": "table",
+    "fields": [
+      {
+        "component": "text",
+        "name": "id",
+        "label": "Table ID",
+        "description": "Adds an ID value to the table"
+      },
+      {
+        "component": "select",
+        "name": "filter",
+        "label": "Columns",
+        "valueType": "string",
+        "value": "table",
+        "description": "Sets the number of columns in the table",
+        "options": [
+          {
+            "name": "1 Column",
+            "value": "table"
+          },
+          {
+            "name": "2 Columns",
+            "value": "table-2-columns"
+          },
+          {
+            "name": "3 Columns",
+            "value": "table-3-columns"
+          },
+          {
+            "name": "4 Columns",
+            "value": "table-4-columns"
+          },
+          {
+            "name": "5 Columns",
+            "value": "table-5-columns"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "image",
+        "label": "Image (Desktop)",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "imageMobile",
+        "label": "Image (Mobile)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "tableRowMaxWidth",
+        "label": "Table Row Max Width",
+        "valueType": "string",
+        "description": "ex. 600px"
+      },
+      {
+        "component": "boolean",
+        "name": "noHeader",
+        "label": "No Header",
+        "valueType": "boolean",
+        "value": false,
+        "description": "Remove the header row from the table"
+      }
+    ]
+  },
+  {
+    "id": "table-row",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column1"
+      }
+    ]
+  },
+  {
+    "id": "table-col-2",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column2"
+      }
+    ]
+  },
+  {
+    "id": "table-col-3",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column3"
+      }
+    ]
+  },
+  {
+    "id": "table-col-4",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column3"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column4text",
+        "label": "Column4"
+      }
+    ]
+  },
+  {
     "id": "tabs-upi-link",
     "fields": [
       {
@@ -1221,8 +1574,7 @@
     "id": "tabs",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
+        "component": "select",
         "name": "classes",
         "label": "Style",
         "options": [

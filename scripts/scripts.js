@@ -5,7 +5,6 @@ import {
   decorateBlock,
   decorateButtons,
   decorateIcons,
-  decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
@@ -15,7 +14,16 @@ import {
   loadCSS,
   toClassName,
   getMetadata,
+  readBlockConfig,
+  toCamelCase,
 } from './aem.js';
+
+// Cached media query results for performance
+const MEDIA_QUERIES = {
+  mobile: window.matchMedia('(max-width: 599px)'),
+  tablet: window.matchMedia('(min-width: 600px) and (max-width: 899px)'),
+  desktop: window.matchMedia('(min-width: 900px)'),
+};
 
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -315,64 +323,6 @@ export async function createField(fd, form) {
 }
 
 /**
- * Recursively removes all data-aue-* attributes from an element and its descendants.
- * This prevents fragment content from appearing in Universal Editor content tree.
- * @param {Element} element The element to strip attributes from
- */
-export function stripAueAttributes(element) {
-  if (!element || !element.attributes) return;
-
-  // Remove data-aue-* attributes from this element
-  [...element.attributes]
-    .filter((attr) => attr.name.startsWith('data-aue-'))
-    .forEach((attr) => element.removeAttribute(attr.name));
-
-  // Recursively strip from all children
-  if (element.children) {
-    Array.from(element.children).forEach((child) => stripAueAttributes(child));
-  }
-}
-
-/**
- * Checks if we're in Universal Editor context
- * @returns {boolean} True if in Universal Editor
- */
-function isUniversalEditorContext() {
-  // Check for UE-specific indicators
-  return !!(
-    document.body?.hasAttribute('data-aue-resource')
-    || window.hlx?.aemRoot
-    || new URLSearchParams(window.location.search).has('aue')
-  );
-}
-
-/**
- * Checks if a fragment path matches the current page being edited
- * @param {string} fragmentPath The path of the fragment being loaded
- * @returns {boolean} True if the fragment is the main content being edited
- */
-function isFragmentTheMainContent(fragmentPath) {
-  // Get current page path from the data-aue-resource on body or main
-  const bodyResource = document.body?.getAttribute('data-aue-resource') || '';
-  const mainResource = document.querySelector('main')?.getAttribute('data-aue-resource') || '';
-
-  // Extract path from URN
-  // e.g., "urn:aemconnection:/content/site/page/jcr:content" -> "/content/site/page"
-  const extractPath = (urn) => {
-    const match = urn.match(/urn:aemconnection:([^/]*\/content\/[^/]+)?(\/.*?)\/jcr:content/);
-    return match ? match[2] : '';
-  };
-
-  const currentPagePath = extractPath(bodyResource) || extractPath(mainResource);
-
-  // Normalize fragment path for comparison
-  const normalizedFragmentPath = fragmentPath.replace(/(\.plain)?\.html$/, '');
-
-  // Check if the fragment path matches the current page being edited
-  return currentPagePath && normalizedFragmentPath === currentPagePath;
-}
-
-/**
  * Loads a fragment.
  * @param {string} path The path to the fragment
  * @returns {HTMLElement} The root element of the fragment
@@ -403,18 +353,9 @@ export async function loadFragment(path) {
         block.setAttribute('data-fragment-block', 'true');
       });
 
-      // eslint-disable-next-line no-use-before-define
+      // eslint-disable-next-line
       decorateMain(main);
       await loadSections(main);
-
-      // Strip data-aue-* attributes from fragments when in Universal Editor,
-      // UNLESS the fragment is the main content being edited
-      // (e.g., editing /nav or /footer directly).
-      // This prevents header, footer, breadcrumbs, category-nav, and other
-      // fragments from appearing in the UE content tree as partials
-      if (isUniversalEditorContext() && !isFragmentTheMainContent(path)) {
-        stripAueAttributes(main);
-      }
 
       return main;
     }
@@ -702,93 +643,187 @@ function loadAutoBlock(doc) {
     }
   });
 }
+
+/** SECTIONS */
+
 /**
- * Extract section properties from Universal Editor data attributes
- * @param {Element} section The section element
- * @returns {Object} Object containing extracted properties
+ * Helper function to create a <source> element
+ * @param {string} src the image url
+ * @param {number} width the width of the image
+ * @param {MediaQueryList} mediaQuery the media query to apply to the source
+ *
+ * @returns imageSource
  */
-function extractSectionPropertiesFromEditor(section) {
-  const props = {};
+export function createSource(src, width, mediaQuery) {
+  const { pathname } = new URL(src, window.location.href);
+  const source = document.createElement('source');
+  source.type = 'image/webp';
+  source.srcset = `${pathname}?width=${width}&format=webply&optimize=medium`;
+  source.media = mediaQuery;
 
-  // Check for data-aue-prop attributes that might contain section properties
-  const aueProps = Array.from(section.attributes).filter((attr) => attr.name.startsWith('data-aue-prop-'));
-  aueProps.forEach((attr) => {
-    const propName = attr.name.replace('data-aue-prop-', '');
-    props[propName] = attr.value;
-  });
-
-  return props;
+  return source;
 }
 
 /**
- * Apply dynamic background colors and images to sections based on metadata
- * @param {Element} main The main element containing sections
+ * Creates a responsive picture element for background images with optimization
+ * Similar to createOptimizedPicture, but for 2 background image options
+ * @param {Element} main the main element
  */
-export function applySectionBackgroundColors(main) {
-  main.querySelectorAll('.section').forEach((section) => {
-    // Normalize backgroundColor data attribute variations
-    // The HTML may serialize as data-backgroundcolor, data-background-color,
-    // or data-backgroundColor. Ensure section.dataset.backgroundColor is set.
-    const bgColorVariants = ['backgroundcolor', 'background-color'];
-    bgColorVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.backgroundColor) {
-        section.dataset.backgroundColor = section.dataset[variant];
+function createResponsiveBackgroundPicture(main) {
+  const sectionImgContainers = main.querySelectorAll(':scope > .section[data-sectionbackgroundimage]');
+  sectionImgContainers.forEach((sectionImgContainer) => {
+    const sectionImg = sectionImgContainer.dataset.sectionbackgroundimage;
+    const sectionMobImg = sectionImgContainer.dataset.sectionbackgroundimagemobile;
+    let defaultImgUrl = null;
+
+    const bgImagesDiv = document.createElement('div');
+    bgImagesDiv.classList.add('bg-images');
+    sectionImgContainer.prepend(bgImagesDiv);
+
+    const newPic = document.createElement('picture');
+    if (sectionImg) {
+      newPic.appendChild(createSource(sectionImg, 1920, MEDIA_QUERIES.desktop.media));
+      newPic.appendChild(createSource(sectionImg, 899, MEDIA_QUERIES.tablet.media));
+      defaultImgUrl = sectionImg;
+    }
+
+    if (sectionMobImg) {
+      newPic.appendChild(createSource(sectionMobImg, 600, MEDIA_QUERIES.mobile.media));
+      defaultImgUrl = sectionMobImg;
+    }
+
+    const newImg = document.createElement('img');
+    newImg.alt = '';
+    newImg.className = 'section-img';
+    newImg.loading = 'lazy';
+
+    if (defaultImgUrl) {
+      // Set width and height once image loads to get native dimensions
+      newImg.onload = () => {
+        newImg.width = newImg.naturalWidth;
+        newImg.height = newImg.naturalHeight;
+      };
+      newImg.src = defaultImgUrl;
+
+      newPic.appendChild(newImg);
+      sectionImgContainer.prepend(newPic);
+      bgImagesDiv.appendChild(newPic);
+    }
+  });
+}
+
+/**
+ * Decorates all sections in a container element. Moved from aem.js
+ * @param {Element} main The container element
+ */
+export function decorateSections(main) {
+  const sectionsWithHeight = [];
+
+  main.querySelectorAll(':scope > div:not([data-section-status])').forEach((section) => {
+    const wrappers = [];
+    let defaultContent = false;
+    [...section.children].forEach((e) => {
+      if ((e.tagName === 'DIV' && e.className) || !defaultContent) {
+        const wrapper = document.createElement('div');
+        wrappers.push(wrapper);
+        defaultContent = e.tagName !== 'DIV' || !e.className;
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
       }
+      wrappers[wrappers.length - 1].append(e);
     });
+    wrappers.forEach((wrapper) => section.append(wrapper));
+    section.classList.add('section');
+    section.dataset.sectionStatus = 'initialized';
+    section.style.display = 'none';
 
-    // Normalize sectionBackgroundImage data attribute variations
-    // The HTML may serialize as data-sectionbackgroundimage, data-section-background-image, etc.
-    // Ensure we always have section.dataset.sectionBackgroundImage set for the JavaScript to use
-    const bgImageVariants = ['sectionbackgroundimage', 'section-background-image'];
-    bgImageVariants.forEach((variant) => {
-      if (section.dataset[variant] && !section.dataset.sectionBackgroundImage) {
-        section.dataset.sectionBackgroundImage = section.dataset[variant];
-      }
-    });
+    // Process section metadata
+    const sectionMeta = section.querySelector('div.section-metadata');
+    let heightDesktop = null;
+    let heightMobile = null;
 
-    let bgValue = null;
-    let bgImageValue = null;
-
-    // Check if backgroundColor is in dataset (from section-metadata block or data attribute)
-    if (section.dataset.backgroundColor) {
-      bgValue = section.dataset.backgroundColor.trim();
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      Object.keys(meta).forEach((key) => {
+        if (key === 'style') {
+          const styles = meta.style
+            .split(',')
+            .filter((style) => style)
+            .map((style) => toClassName(style.trim()));
+          styles.forEach((style) => section.classList.add(style));
+        } else if (key === 'id') {
+          section.id = meta[key];
+        } else if (key === 'height') {
+          heightDesktop = meta[key];
+        } else if (key === 'heightmobile') {
+          heightMobile = meta[key];
+        } else {
+          section.dataset[toCamelCase(key)] = meta[key];
+        }
+      });
+      sectionMeta.parentNode.remove();
     }
 
-    // Check if sectionBackgroundImage is in dataset
-    if (section.dataset.sectionBackgroundImage) {
-      bgImageValue = section.dataset.sectionBackgroundImage.trim();
-    }
+    // Apply background color if specified
+    if (section.dataset.backgroundcolor) {
+      let bgValue = section.dataset.backgroundcolor.trim();
 
-    // If not found, try to extract from Universal Editor properties (editor mode only)
-    if (section.hasAttribute('data-aue-resource')) {
-      const editorProps = extractSectionPropertiesFromEditor(section);
-
-      if (!bgValue && (editorProps['background-color'] || editorProps.backgroundColor)) {
-        bgValue = (editorProps['background-color'] || editorProps.backgroundColor).trim();
-      }
-
-      if (!bgImageValue && (editorProps['section-background-image'] || editorProps.sectionBackgroundImage)) {
-        bgImageValue = (editorProps['section-background-image'] || editorProps.sectionBackgroundImage).trim();
-      }
-    }
-
-    // If we found a background color value, process and apply it
-    if (bgValue) {
       // If it looks like a hex color (3 or 6 characters, alphanumeric), prepend with #
       if (/^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(bgValue)) {
         bgValue = `#${bgValue}`;
       }
-
-      // Set as inline style
-      section.style.backgroundColor = bgValue;
+      section.style.background = bgValue;
     }
 
-    // If we found a background image value, apply it
-    if (bgImageValue) {
-      section.style.backgroundImage = `url('${bgImageValue}')`;
-      section.style.backgroundSize = 'cover';
-      section.style.backgroundPosition = 'center';
-      section.style.backgroundRepeat = 'no-repeat';
+    // Store sections with height for batch processing all on page
+    if (heightDesktop || heightMobile) {
+      sectionsWithHeight.push({
+        section,
+        heightDesktop,
+        heightMobile,
+      });
+    }
+  });
+
+  // Set up single event listener for all sections with height
+  if (sectionsWithHeight.length > 0) {
+    const updateAllHeights = () => {
+      const isMobile = MEDIA_QUERIES.mobile.matches;
+      sectionsWithHeight.forEach(({ section, heightDesktop, heightMobile }) => {
+        const height = isMobile && heightMobile ? heightMobile : heightDesktop;
+        // Always set minHeight (or clear it with empty string if no value for current breakpoint)
+        section.style.minHeight = height || '';
+      });
+    };
+
+    updateAllHeights();
+    MEDIA_QUERIES.mobile.addEventListener('change', updateAllHeights);
+    MEDIA_QUERIES.desktop.addEventListener('change', updateAllHeights);
+  }
+}
+
+function decorateContainerSections(main) {
+  const sections = Array.from(main.querySelectorAll('.section'));
+
+  sections.forEach((section, index) => {
+    const includeNext = parseInt(
+      section.dataset.includenextsections || '0',
+      10,
+    );
+    if (!includeNext || includeNext <= 0) {
+      return;
+    }
+
+    // Mark the container
+    section.classList.add('container-section--merged');
+
+    // Collect next N sibling sections
+    for (let i = 1; i <= includeNext; i += 1) {
+      const sibling = sections[index + i];
+      if (!sibling) break;
+      sibling.classList.add('container-section--merged-sibling');
+
+      // Optionally mark which container they belong to
+      // e.g. sibling.dataset.mergedContainerId = section.id;
     }
   });
 }
@@ -819,9 +854,9 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  applySectionBackgroundColors(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
+  decorateContainerSections(main);
 }
 
 function addOverlayRule(ruleSet, selector, property, value) {
@@ -915,10 +950,6 @@ async function loadEager(doc) {
   loadThemeSpreadSheetConfig();
   const main = doc.querySelector('main');
   if (main) {
-    // Load category-nav fragment from page metadata BEFORE decorating main
-    // This ensures the fragment sections are present when decorateMain runs
-    await loadCategoryNavFragment(main);
-
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
@@ -1299,6 +1330,10 @@ async function loadLazy(doc) {
   // Load breadcrumbs after header is available and insert as first element in main
   await loadBreadcrumbs(main);
 
+  // Load category-nav fragment from page metadata BEFORE decorating main
+  // This ensures the fragment sections are present when decorateMain runs
+  await loadCategoryNavFragment(main);
+
   // Create category navbar wrapper BEFORE loading sections
   // This ensures the placeholder is in place when blocks are decorated
   await loadCategoryNav(main);
@@ -1316,6 +1351,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
+  createResponsiveBackgroundPicture(main);
 }
 
 /**

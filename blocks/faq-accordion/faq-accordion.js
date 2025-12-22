@@ -1,5 +1,79 @@
-import '../accordion/accordion.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
+export default function decorate(block) {
+  // const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  // if (!isMobile) return; // Skip accordion transformation on desktop
+
+  // First pass: collect all rows and group by tab
+  const rows = [...block.children];
+  const tabGroups = new Map(); // Map<tabName, Array<{row, label, body}>>
+  const itemsWithoutTab = []; // items without tab configuration
+
+  rows.forEach((row) => {
+    const children = [...row.children];
+
+    // Process rows with 2 or 3 children (question + answer + optional tab)
+    if (children.length === 2 || children.length === 3) {
+      const label = children[0];
+      const body = children[1];
+      const tabValue = children.length === 3 ? children[2].textContent.trim() : null;
+
+      if (tabValue) {
+        // Group by tab
+        if (!tabGroups.has(tabValue)) {
+          tabGroups.set(tabValue, []);
+        }
+        tabGroups.get(tabValue).push({ row, label, body });
+      } else {
+        // No tab, process normally
+        itemsWithoutTab.push({ row, label, body });
+      }
+    } else {
+      // remove or ignore malformed rows
+      row.remove();
+    }
+  });
+
+  // Clear the block
+  block.innerHTML = '';
+
+  // Process items without tabs first
+  itemsWithoutTab.forEach(({ row, label, body }) => {
+    const summary = document.createElement('summary');
+    summary.className = 'question';
+    summary.append(...label.childNodes);
+    body.className = 'answer';
+    const details = document.createElement('details');
+    moveInstrumentation(row, details);
+    details.className = 'faq-accordion-item';
+    details.append(summary, body);
+    block.appendChild(details);
+  });
+
+  // Process tab groups
+  tabGroups.forEach((items, tabName) => {
+    // Create wrapper div for this tab group
+    const tabWrapper = document.createElement('div');
+    tabWrapper.className = tabName;
+
+    // Add all items for this tab
+    items.forEach(({ row, label, body }) => {
+      const summary = document.createElement('summary');
+      summary.className = 'question';
+      summary.append(...label.childNodes);
+      body.className = 'answer';
+      const details = document.createElement('details');
+      moveInstrumentation(row, details);
+      details.className = 'faq-accordion-item';
+      details.append(summary, body);
+      tabWrapper.appendChild(details);
+    });
+
+    block.appendChild(tabWrapper);
+  });
+}
+
+/*
 export default function decorate(block) {
   block.id = 'faqs';
 
@@ -80,3 +154,4 @@ export default function decorate(block) {
     });
   });
 }
+*/
