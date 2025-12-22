@@ -368,6 +368,13 @@ main .breadcrumbs {
   display: none;
 }
 
+/* Mobile: hide category nav wrapper (redundant with category-nav.css but kept for safety) */
+@media (width <= 600px) {
+  .category-nav-wrapper {
+    display: none;
+  }
+}
+
 /* Desktop: show breadcrumbs with full styling */
 @media (width >= 900px) {
   main .breadcrumbs {
@@ -441,12 +448,6 @@ main .breadcrumbs {
   main:has(.hero-wrapper) .breadcrumbs {
     margin-left: 60px;
   }
-
-@media (width <= 767px) {
-  .category-nav-wrapper {
-    display: none; /* Hide on mobile as per original design */
-  }
-}
 
   .section.pl-blogs-container h2,
   .section.swipper-card-container h2 {
@@ -567,19 +568,22 @@ main .section.upi-steps-red-bg {
   box-shadow: 0 2px 4px rgba(37, 36, 59, 0.1);
 }
 
-.section.category-nav-container {
-  margin: 0;
-  background-color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE 10+ */
-  padding: 0 1rem;
+/* 
+ * CLS FIX: Category-nav sections are loaded from fragments and temporarily 
+ * inserted into main before being processed and moved to the header.
+ * These sections MUST remain hidden during this entire process to prevent 
+ * layout shifts. The sections are removed after processing, so they should
+ * never be visible in main.
+ * The !important is required to override inline styles set by JS during loading.
+ */
+.section.category-nav-container,
+.section.category-nav-section {
+  display: none !important; /* important's are required for these properties to override inline styles set by JS during loading */
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .section.overview-rte-container {
@@ -882,10 +886,6 @@ section.faq-accordion-container h4 {
   to {
     width: 80%;
     /* End width */
-    @media only screen and (min-width: 1580px) {
-      width: 82%;
-      /* End width */
-    }
   }
 }
 
