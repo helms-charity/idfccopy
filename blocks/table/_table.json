@@ -129,6 +129,14 @@
         },
         {
           "component": "reference",
+          "valueType": "string",
+          "name": "tableBackgroundImage",
+          "label": "Background Image",
+          "description": "Background image of the table, displayed behind image options below",
+          "multi": false
+        },
+        {
+          "component": "reference",
           "name": "image",
           "label": "Image (Desktop)",
           "valueType": "string"
@@ -151,14 +159,6 @@
           "label": "Table Row Max Width",
           "valueType": "string",
           "description": "ex. 600px"
-        },
-        {
-          "component": "boolean",
-          "name": "noHeader",
-          "label": "No Header",
-          "valueType": "boolean",
-          "value": false,
-          "description": "Remove the header row from the table"
         }
       ]
     },
