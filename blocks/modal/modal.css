@@ -82,3 +82,15 @@ body.modal-open {
 .modal dialog .section {
   padding: 0;
 }
+
+/* H2 styling for modals with fees-and-charges table */
+.modal:has(#fees-and-charges) h2 {
+  background: var(--gradient-red);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 25px;
+  padding: 40px 0 0;
+}

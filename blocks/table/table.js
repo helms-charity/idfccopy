@@ -73,7 +73,6 @@ export default async function decorate(block) {
   let mobileImageUrl = null;
   let imageAlt = '';
   let tableRowMaxWidth = '';
-  let noHeader = false;
 
   // Extract ID from first single-cell row if present
   if (rows[0]?.children.length === 1) {
@@ -110,6 +109,7 @@ export default async function decorate(block) {
     const cell = rows[metadataCount].children[0];
     if (!cell.querySelector('img, picture')) {
       const text = cell.textContent?.trim();
+      // Skip "true"/"false" (legacy noHeader values) and max-width patterns
       if (text && text !== 'true' && text !== 'false' && !text.match(/^\d+px$/)) {
         imageAlt = text;
         metadataCount += 1;
@@ -117,7 +117,7 @@ export default async function decorate(block) {
     }
   }
 
-  // Extract tableRowMaxWidth (text field)
+  // Extract tableRowMaxWidth (text field) - requires "px" suffix
   if (rows[metadataCount]?.children.length === 1) {
     const cell = rows[metadataCount].children[0];
     const text = cell.textContent?.trim();
@@ -127,23 +127,19 @@ export default async function decorate(block) {
     }
   }
 
-  // Extract noHeader boolean field (rendered as "true" or "false" text)
+  // Skip legacy noHeader boolean field if present (rendered as "true" or "false" text)
   if (rows[metadataCount]?.children.length === 1) {
     const cell = rows[metadataCount].children[0];
     const text = cell.textContent?.trim();
     if (text === 'true' || text === 'false') {
-      noHeader = text === 'true';
-      if (noHeader) {
-        block.classList.add('no-header');
-      }
       metadataCount += 1;
     }
   }
 
   // Build table structure
   const table = document.createElement('table');
-  const hasHeader = !noHeader;
-  const thead = hasHeader ? document.createElement('thead') : null;
+  const isFeesAndCharges = block.id === 'fees-and-charges';
+  const thead = isFeesAndCharges ? null : document.createElement('thead');
   const tbody = document.createElement('tbody');
 
   // Apply max-width to table if specified
@@ -154,9 +150,13 @@ export default async function decorate(block) {
   // Process table rows (skip metadata rows)
   const dataRows = rows.slice(metadataCount);
   dataRows.forEach((row, i) => {
+    // Skip empty rows
+    if (!row.children || row.children.length === 0) return;
+
     const tr = document.createElement('tr');
     moveInstrumentation(row, tr);
 
+    const isFirstRow = i === 0;
     const isLastRow = i === dataRows.length - 1;
     const cells = [...row.children];
     const firstCell = cells[0];
@@ -165,22 +165,26 @@ export default async function decorate(block) {
     // Check if last row has empty second cell - if so, make first cell span both columns
     const isEmptySecondCell = isLastRow && secondCell && !secondCell.textContent?.trim();
     if (isEmptySecondCell) {
-      const td = document.createElement(i === 0 && hasHeader ? 'th' : 'td');
-      if (i === 0 && hasHeader) td.setAttribute('scope', 'column');
+      const td = document.createElement(isFirstRow && thead ? 'th' : 'td');
+      if (isFirstRow && thead) td.setAttribute('scope', 'column');
       td.setAttribute('colspan', '2');
       td.innerHTML = firstCell.innerHTML;
       tr.append(td);
     } else {
       cells.forEach((cell) => {
-        const td = document.createElement(i === 0 && hasHeader ? 'th' : 'td');
-        if (i === 0 && hasHeader) td.setAttribute('scope', 'column');
+        const td = document.createElement(isFirstRow && thead ? 'th' : 'td');
+        if (isFirstRow && thead) td.setAttribute('scope', 'column');
         td.innerHTML = cell.innerHTML;
         tr.append(td);
       });
     }
 
-    if (i === 0 && hasHeader) thead.append(tr);
-    else tbody.append(tr);
+    // Add row to appropriate section
+    if (isFirstRow && thead) {
+      thead.append(tr);
+    } else {
+      tbody.append(tr);
+    }
   });
 
   // Build final structure

@@ -23,9 +23,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.table-background-image picture {
   display: block;
 }
 
@@ -125,11 +122,6 @@
 }
 
 @media (width >= 900px) {
-  .table.block table th,
-  .table.block table td {
-    padding: 1.5em 0.5em;
-  }
-
   .table.block#fees-and-charges table {
     font-size: var(--heading-font-size-xs);
   }
