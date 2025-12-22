@@ -1,5 +1,5 @@
 mountpoints:
   /:
-    url: "https://author-idfc-stage-65.adobecqms.net/bin/franklin.delivery/helms-charity/idfccopy/main"
+    url: "author-weretail-global-dev.adobecqms.net//bin/franklin.delivery/helms-charity/idfccopy/main"
     type: "markup"
     suffix: ".html"
