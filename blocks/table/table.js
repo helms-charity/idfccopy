@@ -13,16 +13,8 @@ import { moveInstrumentation, createSource } from '../../scripts/scripts.js';
  */
 function extractImageUrl(element) {
   if (!element) return null;
-
-  if (element.tagName === 'IMG') {
-    return element.src;
-  }
-
-  if (element.tagName === 'PICTURE') {
-    const img = element.querySelector('img');
-    return img?.src || null;
-  }
-
+  if (element.tagName === 'IMG') return element.src;
+  if (element.tagName === 'PICTURE') return element.querySelector('img')?.src || null;
   return null;
 }
 
@@ -35,29 +27,21 @@ function extractImageUrl(element) {
  */
 function createResponsivePicture(desktopUrl, mobileUrl = null, alt = '') {
   const picture = document.createElement('picture');
-  let defaultImgUrl = null;
+  const defaultImgUrl = mobileUrl || desktopUrl;
 
-  // Desktop image: desktop and tablet breakpoints
   if (desktopUrl) {
     picture.appendChild(createSource(desktopUrl, 1920, '(min-width: 900px)'));
     picture.appendChild(createSource(desktopUrl, 899, '(min-width: 600px) and (max-width: 899px)'));
-    defaultImgUrl = desktopUrl;
   }
 
-  // Mobile image: mobile breakpoint
   if (mobileUrl) {
     picture.appendChild(createSource(mobileUrl, 600, '(max-width: 599px)'));
-    defaultImgUrl = mobileUrl;
   }
 
-  // Create img element
   const img = document.createElement('img');
   img.alt = alt;
   img.loading = 'lazy';
-
-  if (defaultImgUrl) {
-    img.src = defaultImgUrl;
-  }
+  if (defaultImgUrl) img.src = defaultImgUrl;
 
   picture.appendChild(img);
   return picture;
@@ -69,65 +53,99 @@ function createResponsivePicture(desktopUrl, mobileUrl = null, alt = '') {
 export default async function decorate(block) {
   const rows = Array.from(block.children);
   let metadataCount = 0;
+  let backgroundColor = '';
   let desktopImageUrl = null;
   let mobileImageUrl = null;
   let imageAlt = '';
   let tableRowMaxWidth = '';
 
-  // Extract ID from first single-cell row if present
   if (rows[0]?.children.length === 1) {
     const cell = rows[0].children[0];
     const text = cell.textContent?.trim();
     if (text && !cell.querySelector('img, picture')) {
       block.id = text;
       metadataCount = 1;
-      // Skip filter/columns row if present
-      if (rows[1]?.children.length === 1 && !rows[1].children[0].querySelector('img, picture')) {
+    }
+  }
+
+  if (rows[1]?.children.length === 1) {
+    const cell = rows[1].children[0];
+    if (!cell.querySelector('img, picture')) {
+      const text = cell.textContent?.trim();
+      const isColorOrGradient = text && (text.startsWith('var(') || text.startsWith('#')
+        || text.includes('gradient') || text.includes('rgb')
+        || text.match(/^[0-9a-fA-F]{3,6}$/i)
+        || text.match(/^(transparent|inherit|initial|unset)$/i));
+
+      if (isColorOrGradient) {
+        backgroundColor = text;
+        metadataCount = 2;
+      } else if (text) {
         metadataCount = 2;
       }
     }
   }
 
-  // Extract desktop and mobile images (reference fields)
   for (let i = 0; i < 2; i += 1) {
-    if (rows[metadataCount]?.children.length === 1) {
-      const cell = rows[metadataCount].children[0];
-      const imageElement = cell.querySelector('picture, img');
-      if (imageElement) {
-        const url = extractImageUrl(imageElement);
-        if (i === 0) desktopImageUrl = url;
-        else mobileImageUrl = url;
-        metadataCount += 1;
+    let foundImage = false;
+    for (let j = metadataCount; j < rows.length; j += 1) {
+      if (rows[j]?.children.length === 1) {
+        const cell = rows[j].children[0];
+        const imageElement = cell.querySelector('picture, img');
+        if (imageElement) {
+          const url = extractImageUrl(imageElement);
+          if (i === 0) desktopImageUrl = url;
+          else mobileImageUrl = url;
+          metadataCount = j + 1;
+          foundImage = true;
+          break;
+        } else if (cell.textContent?.trim()) {
+          break;
+        }
+      }
+    }
+    if (!foundImage) {
+      break;
+    }
+  }
+
+  for (let j = metadataCount; j < rows.length; j += 1) {
+    if (rows[j]?.children.length === 1) {
+      const cell = rows[j].children[0];
+      if (!cell.querySelector('img, picture')) {
+        const text = cell.textContent?.trim();
+        if (text) {
+          const isColorPattern = text.startsWith('var(') || text.startsWith('#') || text.includes('gradient');
+          if (text !== 'true' && text !== 'false' && !text.match(/^\d+px$/) && !isColorPattern) {
+            imageAlt = text;
+            metadataCount = j + 1;
+            break;
+          } else {
+            break;
+          }
+        }
       } else {
-        break; // Stop if no image found
+        break;
       }
     }
   }
 
-  // Extract imageAlt (text field) - optional
-  if (rows[metadataCount]?.children.length === 1) {
-    const cell = rows[metadataCount].children[0];
-    if (!cell.querySelector('img, picture')) {
+  for (let j = metadataCount; j < rows.length; j += 1) {
+    if (rows[j]?.children.length === 1) {
+      const cell = rows[j].children[0];
       const text = cell.textContent?.trim();
-      // Skip "true"/"false" (legacy noHeader values) and max-width patterns
-      if (text && text !== 'true' && text !== 'false' && !text.match(/^\d+px$/)) {
-        imageAlt = text;
-        metadataCount += 1;
+      if (text) {
+        if (text.match(/^\d+px$/)) {
+          tableRowMaxWidth = text;
+          metadataCount = j + 1;
+          break;
+        } else if (!cell.querySelector('img, picture')) {
+          break;
+        }
       }
     }
   }
 
-  // Extract tableRowMaxWidth (text field) - requires "px" suffix
-  if (rows[metadataCount]?.children.length === 1) {
-    const cell = rows[metadataCount].children[0];
-    const text = cell.textContent?.trim();
-    if (text && text.match(/^\d+px$/)) {
-      tableRowMaxWidth = text;
-      metadataCount += 1;
-    }
-  }
-
-  // Skip legacy noHeader boolean field if present (rendered as "true" or "false" text)
   if (rows[metadataCount]?.children.length === 1) {
     const cell = rows[metadataCount].children[0];
     const text = cell.textContent?.trim();
@@ -136,70 +154,69 @@ export default async function decorate(block) {
     }
   }
 
-  // Build table structure
   const table = document.createElement('table');
-  const isFeesAndCharges = block.id === 'fees-and-charges';
-  const thead = isFeesAndCharges ? null : document.createElement('thead');
+  const thead = block.id === 'fees-and-charges' ? null : document.createElement('thead');
   const tbody = document.createElement('tbody');
 
-  // Apply max-width to table if specified
   if (tableRowMaxWidth) {
     table.style.maxWidth = tableRowMaxWidth;
   }
 
-  // Process table rows (skip metadata rows)
   const dataRows = rows.slice(metadataCount);
   dataRows.forEach((row, i) => {
-    // Skip empty rows
-    if (!row.children || row.children.length === 0) return;
+    if (!row.children?.length) return;
 
     const tr = document.createElement('tr');
     moveInstrumentation(row, tr);
 
     const isFirstRow = i === 0;
     const isLastRow = i === dataRows.length - 1;
-    const cells = [...row.children];
+    const isHeaderRow = isFirstRow && thead;
+    const cells = Array.from(row.children);
     const firstCell = cells[0];
     const secondCell = cells[1];
 
-    // Check if last row has empty second cell - if so, make first cell span both columns
     const isEmptySecondCell = isLastRow && secondCell && !secondCell.textContent?.trim();
     if (isEmptySecondCell) {
-      const td = document.createElement(isFirstRow && thead ? 'th' : 'td');
-      if (isFirstRow && thead) td.setAttribute('scope', 'column');
-      td.setAttribute('colspan', '2');
-      td.innerHTML = firstCell.innerHTML;
-      tr.append(td);
+      const cell = document.createElement(isHeaderRow ? 'th' : 'td');
+      if (isHeaderRow) cell.setAttribute('scope', 'column');
+      cell.setAttribute('colspan', '2');
+      cell.innerHTML = firstCell.innerHTML;
+      tr.append(cell);
     } else {
       cells.forEach((cell) => {
-        const td = document.createElement(isFirstRow && thead ? 'th' : 'td');
-        if (isFirstRow && thead) td.setAttribute('scope', 'column');
+        const td = document.createElement(isHeaderRow ? 'th' : 'td');
+        if (isHeaderRow) td.setAttribute('scope', 'column');
         td.innerHTML = cell.innerHTML;
         tr.append(td);
       });
     }
 
-    // Add row to appropriate section
-    if (isFirstRow && thead) {
-      thead.append(tr);
-    } else {
-      tbody.append(tr);
-    }
+    (isHeaderRow ? thead : tbody).append(tr);
   });
 
-  // Build final structure
   block.textContent = '';
 
-  // Create and add responsive background image if present
-  if (desktopImageUrl || mobileImageUrl) {
+  if (backgroundColor || desktopImageUrl || mobileImageUrl) {
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'table-background-image';
-    const responsivePicture = createResponsivePicture(desktopImageUrl, mobileImageUrl, imageAlt);
-    imageWrapper.append(responsivePicture);
+
+    if (backgroundColor) {
+      const isHex = backgroundColor.match(/^[0-9a-fA-F]{3,6}$/);
+      const isGradient = backgroundColor.startsWith('var(') || backgroundColor.includes('gradient');
+      const prop = isGradient ? 'background-image' : 'background';
+      const value = isHex ? `#${backgroundColor}` : backgroundColor;
+      imageWrapper.style.setProperty(prop, value, 'important');
+    }
+
+    if (desktopImageUrl || mobileImageUrl) {
+      const responsivePicture = createResponsivePicture(desktopImageUrl, mobileImageUrl, imageAlt);
+      imageWrapper.append(responsivePicture);
+    }
+
     block.append(imageWrapper);
   }
 
-  // Add table
   if (thead) table.append(thead);
   table.append(tbody);
   block.append(table);

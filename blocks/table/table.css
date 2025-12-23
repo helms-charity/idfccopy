@@ -71,7 +71,6 @@
   margin: 0 auto;
 }
 
-.table.block#fees-and-charges table th,
 .table.block#fees-and-charges table td {
   max-width: 100%;
   word-wrap: break-word;
@@ -125,7 +124,6 @@
     font-size: var(--heading-font-size-xs);
   }
 
-  .table.block#fees-and-charges table th,
   .table.block#fees-and-charges table td {
     padding-left: 0;
     padding-right: 0;
