@@ -670,7 +670,7 @@ export function createSource(src, width, mediaQuery) {
  * @param {Element} main the main element
  */
 function createResponsiveBackgroundPicture(main) {
-  const sectionImgContainers = main.querySelectorAll(':scope > .section[data-sectionbackgroundimage]');
+  const sectionImgContainers = main.querySelectorAll(':scope > .section[data-sectionbackgroundimagemobile], :scope > .section[data-sectionbackgroundimage]');
   sectionImgContainers.forEach((sectionImgContainer) => {
     const sectionImg = sectionImgContainer.dataset.sectionbackgroundimage;
     const sectionMobImg = sectionImgContainer.dataset.sectionbackgroundimagemobile;
