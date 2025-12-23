@@ -342,6 +342,24 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
+.section .bg-images {
+  position: absolute;
+  display: block;
+  inset: 0;
+  z-index: 0;
+}
+
+.section .bg-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.section.has-bg-images > *:not(.bg-images) {
+  position: relative;
+}
+
 [data-object-fit="none"] .bg-images img {
   object-fit: none;
 }
@@ -352,6 +370,8 @@ main>.section:first-of-type {
 
 [data-object-fit="cover"] .bg-images img {
   object-fit: cover;
+  height: 100%;
+  width: 100%;
 }
 
 [data-object-position="center"] .bg-images img {
@@ -585,17 +605,6 @@ main .section.upi-steps-red-bg {
 
 .section > .default-content-wrapper.dark-scheme {
   color: var(--white);
-}
-
-.section .bg-images picture {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.section:has(.bg-images) > div:not(.bg-images) {
-  position: relative;
-  z-index: 1;
 }
 
 /* IDFC */

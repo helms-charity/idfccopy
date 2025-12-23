@@ -704,15 +704,6 @@ export function setColorScheme(section) {
   });
 }
 
-function handleBackground(background, section) {
-  const pic = background.content.querySelector('picture');
-  if (pic) {
-    section.classList.add('has-bg-image');
-    pic.classList.add('section-background');
-    section.prepend(pic);
-  }
-}
-
 /**
  * Helper function to create a <source> element
  * @param {string} src the image url
@@ -771,6 +762,7 @@ function createResponsiveBackgroundPicture(main) {
       newImg.src = defaultImgUrl;
 
       newPic.appendChild(newImg);
+      sectionImgContainer.classList.add('has-bg-images');
       sectionImgContainer.prepend(newPic);
     }
   });
@@ -806,17 +798,6 @@ export function decorateSections(main) {
     let heightMobile = null;
 
     if (sectionMeta) {
-      // Handle background images before readBlockConfig processes metadata
-      const backgroundRow = [...sectionMeta.querySelectorAll(':scope > div')].find((row) => {
-        const cols = [...row.children];
-        return cols[0] && toClassName(cols[0].textContent) === 'background' && cols[1];
-      });
-
-      if (backgroundRow) {
-        const backgroundContent = backgroundRow.children[1];
-        handleBackground({ content: backgroundContent }, section);
-      }
-
       const meta = readBlockConfig(sectionMeta);
       Object.keys(meta).forEach((key) => {
         if (key === 'style') {
