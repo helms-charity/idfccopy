@@ -322,13 +322,37 @@ function extractBlockProperties(block, ul) {
 }
 
 /**
+ * Creates and appends the arrow icon element to a card body
+ * @param {HTMLElement} cardBody The card body element to append the arrow to
+ */
+function appendArrowIcon(cardBody) {
+  // Check if arrow already exists
+  if (cardBody.querySelector('.icon-arrow-right-white')) return;
+
+  const arrowP = document.createElement('p');
+  const arrowSpan = document.createElement('span');
+  arrowSpan.className = 'icon icon-arrow-right-white';
+
+  const arrowImg = document.createElement('img');
+  arrowImg.setAttribute('data-icon-name', 'arrow-right-white');
+  arrowImg.src = '/icons/arrow-right-white.svg';
+  arrowImg.alt = 'arrow-right-white';
+  arrowImg.loading = 'lazy';
+
+  arrowSpan.appendChild(arrowImg);
+  arrowP.appendChild(arrowSpan);
+  cardBody.appendChild(arrowP);
+}
+
+/**
  * Sets up card interactivity based on card type:
  * 1. Standard card: No link, no modal - not clickable
  * 2. Easy modal card: No link, has modalContent - opens inline modal on click
  * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
  * @param {HTMLElement} li The card list item element
+ * @param {boolean} shouldAddArrow Whether to add the arrow icon for interactive cards
  */
-function setupCardInteractivity(li) {
+function setupCardInteractivity(li, shouldAddArrow = false) {
   const cardBodies = li.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
@@ -385,6 +409,11 @@ function setupCardInteractivity(li) {
     if (buttonContainer) {
       buttonContainer.classList.add('sr-only');
     }
+
+    // Add arrow icon for interactive cards (if enabled for this variant)
+    if (shouldAddArrow) {
+      appendArrowIcon(mainBody);
+    }
     return; // Don't process further if this is a complex modal card
   }
 
@@ -415,6 +444,11 @@ function setupCardInteractivity(li) {
         openCardModal();
       }
     });
+
+    // Add arrow icon for interactive cards (if enabled for this variant)
+    if (shouldAddArrow) {
+      appendArrowIcon(mainBody);
+    }
     return;
   }
 
@@ -442,8 +476,14 @@ function setupCardInteractivity(li) {
     if (buttonContainer) {
       buttonContainer.classList.add('sr-only');
     }
+
+    // Add arrow icon for interactive cards (if enabled for this variant)
+    if (shouldAddArrow) {
+      appendArrowIcon(mainBody);
+    }
   }
   // Type 1: Standard card with no link - no additional interactivity needed
+  // No arrow is added for non-interactive cards
 }
 
 /**
@@ -609,7 +649,9 @@ export default async function decorate(block) {
     // Setup interactivity for all card types (links, modals)
     // Skip for blog-posts - uses standard link behavior
     if (!isBlogPosts) {
-      setupCardInteractivity(li);
+      // Add arrow icons for key-benefits, experience-life, reward-points variants
+      const shouldAddArrow = supportsSemanticElements;
+      setupCardInteractivity(li, shouldAddArrow);
     }
   });
 
@@ -660,7 +702,7 @@ export default async function decorate(block) {
 
     // Build Swiper configuration
     const swiperConfig = {
-      slidesPerView: 1,
+      slidesPerView: 1.2,
       spaceBetween: 16,
       initialSlide: startingCard,
       pagination: {
@@ -695,15 +737,16 @@ export default async function decorate(block) {
       const slideCount = ul.querySelectorAll('li').length;
       const shouldCenter = slideCount < 3;
       swiperConfig.centeredSlides = shouldCenter;
+      swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
-          spaceBetween: 16,
+          spaceBetween: 20,
           centeredSlides: slideCount < 2,
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
-          spaceBetween: 20,
+          spaceBetween: 36,
         },
       };
     } else if (isJoiningPerks) {
@@ -711,7 +754,7 @@ export default async function decorate(block) {
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
+      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
       swiperConfig.spaceBetween = 30;
       swiperConfig.breakpoints = {
         600: {
@@ -726,7 +769,7 @@ export default async function decorate(block) {
     } else {
       // For benefit cards: standard breakpoints
       const slideCount = ul.querySelectorAll('li').length;
-      swiperConfig.spaceBetween = 32;
+      swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
@@ -734,7 +777,7 @@ export default async function decorate(block) {
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
-          spaceBetween: 40,
+          spaceBetween: 36,
         },
       };
       // Add class for CSS centering when fewer than 3 cards
@@ -752,7 +795,7 @@ export default async function decorate(block) {
         disableOnInteraction: false,
         pauseOnMouseEnter: true,
       };
-      swiperConfig.loop = true;
+      swiperConfig.loop = false;
     }
 
     // Initialize Swiper if available
