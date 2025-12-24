@@ -647,6 +647,64 @@ function loadAutoBlock(doc) {
 /** SECTIONS */
 
 /**
+ * Converts a CSS color value to RGB values
+ * @param {string} color - CSS color value (hex, rgb, rgba, hsl, hsla, or named color)
+ * @returns {Object|null} Object with r, g, b values (0-255) or null if invalid
+ */
+function parseColor(section) {
+  if (!section) return null;
+
+  const computedBg = getComputedStyle(section).backgroundColor;
+  const rgbMatch = computedBg.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  if (!rgbMatch) return null;
+  return {
+    r: parseInt(rgbMatch[1], 10),
+    g: parseInt(rgbMatch[2], 10),
+    b: parseInt(rgbMatch[3], 10),
+  };
+}
+
+function getRelativeLuminance({ r, g, b }) {
+  // Convert to sRGB
+  const rsRGB = r / 255;
+  const gsRGB = g / 255;
+  const bsRGB = b / 255;
+
+  // Apply gamma correction
+  const rLinear = rsRGB <= 0.03928 ? rsRGB / 12.92 : ((rsRGB + 0.055) / 1.055) ** 2.4;
+  const gLinear = gsRGB <= 0.03928 ? gsRGB / 12.92 : ((gsRGB + 0.055) / 1.055) ** 2.4;
+  const bLinear = bsRGB <= 0.03928 ? bsRGB / 12.92 : ((bsRGB + 0.055) / 1.055) ** 2.4;
+
+  // Calculate relative luminance
+  return 0.2126 * rLinear + 0.7152 * gLinear + 0.0722 * bLinear;
+}
+
+/**
+ * The color scheme detection uses the WCAG relative luminance formula to determine if a bg color
+ * is light or dark, ensuring accessible and appropriate styling for content within the section.
+ * Determines if a CSS color value is light or dark
+ * @param {string} color - CSS color value
+ * @param {number} threshold - Luminance threshold (default: 0.5)
+ * @returns {boolean} true if light, false if dark, null if invalid color
+ */
+export function getColorScheme(section) {
+  const rgb = parseColor(section);
+  if (!rgb) return null;
+
+  return getRelativeLuminance(rgb) > 0.5 ? 'light-scheme' : 'dark-scheme';
+}
+
+export function setColorScheme(section) {
+  const scheme = getColorScheme(section);
+  if (!scheme) return;
+  section.querySelectorAll(':scope > *').forEach((el) => {
+    // Reset any pre-made color schemes
+    el.classList.remove('light-scheme', 'dark-scheme');
+    el.classList.add(scheme);
+  });
+}
+
+/**
  * Helper function to create a <source> element
  * @param {string} src the image url
  * @param {number} width the width of the image
@@ -676,11 +734,9 @@ function createResponsiveBackgroundPicture(main) {
     const sectionMobImg = sectionImgContainer.dataset.sectionbackgroundimagemobile;
     let defaultImgUrl = null;
 
-    const bgImagesDiv = document.createElement('div');
-    bgImagesDiv.classList.add('bg-images');
-    sectionImgContainer.prepend(bgImagesDiv);
-
     const newPic = document.createElement('picture');
+    newPic.classList.add('bg-images');
+
     if (sectionImg) {
       newPic.appendChild(createSource(sectionImg, 1920, MEDIA_QUERIES.desktop.media));
       newPic.appendChild(createSource(sectionImg, 899, MEDIA_QUERIES.tablet.media));
@@ -706,8 +762,8 @@ function createResponsiveBackgroundPicture(main) {
       newImg.src = defaultImgUrl;
 
       newPic.appendChild(newImg);
+      sectionImgContainer.classList.add('has-bg-images');
       sectionImgContainer.prepend(newPic);
-      bgImagesDiv.appendChild(newPic);
     }
   });
 }
@@ -773,6 +829,9 @@ export function decorateSections(main) {
       }
       section.style.background = bgValue;
     }
+
+    // Apply color scheme based on background color
+    setColorScheme(section);
 
     // Store sections with height for batch processing all on page
     if (heightDesktop || heightMobile) {
