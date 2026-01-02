@@ -599,11 +599,11 @@ main .section.upi-steps-red-bg {
   padding: 40px 0 56px;
 }
 
-.section > .default-content-wrapper.light-scheme {
+.light-scheme {
   color: var(--text-color);
 }
 
-.section > .default-content-wrapper.dark-scheme {
+.dark-scheme {
   color: var(--white);
 }
 
