@@ -9,9 +9,15 @@ import { loadFragment } from '../../scripts/scripts.js';
   Other blocks can also use the createModal() and openModal() functions.
 */
 
-export async function createModal(contentNodes) {
+export async function createModal(contentNodes, options = {}) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/modal/modal.css`);
   const dialog = document.createElement('dialog');
+
+  // Apply modal theme class if provided
+  if (options.modalTheme) {
+    dialog.classList.add(options.modalTheme);
+  }
+
   const dialogContent = document.createElement('div');
   dialogContent.classList.add('modal-content');
   dialogContent.append(...contentNodes);

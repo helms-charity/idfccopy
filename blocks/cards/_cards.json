@@ -88,6 +88,27 @@
           ]
         },
         {
+          "component": "select",
+          "name": "modalTheme",
+          "label": "Modal Theme",
+          "valueType": "string",
+          "description": "Select the theme for the modal",
+          "options": [
+            {
+              "name": "Default (no theme)",
+              "value": ""
+            },
+            {
+              "name": "Mayura Blue",
+              "value": "modal-mayura-blue"
+            },
+            {
+              "name": "Mayura Silver",
+              "value": "modal-mayura-silver"
+            }
+          ]
+        },
+        {
           "component": "container",
           "name": "swiperSettings",
           "label": "Swiper Settings",

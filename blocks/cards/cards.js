@@ -263,7 +263,7 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard'];
+  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard', 'modalTheme'];
   const propertyValues = {};
   const itemsToRemove = [];
 
@@ -351,8 +351,9 @@ function appendArrowIcon(cardBody) {
  * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
  * @param {HTMLElement} li The card list item element
  * @param {boolean} shouldAddArrow Whether to add the arrow icon for interactive cards
+ * @param {string} modalTheme Optional theme class to apply to the modal
  */
-function setupCardInteractivity(li, shouldAddArrow = false) {
+function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
   const cardBodies = li.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
@@ -429,7 +430,8 @@ function setupCardInteractivity(li, shouldAddArrow = false) {
     const openCardModal = async () => {
       const contentWrapper = document.createElement('div');
       contentWrapper.innerHTML = modalContent.innerHTML;
-      const { showModal } = await createModal([contentWrapper]);
+      const modalOptions = modalTheme ? { modalTheme } : {};
+      const { showModal } = await createModal([contentWrapper], modalOptions);
       showModal();
     };
 
@@ -651,7 +653,8 @@ export default async function decorate(block) {
     if (!isBlogPosts) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
-      setupCardInteractivity(li, shouldAddArrow);
+      const modalTheme = block.dataset.modalTheme || '';
+      setupCardInteractivity(li, shouldAddArrow, modalTheme);
     }
   });
 
