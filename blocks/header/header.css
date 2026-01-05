@@ -590,7 +590,7 @@ header nav .nav-tools {
     align-items: center;
     margin: 0 auto;
     width: 100%;
-    max-width: 1140px;
+    max-width: 1200px;
   }
 
   .nav-tools .default-content-wrapper>p:first-child {
@@ -607,7 +607,6 @@ header nav .nav-tools {
     box-sizing: border-box;
     min-width: 200px;
     flex-grow: 1;
-    max-width: 400px;
     margin-right: auto;
   }
 
