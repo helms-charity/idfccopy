@@ -263,7 +263,7 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard', 'modalTheme'];
+  const propertyFields = ['modalTheme', 'swipable', 'autoplayEnabled', 'startingCard'];
   const propertyValues = {};
   const itemsToRemove = [];
 
@@ -298,13 +298,22 @@ function extractBlockProperties(block, ul) {
 
     if (isPropertyCandidate) {
       const text = paragraphs[0].textContent.trim();
+      const fieldName = propertyFields[propertyIndex];
 
-      // Check if it's a boolean or number
-      if (text === 'true' || text === 'false' || !Number.isNaN(Number(text))) {
-        const fieldName = propertyFields[propertyIndex];
+      // Check if it's a valid property value:
+      // - Boolean (true/false)
+      // - Number
+      // - String value for modalTheme (e.g., 'modal-mayura-blue')
+      const isBooleanOrNumber = text === 'true' || text === 'false' || !Number.isNaN(Number(text));
+      const isModalThemeValue = fieldName === 'modalTheme' && text.length > 0;
+
+      if (isBooleanOrNumber || isModalThemeValue) {
         propertyValues[fieldName] = text;
         itemsToRemove.push(li);
         propertyIndex += 1;
+      } else {
+        // Not a valid property value, stop checking
+        break;
       }
     } else {
       // Stop checking once we hit a real card
@@ -428,9 +437,13 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
     const modalContent = modalContentDiv.cloneNode(true);
 
     const openCardModal = async () => {
+      // eslint-disable-next-line no-console
+      console.log('[Cards Debug] openCardModal called, modalTheme:', modalTheme);
       const contentWrapper = document.createElement('div');
       contentWrapper.innerHTML = modalContent.innerHTML;
       const modalOptions = modalTheme ? { modalTheme } : {};
+      // eslint-disable-next-line no-console
+      console.log('[Cards Debug] modalOptions being passed:', modalOptions);
       const { showModal } = await createModal([contentWrapper], modalOptions);
       showModal();
     };
@@ -654,6 +667,11 @@ export default async function decorate(block) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
+      // Debug logging for modal theme
+      // eslint-disable-next-line no-console
+      console.log('[Cards Debug] block.dataset:', block.dataset);
+      // eslint-disable-next-line no-console
+      console.log('[Cards Debug] modalTheme extracted:', modalTheme);
       setupCardInteractivity(li, shouldAddArrow, modalTheme);
     }
   });

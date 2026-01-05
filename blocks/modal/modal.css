@@ -89,15 +89,16 @@ body.modal-open {
 .modal dialog.modal-mayura-blue {
   background: var(--metal-blue);
   position: relative;
-  overflow: hidden;
 }
 
-/* Metal texture overlay - TODO: update with actual texture URL */
+/*
+ * Metal texture overlay - TODO: update with actual texture URL
+ * Temporarily disabled until texture URL is provided
 .modal dialog.modal-mayura-blue::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/path/to/metal-texture.png'); /* TODO: Replace with actual texture path */
+  background-image: url('/path/to/metal-texture.png');
   background-size: cover;
   background-position: center;
   opacity: 0.15;
@@ -105,6 +106,7 @@ body.modal-open {
   z-index: 1;
   border-radius: inherit;
 }
+*/
 
 .modal dialog.modal-mayura-blue .modal-content {
   color: var(--white);
@@ -177,7 +179,9 @@ body.modal-open {
   color: var(--text-color);
 }
 
-/* Decorative corner overlay - top right - TODO: update with actual peacock image URL */
+/*
+ * Decorative corner overlay - top right - TODO: update with actual peacock image URL
+ * Temporarily disabled until image URLs are provided
 .modal dialog.modal-mayura-blue::after {
   content: '';
   position: absolute;
@@ -185,7 +189,7 @@ body.modal-open {
   right: 0;
   width: 200px;
   height: 200px;
-  background-image: url('/path/to/peacock-top-right.png'); /* TODO: Replace with actual image path */
+  background-image: url('/path/to/peacock-top-right.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top right;
@@ -193,8 +197,12 @@ body.modal-open {
   pointer-events: none;
   z-index: 1;
 }
+*/
 
-/* Decorative corner overlay - bottom left - TODO: update with actual peacock image URL */
+/*
+ * Decorative corner overlay - bottom left - TODO: update with actual peacock image URL
+ * Temporarily disabled until image URLs are provided
+ *
 .modal dialog.modal-mayura-blue .modal-content::after {
   content: '';
   position: absolute;
@@ -202,7 +210,7 @@ body.modal-open {
   left: 0;
   width: 150px;
   height: 150px;
-  background-image: url('/path/to/peacock-bottom-left.png'); /* TODO: Replace with actual image path */
+  background-image: url('/path/to/peacock-bottom-left.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom left;
@@ -210,6 +218,7 @@ body.modal-open {
   pointer-events: none;
   z-index: 1;
 }
+*/
 
 /* ===== Modal Theme: Mayura Silver ===== */
 .modal dialog.modal-mayura-silver {

@@ -13,9 +13,17 @@ export async function createModal(contentNodes, options = {}) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/modal/modal.css`);
   const dialog = document.createElement('dialog');
 
+  // Debug logging for modal theme
+  // eslint-disable-next-line no-console
+  console.log('[Modal Debug] createModal called with options:', options);
+
   // Apply modal theme class if provided
   if (options.modalTheme) {
     dialog.classList.add(options.modalTheme);
+    // eslint-disable-next-line no-console
+    console.log('[Modal Debug] Applied theme class to dialog:', options.modalTheme);
+    // eslint-disable-next-line no-console
+    console.log('[Modal Debug] Dialog classList:', dialog.classList.toString());
   }
 
   const dialogContent = document.createElement('div');
