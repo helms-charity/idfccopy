@@ -394,26 +394,6 @@ main>.section:first-of-type {
   object-position: bottom right;
 }
 
-/* Container with a large background */
-.section.container-section--merged {
-  position: relative;
-  overflow: visible;
-}
-
-/* All merged siblings share positioning context */
-.section.container-section--merged,
-.section.container-section--merged-sibling {
-  position: relative;
-  z-index: 0;
-}
-
-/* If you want content to sit “on top” of the shared background: */
-.section.container-section--merged > div,
-.section.container-section--merged-sibling > div {
-  position: relative;
-  z-index: 1;
-}
-
 /* Reserve space for breadcrumbs to prevent CLS - Mobile First */
 
 /* Mobile: hidden by default */
@@ -500,17 +480,6 @@ main .breadcrumbs {
 
   main:has(.hero-wrapper) .breadcrumbs {
     margin-left: 60px;
-  }
-
-  .section.pl-blogs-container h2,
-  .section.swipper-card-container h2 {
-    font-size: 20px;
-    line-height: normal;
-    margin-bottom: 13px;
-  }
-  
-  .section.swipper-card-container h6{
-    font-size: 16px;
   }
 
   .section.banner-image>div>p:nth-child(1) {
@@ -607,8 +576,6 @@ main .section.upi-steps-red-bg {
   color: var(--white);
 }
 
-/* IDFC */
-
 /* Category navbar is now part of header, so simpler styling */
 .category-nav-wrapper {
   width: 100%;
@@ -652,30 +619,6 @@ main .section.upi-steps-red-bg {
   letter-spacing: -0.6px;
 }
 
-.section.swipper-card-container h2,
-.section.swipper-card-container h6,
-.section.pl-blogs-container h2 {
-  color: var(--text-color);
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  letter-spacing: -0.686px;
-  margin-bottom: 25px;
-}
-
-.section.swipper-card-container h2 {
-  margin-top: 0;
-}
-
-.section.git-block-container h3 {
-  color: var(--text-color);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 26px;
-  letter-spacing: -0.5px;
-}
-
 section.faq-accordion-container h4 {
   color: var(--text-color);
   font-size: 24px;
@@ -686,13 +629,6 @@ section.faq-accordion-container h4 {
   margin-bottom: 24px;
   display: block;
 }
-
-.section.pl-blogs-container {
-  background-color: rgba(225, 225, 235, 0.29);
-  padding: 32px 0;
-  margin: 0;
-}
-
 
 .section.banner-image .default-content-wrapper ol {
   display: flex;
@@ -795,17 +731,6 @@ section.faq-accordion-container h4 {
 .section.banner-image .default-content-wrapper p img {
   width: 100%;
   height: 580px;
-}
-
-.section.swipper-card-container {
-  padding: 20px 0 0;
-  background-color: rgba(239, 223, 211, 0.5);
-  margin: 0;
-}
-
-.section.bankproducts {
-  background-color: #fff;
-  margin-bottom: 40px;
 }
 
 .section.rte-block-container {
