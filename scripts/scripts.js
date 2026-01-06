@@ -1497,7 +1497,6 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
-  // createResponsiveBackgroundPicture(main);
 }
 
 /**
