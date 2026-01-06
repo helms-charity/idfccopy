@@ -176,18 +176,18 @@
       },
       {
         "component": "container",
-        "label": "Optional background properties",
+        "label": "Optional outer background properties",
         "name": "container",
         "valueType": "string",
         "collapsible": true,
         "fields": [
           {
             "component": "text",
-            "name": "backgroundColor",
+            "name": "background",
             "label": "Background Color/gradient",
             "value": "",
             "valueType": "string",
-            "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
+            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
           },
           {
             "component": "reference",
@@ -272,49 +272,89 @@
             "description": "optional minimum height when in mobile, e.g. 400px"
           }
         ]
-      }
-    ]
-  },
-  {
-    "id": "container",
-    "fields": [
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Container Name",
-        "description": "The label shown for this container in the Content Tree"
       },
       {
-        "component": "text",
-        "name": "includeNextSections",
-        "label": "Include Next Sections",
-        "value": "",
-        "valueType": "number",
-        "description": "The number of sibling sections to display as a group"
-      },
-      {
-        "component": "text",
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "value": "",
+        "component": "container",
+        "label": "Optional block-content background properties",
+        "name": "options-container",
         "valueType": "string",
-        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImage",
-        "label": "Background Image",
-        "description": "The background image of the container, displayed on top of the background color if specified",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImageMobile",
-        "label": "Background Image Mobile",
-        "description": "The background image of the container, displayed on top of the background color if specified",
-        "multi": false
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "background-block",
+            "label": "Background Color/gradient",
+            "value": "",
+            "valueType": "string",
+            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "background-block-image",
+            "label": "Block-content Background Image",
+            "description": "Background image of the block-content, displayed on top of the background color if specified",
+            "multi": false
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "background-block-image-mobile",
+            "label": "Block-content Background Image Mobile",
+            "description": "Background image of the block-content for mobile",
+            "multi": false
+          },
+          {
+            "component": "select",
+            "valueType": "string",
+            "name": "object-fit-block",
+            "label": "Block-content Background Fit",
+            "value": "cover",
+            "options": [
+              {
+                "name": "cover",
+                "value": "cover"
+              },
+              {
+                "name": "contain",
+                "value": "contain"
+              },
+              {
+                "name": "none",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "component": "select",
+            "valueType": "string",
+            "name": "object-position-block",
+            "label": "Block-content Background Image Position",
+            "value": "center",
+            "options": [
+              {
+                "name": "center",
+                "value": "center"
+              },
+              {
+                "name": "top left",
+                "value": "top left"
+              },
+              {
+                "name": "top right",
+                "value": "top right"
+              },
+              {
+                "name": "bottom left",
+                "value": "bottom left"
+              },
+              {
+                "name": "bottom right",
+                "value": "bottom right"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
