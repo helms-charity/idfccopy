@@ -848,6 +848,41 @@
     ]
   },
   {
+    "id": "cc-hero-slider-item",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "desktopBackgroundImage",
+        "label": "Select Desktop Background Image",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "mobileBackgroundImage",
+        "label": "Select Mobile Background Image",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "slideContent",
+        "label": "Slide Content",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "popUpTriggerCTAText",
+        "label": "Enter pop-up trigger CTA text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "popUpId",
+        "label": "Add pop-up ID",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
     "id": "cf-fragment",
     "fields": [
       {

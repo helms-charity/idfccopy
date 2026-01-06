@@ -74,6 +74,12 @@
     ]
   },
   {
+    "id": "cc-hero-slider",
+    "components": [
+      "cc-hero-slider-item"
+    ]
+  },
+  {
     "id": "cf-fragment",
     "components": [
       "cf-fragment-item"
