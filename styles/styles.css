@@ -342,56 +342,66 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
-.section .bg-images {
-  position: absolute;
+/* custom styles for sections 2025-12-24T10:35:58-05:00 
+was in section-medata.css */
+
+.section {
   display: block;
-  inset: 0;
-  z-index: 0;
+
+  .bg-images {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .bg-images img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
 }
 
-.section .bg-images img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.section.has-bg-images > *:not(.bg-images) {
+.has-bg-images {
   position: relative;
-}
 
-[data-object-fit="none"] .bg-images img {
+  > div {
+    position: relative;
+  }
+
+&[data-object-fit="none"] > .bg-images img {
   object-fit: none;
 }
 
-[data-object-fit="contain"] .bg-images img {
+&[data-object-fit="contain"] > .bg-images img {
   object-fit: contain;
 }
 
-[data-object-fit="cover"] .bg-images img {
+&[data-object-fit="cover"] > .bg-images img {
   object-fit: cover;
   height: 100%;
   width: 100%;
 }
 
-[data-object-position="center"] .bg-images img {
+&[data-object-position="center"] > .bg-images img {
   object-position: center;
 }
 
-[data-object-position="top left"] .bg-images img {
+&[data-object-position="top left"] > .bg-images img {
   object-position: top left;
 }
 
-[data-object-position="top right"] .bg-images img {
+&[data-object-position="top right"] > .bg-images img {
   object-position: top right;
 }
 
-[data-object-position="bottom left"] .bg-images img {
+&[data-object-position="bottom left"] > .bg-images img {
   object-position: bottom left;
 }
 
-[data-object-position="bottom right"] .bg-images img {
+&[data-object-position="bottom right"] > .bg-images img {
   object-position: bottom right;
+}
 }
 
 /* Reserve space for breadcrumbs to prevent CLS - Mobile First */

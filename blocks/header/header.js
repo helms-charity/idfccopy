@@ -117,7 +117,7 @@ export default async function decorate(block) {
   nav.id = 'nav';
 
   // Get the default-content-wrapper from fragment
-  const contentWrapper = fragment.querySelector('.default-content-wrapper');
+  const contentWrapper = fragment.querySelector('.default-content');
   if (!contentWrapper) return;
 
   // Create the three main sections
