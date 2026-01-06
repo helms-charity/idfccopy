@@ -860,33 +860,6 @@ export function decorateSections(main) {
   }
 }
 
-function decorateContainerSections(main) {
-  const sections = Array.from(main.querySelectorAll('.section'));
-
-  sections.forEach((section, index) => {
-    const includeNext = parseInt(
-      section.dataset.includenextsections || '0',
-      10,
-    );
-    if (!includeNext || includeNext <= 0) {
-      return;
-    }
-
-    // Mark the container
-    section.classList.add('container-section--merged');
-
-    // Collect next N sibling sections
-    for (let i = 1; i <= includeNext; i += 1) {
-      const sibling = sections[index + i];
-      if (!sibling) break;
-      sibling.classList.add('container-section--merged-sibling');
-
-      // Optionally mark which container they belong to
-      // e.g. sibling.dataset.mergedContainerId = section.id;
-    }
-  });
-}
-
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -915,7 +888,6 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
-  decorateContainerSections(main);
 }
 
 function addOverlayRule(ruleSet, selector, property, value) {

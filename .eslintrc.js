@@ -20,7 +20,6 @@ module.exports = {
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
     'xwalk/max-cells': ['error', {
       section: 100, // section is a key-value block
-      container: 100, // container is a key-value block
     }],
   },
 };
