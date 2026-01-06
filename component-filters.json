@@ -39,6 +39,7 @@
       "tabs-upi-link",
       "linkToUPI",
       "table",
+      "cc-hero-slider",
       "overview"
     ]
   },
@@ -70,6 +71,12 @@
     "id": "category-nav",
     "components": [
       "category-nav-item"
+    ]
+  },
+  {
+    "id": "cc-hero-slider",
+    "components": [
+      "cc-hero-slider-item"
     ]
   },
   {
