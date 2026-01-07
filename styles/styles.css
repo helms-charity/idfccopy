@@ -583,6 +583,25 @@ main .section.upi-steps-red-bg {
   color: var(--white);
 }
 
+/* when scheme is manually chosen from the section style */
+.section.dark-scheme {
+  color: var(--white);
+
+  > .default-content.light-scheme,
+  > .block-content.light-scheme {
+    color: var(--white);
+  }
+}
+
+.section.light-scheme {
+  color: var(--text-color);
+
+  > .default-content.dark-scheme,
+  > .block-content.dark-scheme {
+    color: var(--text-color);
+  }
+}
+
 /* Category navbar is now part of header, so simpler styling */
 .category-nav-wrapper {
   width: 100%;
