@@ -957,7 +957,7 @@ function groupChildren(section) {
   return groups;
 }
 
-function decorateSections(parent, isDoc) {
+export function decorateSections(parent, isDoc) {
   const selector = isDoc ? 'main > div' : ':scope > div';
   return [...parent.querySelectorAll(selector)].map((section) => {
     const groups = groupChildren(section);
