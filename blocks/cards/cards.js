@@ -263,61 +263,137 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['modalTheme', 'swipable', 'autoplayEnabled', 'startingCard'];
+  const propertyFields = [
+    'modalTheme',
+    'modalDialogBackgroundImageTexture',
+    'modalPageBackgroundImage',
+    'modalPageDecorationImage',
+    'modalCtaContent',
+    'swipable',
+    'autoplayEnabled',
+    'startingCard',
+  ];
   const propertyValues = {};
   const itemsToRemove = [];
 
   // Check first few li elements for property values
-  const items = ul.querySelectorAll('li');
+  const items = [...ul.querySelectorAll('li')];
+  let liIndex = 0;
   let propertyIndex = 0;
 
-  // Use for...of to allow early exit when we hit a real card
-  // eslint-disable-next-line no-restricted-syntax
-  for (const li of items) {
+  // Process li elements, matching them to expected property fields
+  while (liIndex < items.length && propertyIndex < propertyFields.length) {
+    const li = items[liIndex];
+    const fieldName = propertyFields[propertyIndex];
+
     // Check if li is completely empty (no content or only whitespace)
     const isEmpty = !li.textContent.trim() && !li.querySelector('picture, img');
 
-    if (isEmpty && propertyIndex < propertyFields.length) {
+    if (isEmpty) {
       // Empty li - field value not defined, just remove it and move to next field
       itemsToRemove.push(li);
+      liIndex += 1;
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
     }
 
-    // Check if this li only contains a single text value (boolean or number)
+    // Check li content structure
     const paragraphs = li.querySelectorAll('p');
-    const hasImage = li.querySelector('picture, img');
+    const pictureEl = li.querySelector('picture');
+    const imgEl = li.querySelector('img');
+    const hasImage = pictureEl || imgEl;
     const hasHeading = li.querySelector('h1, h2, h3, h4, h5, h6');
 
-    // If only one paragraph, no images, no headings, might be a property value
-    const isPropertyCandidate = paragraphs.length === 1
-      && !hasImage
-      && !hasHeading
-      && propertyIndex < propertyFields.length;
+    // Check if this is an image-only li (for image reference fields)
+    const isImageOnly = hasImage && !hasHeading && paragraphs.length <= 1
+      && (!paragraphs.length || paragraphs[0].querySelector('picture, img'));
 
-    if (isPropertyCandidate) {
-      const text = paragraphs[0].textContent.trim();
-      const fieldName = propertyFields[propertyIndex];
+    // Check if this is a text-only li (for string/boolean/number fields)
+    const isTextOnly = paragraphs.length === 1 && !hasImage && !hasHeading;
 
-      // Check if it's a valid property value:
-      // - Boolean (true/false)
-      // - Number
-      // - String value for modalTheme (e.g., 'modal-mayura-blue')
-      const isBooleanOrNumber = text === 'true' || text === 'false' || !Number.isNaN(Number(text));
-      const isModalThemeValue = fieldName === 'modalTheme' && text.length > 0;
-
-      if (isBooleanOrNumber || isModalThemeValue) {
-        propertyValues[fieldName] = text;
-        itemsToRemove.push(li);
-        propertyIndex += 1;
-      } else {
-        // Not a valid property value, stop checking
-        break;
+    // Handle image reference fields
+    const imageReferenceFields = [
+      'modalDialogBackgroundImageTexture',
+      'modalPageBackgroundImage',
+      'modalPageDecorationImage',
+    ];
+    if (imageReferenceFields.includes(fieldName)) {
+      if (isImageOnly) {
+        // Extract image src
+        const img = imgEl || pictureEl.querySelector('img');
+        if (img && img.src) {
+          propertyValues[fieldName] = img.src;
+          itemsToRemove.push(li);
+          liIndex += 1;
+          propertyIndex += 1;
+          // eslint-disable-next-line no-continue
+          continue;
+        }
       }
-    } else {
-      // Stop checking once we hit a real card
+      // Not an image or no src - skip to next field, stay on same li
+      propertyIndex += 1;
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    // Handle richtext fields (modalCtaContent)
+    if (fieldName === 'modalCtaContent') {
+      // Check if li contains button-container or links (typical CTA content)
+      const hasButtonContainer = li.querySelector('.button-container');
+      const hasLinks = li.querySelector('a');
+      if (hasButtonContainer || hasLinks) {
+        // Extract the entire innerHTML as richtext content
+        propertyValues[fieldName] = li.innerHTML;
+        itemsToRemove.push(li);
+        liIndex += 1;
+        propertyIndex += 1;
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // Not richtext content - skip to next field, stay on same li
+      propertyIndex += 1;
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    // Handle text-based fields
+    if (!isTextOnly) {
+      // This is a real card (has multiple elements) - stop processing
       break;
+    }
+
+    const text = paragraphs[0].textContent.trim();
+
+    // Validate value based on expected field type:
+    // - modalTheme: CSS class name string (not boolean, not number)
+    // - swipable, autoplayEnabled: boolean ("true" or "false")
+    // - startingCard: number
+    const isBoolean = text === 'true' || text === 'false';
+    const isNumber = !Number.isNaN(Number(text)) && text !== '';
+
+    let isValidValue = false;
+    if (fieldName === 'modalTheme') {
+      // modalTheme must be a CSS class name (string, not boolean, not pure number)
+      isValidValue = !isBoolean && !isNumber && text.length > 0;
+    } else if (fieldName === 'swipable' || fieldName === 'autoplayEnabled') {
+      // Must be boolean
+      isValidValue = isBoolean;
+    } else if (fieldName === 'startingCard') {
+      // Must be a number
+      isValidValue = isNumber;
+    }
+
+    if (isValidValue) {
+      // Value matches expected type - extract it
+      propertyValues[fieldName] = text;
+      itemsToRemove.push(li);
+      liIndex += 1;
+      propertyIndex += 1;
+    } else {
+      // Value doesn't match expected type for this field
+      // This li might be for a later field - skip to next field but stay on same li
+      propertyIndex += 1;
     }
   }
 
@@ -441,7 +517,43 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
       console.log('[Cards Debug] openCardModal called, modalTheme:', modalTheme);
       const contentWrapper = document.createElement('div');
       contentWrapper.innerHTML = modalContent.innerHTML;
-      const modalOptions = modalTheme ? { modalTheme } : {};
+
+      // Build modal options
+      const modalOptions = {};
+      if (modalTheme) {
+        modalOptions.modalTheme = modalTheme;
+      }
+
+      // Get images from block-level settings (authored in modal settings)
+      // Find the parent block to get its dataset
+      const parentBlock = li.closest('.cards.block');
+      const blockTextureUrl = parentBlock?.dataset?.modalDialogBackgroundImageTexture;
+      const pageBackgroundUrl = parentBlock?.dataset?.modalPageBackgroundImage;
+
+      if (blockTextureUrl) {
+        modalOptions.textureImage = blockTextureUrl;
+      } else {
+        // Fallback: get texture image from card if block-level not set
+        const textureImg = li.querySelector('.cards-card-bg-texture img');
+        if (textureImg && textureImg.src) {
+          modalOptions.textureImage = textureImg.src;
+        }
+      }
+
+      if (pageBackgroundUrl) {
+        modalOptions.pageBackgroundImage = pageBackgroundUrl;
+      }
+
+      const decorationImageUrl = parentBlock?.dataset?.modalPageDecorationImage;
+      if (decorationImageUrl) {
+        modalOptions.decorationImage = decorationImageUrl;
+      }
+
+      const ctaContent = parentBlock?.dataset?.modalCtaContent;
+      if (ctaContent) {
+        modalOptions.ctaContent = ctaContent;
+      }
+
       // eslint-disable-next-line no-console
       console.log('[Cards Debug] modalOptions being passed:', modalOptions);
       const { showModal } = await createModal([contentWrapper], modalOptions);

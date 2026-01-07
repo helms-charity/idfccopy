@@ -1,10 +1,41 @@
+:root {
+  --modal-offset-height: calc(2 * var(--nav-height) + 42px); /* Generally 170px */
+}
+
 body.modal-open {
   overflow: hidden;
 }
 
 .modal dialog::backdrop {
-  background: var(--gradient-silver);
-  backdrop-filter: blur(8px);
+  /* Top 170px shows blurred nav, then transitions to silver gradient */
+  background: linear-gradient(
+    to bottom,
+    rgb(200 198 198 / 70%) 0,
+    rgb(200 198 198 / 95%) 1px,
+    #c8c6c6 250px,
+    #f1f0f0 50%,
+    #c8c6c6 100%
+  );
+  backdrop-filter: blur(5px);
+  background-size: cover;
+  background-position: 0 var(--modal-offset-height), center top var(--modal-offset-height);
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* Page background image - sits behind the dialog, above the backdrop */
+.modal .modal-page-background {
+  position: fixed;
+  inset: 0;
+  top: var(--modal-offset-height);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.modal .modal-page-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .modal dialog {
@@ -12,7 +43,8 @@ body.modal-open {
   overflow: visible;
   width: calc(100vw - 48px);
   max-width: 900px;
-  max-height: calc(100dvh - (2 * var(--header-height)));
+  max-height: calc(100dvh - (2 * var(--modal-offset-height)));
+  margin-top: 250px;
   padding: 0;
   border: none;
   border-radius: 16px;
@@ -24,7 +56,7 @@ body.modal-open {
   overflow-y: auto;
   overscroll-behavior: none;
   width: 100%;
-  max-height: calc(100dvh - (2 * var(--header-height)) - 48px);
+  max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px);
   padding: 32px 24px;
 }
 
@@ -34,9 +66,38 @@ body.modal-open {
   }
   
   .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--header-height)) - 64px);
+    max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px);
     padding: 40px 48px;
   }
+}
+
+/* Heading styles for default modal */
+.modal dialog h1,
+.modal dialog h2 {
+  font-size: 40px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 24px;
+  line-height: 1.3;
+}
+
+.modal dialog h3,
+.modal dialog h4,
+.modal dialog h5,
+.modal dialog h6 {
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+/* Modal CTA - positioned top-right, above close button */
+.modal .modal-cta {
+  position: absolute;
+  top: -80px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  z-index: 10;
 }
 
 .modal .close-button {
@@ -91,22 +152,23 @@ body.modal-open {
   position: relative;
 }
 
-/*
- * Metal texture overlay - TODO: update with actual texture URL
- * Temporarily disabled until texture URL is provided
-.modal dialog.modal-mayura-blue::before {
-  content: '';
+/* Modal texture overlay - added via JS as img element */
+.modal dialog .modal-texture {
   position: absolute;
   inset: 0;
-  background-image: url('/path/to/metal-texture.png');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.15;
+  overflow: hidden;
   pointer-events: none;
   z-index: 1;
   border-radius: inherit;
 }
-*/
+
+.modal dialog .modal-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  opacity: 0.7;
+}
 
 .modal dialog.modal-mayura-blue .modal-content {
   color: var(--white);
@@ -116,22 +178,14 @@ body.modal-open {
 
 /* Heading styles for Mayura Blue */
 .modal dialog.modal-mayura-blue h1,
-.modal dialog.modal-mayura-blue h2 {
-  color: var(--white);
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-  margin: 0 0 24px;
-  line-height: 1.3;
-}
-
+.modal dialog.modal-mayura-blue h2,
 .modal dialog.modal-mayura-blue h3,
 .modal dialog.modal-mayura-blue h4,
 .modal dialog.modal-mayura-blue h5,
 .modal dialog.modal-mayura-blue h6 {
   color: var(--white);
-  font-weight: 600;
-  margin: 16px 0 8px;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(208deg, rgb(200 198 198) 0%, rgb(241 240 240) 53.5%, rgb(200 198 198) 100%) text;
 }
 
 /* Paragraph styles for Mayura Blue */
@@ -179,46 +233,34 @@ body.modal-open {
   color: var(--text-color);
 }
 
-/*
- * Decorative corner overlay - top right - TODO: update with actual peacock image URL
- * Temporarily disabled until image URLs are provided
-.modal dialog.modal-mayura-blue::after {
+/* Decorative corner overlays - uses CSS variable set by JS */
+.modal dialog.has-decoration::before,
+.modal dialog.has-decoration::after {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
   width: 200px;
   height: 200px;
-  background-image: url('/path/to/peacock-top-right.png');
+  background-image: var(--modal-decoration-image);
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: top right;
-  opacity: 0.3;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 }
-*/
 
-/*
- * Decorative corner overlay - bottom left - TODO: update with actual peacock image URL
- * Temporarily disabled until image URLs are provided
- *
-.modal dialog.modal-mayura-blue .modal-content::after {
-  content: '';
-  position: absolute;
+/* Top right decoration */
+.modal dialog.has-decoration::before {
+  top: 0;
+  right: 0;
+  background-position: top right;
+}
+
+/* Bottom left decoration - rotated 180 degrees */
+.modal dialog.has-decoration::after {
   bottom: 0;
   left: 0;
-  width: 150px;
-  height: 150px;
-  background-image: url('/path/to/peacock-bottom-left.png');
-  background-size: contain;
-  background-repeat: no-repeat;
   background-position: bottom left;
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 1;
+  transform: rotate(180deg);
 }
-*/
 
 /* ===== Modal Theme: Mayura Silver ===== */
 .modal dialog.modal-mayura-silver {

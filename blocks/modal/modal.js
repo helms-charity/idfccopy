@@ -26,10 +26,30 @@ export async function createModal(contentNodes, options = {}) {
     console.log('[Modal Debug] Dialog classList:', dialog.classList.toString());
   }
 
+  // Set decoration image as CSS custom property for pseudo-elements
+  if (options.decorationImage) {
+    dialog.style.setProperty('--modal-decoration-image', `url('${options.decorationImage}')`);
+    dialog.classList.add('has-decoration');
+  }
+
   const dialogContent = document.createElement('div');
   dialogContent.classList.add('modal-content');
   dialogContent.append(...contentNodes);
   dialog.append(dialogContent);
+
+  // Add background texture image for themed modals
+  if (options.modalTheme && options.textureImage) {
+    const textureWrapper = document.createElement('div');
+    textureWrapper.classList.add('modal-texture');
+
+    const textureImg = document.createElement('img');
+    textureImg.src = options.textureImage;
+    textureImg.alt = '';
+    textureImg.loading = 'eager';
+
+    textureWrapper.append(textureImg);
+    dialog.prepend(textureWrapper);
+  }
 
   const closeButton = document.createElement('button');
   closeButton.classList.add('close-button');
@@ -38,6 +58,14 @@ export async function createModal(contentNodes, options = {}) {
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
   closeButton.addEventListener('click', () => dialog.close());
   dialog.prepend(closeButton);
+
+  // Add CTA content if provided (positioned top-right, above close button)
+  if (options.ctaContent) {
+    const ctaWrapper = document.createElement('div');
+    ctaWrapper.classList.add('modal-cta');
+    ctaWrapper.innerHTML = options.ctaContent;
+    dialog.prepend(ctaWrapper);
+  }
 
   const block = buildBlock('modal', '');
   document.querySelector('main').append(block);
@@ -55,12 +83,29 @@ export async function createModal(contentNodes, options = {}) {
     }
   });
 
+  // Add page background image if provided (sits behind the dialog)
+  let pageBackground = null;
+  if (options.pageBackgroundImage) {
+    pageBackground = document.createElement('div');
+    pageBackground.classList.add('modal-page-background');
+
+    const bgImg = document.createElement('img');
+    bgImg.src = options.pageBackgroundImage;
+    bgImg.alt = '';
+    bgImg.loading = 'eager';
+
+    pageBackground.append(bgImg);
+  }
+
   dialog.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
     block.remove();
   });
 
   block.innerHTML = '';
+  if (pageBackground) {
+    block.append(pageBackground);
+  }
   block.append(dialog);
 
   return {
