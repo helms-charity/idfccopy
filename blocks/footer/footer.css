@@ -64,6 +64,7 @@ footer .footer ul {
   width: 100%;
   border: none;
   border-radius: unset;
+  background: transparent;
 }
 
 .footer>div>div .accordion-wrapper .accordion .accordion-item {
@@ -89,10 +90,12 @@ footer .footer ul {
   margin-right: 15px;
   margin-left: 15px;
   border: unset;
+  box-shadow: none;
 }
 
 .footer .section.accordion-container:first-of-type .accordion-wrapper .accordion .accordion-item-label {
   border-bottom: 1px solid rgba(255, 255, 255, 0.21);
+  background: transparent;
 }
 
 .footer>div>div .accordion-wrapper .accordion>div>div:first-child ::after,
@@ -121,6 +124,12 @@ footer .footer ul {
   font-size: 14px;
   font-weight: 700;
   font: 700 1rem / 1.25rem 'Roboto', sans-serif;
+}
+
+.footer>div>div .accordion-wrapper .accordion details[open],
+.footer>div>div .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
+  color: white;
+  background: transparent;
 }
 
 .footer>div>div .accordion-wrapper .accordion>div>div:nth-child(2) ul,
@@ -276,6 +285,7 @@ footer .footer>div .section:nth-child(4)>div p a {
 
 .footer .section.accordion-container:first-of-type .accordion details summary {
   pointer-events: none;
+  box-shadow: none;
 }
 
 .footer .section.accordion-container:first-of-type .accordion details summary::after,

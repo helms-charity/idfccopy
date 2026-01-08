@@ -52,12 +52,12 @@
               "name": "Styles",
               "children": [
             {
-              "name": "light text on dark",
-              "value": "light-text"
+              "name": "dark scheme",
+              "value": "dark-scheme"
             },
             {
-              "name": "dark text on light",
-              "value": "dark-text-on-light"
+              "name": "light scheme",
+              "value": "light-scheme"
             }
           ]
           }
@@ -68,19 +68,7 @@
           "valueType": "boolean",
           "name": "no-schema",
           "label": "No LD+JSON schema",
-          "description": "TODO - this toggle is inop"
-        },
-        {
-          "component": "aem-content",
-          "name": "cta",
-          "label": "CTA URL",
-          "value": "#"
-        },
-        {
-          "component": "text",
-          "name": "ctaText",
-          "label": "CTA Text",
-          "value": "More FAQs"
+          "description": "Disables schema.org microdata attributes on accordion items"
         },
         {
           "component": "text",
@@ -88,6 +76,19 @@
           "label": "CTA location (number of items before the CTA)",
           "valueType": "number",
           "value": ""
+        },
+        {
+          "component": "text",
+          "hidden": "true",
+          "name": "link",
+          "label": "CTA URL",
+          "value": "#"
+        },
+        {
+          "component": "text",
+          "name": "linkText",
+          "label": "CTA Text",
+          "value": "More FAQs"
         }
       ]
     },
