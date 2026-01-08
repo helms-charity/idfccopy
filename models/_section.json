@@ -74,7 +74,7 @@
         },
         {
           "component": "text",
-          "name": "container",
+          "name": "containerwidth",
           "label": "Inner container width(2, 4, 6)",
           "valueType": "string",
           "description": "container = width of .section > div"
