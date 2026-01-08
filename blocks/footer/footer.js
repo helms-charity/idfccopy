@@ -18,11 +18,20 @@ export default async function decorate(block) {
 
   block.append(footer);
 
+  // Remove "only one open" behavior from footer accordions (allow multiple open)
+  block.querySelectorAll('.accordion details').forEach((detail) => {
+    if (detail.accordionToggleHandler) {
+      detail.removeEventListener('toggle', detail.accordionToggleHandler);
+      delete detail.accordionToggleHandler;
+    }
+  });
+
   // Open accordion details on desktop
-  const details = block.querySelectorAll('footer .section.accordion-container:first-of-type details');
+  const details = block.querySelectorAll('.footer .section.accordion-container:first-of-type details');
   if (window.innerWidth > 768) {
+    // Use setAttribute to avoid triggering toggle events
     details.forEach((detail) => {
-      detail.open = true;
+      detail.setAttribute('open', '');
     });
   }
 }
