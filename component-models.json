@@ -422,7 +422,6 @@
       },
       {
         "component": "text",
-        "hidden": "true",
         "name": "link",
         "label": "CTA URL",
         "value": "",
