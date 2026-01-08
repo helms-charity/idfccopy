@@ -792,6 +792,16 @@ async function handleStyle(text, section) {
   section.classList.add(...styles);
 }
 
+async function handleLayout(text, section, type) {
+  // any and all .block-content divs will get this treatment
+  // so if you want all blocks in a section to be in the same grid,
+  // you can't have default content in between blocks.
+  // otherwise each block-content will get its own grid.
+  if (text === '0') return;
+  if (type === 'grid') section.classList.add('grid');
+  section.classList.add(`${type}-${text}`);
+}
+
 // Registry for sections with height - batch processing for performance
 const sectionsWithHeight = [];
 let heightListenersInitialized = false;
@@ -849,6 +859,10 @@ export async function handleSectionMetadata(el) {
   // Special cases for SECTION - handle these first
   if (metadata.style?.text) await handleStyle(metadata.style.text, section);
   if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
+  if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
+  if (metadata.gap?.text) handleLayout(metadata.gap.text, section, 'gap');
+  if (metadata.spacing?.text) handleLayout(metadata.spacing.text, section, 'spacing');
+  if (metadata.containerwidth?.text) handleLayout(metadata.containerwidth.text, section, 'container');
 
   // Handle section height (desktop and mobile)
   const heightDesktop = metadata.height?.text || null;
@@ -858,7 +872,7 @@ export async function handleSectionMetadata(el) {
   }
 
   // Define which keys are handled specially for section or block-content
-  const specialKeys = ['style', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block'];
+  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block'];
 
   // Catch-all: set any other metadata as data- attributes on section
   Object.keys(metadata).forEach((key) => {
