@@ -82,13 +82,14 @@
           "hidden": "true",
           "name": "link",
           "label": "CTA URL",
-          "value": "#"
+          "value": "",
+          "description": "Use # for more/less toggle functionality"
         },
         {
           "component": "text",
           "name": "linkText",
-          "label": "CTA Text",
-          "value": "More FAQs"
+          "label": "CTA Text (e.g. Show More)",
+          "value": ""
         }
       ]
     },
