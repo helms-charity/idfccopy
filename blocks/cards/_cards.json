@@ -88,6 +88,48 @@
           ]
         },
         {
+          "component": "select",
+          "name": "modalTheme",
+          "label": "Modal Theme",
+          "valueType": "string",
+          "description": "Select the theme for the modal",
+          "options": [
+            {
+              "name": "Default (no theme)",
+              "value": ""
+            },
+            {
+              "name": "Mayura Blue",
+              "value": "modal-mayura-blue"
+            },
+            {
+              "name": "Mayura Silver",
+              "value": "modal-mayura-silver"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "name": "modalDialogBackgroundImageTexture",
+          "label": "Modal Background Texture",
+          "valueType": "string",
+          "description": "Select the background texture image for themed modals"
+        },
+        {
+          "component": "reference",
+          "name": "modalPageBackgroundImage",
+          "label": "Modal Page Background",
+          "valueType": "string",
+          "description": "Select the background image for the page behind the modal"
+        },
+        {
+          "component": "reference",
+          "name": "modalPageDecorationImage",
+          "label": "Modal Decoration Image",
+          "valueType": "string",
+          "description": "Decoration image for modal corners (top-right and bottom-left rotated)"
+        },
+        {
           "component": "container",
           "name": "swiperSettings",
           "label": "Swiper Settings",

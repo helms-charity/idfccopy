@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
+ /* stylelint-disable selector-class-pattern */
 
 :root {
   /* colors */
@@ -32,6 +32,10 @@
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
   --metal-blue: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
+  --metal-silver: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
+  --modal-silver-text: #182659;
+  --modal-blue-text: #d6d4d4;
+  --modal-backdrop-gradient: linear-gradient(to bottom, rgb(200 198 198 / 70%) 0, rgb(200 198 198 / 95%) 1px, #C8C6C6 250px, #F1F0F0 50%, #C8C6C6 100%);
 
   /* bootstrap colors */
   --blue: #007bff;
@@ -106,7 +110,7 @@
 }
 
 *{
-  font-family: "Inter";
+  font-family: var(--body-font-family);
 }
 
 *,
@@ -220,20 +224,15 @@ button {
 }
 
 /* links */
+a {
+  text-decoration: none;
+  color: var(--dark-red-color);
+}
+
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
   word-break: break-word;
-}
-
-a:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
-}
-
-a {
-  text-decoration: none;
-  color: var(--dark-red-color);
 }
 
 a:hover {
@@ -578,7 +577,7 @@ main .section.upi-steps-red-bg {
   background-color: #fff;
   border-top: 1px solid #E0E0E0;
   border-bottom: 1px solid #E0E0E0;
-  box-shadow: 0 2px 4px rgba(37, 36, 59, 0.1);
+  box-shadow: 0 2px 4px rgba(37 36 59 / 10%);
 }
 
 /* 
@@ -602,7 +601,7 @@ main .section.upi-steps-red-bg {
 .section.overview-rte-container {
   background-color: var(--light-color);
   margin-top: 0;
-  padding: 42px 0 23px 0;
+  padding: 42px 0 23px;
 }
 
 .section.columns-container h2 {
@@ -648,6 +647,10 @@ section.faq-accordion-container h4 {
   pointer-events: none;
 }
 
+.section.banner-image .default-content-wrapper .button-container a {
+  background-color: #9B1E26;
+}
+
 .section.banner-image .default-content-wrapper ol li:nth-child(1) a {
   color: var(--dark-red-color);
   pointer-events: visible;
@@ -668,18 +671,9 @@ section.faq-accordion-container h4 {
   color: var(--dark-red-color);
 }
 
-.section.banner-image .default-content-wrapper .button-container a {
-  background-color: #9B1E26;
-}
-
 .section.banner-image .default-content-wrapper {
   width: 100%;
   height: 580px;
-}
-
-.section.banner-image>div>ol {
-  position: absolute;
-  top: 3%;
 }
 
 .section.banner-image h1 {
@@ -747,9 +741,9 @@ section.faq-accordion-container h4 {
 
 .section.highlight.hero-banner.banner-image.columns-container {
   position: relative;
+
   /* This is critical for absolute positioning */
   width: 100%;
-  /* max-height: 580px; */
   height: 580px;
   padding: unset;
 }

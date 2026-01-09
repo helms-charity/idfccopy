@@ -263,52 +263,138 @@ function injectSchema(schema) {
  * @param {HTMLElement} ul The ul containing card items
  */
 function extractBlockProperties(block, ul) {
-  const propertyFields = ['swipable', 'autoplayEnabled', 'startingCard'];
+  const propertyFields = [
+    'modalTheme',
+    'modalDialogBackgroundImageTexture',
+    'modalPageBackgroundImage',
+    'modalPageDecorationImage',
+    'modalCtaContent',
+    'swipable',
+    'autoplayEnabled',
+    'startingCard',
+  ];
   const propertyValues = {};
   const itemsToRemove = [];
 
   // Check first few li elements for property values
-  const items = ul.querySelectorAll('li');
+  const items = [...ul.querySelectorAll('li')];
+  let liIndex = 0;
   let propertyIndex = 0;
 
-  // Use for...of to allow early exit when we hit a real card
-  // eslint-disable-next-line no-restricted-syntax
-  for (const li of items) {
+  // Process li elements, matching them to expected property fields
+  while (liIndex < items.length && propertyIndex < propertyFields.length) {
+    const li = items[liIndex];
+    const fieldName = propertyFields[propertyIndex];
+
     // Check if li is completely empty (no content or only whitespace)
     const isEmpty = !li.textContent.trim() && !li.querySelector('picture, img');
 
-    if (isEmpty && propertyIndex < propertyFields.length) {
+    if (isEmpty) {
       // Empty li - field value not defined, just remove it and move to next field
       itemsToRemove.push(li);
+      liIndex += 1;
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
     }
 
-    // Check if this li only contains a single text value (boolean or number)
+    // Check li content structure
     const paragraphs = li.querySelectorAll('p');
-    const hasImage = li.querySelector('picture, img');
+    // Only consider picture elements for authored images (not icon imgs)
+    const pictureEl = li.querySelector('picture');
+    const hasAuthoredImage = !!pictureEl;
     const hasHeading = li.querySelector('h1, h2, h3, h4, h5, h6');
 
-    // If only one paragraph, no images, no headings, might be a property value
-    const isPropertyCandidate = paragraphs.length === 1
-      && !hasImage
-      && !hasHeading
-      && propertyIndex < propertyFields.length;
+    // Check if this is an image-only li (for image reference fields)
+    // Must have a picture element (not just any img, which could be an icon)
+    const isImageOnly = hasAuthoredImage && !hasHeading && paragraphs.length <= 1
+      && (!paragraphs.length || paragraphs[0].querySelector('picture'));
 
-    if (isPropertyCandidate) {
-      const text = paragraphs[0].textContent.trim();
+    // Check if this is a text-only li (for string/boolean/number fields)
+    const isTextOnly = paragraphs.length === 1 && !hasAuthoredImage && !hasHeading;
 
-      // Check if it's a boolean or number
-      if (text === 'true' || text === 'false' || !Number.isNaN(Number(text))) {
-        const fieldName = propertyFields[propertyIndex];
-        propertyValues[fieldName] = text;
-        itemsToRemove.push(li);
-        propertyIndex += 1;
+    // Handle image reference fields
+    const imageReferenceFields = [
+      'modalDialogBackgroundImageTexture',
+      'modalPageBackgroundImage',
+      'modalPageDecorationImage',
+    ];
+    if (imageReferenceFields.includes(fieldName)) {
+      if (isImageOnly && pictureEl) {
+        // Extract image src from picture element
+        const img = pictureEl.querySelector('img');
+        if (img && img.src) {
+          propertyValues[fieldName] = img.src;
+          itemsToRemove.push(li);
+          liIndex += 1;
+          propertyIndex += 1;
+          // eslint-disable-next-line no-continue
+          continue;
+        }
       }
-    } else {
-      // Stop checking once we hit a real card
+      // Not an authored image or no src - skip to next field, stay on same li
+      propertyIndex += 1;
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    // Handle richtext fields (modalCtaContent)
+    if (fieldName === 'modalCtaContent') {
+      // Check if li contains button-container or links (typical CTA content)
+      const hasButtonContainer = li.querySelector('.button-container');
+      const hasLinks = li.querySelector('a');
+      if (hasButtonContainer || hasLinks) {
+        // Extract the entire innerHTML as richtext content
+        propertyValues[fieldName] = li.innerHTML;
+        itemsToRemove.push(li);
+        liIndex += 1;
+        propertyIndex += 1;
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // Not richtext content - skip to next field, stay on same li
+      propertyIndex += 1;
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    // Handle text-based fields
+    if (!isTextOnly) {
+      // This is a real card (has multiple elements) - stop processing
       break;
+    }
+
+    const text = paragraphs[0].textContent.trim();
+
+    // Validate value based on expected field type:
+    // - modalTheme: CSS class name string (not boolean, not number)
+    // - swipable, autoplayEnabled: boolean ("true" or "false")
+    // - startingCard: number
+    const isBoolean = text === 'true' || text === 'false';
+    const isNumber = !Number.isNaN(Number(text)) && text !== '';
+
+    let isValidValue = false;
+    if (fieldName === 'modalTheme') {
+      // modalTheme must be a CSS class name (string, not boolean, not pure number)
+      isValidValue = !isBoolean && !isNumber && text.length > 0;
+    } else if (fieldName === 'swipable' || fieldName === 'autoplayEnabled') {
+      // Must be boolean
+      isValidValue = isBoolean;
+    } else if (fieldName === 'startingCard') {
+      // Must be a number
+      isValidValue = isNumber;
+    }
+
+    if (isValidValue) {
+      // Value matches expected type - extract it
+      propertyValues[fieldName] = text;
+      itemsToRemove.push(li);
+      liIndex += 1;
+      propertyIndex += 1;
+    } else {
+      // Value doesn't match expected type for this field
+      // This li might be for a later field - skip to next field but stay on same li
+      propertyIndex += 1;
     }
   }
 
@@ -351,8 +437,9 @@ function appendArrowIcon(cardBody) {
  * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
  * @param {HTMLElement} li The card list item element
  * @param {boolean} shouldAddArrow Whether to add the arrow icon for interactive cards
+ * @param {string} modalTheme Optional theme class to apply to the modal
  */
-function setupCardInteractivity(li, shouldAddArrow = false) {
+function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
   const cardBodies = li.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
@@ -392,6 +479,8 @@ function setupCardInteractivity(li, shouldAddArrow = false) {
     const handleClick = (e) => {
       // Don't intercept if clicking on the actual link
       if (e.target.closest('a')) return;
+      e.preventDefault();
+      e.stopPropagation();
       // Trigger click on the link to let autolinkModals handle it
       cardLink.click();
     };
@@ -429,13 +518,47 @@ function setupCardInteractivity(li, shouldAddArrow = false) {
     const openCardModal = async () => {
       const contentWrapper = document.createElement('div');
       contentWrapper.innerHTML = modalContent.innerHTML;
-      const { showModal } = await createModal([contentWrapper]);
+
+      // Build modal options
+      const modalOptions = {};
+      if (modalTheme) {
+        modalOptions.modalTheme = modalTheme;
+      }
+
+      // Get images from block-level settings (authored in modal settings)
+      // Find the parent block to get its dataset
+      const parentBlock = li.closest('.cards.block');
+      const blockTextureUrl = parentBlock?.dataset?.modalDialogBackgroundImageTexture;
+      const pageBackgroundUrl = parentBlock?.dataset?.modalPageBackgroundImage;
+
+      // Only use the block-level authored texture image, never inherit from card
+      if (blockTextureUrl) {
+        modalOptions.textureImage = blockTextureUrl;
+      }
+
+      if (pageBackgroundUrl) {
+        modalOptions.pageBackgroundImage = pageBackgroundUrl;
+      }
+
+      const decorationImageUrl = parentBlock?.dataset?.modalPageDecorationImage;
+      if (decorationImageUrl) {
+        modalOptions.decorationImage = decorationImageUrl;
+      }
+
+      const ctaContent = parentBlock?.dataset?.modalCtaContent;
+      if (ctaContent) {
+        modalOptions.ctaContent = ctaContent;
+      }
+
+      const { showModal } = await createModal([contentWrapper], modalOptions);
       showModal();
     };
 
     li.addEventListener('click', (e) => {
       // Don't trigger modal if clicking on a regular link within the card
       if (e.target.closest('a')) return;
+      e.preventDefault();
+      e.stopPropagation();
       openCardModal();
     });
     li.addEventListener('keydown', (e) => {
@@ -460,6 +583,7 @@ function setupCardInteractivity(li, shouldAddArrow = false) {
 
     const handleClick = (e) => {
       if (e.target.closest('a')) return;
+      e.preventDefault();
       cardLink.click();
     };
 
@@ -651,7 +775,8 @@ export default async function decorate(block) {
     if (!isBlogPosts) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
-      setupCardInteractivity(li, shouldAddArrow);
+      const modalTheme = block.dataset.modalTheme || '';
+      setupCardInteractivity(li, shouldAddArrow, modalTheme);
     }
   });
 

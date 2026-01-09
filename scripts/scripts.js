@@ -81,8 +81,27 @@ function autolinkModals(element) {
 
     if (origin && origin.href && origin.href.includes('/modals/')) {
       e.preventDefault();
+      e.stopPropagation();
+
+      // Build modal options from parent cards block (if any)
+      const modalOptions = {};
+      const parentCardsBlock = origin.closest('.cards');
+      if (parentCardsBlock?.dataset) {
+        const { dataset } = parentCardsBlock;
+        if (dataset.modalTheme) modalOptions.modalTheme = dataset.modalTheme;
+        if (dataset.modalDialogBackgroundImageTexture) {
+          modalOptions.textureImage = dataset.modalDialogBackgroundImageTexture;
+        }
+        if (dataset.modalPageBackgroundImage) {
+          modalOptions.pageBackgroundImage = dataset.modalPageBackgroundImage;
+        }
+        if (dataset.modalPageDecorationImage) {
+          modalOptions.decorationImage = dataset.modalPageDecorationImage;
+        }
+      }
+
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(origin.href);
+      openModal(origin.href, modalOptions);
     }
   });
 }
