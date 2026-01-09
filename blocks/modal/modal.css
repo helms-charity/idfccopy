@@ -198,7 +198,7 @@ body.modal-open {
 .modal dialog.modal-mayura-silver h6 {
   color: var(--text-color);
   -webkit-text-fill-color: transparent;
-  background: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%) text;
+  background: var(--gradient-blue) text;
 }
 
 /* Paragraph styles for Mayura Silver */
@@ -256,7 +256,7 @@ body.modal-open {
   gap: 8px;
   color: var(--modal-blue-text);
   border: none;
-  border-bottom: 1px solid #d6d4d4;
+  border-bottom: 1px solid var(--modal-blue-text);
   border-radius: 0;
   font-size: 16px;
   font-weight: 500;
@@ -295,7 +295,7 @@ body.modal-open {
 .modal dialog.modal-mayura-blue h6 {
   color: var(--white);
   -webkit-text-fill-color: transparent;
-  background: linear-gradient(208deg, rgb(200 198 198) 0%, rgb(241 240 240) 53.5%, rgb(200 198 198) 100%) text;
+  background: var(--gradient-silver) text;
 }
 
 /* Paragraph styles for Mayura Blue */
