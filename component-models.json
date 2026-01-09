@@ -583,13 +583,6 @@
         "description": "Decoration image for modal corners (top-right and bottom-left rotated)"
       },
       {
-        "component": "richtext",
-        "name": "modalCtaContent",
-        "label": "Modal CTA Content",
-        "valueType": "string",
-        "description": "Button and link content for top-right of modal (e.g., Apply Now button)"
-      },
-      {
         "component": "container",
         "name": "swiperSettings",
         "label": "Swiper Settings",
