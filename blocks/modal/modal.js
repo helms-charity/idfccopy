@@ -119,12 +119,12 @@ export async function createModal(contentNodes, options = {}) {
   };
 }
 
-export async function openModal(fragmentUrl) {
+export async function openModal(fragmentUrl, options = {}) {
   const path = fragmentUrl.startsWith('http')
     ? new URL(fragmentUrl, window.location).pathname
     : fragmentUrl;
 
   const fragment = await loadFragment(path);
-  const { showModal } = await createModal(fragment.childNodes);
+  const { showModal } = await createModal(fragment.childNodes, options);
   showModal();
 }

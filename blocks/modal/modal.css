@@ -100,6 +100,12 @@ body.modal-open {
   z-index: 10;
 }
 
+.modal .modal-cta .icon {
+  top: 6px;
+  left: 6px;
+  position: relative;
+}
+
 .modal .close-button {
   position: absolute;
   top: -48px;
@@ -146,12 +152,6 @@ body.modal-open {
   padding: 0;
 }
 
-/* ===== Modal Theme: Mayura Blue ===== */
-.modal dialog.modal-mayura-blue {
-  background: var(--metal-blue);
-  position: relative;
-}
-
 /* Modal texture overlay - added via JS as img element */
 .modal dialog .modal-texture {
   position: absolute;
@@ -168,6 +168,111 @@ body.modal-open {
   object-fit: fill;
   object-position: center;
   opacity: 0.7;
+}
+
+/* ===== Modal Theme: Mayura Silver ===== */
+.modal dialog.modal-mayura-silver {
+  background: var(--metal-silver);
+  position: relative;
+}
+
+.modal dialog.modal-mayura-silver .modal-content {
+  color: var(--text-color);
+  position: relative;
+  z-index: 2;
+}
+
+/* Heading styles for Mayura Silver */
+.modal dialog.modal-mayura-silver h1,
+.modal dialog.modal-mayura-silver h2,
+.modal dialog.modal-mayura-silver h3,
+.modal dialog.modal-mayura-silver h4,
+.modal dialog.modal-mayura-silver h5,
+.modal dialog.modal-mayura-silver h6 {
+  color: var(--text-color);
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%) text;
+}
+
+/* Paragraph styles for Mayura Silver */
+.modal dialog.modal-mayura-silver p {
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+/* Link styles for Mayura themes - base styles first */
+.modal dialog.modal-mayura-silver a {
+  color: var(--dark-red-link-color);
+  text-decoration: underline;
+}
+
+.modal dialog.modal-mayura-blue a {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+/* Link styles - hover states */
+.modal dialog.modal-mayura-silver a:hover {
+  color: var(--dark-red-link-color);
+  opacity: 0.8;
+}
+
+.modal dialog.modal-mayura-blue a:hover {
+  color: var(--white);
+  opacity: 0.8;
+}
+
+/* Button container styles for Mayura themes */
+.modal dialog.modal-mayura-silver .button-container,
+.modal dialog.modal-mayura-blue .button-container {
+  margin-top: 20px;
+}
+
+/* Button styles - base styles first */
+.modal dialog.modal-mayura-silver .button-container a.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dark-red-color);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.modal dialog.modal-mayura-blue .button-container a.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Button styles - hover states */
+.modal dialog.modal-mayura-silver .button-container a.button:hover,
+.modal dialog.modal-mayura-blue .button-container a.button:hover {
+  opacity: 0.8;
+}
+
+/* Close button styles for Mayura themes */
+.modal dialog.modal-mayura-silver .close-button,
+.modal dialog.modal-mayura-blue .close-button {
+  color: var(--text-color);
+}
+
+/* ===== Modal Theme: Mayura Blue - additional styles ===== */
+.modal dialog.modal-mayura-blue {
+  background: var(--metal-blue);
+  position: relative;
 }
 
 .modal dialog.modal-mayura-blue .modal-content {
@@ -194,43 +299,6 @@ body.modal-open {
   font-size: 14px;
   line-height: 1.6;
   margin: 0 0 12px;
-}
-
-/* Link styles for Mayura Blue */
-.modal dialog.modal-mayura-blue a {
-  color: var(--white);
-  text-decoration: underline;
-}
-
-.modal dialog.modal-mayura-blue a:hover {
-  color: var(--white);
-  opacity: 0.8;
-}
-
-/* Button styles for Mayura Blue */
-.modal dialog.modal-mayura-blue .button-container {
-  margin-top: 20px;
-}
-
-.modal dialog.modal-mayura-blue .button-container a.button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--white);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-.modal dialog.modal-mayura-blue .button-container a.button:hover {
-  opacity: 0.8;
-}
-
-.modal dialog.modal-mayura-blue .close-button {
-  color: var(--text-color);
 }
 
 /* Decorative corner overlays - uses CSS variable set by JS */
@@ -260,22 +328,6 @@ body.modal-open {
   left: 0;
   background-position: bottom left;
   transform: rotate(180deg);
-}
-
-/* ===== Modal Theme: Mayura Silver ===== */
-.modal dialog.modal-mayura-silver {
-  /* TODO: Add Mayura Silver theme styles */
-  border-color: inherit;
-}
-
-.modal dialog.modal-mayura-silver .modal-content {
-  /* TODO: Add Mayura Silver modal content styles */
-  color: inherit;
-}
-
-.modal dialog.modal-mayura-silver .close-button {
-  /* TODO: Add Mayura Silver close button styles */
-  color: inherit;
 }
 
 /* ===== Special Content Styles ===== */

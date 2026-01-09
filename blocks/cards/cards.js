@@ -300,17 +300,18 @@ function extractBlockProperties(block, ul) {
 
     // Check li content structure
     const paragraphs = li.querySelectorAll('p');
+    // Only consider picture elements for authored images (not icon imgs)
     const pictureEl = li.querySelector('picture');
-    const imgEl = li.querySelector('img');
-    const hasImage = pictureEl || imgEl;
+    const hasAuthoredImage = !!pictureEl;
     const hasHeading = li.querySelector('h1, h2, h3, h4, h5, h6');
 
     // Check if this is an image-only li (for image reference fields)
-    const isImageOnly = hasImage && !hasHeading && paragraphs.length <= 1
-      && (!paragraphs.length || paragraphs[0].querySelector('picture, img'));
+    // Must have a picture element (not just any img, which could be an icon)
+    const isImageOnly = hasAuthoredImage && !hasHeading && paragraphs.length <= 1
+      && (!paragraphs.length || paragraphs[0].querySelector('picture'));
 
     // Check if this is a text-only li (for string/boolean/number fields)
-    const isTextOnly = paragraphs.length === 1 && !hasImage && !hasHeading;
+    const isTextOnly = paragraphs.length === 1 && !hasAuthoredImage && !hasHeading;
 
     // Handle image reference fields
     const imageReferenceFields = [
@@ -319,9 +320,9 @@ function extractBlockProperties(block, ul) {
       'modalPageDecorationImage',
     ];
     if (imageReferenceFields.includes(fieldName)) {
-      if (isImageOnly) {
-        // Extract image src
-        const img = imgEl || pictureEl.querySelector('img');
+      if (isImageOnly && pictureEl) {
+        // Extract image src from picture element
+        const img = pictureEl.querySelector('img');
         if (img && img.src) {
           propertyValues[fieldName] = img.src;
           itemsToRemove.push(li);
@@ -331,7 +332,7 @@ function extractBlockProperties(block, ul) {
           continue;
         }
       }
-      // Not an image or no src - skip to next field, stay on same li
+      // Not an authored image or no src - skip to next field, stay on same li
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
