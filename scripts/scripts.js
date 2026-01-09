@@ -1477,6 +1477,35 @@ async function loadBreadcrumbs(main) {
 }
 
 /**
+ * Loads a timed modal based on page metadata
+ * Reads 'modal-timer' (milliseconds) and 'modal-content' (path) metadata
+ * If both exist, opens the modal after the specified timer
+ */
+function loadTimedModal() {
+  const modalTimer = getMetadata('modal-timer');
+  const modalContent = getMetadata('modal-content');
+
+  if (!modalTimer || !modalContent) {
+    return;
+  }
+
+  const timerMs = parseInt(modalTimer, 10);
+  if (Number.isNaN(timerMs) || timerMs < 0) {
+    return;
+  }
+
+  setTimeout(async () => {
+    try {
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      openModal(modalContent);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load timed modal:', error);
+    }
+  }, timerMs);
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
@@ -1511,6 +1540,9 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   loadAutoBlock(doc);
+
+  // Start timed modal if configured in page metadata
+  loadTimedModal();
 }
 
 /**
