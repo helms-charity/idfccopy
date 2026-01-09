@@ -33,7 +33,10 @@
   --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
   --metal-blue: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
   --metal-silver: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
+  --modal-silver-text: #182659;
+  --modal-blue-text: #d6d4d4;
 
+  
   /* bootstrap colors */
   --blue: #007bff;
   --indigo: #6610f2;

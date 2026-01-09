@@ -479,6 +479,8 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
     const handleClick = (e) => {
       // Don't intercept if clicking on the actual link
       if (e.target.closest('a')) return;
+      e.preventDefault();
+      e.stopPropagation();
       // Trigger click on the link to let autolinkModals handle it
       cardLink.click();
     };
@@ -514,8 +516,6 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
     const modalContent = modalContentDiv.cloneNode(true);
 
     const openCardModal = async () => {
-      // eslint-disable-next-line no-console
-      console.log('[Cards Debug] openCardModal called, modalTheme:', modalTheme);
       const contentWrapper = document.createElement('div');
       contentWrapper.innerHTML = modalContent.innerHTML;
 
@@ -531,14 +531,9 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
       const blockTextureUrl = parentBlock?.dataset?.modalDialogBackgroundImageTexture;
       const pageBackgroundUrl = parentBlock?.dataset?.modalPageBackgroundImage;
 
+      // Only use the block-level authored texture image, never inherit from card
       if (blockTextureUrl) {
         modalOptions.textureImage = blockTextureUrl;
-      } else {
-        // Fallback: get texture image from card if block-level not set
-        const textureImg = li.querySelector('.cards-card-bg-texture img');
-        if (textureImg && textureImg.src) {
-          modalOptions.textureImage = textureImg.src;
-        }
       }
 
       if (pageBackgroundUrl) {
@@ -555,8 +550,6 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
         modalOptions.ctaContent = ctaContent;
       }
 
-      // eslint-disable-next-line no-console
-      console.log('[Cards Debug] modalOptions being passed:', modalOptions);
       const { showModal } = await createModal([contentWrapper], modalOptions);
       showModal();
     };
@@ -564,6 +557,8 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
     li.addEventListener('click', (e) => {
       // Don't trigger modal if clicking on a regular link within the card
       if (e.target.closest('a')) return;
+      e.preventDefault();
+      e.stopPropagation();
       openCardModal();
     });
     li.addEventListener('keydown', (e) => {
@@ -588,6 +583,7 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
 
     const handleClick = (e) => {
       if (e.target.closest('a')) return;
+      e.preventDefault();
       cardLink.click();
     };
 
@@ -780,11 +776,6 @@ export default async function decorate(block) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
-      // Debug logging for modal theme
-      // eslint-disable-next-line no-console
-      console.log('[Cards Debug] block.dataset:', block.dataset);
-      // eslint-disable-next-line no-console
-      console.log('[Cards Debug] modalTheme extracted:', modalTheme);
       setupCardInteractivity(li, shouldAddArrow, modalTheme);
     }
   });

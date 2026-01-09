@@ -13,17 +13,9 @@ export async function createModal(contentNodes, options = {}) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/modal/modal.css`);
   const dialog = document.createElement('dialog');
 
-  // Debug logging for modal theme
-  // eslint-disable-next-line no-console
-  console.log('[Modal Debug] createModal called with options:', options);
-
   // Apply modal theme class if provided
   if (options.modalTheme) {
     dialog.classList.add(options.modalTheme);
-    // eslint-disable-next-line no-console
-    console.log('[Modal Debug] Applied theme class to dialog:', options.modalTheme);
-    // eslint-disable-next-line no-console
-    console.log('[Modal Debug] Dialog classList:', dialog.classList.toString());
   }
 
   // Set decoration image as CSS custom property for pseudo-elements
@@ -111,8 +103,12 @@ export async function createModal(contentNodes, options = {}) {
   return {
     block,
     showModal: () => {
+      // Save scroll position before showModal (native dialog can reset it)
+      const { scrollY } = window;
       dialog.showModal();
-      // reset scroll position
+      // Restore scroll position immediately
+      window.scrollTo(0, scrollY);
+      // Reset scroll position of dialog content only
       setTimeout(() => { dialogContent.scrollTop = 0; }, 0);
       document.body.classList.add('modal-open');
     },

@@ -81,6 +81,7 @@ function autolinkModals(element) {
 
     if (origin && origin.href && origin.href.includes('/modals/')) {
       e.preventDefault();
+      e.stopPropagation();
 
       // Build modal options from parent cards block (if any)
       const modalOptions = {};

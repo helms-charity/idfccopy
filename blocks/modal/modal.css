@@ -38,13 +38,19 @@ body.modal-open {
   object-position: center top;
 }
 
-.modal dialog {
+.modal dialog,
+.modal dialog[open] {
+  position: fixed !important;
+  inset: unset !important;
+  top: calc(var(--modal-offset-height) + 100px) !important;
+  left: 50% !important;
+  transform: translateX(-50%);
   overscroll-behavior: none;
   overflow: visible;
   width: calc(100vw - 48px);
-  max-width: 900px;
+  max-width: 1060px;
   max-height: calc(100dvh - (2 * var(--modal-offset-height)));
-  margin-top: 250px;
+  margin: 0 !important;
   padding: 0;
   border: none;
   border-radius: 16px;
@@ -107,17 +113,18 @@ body.modal-open {
 }
 
 .modal .close-button {
+  /* 64px is the width of the close button (icon itself is 30px), 128px is the offset outside the right edge of the modal */
   position: absolute;
-  top: -48px;
-  right: -48px;
-  width: 44px;
-  height: 44px;
+  top: -64px;
+  right: -128px;
+  width: 64px;
+  height: 64px;
   margin: 0;
   border: none;
   border-radius: 0;
   padding: 0;
   background-color: transparent;
-  color: var(--text-color);
+  color: var(--dark-red-color);
   line-height: 0;
   cursor: pointer;
   z-index: 10;
@@ -125,8 +132,8 @@ body.modal-open {
 
 .modal .close-button .icon.icon-close {
   content: '';
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 }
 
 .modal .close-button .icon.icon-close::before,
@@ -138,8 +145,8 @@ body.modal-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
-  width: 24px;
-  height: 2px;
+  width: 36px;
+  height: 3px;
   border-radius: 2px;
   background-color: currentcolor;
 }
@@ -205,12 +212,12 @@ body.modal-open {
 /* Link styles for Mayura themes - base styles first */
 .modal dialog.modal-mayura-silver a {
   color: var(--dark-red-link-color);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .modal dialog.modal-mayura-blue a {
   color: var(--white);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* Link styles - hover states */
@@ -224,49 +231,47 @@ body.modal-open {
   opacity: 0.8;
 }
 
-/* Button container styles for Mayura themes */
-.modal dialog.modal-mayura-silver .button-container,
-.modal dialog.modal-mayura-blue .button-container {
-  margin-top: 20px;
-}
-
 /* Button styles - base styles first */
 .modal dialog.modal-mayura-silver .button-container a.button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--dark-red-color);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  background: transparent;
+  color: var(--modal-silver-text);
   border: none;
+  border-bottom: 1px solid #2e3e79;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 500;
+  background: transparent;
   padding: 0;
+
+  & u {
+    text-decoration: none;
+  }
 }
 
 .modal dialog.modal-mayura-blue .button-container a.button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--white);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  background: transparent;
+  color: var(--modal-blue-text);
   border: none;
+  border-bottom: 1px solid #d6d4d4;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 500;
+  background: transparent;
   padding: 0;
+
+  & u {
+    text-decoration: none;
+  }
 }
 
 /* Button styles - hover states */
 .modal dialog.modal-mayura-silver .button-container a.button:hover,
 .modal dialog.modal-mayura-blue .button-container a.button:hover {
   opacity: 0.8;
-}
-
-/* Close button styles for Mayura themes */
-.modal dialog.modal-mayura-silver .close-button,
-.modal dialog.modal-mayura-blue .close-button {
-  color: var(--text-color);
 }
 
 /* ===== Modal Theme: Mayura Blue - additional styles ===== */
