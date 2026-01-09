@@ -225,87 +225,89 @@ export default async function decorate(block) {
   navSectionsWrapper.appendChild(navSectionsUl);
   navSections.appendChild(navSectionsWrapper);
 
-  // Build nav-tools section from contentWrapper
+  // Build nav-tools section - look for tools/customer-service section
   const navToolsWrapper = document.createElement('div');
   navToolsWrapper.classList.add('default-content-wrapper');
 
-  // Find the search bar and other tools
-  const searchP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => {
-    const strong = p.querySelector('strong');
-    return strong && strong.textContent.toLowerCase().includes('what are you looking for');
+  // Find the tools section (could be "tools", "customer service", "customer-service", etc.)
+  const toolsSection = Array.from(sections).find((section) => {
+    const sectionId = section.getAttribute('data-id');
+    return sectionId && (
+      sectionId.toLowerCase().includes('tool')
+      || sectionId.toLowerCase().includes('customer')
+      || sectionId.toLowerCase().includes('service')
+    );
   });
 
-  const specialP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => p.textContent.trim() === "What's special about us" && !p.querySelector('strong'));
+  let searchP;
+  let toolsUl;
 
-  const toolsUl = Array.from(contentWrapper.querySelectorAll('ul')).find((ul) => {
-    const firstLi = ul.querySelector('li');
-    return firstLi && (firstLi.textContent.includes('Customer service') || firstLi.textContent.includes('Login'));
-  });
+  if (toolsSection) {
+    // Get content from the tools section
+    const toolsContent = toolsSection.querySelector('.default-content');
+    if (toolsContent) {
+      // Find search bar text
+      searchP = Array.from(toolsContent.querySelectorAll('p')).find((p) => {
+        const strong = p.querySelector('strong');
+        return strong && strong.textContent.toLowerCase().includes('what are you looking for');
+      });
 
-  if (searchP) {
-    navToolsWrapper.innerHTML = '<p><span class="icon icon-search"></span><strong class="typewriter-text"></strong></p>';
-  }
-
-  // Typewriter animation for "What are you looking for..."
-  function startTypewriterAnimation() {
-    const typewriterEl = navToolsWrapper.querySelector('.typewriter-text');
-    if (!typewriterEl) return;
-
-    const fullText = 'What are you looking for...';
-    let charIndex = 0;
-
-    function typeNextChar() {
-      if (charIndex <= fullText.length) {
-        typewriterEl.textContent = fullText.slice(0, charIndex);
-        charIndex += 1;
-        setTimeout(typeNextChar, 200); // Speed of typing (0.2s per letter)
-      } else {
-        // Finished typing, wait 2 seconds then restart
-        setTimeout(() => {
-          charIndex = 0;
-          typewriterEl.textContent = '';
-          typeNextChar();
-        }, 2000);
-      }
+      // Find the tools list (Customer Service items + Login)
+      toolsUl = toolsContent.querySelector('ul');
     }
-
-    typeNextChar();
   }
 
-  // Initialize typewriter after DOM is ready
-  setTimeout(startTypewriterAnimation, 100);
-
-  if (specialP) {
-    const specialPClone = specialP.cloneNode(true);
-    specialPClone.innerHTML = `<span class="icon icon-special"></span>${specialP.textContent}`;
-    navToolsWrapper.appendChild(specialPClone);
+  // Add search bar with icon (created programmatically)
+  if (searchP) {
+    // Extract just the text content from the authored paragraph
+    const searchText = searchP.textContent.trim();
+    // Create new search element with icon
+    const searchElement = document.createElement('p');
+    searchElement.innerHTML = `<span class="icon icon-search"></span><strong>${searchText}</strong>`;
+    navToolsWrapper.appendChild(searchElement);
   }
 
+  // Build the tools list with dynamic odometer
   if (toolsUl) {
     const toolsUlClone = toolsUl.cloneNode(true);
-    // Add login icon to the Login li (last child)
-    const loginLi = toolsUlClone.querySelector('li:last-child');
-    if (loginLi && loginLi.textContent.includes('Login')) {
-      const loginIcon = document.createElement('span');
-      loginIcon.classList.add('icon', 'icon-login_header');
-      loginLi.prepend(loginIcon);
-    }
+    const allLis = Array.from(toolsUlClone.querySelectorAll('li'));
 
-    // Add odometer animation to Customer Service li (first child)
-    const customerServiceLi = toolsUlClone.querySelector('li:first-child');
-    if (customerServiceLi && customerServiceLi.textContent.includes('Customer service')) {
-      customerServiceLi.innerHTML = `
+    if (allLis.length > 1) {
+      // Get all items except the last one (Login)
+      const odometerItems = allLis.slice(0, -1);
+      const loginLi = allLis[allLis.length - 1];
+
+      // Build odometer HTML from the list items
+      const odometerSpans = odometerItems.map((li) => `<span>${li.textContent.trim()}</span>`).join('');
+      // Add first item again at the end for seamless loop
+      const firstItemText = odometerItems[0].textContent.trim();
+      const odometerHTML = `
         <div class="grnt-animation-odometer">
           <div class="grnt-odometer-track">
-            <span>Customer Service</span>
-            <span>Contact us</span>
-            <span>Service request</span>
-            <span>Locate a branch</span>
-            <span>Complaints</span>
-            <span>Customer Service</span>
+            ${odometerSpans}
+            <span>${firstItemText}</span>
           </div>
         </div>
       `;
+
+      // Replace the first LI with the odometer
+      const firstLi = toolsUlClone.querySelector('li:first-child');
+      if (firstLi) {
+        firstLi.innerHTML = odometerHTML;
+      }
+
+      // Remove the middle items (they're now in the odometer)
+      odometerItems.slice(1).forEach((li) => li.remove());
+
+      // Add login icon to the Login li (should now be the last child)
+      if (loginLi && loginLi.textContent.toLowerCase().includes('login')) {
+        const existingIcon = loginLi.querySelector('.icon-login_header');
+        if (!existingIcon) {
+          const loginIcon = document.createElement('span');
+          loginIcon.classList.add('icon', 'icon-login_header');
+          loginLi.prepend(loginIcon);
+        }
+      }
     }
 
     navToolsWrapper.appendChild(toolsUlClone);
