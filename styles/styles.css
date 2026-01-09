@@ -76,6 +76,19 @@
 
   /* nav height */
   --nav-height: 64px;
+
+  /* grid */
+  --grid-container-width: 1200px;
+  --grid-column-width: calc(var(--grid-container-width) / 12);
+  --grid-gutter-width: 24px;
+
+  /* spacing */
+  --spacing-xxl: 72px;
+  --spacing-xl: 60px;
+  --spacing-l: 48px;
+  --spacing-m: 36px;
+  --spacing-s: 24px;
+  --spacing-xs: 12px;
 }
 
 /* fallback fonts */
@@ -325,6 +338,18 @@ main img {
   width: 100%;
 }
 
+.light-scheme {
+  color: var(--text-color);
+}
+
+.dark-scheme {
+  color: var(--white);
+}
+
+.center {
+  text-align: center;
+}
+
 /* sections */
 main>.section {
   margin: 0;
@@ -333,9 +358,9 @@ main>.section {
 }
 
 main>.section>div {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 24px;
+  max-width: var(--grid-container-width);
+  margin: 0 auto;
+  padding: 0 var(--grid-gutter-width);
 }
 
 main>.section:first-of-type {
@@ -343,7 +368,17 @@ main>.section:first-of-type {
 }
 
 .section {
+  --top-bottom-spacing: 0;
+  --section-container-width: var(--grid-container-width);
+  --section-column-width: var(--grid-column-width);
+
+  padding: var(--top-bottom-spacing) 0;
   display: block;
+
+  > .default-content {
+    max-width: var(--grid-container-width);
+    margin: 0 auto;
+  }
 
   .bg-images {
     display: block;
@@ -357,6 +392,103 @@ main>.section:first-of-type {
     height: 100%;
     width: 100%;
   }
+
+  &.grid-2 {
+    --grid-size: 2;
+  }
+
+  &.grid-3 {
+    --grid-size: 3;
+  }
+
+  &.grid-4 {
+    --grid-size: 4;
+  }
+
+  &.grid-5 {
+    --grid-size: 5;
+  }
+
+  &.grid-6 {
+    --grid-size: 6;
+  }
+
+  &.gap-xs {
+    --gap-spacing: var(--spacing-xs);
+  }
+
+  &.gap-s {
+    --gap-spacing: var(--spacing-s);
+  }
+
+  &.gap-m {
+    --gap-spacing: var(--spacing-m);
+  }
+
+  &.gap-l {
+    --gap-spacing: var(--spacing-l);
+  }
+
+  &.gap-xl {
+    --gap-spacing: var(--spacing-xl);
+  }
+
+  &.gap-xxl {
+    --gap-spacing: var(--spacing-xxl);
+  }
+
+  &.spacing-xs {
+    --top-bottom-spacing: calc(var(--spacing-xs) * 2);
+  }
+
+  &.spacing-s {
+    --top-bottom-spacing: calc(var(--spacing-s) * 2);
+  }
+
+  &.spacing-m {
+    --top-bottom-spacing: calc(var(--spacing-m) * 2);
+  }
+
+  &.spacing-l {
+    --top-bottom-spacing: calc(var(--spacing-l) * 2);
+  }
+
+  &.spacing-xl {
+    --top-bottom-spacing: calc(var(--spacing-xl) * 2);
+  }
+
+  &.spacing-xxl {
+    --top-bottom-spacing: calc(var(--spacing-xxl) * 2);
+  }
+
+  &.grid .block-content {
+    display: grid;
+    gap: var(--gap-spacing);
+  }
+
+  > .default-content > *:first-child {
+    margin-top: 0;
+  }
+
+  &[class*="container-"] { /* instead of requiring a container style */
+    .default-content,
+    .block-content {
+      max-width: var(--section-container-width);
+      margin: 0 auto;
+    }
+
+    &.container-2 {
+      --section-container-width: calc(var(--grid-column-width) * 4);
+    }
+
+    &.container-4 {
+      --section-container-width: calc(var(--grid-column-width) * 8);
+    }
+
+    &.container-6 {
+      --section-container-width: var(--grid-container-width);
+    }
+}
 }
 
 .has-bg-images {
@@ -408,160 +540,6 @@ main .breadcrumbs {
   display: none;
 }
 
-/* Mobile: hide category nav wrapper (redundant with category-nav.css but kept for safety) */
-@media (width <= 600px) {
-  .category-nav-wrapper {
-    display: none;
-  }
-}
-
-/* Desktop: show breadcrumbs with full styling */
-@media (width >= 900px) {
-  main .breadcrumbs {
-    display: inline-block;
-    margin: 10px 40px 0;
-    padding: 4px 20px;
-    font-size: 12px;
-    font-family: var(--body-font-family-semibold);
-    position: relative;
-    z-index: 3;
-    background-color: rgb(232 232 232 / 90%);
-    border-radius: 20px;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
-    min-height: 28px;
-    opacity: 0; /* Start hidden */
-    visibility: hidden; /* Hide but reserve space until lazy-styles loads */
-    transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */
-  }
-
-  /* Breadcrumb list styles - must be in eager CSS to prevent CLS */
-  main .breadcrumbs ol {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 10px;
-    white-space: nowrap;
-    align-items: center;
-  }
-
-  main .breadcrumbs ol li {
-    padding: 0;
-    color: #767676;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    font-weight: 400;
-    font-size: 12px;
-  }
-
-  main .breadcrumbs ol li a {
-    color: var(--text-color);
-    font-family: var(--body-font-family-semibold);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  main .breadcrumbs ol li a:hover {
-    color: var(--dark-red-color);
-    text-decoration: none;
-  }
-
-  main .breadcrumbs ol li:not(:last-child)::after {
-    content: '';
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border: solid var(--dark-red-color);
-    border-width: 1px 1px 0 0;
-    transform: rotate(45deg);
-    margin-left: 10px;
-  }
-
-  main .breadcrumbs ol li[aria-current] {
-    color: var(--dark-color);
-    font-family: var(--body-font-family-semibold);
-    font-weight: 400;
-  }
-
-  main:has(.hero-wrapper) .breadcrumbs {
-    margin-left: 60px;
-  }
-
-  .section.banner-image>div>p:nth-child(1) {
-    display: none;
-  }
-
-  .section.banner-image>div>p:nth-child(2) {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    object-fit: cover;
-    margin: unset;
-  }
-
-  .section.banner-image .default-content-wrapper ol {
-    display: None;
-  }
-
-  .section.banner-image .default-content-wrapper p img {
-    height: auto;
-  }
-
-  .section.banner-image h1 {
-    top: 1%;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: normal;
-    font-style: normal;
-    line-height: normal;
-    padding: 0 10px;
-  }
-
-  .section.banner-image h3 {
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 18px;
-    letter-spacing: 1.3px;
-    top: 5%;
-    padding: 0 10px;
-  }
-
-  .section.banner-image .default-content-wrapper .button-container {
-    position: absolute;
-    top: 7%;
-    text-align: center;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-  }
-
-  .section.banner-image .default-content-wrapper .button-container a {
-    padding: 14px 34px;
-  }
-
-  .section.rte-block-container {
-    padding: 40px 0;
-  }
-
-  .section.faq-accordion-container h4{
-    font-size: 20px;
-  }
-
-  .section.highlight.hero-banner.banner-image.columns-container {
-    height: 1250px;
-  }
-
-  .section.columns-container .columns-wrapper{
-    padding-right: 0;
-  }
-}
-
-/* section metadata */
 main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
@@ -572,15 +550,6 @@ main .section.highlight {
 main .section.upi-steps-red-bg {
   background: var(--gradient-upi-steps-red);
   margin: 0;
-  padding: 40px 0 56px;
-}
-
-.light-scheme {
-  color: var(--text-color);
-}
-
-.dark-scheme {
-  color: var(--white);
 }
 
 /* when scheme is manually chosen from the section style */
@@ -784,6 +753,22 @@ section.faq-accordion-container h4 {
   padding: unset;
 }
 
+/* Mobile: hide category nav wrapper (redundant with category-nav.css but kept for safety) */
+@media (width <= 600px) {
+  .category-nav-wrapper {
+    display: none;
+  }
+}
+
+@media (width >= 600px) {
+  .section {
+    &.grid-2 .block-content {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-size), 1fr);
+    }
+  }
+}
+
 @media (width >=900px) {
   :root {
     /* body sizes */
@@ -813,4 +798,169 @@ section.faq-accordion-container h4 {
     min-height: 64px; /* Ensure consistent height even when empty */
   }
 
+  main .breadcrumbs {
+    display: inline-block;
+    margin: 10px 40px 0;
+    padding: 4px 20px;
+    font-size: 12px;
+    font-family: var(--body-font-family-semibold);
+    position: relative;
+    z-index: 3;
+    background-color: rgb(232 232 232 / 90%);
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+    min-height: 28px;
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Hide but reserve space until lazy-styles loads */
+    transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */
+  }
+
+  /* Breadcrumb list styles - must be in eager CSS to prevent CLS */
+  main .breadcrumbs ol {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 10px;
+    white-space: nowrap;
+    align-items: center;
+  }
+
+  main .breadcrumbs ol li {
+    padding: 0;
+    color: #767676;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  main .breadcrumbs ol li a {
+    color: var(--text-color);
+    font-family: var(--body-font-family-semibold);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  main .breadcrumbs ol li a:hover {
+    color: var(--dark-red-color);
+    text-decoration: none;
+  }
+
+  main .breadcrumbs ol li:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border: solid var(--dark-red-color);
+    border-width: 1px 1px 0 0;
+    transform: rotate(45deg);
+    margin-left: 10px;
+  }
+
+  main .breadcrumbs ol li[aria-current] {
+    color: var(--dark-color);
+    font-family: var(--body-font-family-semibold);
+    font-weight: 400;
+  }
+
+  main:has(.hero-wrapper) .breadcrumbs {
+    margin-left: 60px;
+  }
+
+  .section {
+    &.grid-4 .block-content,
+    &.grid-6 .block-content {
+      display: grid;
+      grid-template-columns: repeat(calc(var(--grid-size) / 2), 1fr);
+    }
+
+    &.container.container-4 {
+      --section-container-width: calc(var(--grid-column-width) * 4);
+    }
+
+    &.container.container-6 {
+      --section-container-width: calc(var(--grid-column-width) * 6);
+    }
+  }
+
+  .section.banner-image>div>p:nth-child(1) {
+    display: none;
+  }
+
+  .section.banner-image>div>p:nth-child(2) {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    object-fit: cover;
+    margin: unset;
+  }
+
+  .section.banner-image .default-content-wrapper ol {
+    display: None;
+  }
+
+  .section.banner-image .default-content-wrapper p img {
+    height: auto;
+  }
+
+  .section.banner-image h1 {
+    top: 1%;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: normal;
+    font-style: normal;
+    line-height: normal;
+    padding: 0 10px;
+  }
+
+  .section.banner-image h3 {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    letter-spacing: 1.3px;
+    top: 5%;
+    padding: 0 10px;
+  }
+
+  .section.banner-image .default-content-wrapper .button-container {
+    position: absolute;
+    top: 7%;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  .section.banner-image .default-content-wrapper .button-container a {
+    padding: 14px 34px;
+  }
+
+  .section.rte-block-container {
+    padding: 40px 0;
+  }
+
+  .section.faq-accordion-container h4{
+    font-size: 20px;
+  }
+
+  .section.highlight.hero-banner.banner-image.columns-container {
+    height: 1250px;
+  }
+
+  .section.columns-container .columns-wrapper{
+    padding-right: 0;
+  }
+}
+
+@media (width >= 1200px) {
+  .section.grid .block-content {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-size), 1fr);
+  }
 }

@@ -3,7 +3,6 @@
 /* ===== MOBILE BASE STYLES ===== */
 .link-to-upi {
   background: #000;
-  padding: 40px 20px;
   margin: 0;
   color: #fff;
 }
@@ -140,13 +139,6 @@
 
 /* ===== DESKTOP (900px+) ===== */
 @media (width >= 900px) {
-  main>.section>div {
-    max-width: 1300px;
-  }
-
-  .link-to-upi {
-    padding: 70px 40px 150px;
-  }
 
   .link-to-upi .link-to-upi-container {
     flex-flow: row wrap;
