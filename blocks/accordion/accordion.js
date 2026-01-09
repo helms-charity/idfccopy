@@ -140,10 +140,26 @@ export default function decorate(block) {
             el.removeAttribute('open');
           }
         });
+
+        // Auto-scroll to position item 100px from top of viewport
+        const detailRect = detail.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPosition = scrollTop + detailRect.top - 100;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth',
+        });
       }
     };
     detail.addEventListener('toggle', toggleHandler);
     // Store reference to handler so it can be removed if needed
     detail.accordionToggleHandler = toggleHandler;
   });
+
+  // Open first accordion item by default
+  // Footer.js will close this if the accordion is in a footer
+  if (accordionItems.length > 0) {
+    accordionItems[0].setAttribute('open', '');
+  }
 }
