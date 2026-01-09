@@ -1,7 +1,7 @@
 /* stylelint-disable selector-class-pattern */
 /* stylelint-disable no-descending-specificity */
 @import url("./nav-pane.css");
-@import url("./mob-header.css");
+
 
 .top-nav-left {
   opacity: 1;
@@ -164,17 +164,30 @@ header nav a:any-link {
   color: currentcolor;
 }
 
-.header nav .nav-sections .default-content-wrapper>ul>li:first-child p {
+/* Mobile-first: Style all nav items */
+header nav .nav-sections .default-content-wrapper>ul>li {
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+header nav .nav-sections .default-content-wrapper>ul>li p {
+  display: block;
   min-width: 70px;
-  height: 38px;
-  padding-right: 12px;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  min-height: 48px;
+  padding: 12px 16px;
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
   color: #353535;
   text-transform: capitalize;
-  margin-left: 8px;
   letter-spacing: -0.6px;
+}
+
+header nav .nav-sections .default-content-wrapper>ul>li p a {
+  display: inline-block;
+  color: #353535;
+  text-decoration: none;
 }
 
 #nav>div.section.sectionlast.fragment-container>div.fragment-wrapper>div>div.default-content-wrapper {
@@ -306,11 +319,15 @@ header nav[aria-expanded='true'] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
+  margin: 0;
   font-size: var(--body-font-size-s);
+  display: block;
 }
 
 header nav .nav-sections ul>li {
   font-weight: 500;
+  display: block;
+  width: 100%;
 }
 
 header nav .nav-sections ul>li>ul {
@@ -321,15 +338,74 @@ header nav .nav-sections ul>li>ul>li {
   font-weight: 400;
 }
 
+/* Mobile-first: Accordion animation for main nav items */
+header nav .nav-sections .default-content-wrapper>ul>li>ul {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease-in-out;
+}
+
+header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
+  max-height: var(--scroll-height, 2000px);
+}
+
+/* Mobile: Nested accordion for fragment sections */
+header nav .nav-sections .nav-fragment-section {
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+header nav .nav-sections .nav-fragment-section-title {
+  display: block;
+  padding: 10px 16px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #353535;
+  background-color: #f9f9f9;
+}
+
+header nav .nav-sections .nav-fragment-section-content {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease-in-out;
+}
+
+header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
+  max-height: var(--section-scroll-height, 1500px);
+}
+
+header nav .nav-sections .nav-fragment-section-content>li {
+  padding: 8px 16px 8px 24px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+header nav .nav-sections .nav-fragment-section-content>li a {
+  color: #353535;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+header nav .nav-sections .nav-fragment-section-content>li:hover {
+  background-color: #f9f9f9;
+}
+
 /* tools */
 header nav .nav-tools {
   grid-area: tools;
+  display: none;
+  visibility: hidden;
 }
 
-@media (width < 900px) {
+@media (width >= 900px) {
   header nav .nav-tools {
-    display: none;
-    visibility: hidden;
+    display: block;
+    visibility: visible;
   }
 }
 
@@ -485,11 +561,37 @@ header nav .nav-tools {
     font-size: 12px;
     font-weight: normal;
     color: #353535;
+    border-bottom: none;
+    width: auto;
+  }
+
+  header nav .nav-sections .default-content-wrapper>ul>li p {
+    min-height: auto;
+    height: auto;
+    padding: 0;
+    font-size: 12px;
+    line-height: normal;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li>ul {
     display: none;
     position: absolute;
+  }
+
+  /* Desktop: Remove nested accordion styling */
+  header nav .nav-sections .nav-fragment-section {
+    border-bottom: none;
+    cursor: default;
+  }
+
+  header nav .nav-sections .nav-fragment-section-title {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content {
+    max-height: none;
+    overflow: visible;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li>ul>li {
@@ -498,11 +600,6 @@ header nav .nav-tools {
     font-weight: 400;
     line-height: normal;
     border-bottom: 1px solid #f1f1f1;
-  }
-
-  /* Second nav item (Explore Personal Banking) starts the right-aligned group */
-  header nav .nav-sections .default-content-wrapper>ul>li:nth-child(2) {
-    margin-left: auto;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul {

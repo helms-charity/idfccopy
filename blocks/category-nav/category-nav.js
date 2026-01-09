@@ -276,85 +276,86 @@ function buildUnifiedNavigation(categoriesData) {
 /**
  * Build mobile navigation from all category data
  * Creates separate expandable list items for each category
+ * DISABLED - Mobile navigation is now handled by fragment-based nav in header.js
  */
-function buildMobileNavigation(categoriesData) {
-  // Return an array of category nav items instead of a single wrapper
-  const categoryNavItems = [];
+// function buildMobileNavigation(categoriesData) {
+//   // Return an array of category nav items instead of a single wrapper
+//   const categoryNavItems = [];
 
-  categoriesData.forEach((category) => {
-    // Skip categories with no items
-    if (!category.items || category.items.length === 0) {
-      return;
-    }
+//   categoriesData.forEach((category) => {
+//     // Skip categories with no items
+//     if (!category.items || category.items.length === 0) {
+//       return;
+//     }
 
-    // Create a nav-drop item for this category
-    const categoryNavItem = document.createElement('li');
-    categoryNavItem.classList.add('nav-drop', 'mobile-category-nav-item');
-    categoryNavItem.setAttribute('data-category', category.id);
-    categoryNavItem.setAttribute('aria-expanded', 'false');
+//     // Create a nav-drop item for this category
+//     const categoryNavItem = document.createElement('li');
+//     categoryNavItem.classList.add('nav-drop', 'mobile-category-nav-item');
+//     categoryNavItem.setAttribute('data-category', category.id);
+//     categoryNavItem.setAttribute('aria-expanded', 'false');
 
-    // Category title as the clickable header
-    const categoryTitle = document.createElement('p');
-    const categoryLink = document.createElement('a');
-    categoryLink.textContent = category.title;
-    categoryLink.href = `#${category.id}`;
-    categoryTitle.appendChild(categoryLink);
-    categoryNavItem.appendChild(categoryTitle);
+//     // Category title as the clickable header
+//     const categoryTitle = document.createElement('p');
+//     const categoryLink = document.createElement('a');
+//     categoryLink.textContent = category.title;
+//     categoryLink.href = `#${category.id}`;
+//     categoryTitle.appendChild(categoryLink);
+//     categoryNavItem.appendChild(categoryTitle);
 
-    // Container for cards
-    const cardsUl = document.createElement('ul');
-    cardsUl.classList.add('mobile-category-cards-list');
+//     // Container for cards
+//     const cardsUl = document.createElement('ul');
+//     cardsUl.classList.add('mobile-category-cards-list');
 
-    // Add all cards for this category
-    category.items.forEach((card) => {
-      const cardLi = document.createElement('li');
-      cardLi.classList.add('mobile-category-card-item');
+//     // Add all cards for this category
+//     category.items.forEach((card) => {
+//       const cardLi = document.createElement('li');
+//       cardLi.classList.add('mobile-category-card-item');
 
-      // Clone the card to reuse the same structure
-      const cardClone = card.cloneNode(true);
-      cardClone.classList.add('mobile-card');
+//       // Clone the card to reuse the same structure
+//       const cardClone = card.cloneNode(true);
+//       cardClone.classList.add('mobile-card');
 
-      // Add click handler to close menu when card is clicked
-      const cardLink = cardClone.querySelector('a');
-      if (cardLink) {
-        cardLink.addEventListener('click', () => {
-          const nav = document.getElementById('nav');
-          if (nav) {
-            nav.setAttribute('aria-expanded', 'false');
-            document.body.style.overflowY = '';
-          }
-        });
-      }
+//       // Add click handler to close menu when card is clicked
+//       const cardLink = cardClone.querySelector('a');
+//       if (cardLink) {
+//         cardLink.addEventListener('click', () => {
+//           const nav = document.getElementById('nav');
+//           if (nav) {
+//             nav.setAttribute('aria-expanded', 'false');
+//             document.body.style.overflowY = '';
+//           }
+//         });
+//       }
 
-      cardLi.appendChild(cardClone);
-      cardsUl.appendChild(cardLi);
-    });
+//       cardLi.appendChild(cardClone);
+//       cardsUl.appendChild(cardLi);
+//     });
 
-    categoryNavItem.appendChild(cardsUl);
+//     categoryNavItem.appendChild(cardsUl);
 
-    // Add click handler for expand/collapse
-    const isDesktop = window.matchMedia('(min-width: 900px)');
-    categoryNavItem.addEventListener('click', (e) => {
-      // Only handle on mobile
-      if (isDesktop.matches) return;
+//     // Add click handler for expand/collapse
+//     const isDesktop = window.matchMedia('(min-width: 900px)');
+//     categoryNavItem.addEventListener('click', (e) => {
+//       // Only handle on mobile
+//       if (isDesktop.matches) return;
 
-      // Don't toggle if clicking on a card link
-      if (e.target.closest('.category-nav-card-link')) return;
+//       // Don't toggle if clicking on a card link
+//       if (e.target.closest('.category-nav-card-link')) return;
 
-      const subUl = categoryNavItem.querySelector('ul');
-      if (subUl) {
-        const { scrollHeight } = subUl;
-        categoryNavItem.style.setProperty('--scroll-height', `${scrollHeight}px`);
-        const expanded = categoryNavItem.getAttribute('aria-expanded') === 'true';
-        categoryNavItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      }
-    });
+//       const subUl = categoryNavItem.querySelector('ul');
+//       if (subUl) {
+//         const { scrollHeight } = subUl;
+//         categoryNavItem.style.setProperty('--scroll-height', `${scrollHeight}px`);
+//         const expanded = categoryNavItem.getAttribute('aria-expanded') === 'true';
+//         categoryNavItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+//       }
+//     });
 
-    categoryNavItems.push(categoryNavItem);
-  });
+//     categoryNavItems.push(categoryNavItem);
+//   });
 
-  return categoryNavItems;
-}
+//   return categoryNavItems;
+// }
 
 /**
  * Smart positioning for dropdown menus to prevent overflow
@@ -493,24 +494,27 @@ export default function decorate(block) {
     categoryNavWrapper.classList.add('header-category-nav');
   }
 
-  // Build and inject mobile navigation
-  const mobileNavItems = buildMobileNavigation(categoriesData);
-  const navSectionsUl = document.querySelector('header nav .nav-sections .default-content-wrapper > ul');
-  if (navSectionsUl && mobileNavItems && mobileNavItems.length > 0) {
-    // Insert after the "Explore Personal Banking" item (second li)
-    const secondLi = navSectionsUl.children[1];
-    const insertionPoint = secondLi ? secondLi.nextSibling : null;
+  // Build and inject mobile navigation - DISABLED
+  // Mobile navigation is now handled by fragment-based nav in header.js
+  // const mobileNavItems = buildMobileNavigation(categoriesData);
+  // const navSectionsUl = document.querySelector(
+  //   'header nav .nav-sections .default-content-wrapper > ul'
+  // );
+  // if (navSectionsUl && mobileNavItems && mobileNavItems.length > 0) {
+  //   // Insert after the "Explore Personal Banking" item (second li)
+  //   const secondLi = navSectionsUl.children[1];
+  //   const insertionPoint = secondLi ? secondLi.nextSibling : null;
 
-    // Insert all category nav items
-    mobileNavItems.forEach((categoryNavItem) => {
-      if (insertionPoint) {
-        navSectionsUl.insertBefore(categoryNavItem, insertionPoint);
-      } else {
-        // Fallback: append to the end
-        navSectionsUl.appendChild(categoryNavItem);
-      }
-    });
-  }
+  //   // Insert all category nav items
+  //   mobileNavItems.forEach((categoryNavItem) => {
+  //     if (insertionPoint) {
+  //       navSectionsUl.insertBefore(categoryNavItem, insertionPoint);
+  //     } else {
+  //       // Fallback: append to the end
+  //       navSectionsUl.appendChild(categoryNavItem);
+  //     }
+  //   });
+  // }
 
   // Hide all the individual category-nav blocks in the main content
   allCategoryNavBlocks.forEach((navBlock) => {
