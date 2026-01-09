@@ -37,6 +37,22 @@
         "validation": {
           "rootPath": "/content/idfc-edge/framework"
         }
+      },
+      {
+        "component": "text",
+        "name": "modal-timer",
+        "valueType": "string",
+        "label": "Modal Timer (ms)"
+      },
+      {
+        "component": "aem-content",
+        "name": "modal-content",
+        "label": "Modal Content",
+        "description": "Load this modal content after the modal timer duration",
+        "valueType": "string",
+        "validation": {
+          "rootPath": "/content/idfc-edge/credit-card/metal-credit-card/mayura/modals"
+        }
       }
     ]
   },
