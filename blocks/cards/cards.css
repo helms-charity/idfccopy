@@ -301,9 +301,9 @@
 }
 
 /* IMPORTANT DOCUMENTS CARD CONTAINER STYLING */
-.section:has(.cards.important-documents) {
-  background: var(--gradient-important-documents);
-  padding: 24px 0;
+
+.cards.important-documents {
+  margin: 24px 0;
 }
 
 /* Hide View All button for important-documents */
@@ -458,10 +458,11 @@
   padding: 0 16px;
 }
 
-/* === RELATED SEARCH CARD VARIANT === */
+/* === RELATED SEARCH CARD VARIANT === 
 .section:has(.cards.related-search) {
   padding: 40px 16px 60px;
 }
+  */
 
 .section:has(.cards.related-search) .default-content-wrapper h2 {
   color: #54565b;
@@ -987,10 +988,6 @@
   overflow: hidden;
 }
 
-.section:has(.cards.blog-posts) {
-  padding: 24px 0;
-}
-
 .section:has(.cards.blog-posts) h1 {
   font-size: 46px;
   font-weight: 700;
@@ -1198,10 +1195,11 @@
     font-size: 13px;
   }
 
-  /* Related Search Cards - Tablet (2 columns) */
+  /* Related Search Cards - Tablet (2 columns)
   .section:has(.cards.related-search) {
     padding: 40px 24px 60px;
   }
+  */
 
   .section:has(.cards.related-search) .default-content-wrapper h2 {
     font-size: 28px;
@@ -1456,10 +1454,6 @@
 }
 
 /* === ALL ABOUT CARD VARIANT === */
-.section:has(.cards.all-about-card) {
-  background-color: #000;
-  padding-top: 30px;
-}
 
 .section:has(.cards.all-about-card) :is(h1, h2, h3, h4, h5, h6, p) {
   color: var(--white);
@@ -1846,11 +1840,6 @@
 
   .cards.blog-posts .blog-post-card .cards-card-body p {
     font-size: 14px;
-  }
-
-  /* Related Search Cards - Desktop (3 columns) */
-  .section:has(.cards.related-search) {
-    padding: 48px 40px 72px;
   }
 
   .section:has(.cards.related-search) .default-content-wrapper h2 {

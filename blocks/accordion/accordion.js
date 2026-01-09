@@ -1,8 +1,44 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 export default function decorate(block) {
+  let noSchema = false;
+  let ctaUrl = null;
+  let ctaText = null;
+  let ctaLocation = null;
+
+  // Find and remove any single-cell configuration rows
+  [...block.children].forEach((row) => {
+    if (row.children.length === 1) {
+      const cell = row.children[0];
+      const value = cell.textContent.trim();
+      const valueLower = value.toLowerCase();
+
+      // Check if this single cell indicates no-schema is enabled
+      if (valueLower === 'true' || valueLower === 'no-schema') {
+        noSchema = true;
+      } else {
+        // Check if it's a number for ctaLocation
+        const locationNum = parseInt(value, 10);
+        if (!Number.isNaN(locationNum) && locationNum > 0) {
+          ctaLocation = locationNum;
+        } else {
+          // Check if it's a link element (CTA)
+          const link = cell.querySelector('a');
+          if (link) {
+            ctaUrl = link.href;
+            ctaText = link.textContent.trim();
+          }
+        }
+      }
+
+      // Remove single-cell rows as they're configuration, not content
+      row.remove();
+    }
+  });
+
   // const isMobile = window.matchMedia('(max-width: 767px)').matches;
   // if (!isMobile) return; // Skip accordion transformation on desktop
+  const accordionItems = [];
   [...block.children].forEach((row) => {
     const children = [...row.children];
     // only process rows with exactly 2 children (question + answer)
@@ -10,39 +46,120 @@ export default function decorate(block) {
       const label = children[0];
       const summary = document.createElement('summary');
       summary.className = 'accordion-item-label';
-      summary.setAttribute('itemscope', '');
-      summary.setAttribute('itemprop', 'mainEntity');
-      summary.setAttribute('itemtype', 'https://schema.org/Question');
+
+      // Only add schema.org attributes if no-schema is not enabled
+      if (!noSchema) {
+        summary.setAttribute('itemscope', '');
+        summary.setAttribute('itemprop', 'mainEntity');
+        summary.setAttribute('itemtype', 'https://schema.org/Question');
+      }
+
       summary.append(...label.childNodes);
-      if (summary.firstElementChild) {
+
+      if (!noSchema && summary.firstElementChild) {
         summary.firstElementChild.setAttribute('itemprop', 'name');
       }
+
       const body = children[1];
       body.className = 'accordion-item-body';
       const details = document.createElement('details');
       moveInstrumentation(row, details);
       details.className = 'accordion-item';
-      details.setAttribute('itemscope', '');
-      details.setAttribute('itemprop', 'acceptedAnswer');
-      details.setAttribute('itemtype', 'https://schema.org/Answer');
+
+      // Only add schema.org attributes if no-schema is not enabled
+      if (!noSchema) {
+        details.setAttribute('itemscope', '');
+        details.setAttribute('itemprop', 'acceptedAnswer');
+        details.setAttribute('itemtype', 'https://schema.org/Answer');
+      }
+
       details.append(summary, body);
       row.replaceWith(details);
+      accordionItems.push(details);
     } else {
       // remove or ignore malformed rows (like dummy divs)
       row.remove();
     }
   });
-  // Optional: Only one open at a time
-  const footerAccordion = document.querySelector('footer .section.accordion-container:first-of-type');
-  if (footerAccordion) {
-    block.querySelectorAll('details').forEach((detail) => {
-      detail.addEventListener('toggle', () => {
-      // if (detail.open) {
-      //   block.querySelectorAll('details').forEach((el) => {
-      //     if (el !== detail) el.removeAttribute('open');
-      //   });
-      // }
-      });
+
+  // Handle CTA "Show More/Less" functionality
+  if (ctaLocation && ctaLocation < accordionItems.length && ctaUrl && ctaText) {
+    let isExpanded = false;
+    const originalText = ctaText;
+    const expandedText = 'Show less';
+
+    // Hide items after ctaLocation initially
+    for (let i = ctaLocation; i < accordionItems.length; i += 1) {
+      accordionItems[i].classList.add('accordion-item-hidden');
+    }
+
+    // Create CTA button
+    const ctaButton = document.createElement('a');
+    ctaButton.href = ctaUrl;
+    ctaButton.textContent = originalText;
+    ctaButton.className = 'accordion-cta button';
+
+    // Append CTA at the end of the block
+    block.appendChild(ctaButton);
+
+    // Add click handler to toggle hidden items
+    ctaButton.addEventListener('click', (e) => {
+      // Check if URL ends with '#' (handles both relative '#' and absolute URLs ending with '#')
+      if (ctaUrl.endsWith('#') || ctaUrl === '') {
+        e.preventDefault();
+
+        if (!isExpanded) {
+          // Show all hidden items
+          for (let i = ctaLocation; i < accordionItems.length; i += 1) {
+            accordionItems[i].classList.remove('accordion-item-hidden');
+          }
+          ctaButton.textContent = expandedText;
+          block.classList.add('expanded');
+          isExpanded = true;
+        } else {
+          // Hide items after ctaLocation
+          for (let i = ctaLocation; i < accordionItems.length; i += 1) {
+            accordionItems[i].classList.add('accordion-item-hidden');
+          }
+          ctaButton.textContent = originalText;
+          block.classList.remove('expanded');
+          isExpanded = false;
+        }
+      }
     });
+  }
+
+  // Only one accordion item open at a time (default behavior)
+  // Footer accordions can disable this by removing the listeners in footer.js
+  block.querySelectorAll('details').forEach((detail) => {
+    const toggleHandler = () => {
+      if (detail.open) {
+        // Close all other accordion items in this block
+        block.querySelectorAll('details').forEach((el) => {
+          if (el !== detail && el.open) {
+            el.removeAttribute('open');
+          }
+        });
+
+        // Auto-scroll to position item 100px from top of viewport
+        const detailRect = detail.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetPosition = scrollTop + detailRect.top - 100;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth',
+        });
+      }
+    };
+    detail.addEventListener('toggle', toggleHandler);
+    // Store reference to handler so it can be removed if needed
+    detail.accordionToggleHandler = toggleHandler;
+  });
+
+  // Open first accordion item by default
+  // Footer.js will close this if the accordion is in a footer
+  if (accordionItems.length > 0) {
+    accordionItems[0].setAttribute('open', '');
   }
 }

@@ -37,6 +37,19 @@
         "validation": {
           "rootPath": "/content/idfc-edge/framework"
         }
+      },
+      {
+        "component": "text",
+        "name": "modal-timer",
+        "valueType": "string",
+        "label": "Modal Timer (ms)"
+      },
+      {
+        "component": "aem-content",
+        "name": "modal-content",
+        "label": "Modal Content",
+        "description": "Load this modal content after the modal timer duration",
+        "valueType": "string"
       }
     ]
   },
@@ -175,8 +188,33 @@
         ]
       },
       {
+        "component": "text",
+        "name": "grid",
+        "label": "Grid (# of columns, 2-6)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "gap",
+        "label": "Gap between blocks (xs, s, m, l, xl, xxl)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "spacing",
+        "label": "Spacing top and bottom of section (xs, s, m, l, xl, xxl)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "containerwidth",
+        "label": "Inner container width(2, 4, 6)",
+        "valueType": "string",
+        "description": "container = width of .section > div"
+      },
+      {
         "component": "container",
-        "label": "Optional background properties",
+        "label": "Optional outer background properties",
         "name": "container",
         "valueType": "string",
         "collapsible": true,
@@ -187,7 +225,7 @@
             "label": "Background Color/gradient",
             "value": "",
             "valueType": "string",
-            "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
+            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
           },
           {
             "component": "reference",
@@ -272,49 +310,89 @@
             "description": "optional minimum height when in mobile, e.g. 400px"
           }
         ]
-      }
-    ]
-  },
-  {
-    "id": "container",
-    "fields": [
-      {
-        "component": "text",
-        "name": "name",
-        "label": "Container Name",
-        "description": "The label shown for this container in the Content Tree"
       },
       {
-        "component": "text",
-        "name": "includeNextSections",
-        "label": "Include Next Sections",
-        "value": "",
-        "valueType": "number",
-        "description": "The number of sibling sections to display as a group"
-      },
-      {
-        "component": "text",
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "value": "",
+        "component": "container",
+        "label": "Optional block-content background properties",
+        "name": "options-container",
         "valueType": "string",
-        "description": "Use hex color notation (e.g. 000000 for black, fff for white) or CSS color values (e.g. var(--red-color), transparent)"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImage",
-        "label": "Background Image",
-        "description": "The background image of the container, displayed on top of the background color if specified",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "sectionBackgroundImageMobile",
-        "label": "Background Image Mobile",
-        "description": "The background image of the container, displayed on top of the background color if specified",
-        "multi": false
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "background-block",
+            "label": "Background Color/gradient",
+            "value": "",
+            "valueType": "string",
+            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "background-block-image",
+            "label": "Block-content Background Image",
+            "description": "Background image of the block-content, displayed on top of the background color if specified",
+            "multi": false
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "background-block-image-mobile",
+            "label": "Block-content Background Image Mobile",
+            "description": "Background image of the block-content for mobile",
+            "multi": false
+          },
+          {
+            "component": "select",
+            "valueType": "string",
+            "name": "object-fit-block",
+            "label": "Block-content Background Fit",
+            "value": "cover",
+            "options": [
+              {
+                "name": "cover",
+                "value": "cover"
+              },
+              {
+                "name": "contain",
+                "value": "contain"
+              },
+              {
+                "name": "none",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "component": "select",
+            "valueType": "string",
+            "name": "object-position-block",
+            "label": "Block-content Background Image Position",
+            "value": "center",
+            "options": [
+              {
+                "name": "center",
+                "value": "center"
+              },
+              {
+                "name": "top left",
+                "value": "top left"
+              },
+              {
+                "name": "top right",
+                "value": "top right"
+              },
+              {
+                "name": "bottom left",
+                "value": "bottom left"
+              },
+              {
+                "name": "bottom right",
+                "value": "bottom right"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -330,12 +408,12 @@
             "name": "Styles",
             "children": [
               {
-                "name": "light text on dark",
-                "value": "light-text"
+                "name": "dark scheme",
+                "value": "dark-scheme"
               },
               {
-                "name": "dark text on light",
-                "value": "dark-text-on-light"
+                "name": "light scheme",
+                "value": "light-scheme"
               }
             ]
           }
@@ -346,25 +424,26 @@
         "valueType": "boolean",
         "name": "no-schema",
         "label": "No LD+JSON schema",
-        "description": "TODO - this toggle is inop"
-      },
-      {
-        "component": "aem-content",
-        "name": "cta",
-        "label": "CTA URL",
-        "value": "#"
-      },
-      {
-        "component": "text",
-        "name": "ctaText",
-        "label": "CTA Text",
-        "value": "More FAQs"
+        "description": "Disables schema.org microdata attributes on accordion items"
       },
       {
         "component": "text",
         "name": "cta_location",
         "label": "CTA location (number of items before the CTA)",
         "valueType": "number",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "link",
+        "label": "CTA URL",
+        "value": "",
+        "description": "Use # for more/less toggle functionality"
+      },
+      {
+        "component": "text",
+        "name": "linkText",
+        "label": "CTA Text (e.g. Show More)",
         "value": ""
       }
     ]
@@ -886,6 +965,41 @@
             "value": "tg-clr-pale-white"
           }
         ]
+      }
+    ]
+  },
+  {
+    "id": "cc-hero-slider-item",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "desktopBackgroundImage",
+        "label": "Select Desktop Background Image",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "mobileBackgroundImage",
+        "label": "Select Mobile Background Image",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "slideContent",
+        "label": "Slide Content",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "popUpTriggerCTAText",
+        "label": "Enter pop-up trigger CTA text",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "popUpId",
+        "label": "Add pop-up ID",
+        "valueType": "string"
       }
     ]
   },
