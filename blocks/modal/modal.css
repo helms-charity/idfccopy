@@ -8,14 +8,7 @@ body.modal-open {
 
 .modal dialog::backdrop {
   /* Top 170px shows blurred nav, then transitions to silver gradient */
-  background: linear-gradient(
-    to bottom,
-    rgb(200 198 198 / 70%) 0,
-    rgb(200 198 198 / 95%) 1px,
-    #c8c6c6 250px,
-    #f1f0f0 50%,
-    #c8c6c6 100%
-  );
+  background: var(--modal-backdrop-gradient);
   backdrop-filter: blur(5px);
   background-size: cover;
   background-position: 0 var(--modal-offset-height), center top var(--modal-offset-height);

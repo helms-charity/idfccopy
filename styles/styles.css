@@ -35,8 +35,8 @@
   --metal-silver: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
   --modal-silver-text: #182659;
   --modal-blue-text: #d6d4d4;
+  --modal-backdrop-gradient: linear-gradient(to bottom, rgb(200 198 198 / 70%) 0, rgb(200 198 198 / 95%) 1px, #C8C6C6 250px, #F1F0F0 50%, #C8C6C6 100%);
 
-  
   /* bootstrap colors */
   --blue: #007bff;
   --indigo: #6610f2;
