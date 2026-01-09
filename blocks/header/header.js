@@ -597,39 +597,4 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-
-  // Add scroll behavior for collapsing header
-  // eslint-disable-next-line no-unused-vars
-  let lastScrollTop = 0;
-  const scrollThreshold = 50; // Pixels to scroll before collapsing
-
-  function handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollTop > scrollThreshold) {
-      navWrapper.classList.add('scrolled');
-    } else {
-      navWrapper.classList.remove('scrolled');
-    }
-
-    lastScrollTop = scrollTop;
-  }
-
-  // Only apply scroll behavior on desktop
-  if (isDesktop.matches) {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial call to set proper position
-    handleScroll();
-  }
-
-  // Handle resize to add/remove scroll listener
-  isDesktop.addEventListener('change', () => {
-    if (isDesktop.matches) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      handleScroll(); // Call immediately on resize to desktop
-    } else {
-      window.removeEventListener('scroll', handleScroll);
-      navWrapper.classList.remove('scrolled');
-    }
-  });
 }

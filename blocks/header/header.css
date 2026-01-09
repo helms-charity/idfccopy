@@ -474,42 +474,13 @@ header nav .nav-tools {
     align-self: unset;
   }
 
-  /* Scrolled state - collapsed header */
-  header .nav-wrapper.scrolled nav {
-    padding: 8px 70px;
-    flex-wrap: nowrap;
-    gap: 24px;
-  }
-
-  /* Adjust brand positioning when scrolled */
-  header .nav-wrapper.scrolled .nav-brand {
-    order: 1;
-  }
-
-  /* Hide nav-sections menu items when scrolled (but keep the brand) */
-  header .nav-wrapper.scrolled .nav-sections {
-    display: none !important;
-    visibility: hidden !important;
-  }
-
-  /* Nav Tools Desktop */
+  /* Nav Tools Desktop - inline with nav sections */
   header nav .nav-tools {
-    flex: 0 0 100%;
+    flex: 0 1 auto;
     display: flex;
     align-items: center;
-    order: 10;
-    padding-top: 12px;
-    margin-top: 12px;
-    width: 100%;
-  }
-
-  /* Adjust nav-tools to take full width minus logo when scrolled */
-  header .nav-wrapper.scrolled .nav-tools {
-    flex: 1 1 auto;
-    order: 2;
-    padding-top: 0;
-    margin-top: 0;
-    border-top: none;
+    gap: 16px;
+    order: 3;
   }
 
   /* Category navbar inside header wrapper */
