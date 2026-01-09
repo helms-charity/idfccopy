@@ -50,10 +50,7 @@
           "name": "modal-content",
           "label": "Modal Content",
           "description": "Load this modal content after the modal timer duration",
-          "valueType": "string",
-          "validation": {
-            "rootPath": "/content/idfc-edge/credit-card/metal-credit-card/mayura/modals"
-          }
+          "valueType": "string"
         }
       ]
     }
