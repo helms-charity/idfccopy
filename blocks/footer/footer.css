@@ -173,7 +173,7 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion>div>div:first-child ::after,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-label::after {
   display: block;
-  top: 43%;
+  top: 30%;
   background: url(/icons/icon-plus.svg);
   background-position: center;
   background-repeat: no-repeat;
@@ -304,9 +304,10 @@ footer .footer ul {
   max-width: 75%;
   width: 100%;
   margin: 0 auto;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  box-sizing: content-box;
 }
 
 .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block {
@@ -314,20 +315,29 @@ footer .footer ul {
 }
 
 .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block > .accordion-item > .accordion-item-label {
-  margin: 0;
-  padding: 0;
+  margin: 0 15px 10px;
+  padding: 0 0 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .footer>div>div:nth-child(3)>div {
-  width: auto;
+  width: 100%;
   position: relative;
   margin: 0;
+  max-width: unset;
 }
+
+.footer>div>div:nth-child(3) .accordion-item-label > p {margin: 0;}
 
 .footer>div>div:nth-child(3) h3 {
   line-height: 1;
   font-weight: 300;
-  font: 24px 'Inter', sans-serif;
+  font: 24px Inter, sans-serif;
+  font-weight: 300;
+  margin: 0;
 }
 
 .footer>div>div:nth-child(3) .default-content-wrapper {
@@ -362,7 +372,7 @@ footer .footer>div .section:nth-child(4) {
 }
 
 .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
-  left: 102px;
+  left: 106px;
 }
 
 .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
@@ -441,6 +451,10 @@ footer .footer>div .section:nth-child(4)>div p a {
   width: 100%;
   }
 
+  .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block > .accordion-item > .accordion-item-label {
+    margin: 0;
+  }
+
   .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
     display: block;
     left: unset;
@@ -490,7 +504,6 @@ footer .footer>div .section:nth-child(4)>div p a {
     order: 2;
     padding-bottom: 14px;
     flex-direction: column;
-    max-width: unset;
   }
 
   .footer .section.accordion-container:first-child > .default-content > h6 {
