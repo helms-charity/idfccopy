@@ -157,148 +157,157 @@ export default async function decorate(block) {
   navSectionsWrapper.classList.add('default-content-wrapper');
   const navSectionsUl = document.createElement('ul');
 
-  // Get all children from contentWrapper
-  const children = Array.from(contentWrapper.children);
-  let currentLi = null;
+  // Debug: log what we got from the fragment
+  // eslint-disable-next-line no-console
+  console.log('Fragment:', fragment);
+  // eslint-disable-next-line no-console
+  console.log('ContentWrapper:', contentWrapper);
 
-  for (let i = 0; i < children.length; i += 1) {
-    const child = children[i];
+  // Get sections from the fragment
+  const sections = fragment.querySelectorAll(':scope > .section');
+  // eslint-disable-next-line no-console
+  console.log('Found sections:', sections.length, sections);
 
-    // Personal section (first p + ul)
-    if (i === 0 && child.tagName === 'P' && child.textContent.trim() === 'Personal') {
-      currentLi = document.createElement('li');
-      currentLi.innerHTML = `<p><a href="https://www.idfcfirstbank.com">${child.textContent}</a></p>`;
-      const nextChild = children[i + 1];
-      if (nextChild && nextChild.tagName === 'UL') {
-        currentLi.appendChild(nextChild.cloneNode(true));
-        i += 1; // Skip the next element since we've already processed it
-      }
-      navSectionsUl.appendChild(currentLi);
-    } else if (child.classList.contains('button-container') && child.textContent.includes('Explore Personal Banking')) {
-      // Explore Personal Banking button - will be added separately later
-      // Skip this element as we'll add it programmatically
-    } else if (child.classList.contains('button-container')) {
-      // About Us, Careers, IDFC FIRST Academy, ESG
-      const link = child.querySelector('a');
-      if (link) {
-        currentLi = document.createElement('li');
-        const text = link.textContent.trim();
-        currentLi.innerHTML = `<p><a href="${link.href}">${text}</a></p>`;
+  sections.forEach((section) => {
+    // Get section data-id as title
+    const sectionId = section.getAttribute('data-id');
+    if (!sectionId) return;
 
-        // Check if next element is a ul (submenu)
-        const nextChild = children[i + 1];
-        if (nextChild && nextChild.tagName === 'UL') {
-          currentLi.appendChild(nextChild.cloneNode(true));
-          i += 1; // Skip the next element
-        }
-        navSectionsUl.appendChild(currentLi);
-      }
-    } else if (child.tagName === 'P' && child.textContent.trim() === 'Investors' && !child.classList.contains('button-container')) {
-      // Investors section (p followed by ul)
-      currentLi = document.createElement('li');
-      currentLi.innerHTML = `<p><a href="https://www.idfcfirstbank.com/investors">${child.textContent}</a></p>`;
-      const nextChild = children[i + 1];
-      if (nextChild && nextChild.tagName === 'UL') {
-        currentLi.appendChild(nextChild.cloneNode(true));
-        i += 1; // Skip the next element
-      }
-      navSectionsUl.appendChild(currentLi);
+    // Get H2 and links from section
+    const h2 = section.querySelector('h2');
+    const links = section.querySelectorAll('a');
+    if (!h2 || links.length === 0) return;
+
+    let title;
+    let titleUrl = null;
+    let fragmentPath;
+
+    if (links.length >= 2) {
+      // Has both title link and fragment path
+      const titleLink = links[0];
+      const fragmentLink = links[1];
+      title = titleLink.textContent.trim();
+      titleUrl = titleLink.getAttribute('href');
+      fragmentPath = fragmentLink.getAttribute('href');
+    } else {
+      // Only has fragment path, title is plain text in H2
+      title = h2.textContent.trim();
+      fragmentPath = links[0].getAttribute('href');
     }
-  }
+
+    if (!fragmentPath) return;
+
+    // Create nav item
+    const li = document.createElement('li');
+    li.setAttribute('data-fragment-path', fragmentPath);
+    if (titleUrl) {
+      li.setAttribute('data-title-url', titleUrl);
+    }
+    li.setAttribute('aria-expanded', 'false');
+
+    const titleP = document.createElement('p');
+    const titleA = document.createElement('a');
+    titleA.textContent = title;
+    titleA.href = titleUrl || '#';
+    titleA.classList.add('nav-title-link');
+
+    // If no URL, prevent navigation on both desktop and mobile
+    if (!titleUrl) {
+      titleA.addEventListener('click', (e) => e.preventDefault());
+    }
+
+    titleP.appendChild(titleA);
+    li.appendChild(titleP);
+
+    navSectionsUl.appendChild(li);
+  });
 
   navSectionsWrapper.appendChild(navSectionsUl);
   navSections.appendChild(navSectionsWrapper);
 
-  // Insert 'Explore Personal Banking' as second li in nav-sections
-  const newLi = document.createElement('li');
-  newLi.innerHTML = '<div class="main-link"><a href="https://www.idfcfirstbank.com">Explore Personal Banking</a></div>';
-  if (navSectionsUl.children.length > 0) {
-    navSectionsUl.insertBefore(newLi, navSectionsUl.children[1] || null);
-  } else {
-    navSectionsUl.appendChild(newLi);
-  }
-
-  // Build nav-tools section from contentWrapper
+  // Build nav-tools section - look for tools/customer-service section
   const navToolsWrapper = document.createElement('div');
   navToolsWrapper.classList.add('default-content-wrapper');
 
-  // Find the search bar and other tools
-  const searchP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => {
-    const strong = p.querySelector('strong');
-    return strong && strong.textContent.toLowerCase().includes('what are you looking for');
+  // Find the tools section (could be "tools", "customer service", "customer-service", etc.)
+  const toolsSection = Array.from(sections).find((section) => {
+    const sectionId = section.getAttribute('data-id');
+    return sectionId && (
+      sectionId.toLowerCase().includes('tool')
+      || sectionId.toLowerCase().includes('customer')
+      || sectionId.toLowerCase().includes('service')
+    );
   });
 
-  const specialP = Array.from(contentWrapper.querySelectorAll('p')).find((p) => p.textContent.trim() === "What's special about us" && !p.querySelector('strong'));
+  let searchP;
+  let toolsUl;
 
-  const toolsUl = Array.from(contentWrapper.querySelectorAll('ul')).find((ul) => {
-    const firstLi = ul.querySelector('li');
-    return firstLi && (firstLi.textContent.includes('Customer service') || firstLi.textContent.includes('Login'));
-  });
+  if (toolsSection) {
+    // Get content from the tools section
+    const toolsContent = toolsSection.querySelector('.default-content');
+    if (toolsContent) {
+      // Find search bar text
+      searchP = Array.from(toolsContent.querySelectorAll('p')).find((p) => {
+        const strong = p.querySelector('strong');
+        return strong && strong.textContent.toLowerCase().includes('what are you looking for');
+      });
 
-  if (searchP) {
-    navToolsWrapper.innerHTML = '<p><span class="icon icon-search"></span><strong class="typewriter-text"></strong></p>';
-  }
-
-  // Typewriter animation for "What are you looking for..."
-  function startTypewriterAnimation() {
-    const typewriterEl = navToolsWrapper.querySelector('.typewriter-text');
-    if (!typewriterEl) return;
-
-    const fullText = 'What are you looking for...';
-    let charIndex = 0;
-
-    function typeNextChar() {
-      if (charIndex <= fullText.length) {
-        typewriterEl.textContent = fullText.slice(0, charIndex);
-        charIndex += 1;
-        setTimeout(typeNextChar, 200); // Speed of typing (0.2s per letter)
-      } else {
-        // Finished typing, wait 2 seconds then restart
-        setTimeout(() => {
-          charIndex = 0;
-          typewriterEl.textContent = '';
-          typeNextChar();
-        }, 2000);
-      }
+      // Find the tools list (Customer Service items + Login)
+      toolsUl = toolsContent.querySelector('ul');
     }
-
-    typeNextChar();
   }
 
-  // Initialize typewriter after DOM is ready
-  setTimeout(startTypewriterAnimation, 100);
-
-  if (specialP) {
-    const specialPClone = specialP.cloneNode(true);
-    specialPClone.innerHTML = `<span class="icon icon-special"></span>${specialP.textContent}`;
-    navToolsWrapper.appendChild(specialPClone);
+  // Add search bar with icon (created programmatically)
+  if (searchP) {
+    // Extract just the text content from the authored paragraph
+    const searchText = searchP.textContent.trim();
+    // Create new search element with icon
+    const searchElement = document.createElement('p');
+    searchElement.innerHTML = `<span class="icon icon-search"></span><strong>${searchText}</strong>`;
+    navToolsWrapper.appendChild(searchElement);
   }
 
+  // Build the tools list with dynamic odometer
   if (toolsUl) {
     const toolsUlClone = toolsUl.cloneNode(true);
-    // Add login icon to the Login li (last child)
-    const loginLi = toolsUlClone.querySelector('li:last-child');
-    if (loginLi && loginLi.textContent.includes('Login')) {
-      const loginIcon = document.createElement('span');
-      loginIcon.classList.add('icon', 'icon-login_header');
-      loginLi.prepend(loginIcon);
-    }
+    const allLis = Array.from(toolsUlClone.querySelectorAll('li'));
 
-    // Add odometer animation to Customer Service li (first child)
-    const customerServiceLi = toolsUlClone.querySelector('li:first-child');
-    if (customerServiceLi && customerServiceLi.textContent.includes('Customer service')) {
-      customerServiceLi.innerHTML = `
+    if (allLis.length > 1) {
+      // Get all items except the last one (Login)
+      const odometerItems = allLis.slice(0, -1);
+      const loginLi = allLis[allLis.length - 1];
+
+      // Build odometer HTML from the list items
+      const odometerSpans = odometerItems.map((li) => `<span>${li.textContent.trim()}</span>`).join('');
+      // Add first item again at the end for seamless loop
+      const firstItemText = odometerItems[0].textContent.trim();
+      const odometerHTML = `
         <div class="grnt-animation-odometer">
           <div class="grnt-odometer-track">
-            <span>Customer Service</span>
-            <span>Contact us</span>
-            <span>Service request</span>
-            <span>Locate a branch</span>
-            <span>Complaints</span>
-            <span>Customer Service</span>
+            ${odometerSpans}
+            <span>${firstItemText}</span>
           </div>
         </div>
       `;
+
+      // Replace the first LI with the odometer
+      const firstLi = toolsUlClone.querySelector('li:first-child');
+      if (firstLi) {
+        firstLi.innerHTML = odometerHTML;
+      }
+
+      // Remove the middle items (they're now in the odometer)
+      odometerItems.slice(1).forEach((li) => li.remove());
+
+      // Add login icon to the Login li (should now be the last child)
+      if (loginLi && loginLi.textContent.toLowerCase().includes('login')) {
+        const existingIcon = loginLi.querySelector('.icon-login_header');
+        if (!existingIcon) {
+          const loginIcon = document.createElement('span');
+          loginIcon.classList.add('icon', 'icon-login_header');
+          loginLi.prepend(loginIcon);
+        }
+      }
     }
 
     navToolsWrapper.appendChild(toolsUlClone);
@@ -347,27 +356,225 @@ export default async function decorate(block) {
   nav.appendChild(navSections);
   nav.appendChild(navTools);
 
-  // Add dropdown behavior to nav sections
-  navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-    if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-    navSection.addEventListener('click', () => {
-      if (isDesktop.matches) {
+  /**
+   * Load fragment content and build structure based on viewport
+   * Desktop: Flat list of all content
+   * Mobile: Nested accordion by section
+   */
+  async function loadNavFragmentContent(navSection, isMobile = false) {
+    const fragmentPath = navSection.getAttribute('data-fragment-path');
+    if (!fragmentPath || navSection.getAttribute('data-fragment-loaded') === 'true') {
+      return true;
+    }
+
+    try {
+      const fragmentContent = await loadFragment(fragmentPath);
+      if (fragmentContent) {
+        const fragmentSections = fragmentContent.querySelectorAll('.section');
+        const ul = document.createElement('ul');
+        ul.classList.add('nav-fragment-content');
+
+        if (isMobile) {
+          // Mobile: Create nested accordion structure
+          fragmentSections.forEach((section) => {
+            const defaultContent = section.querySelector('.default-content');
+            if (!defaultContent) return;
+
+            // Check if this section has a category-nav block (special case for ccnav)
+            const categoryNavBlock = section.querySelector('.category-nav.block');
+
+            let titleText;
+            let contentToAdd;
+
+            if (categoryNavBlock) {
+              // Special handling for category-nav sections
+              // Get title from default-content
+              const titleP = defaultContent.querySelector('p');
+              if (!titleP) return;
+              titleText = titleP.textContent.trim();
+
+              // Use the entire category-nav block as content
+              contentToAdd = categoryNavBlock.cloneNode(true);
+            } else {
+              // Standard handling for regular sections with H3 titles
+              const children = Array.from(defaultContent.children);
+              if (children.length === 0) return;
+
+              const titleElement = children.find((child) => child.tagName === 'H3');
+              if (!titleElement) return;
+
+              titleText = titleElement.textContent;
+
+              // Create wrapper for non-title children
+              contentToAdd = document.createElement('div');
+              children.forEach((child) => {
+                if (child.tagName !== 'H3') {
+                  contentToAdd.appendChild(child.cloneNode(true));
+                }
+              });
+            }
+
+            if (!titleText) return;
+
+            // Create accordion item for this section
+            const sectionLi = document.createElement('li');
+            sectionLi.classList.add('nav-fragment-section');
+            sectionLi.setAttribute('aria-expanded', 'false');
+
+            // Create clickable title
+            const titleWrapper = document.createElement('p');
+            titleWrapper.classList.add('nav-fragment-section-title');
+            titleWrapper.textContent = titleText;
+            sectionLi.appendChild(titleWrapper);
+
+            // Create container for section content
+            const sectionUl = document.createElement('ul');
+            sectionUl.classList.add('nav-fragment-section-content');
+
+            const contentLi = document.createElement('li');
+            contentLi.appendChild(contentToAdd);
+            sectionUl.appendChild(contentLi);
+
+            sectionLi.appendChild(sectionUl);
+            ul.appendChild(sectionLi);
+          });
+        } else {
+          // Desktop: Flat list of all content
+          fragmentSections.forEach((section) => {
+            const defaultContent = section.querySelector('.default-content');
+            if (!defaultContent) return;
+
+            // Check if this section has a category-nav block
+            const categoryNavBlock = section.querySelector('.category-nav.block');
+
+            if (categoryNavBlock) {
+              // For category-nav sections, add the entire block
+              const li = document.createElement('li');
+              li.appendChild(categoryNavBlock.cloneNode(true));
+              ul.appendChild(li);
+            } else {
+              // For regular sections, add all children from default-content
+              const children = Array.from(defaultContent.children);
+              children.forEach((child) => {
+                const li = document.createElement('li');
+                li.appendChild(child.cloneNode(true));
+                ul.appendChild(li);
+              });
+            }
+          });
+        }
+
+        if (ul.children.length > 0) {
+          navSection.appendChild(ul);
+          navSection.setAttribute('data-fragment-loaded', 'true');
+          navSection.classList.add('nav-drop');
+
+          // Decorate any category-nav blocks that were added
+          const categoryNavBlocks = ul.querySelectorAll('.category-nav.block');
+          if (categoryNavBlocks.length > 0) {
+            // Dynamically import and decorate category-nav blocks
+            import('../category-nav/category-nav.js').then((module) => {
+              categoryNavBlocks.forEach((navBlock) => {
+                // Mark as fragment block to prevent duplicate decoration
+                navBlock.setAttribute('data-fragment-block', 'true');
+                module.default(navBlock);
+              });
+            }).catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error('Failed to load category-nav module:', error);
+            });
+          }
+
+          // Setup mobile accordion behavior for section items
+          if (isMobile) {
+            ul.querySelectorAll('.nav-fragment-section').forEach((sectionItem) => {
+              sectionItem.addEventListener('click', (e) => {
+                // Only toggle if clicking on the title, not on links
+                if (e.target.closest('.nav-fragment-section-content')) return;
+
+                const subUl = sectionItem.querySelector('.nav-fragment-section-content');
+                if (subUl) {
+                  const { scrollHeight } = subUl;
+                  sectionItem.style.setProperty('--section-scroll-height', `${scrollHeight}px`);
+                  const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
+                  sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                }
+              });
+            });
+          }
+
+          return true;
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load fragment:', error);
+    }
+    return false;
+  }
+
+  /**
+   * Desktop: Hover shows dropdown, click on title navigates to page
+   */
+  function setupDesktopNavigation(navSection) {
+    // Load and show dropdown on hover
+    navSection.addEventListener('mouseenter', async () => {
+      await loadNavFragmentContent(navSection, false); // false = desktop
+      toggleAllNavSections(navSections);
+      navSection.setAttribute('aria-expanded', 'true');
+    });
+
+    // Hide dropdown when mouse leaves
+    navSection.addEventListener('mouseleave', () => {
+      navSection.setAttribute('aria-expanded', 'false');
+    });
+
+    // Title link navigates normally (no preventDefault)
+    // This allows desktop users to click to go to the parent page
+  }
+
+  /**
+   * Mobile: Click to expand accordion-style with nested sections
+   */
+  function setupMobileNavigation(navSection) {
+    const titleLink = navSection.querySelector('.nav-title-link');
+
+    navSection.addEventListener('click', async (e) => {
+      // Don't handle clicks on nested section items
+      if (e.target.closest('.nav-fragment-section')) return;
+
+      // Prevent title link navigation on mobile
+      if (e.target === titleLink) {
+        e.preventDefault();
+      }
+
+      // Load fragment if needed (with mobile structure)
+      await loadNavFragmentContent(navSection, true); // true = mobile
+
+      // Toggle accordion with height animation
+      const subUl = navSection.querySelector('ul');
+      if (subUl) {
+        const { scrollHeight } = subUl;
+        navSection.style.setProperty('--scroll-height', `${scrollHeight}px`);
         const expanded = navSection.getAttribute('aria-expanded') === 'true';
         toggleAllNavSections(navSections);
         navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       }
-
-      if (!isDesktop.matches) {
-        const subUl = navSection.querySelector('ul');
-        if (subUl) {
-          const { scrollHeight } = subUl;
-          navSection.style.setProperty('--scroll-height', `${scrollHeight}px`);
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      }
     });
+  }
+
+  /**
+   * Initialize navigation behavior based on viewport
+   */
+  navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
+    const fragmentPath = navSection.getAttribute('data-fragment-path');
+    if (!fragmentPath) return;
+
+    if (isDesktop.matches) {
+      setupDesktopNavigation(navSection);
+    } else {
+      setupMobileNavigation(navSection);
+    }
   });
 
   // hamburger for mobile
@@ -392,39 +599,4 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-
-  // Add scroll behavior for collapsing header
-  // eslint-disable-next-line no-unused-vars
-  let lastScrollTop = 0;
-  const scrollThreshold = 50; // Pixels to scroll before collapsing
-
-  function handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollTop > scrollThreshold) {
-      navWrapper.classList.add('scrolled');
-    } else {
-      navWrapper.classList.remove('scrolled');
-    }
-
-    lastScrollTop = scrollTop;
-  }
-
-  // Only apply scroll behavior on desktop
-  if (isDesktop.matches) {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial call to set proper position
-    handleScroll();
-  }
-
-  // Handle resize to add/remove scroll listener
-  isDesktop.addEventListener('change', () => {
-    if (isDesktop.matches) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      handleScroll(); // Call immediately on resize to desktop
-    } else {
-      window.removeEventListener('scroll', handleScroll);
-      navWrapper.classList.remove('scrolled');
-    }
-  });
 }
