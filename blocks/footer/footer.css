@@ -40,11 +40,10 @@ footer .footer ul {
 
 .footer>div>div {
   display: flex;
-  padding: 35px 0;
   flex-direction: column;
 }
 
-.footer .section.accordion-container:first-child > .default-content {width: 100%;padding-left: 15px;padding-right: 15px;margin-bottom: 45px;padding-top: 35px;padding-bottom: 15px;}
+.footer .section.accordion-container:first-child > .default-content {width: 100%;padding-left: 15px;padding-right: 15px;padding-top: 35px;padding-bottom: 15px;}
 
 .footer .section.accordion-container:first-child > .default-content > h6 {
   color: rgb(188, 59, 69);
@@ -52,7 +51,7 @@ footer .footer ul {
   font-style: normal;
   font-weight: 600;
   line-height: 36px;
-  letter-spacing: 3.6px;
+  letter-spacing: 4.5px;
   margin: unset;
 }
 
@@ -61,9 +60,9 @@ footer .footer ul {
   font-family: Inter;
   font-size: 77px;
   font-style: normal;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 77px;
-  letter-spacing: -0.77px;
+  letter-spacing: 1px;
   padding-top: 6px;
   margin: unset;
 }
@@ -92,7 +91,8 @@ footer .footer ul {
   font-size: 12px;
   font-weight: 700;
   color: #525252;
-  right: 0;
+  right: -47px;
+  top: -15px;
 }
 
 .footer .section.accordion-container:first-child > .default-content > p > a::before {
@@ -104,7 +104,7 @@ footer .footer ul {
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
-  line-height: 1;
+  line-height: 0.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -126,6 +126,7 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 50px;
 }
 
 .footer>div>div .accordion-wrapper .accordion>div,
@@ -198,6 +199,7 @@ footer .footer ul {
   font: 14px "Inter", sans-serif;
   font-weight: 600;
   letter-spacing: 0.6px;
+  margin: 0;
 }
 
 .footer>div>div .accordion-wrapper .accordion details[open],
@@ -225,7 +227,7 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li a {
   color: #FFFFFF;
   font: 14px "Inter", sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   word-break: unset;
 }
 
@@ -368,7 +370,7 @@ footer .footer>div .section:nth-child(4) {
   color: #0D0D0D;
   font-weight: 200;
   font-size: 12px;
-  padding-bottom: 30px;
+  padding: 30px 0;
 }
 
 .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
