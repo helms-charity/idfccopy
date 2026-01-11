@@ -2,6 +2,47 @@
 import { toClassName } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
+/**
+ * Creates a video element for the phone animation
+ * @param {string} videoSrc - The video source URL
+ * @returns {HTMLVideoElement} The video element
+ */
+function createVideoElement(videoSrc) {
+  const video = document.createElement('video');
+  video.className = 'phone-animation-video';
+  video.src = videoSrc;
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.setAttribute('playsinline', ''); // iOS support
+  video.setAttribute('webkit-playsinline', ''); // Older iOS support
+  return video;
+}
+
+/**
+ * Checks if a tab panel contains only a video link (no other content like icons)
+ * @param {HTMLElement} tabPanel - The tab panel element
+ * @returns {string|null} The video path or null if not a video-only tab
+ */
+function getVideoOnlyPath(tabPanel) {
+  const firstChild = tabPanel.querySelector(':scope > div:first-child');
+  if (!firstChild) return null;
+
+  const link = firstChild.querySelector('a');
+  if (link && link.href && link.href.endsWith('.mp4')) {
+    // Check if this is a video-only tab (no icon)
+    const hasIcon = firstChild.querySelector('.icon, picture');
+    if (!hasIcon) {
+      return link.href;
+    }
+  }
+  return null;
+}
+
+// Store video paths mapped to their corresponding tabs
+const tabVideoMap = new Map();
+
 export default async function decorate(block) {
   // Check if tabs-list already exists - if so, script has already run successfully
   if (block.querySelector('.tabs-list')) {
@@ -45,8 +86,26 @@ export default async function decorate(block) {
   // Store tab names for later use
   const tabNames = [];
 
-  // Process each tab panel - similar to original tabs.js but handle nested structure
-  tabPanels.forEach((tabpanel, i) => {
+  // First pass: identify video-only tabs and extract video paths
+  let pendingVideoPath = null;
+  const processableTabs = [];
+
+  tabPanels.forEach((tabpanel) => {
+    const videoPath = getVideoOnlyPath(tabpanel);
+    if (videoPath) {
+      // This is a video-only tab, store the path for the next tab
+      pendingVideoPath = videoPath;
+      // Mark this tab for removal (don't add to processable tabs)
+      tabpanel.dataset.videoOnly = 'true';
+    } else {
+      // This is a regular tab
+      processableTabs.push({ tabpanel, videoPath: pendingVideoPath });
+      pendingVideoPath = null; // Reset for next iteration
+    }
+  });
+
+  // Process each regular tab panel
+  processableTabs.forEach(({ tabpanel, videoPath }, i) => {
     // Find the tab name element - it's in the first child div's p element
     const firstChildDiv = tabpanel.querySelector(':scope > div:first-child');
     if (!firstChildDiv) return; // Skip if no first child div
@@ -61,6 +120,11 @@ export default async function decorate(block) {
     tabNames.push(i === 0 ? 'the app' : tabName);
 
     const id = toClassName(tabName);
+
+    // Store video path for this tab if one was provided
+    if (videoPath) {
+      tabVideoMap.set(id, videoPath);
+    }
 
     // Decorate tabpanel
     tabpanel.className = 'tabs-panel';
@@ -84,6 +148,9 @@ export default async function decorate(block) {
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
     button.addEventListener('click', () => {
+      // Skip if already selected
+      if (button.getAttribute('aria-selected') === 'true') return;
+
       block.querySelectorAll('[role=tabpanel]').forEach((panel) => {
         panel.setAttribute('aria-hidden', true);
       });
@@ -92,6 +159,31 @@ export default async function decorate(block) {
       });
       tabpanel.setAttribute('aria-hidden', false);
       button.setAttribute('aria-selected', true);
+
+      // Update phone video if this tab has a video
+      const videoContainer = block.querySelector('.phone-animation-video-container');
+      if (videoContainer) {
+        // Get tab ID from button ID (remove 'tab-' prefix)
+        const tabId = button.id.replace('tab-', '');
+        const videoPath = tabVideoMap.get(tabId);
+        const existingVideo = videoContainer.querySelector('video');
+
+        if (videoPath) {
+          if (existingVideo) {
+            existingVideo.src = videoPath;
+            existingVideo.style.display = 'block';
+            existingVideo.load();
+            existingVideo.play();
+          } else {
+            const newVideo = createVideoElement(videoPath);
+            videoContainer.appendChild(newVideo);
+          }
+        } else if (existingVideo) {
+          // No video for this tab, hide video
+          existingVideo.pause();
+          existingVideo.style.display = 'none';
+        }
+      }
     });
     tablist.append(button);
 
@@ -117,6 +209,12 @@ export default async function decorate(block) {
       // Clone for desktop (outside tabs)
       const desktopPicture = picture.cloneNode(true);
       imageWrapper.appendChild(desktopPicture);
+
+      // Add video container for phone animation (desktop only)
+      const videoContainer = document.createElement('div');
+      videoContainer.className = 'phone-animation-video-container';
+      imageWrapper.appendChild(videoContainer);
+
       tabsWrapper.appendChild(imageWrapper);
 
       // Clone image into each tab panel for mobile (inside each tab)
@@ -163,14 +261,21 @@ export default async function decorate(block) {
     tabsContainer.appendChild(tablist);
   }
 
-  // Move all tab panels to tabs container and add QR code text
-  tabPanels.forEach((tabpanel, i) => {
+  // Move all tab panels to tabs container and add QR code text (skip video-only tabs)
+  let tabIndex = 0;
+  tabPanels.forEach((tabpanel) => {
+    // Skip video-only tabs - they were already processed and their video paths stored
+    if (tabpanel.dataset.videoOnly === 'true') {
+      tabpanel.remove(); // Remove from DOM
+      return;
+    }
+
     tabsContainer.appendChild(tabpanel);
 
     // Find the QR code picture in this tab panel
     const qrPicture = tabpanel.querySelector('.tabs-upi-link-panel-content picture');
-    if (qrPicture && tabNames[i]) {
-      const tabName = tabNames[i];
+    if (qrPicture && tabNames[tabIndex]) {
+      const tabName = tabNames[tabIndex];
 
       // Create text element
       const qrText = document.createElement('p');
@@ -184,6 +289,8 @@ export default async function decorate(block) {
       qrWrapper.appendChild(qrPicture);
       qrWrapper.appendChild(qrText);
     }
+
+    tabIndex += 1;
   });
 
   // Add tabs container to wrapper
@@ -231,4 +338,17 @@ export default async function decorate(block) {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(updateScanToTap, 150);
   });
+
+  // Initialize phone video for the first active tab (if it has a video)
+  const videoContainer = block.querySelector('.phone-animation-video-container');
+  const firstActiveButton = tablist.querySelector('button[aria-selected="true"]');
+  if (videoContainer && firstActiveButton) {
+    // Get tab ID from button ID (remove 'tab-' prefix)
+    const tabId = firstActiveButton.id.replace('tab-', '');
+    const videoPath = tabVideoMap.get(tabId);
+    if (videoPath) {
+      const video = createVideoElement(videoPath);
+      videoContainer.appendChild(video);
+    }
+  }
 }
