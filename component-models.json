@@ -1755,6 +1755,13 @@
         "valueType": "string",
         "name": "classes",
         "label": "Style"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "phone-video",
+        "label": "Phone Video",
+        "multi": false
       }
     ]
   },
