@@ -25,7 +25,7 @@ footer {
 } */
 
 footer .footer>div .section>div {
-  max-width: 1200px;
+  max-width: 75%;
   margin: 0 auto;
   /* padding: 50px 0px; */
   /* padding-top: 50px; */
@@ -40,7 +40,71 @@ footer .footer ul {
 
 .footer>div>div {
   display: flex;
-  padding: 50px 0;
+  flex-direction: column;
+}
+
+.footer .section.accordion-container:first-child > .default-content {width: 100%;padding-left: 15px;padding-right: 15px;padding-top: 35px;padding-bottom: 15px;}
+
+.footer .section.accordion-container:first-child > .default-content > h6 {
+  color: rgb(188, 59, 69);
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 4.5px;
+  margin: unset;
+}
+
+.footer .section.accordion-container:first-child > .default-content > h5 {
+  color: rgb(188, 59, 69);
+  font-family: Inter;
+  font-size: 77px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 77px;
+  letter-spacing: 1px;
+  padding-top: 6px;
+  margin: unset;
+}
+
+.footer .section.accordion-container:first-child > .default-content > p {
+  position: relative;
+  display: none;
+  
+}
+
+/* Back to Top Button - styled like IDFC FIRST Bank's TOP button */
+.footer .section.accordion-container:first-child > .default-content > p > a {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: #FFCB05;
+  font-size: 12px;
+  font-weight: 700;
+  color: #525252;
+  right: -47px;
+  top: -15px;
+}
+
+.footer .section.accordion-container:first-child > .default-content > p > a::before {
+  content: "\e903";
+  color: #525252;
+  font-size: 20px;
+  font-family: 'icomoon';
+  line-height: 0.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Only show TOP button on screens wider than 1200px */
+@media (min-width: 1200px) {
+  .footer .section.accordion-container:first-child > .default-content > p {
+    display: flex;
+  }
 }
 
 .footer>div>div .accordion-wrapper {
@@ -54,6 +118,7 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 50px;
 }
 
 .footer>div>div .accordion-wrapper .accordion>div,
@@ -101,13 +166,13 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion>div>div:first-child ::after,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-label::after {
   display: block;
-  top: 26%;
+  top: 30%;
   background: url(/icons/icon-plus.svg);
   background-position: center;
   background-repeat: no-repeat;
   transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
+  width: 21px;
+  height: 21px;
   border: unset;
 }
 
@@ -123,7 +188,10 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion .accordion-item-label p {
   font-size: 14px;
   font-weight: 700;
-  font: 700 1rem / 1.25rem 'Roboto', sans-serif;
+  font: 14px "Inter", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  margin: 0;
 }
 
 .footer>div>div .accordion-wrapper .accordion details[open],
@@ -144,14 +212,15 @@ footer .footer ul {
 .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li {
   margin-top: 12px;
   list-style: none;
+  line-height: 1;
 }
 
 .footer>div>div .accordion-wrapper .accordion>div>div:nth-child(2) ul li a,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li a {
   color: #FFFFFF;
-  font-size: 14px;
-  /* font-weight: 300; */
-  font: 500 1rem / 1.25rem 'Roboto', sans-serif;
+  font: 14px "Inter", sans-serif;
+  font-weight: 300;
+  word-break: unset;
 }
 
 .footer>div>div:nth-child(2),
@@ -172,11 +241,23 @@ footer .footer ul {
 }
 
 .footer>div>div:nth-child(2)>div>ul>li {
-  flex: 0 0 30.8%;
-  max-width: 30.8%;
   padding-right: 15px;
   padding-left: 15px;
 }
+
+.footer>div>div:nth-child(2)>div>ul>li:nth-child(1) {
+  flex: 0 0 25%;
+}
+
+.footer>div>div:nth-child(2)>div>ul>li:nth-child(2) {
+  flex: 0 0 50%;
+  justify-items: anchor-center;
+}
+
+.footer>div>div:nth-child(2)>div>ul>li:nth-child(3) {
+  flex: 0 0 25%;
+}
+
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li {
   text-align: center;
@@ -187,13 +268,13 @@ footer .footer ul {
   width: 56px;
   background: #fff;
   padding: 2px;
-  margin-left: 84px;
 }
 
 .footer>div>div:nth-child(2)>div>ul li>p {
+  font-size: 14px;
+  font-weight: 700;
   padding-bottom: 16px;
-  letter-spacing: .5px;
-  font: 700 1rem / 1.25rem Roboto, sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .footer>div>div:nth-child(2)>div>ul>li>ul {
@@ -206,21 +287,51 @@ footer .footer ul {
 
 .footer>div>div:nth-child(2)>div>ul>li>ul li {
   margin: 0 30px 0 0;
-  display: flex;
   align-items: center;
 }
 
 .footer>div>div:nth-child(3) {
-  padding: 50px 0;
-  padding-bottom: 27px;
+  padding: 50px 15px 24px 15px;
   display: flex;
-  align-items: center;
+  text-size-adjust: auto;
   position: relative;
+  max-width: 75%;
+  width: 100%;
+  margin: 0 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: content-box;
+}
+
+.footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block {
+  margin: 0;
+}
+
+.footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block > .accordion-item > .accordion-item-label {
+  margin: 0 15px 10px;
+  padding: 0 0 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .footer>div>div:nth-child(3)>div {
-  /* width: auto; */
+  width: 100%;
   position: relative;
+  margin: 0;
+  max-width: unset;
+}
+
+.footer>div>div:nth-child(3) .accordion-item-label > p {margin: 0;}
+
+.footer>div>div:nth-child(3) h3 {
+  line-height: 1;
+  font-weight: 300;
+  font: 24px Inter, sans-serif;
+  font-weight: 300;
+  margin: 0;
 }
 
 .footer>div>div:nth-child(3) .default-content-wrapper {
@@ -243,16 +354,19 @@ footer .footer ul {
 .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item {
   flex: 0 0 100%;
   max-width: 100%;
+  overflow: visible;
 }
 
 footer .footer>div .section:nth-child(4) {
   background-color: #FFFFFF;
   color: #0D0D0D;
-  padding-bottom: 30px;
+  font-weight: 200;
+  font-size: 12px;
+  padding: 30px 0;
 }
 
 .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
-  left: 115px;
+  left: 106px;
 }
 
 .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
@@ -260,22 +374,31 @@ footer .footer>div .section:nth-child(4) {
 }
 
 footer .footer>div .section:nth-child(4)>div {
+  width: 100%;
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 footer .footer>div .section:nth-child(4)>div ul li {
-  font: 300 1rem / 1.25rem Roboto, sans-serif;
-  line-height: 23px;
-  padding-bottom: 16px;
+  font: 12px "Inter", sans-serif;
+  font-weight: 200;
+  line-height: 1;
+  padding-bottom: 10px;
   color: #0D0D0D;
 }
 
+footer .footer>div .section:nth-child(4)>div ul li:last-child {
+  padding-bottom: 0;
+}
+
 footer .footer>div .section:nth-child(4)>div p a {
-  font: 300 1rem / 1.25rem Roboto, sans-serif;
-  line-height: 23px;
-  padding-bottom: 16px;
-  color: #0D0D0D;
+  color: #9d1d27;
+  font-weight: 600;
+  margin: 0 5px;
+  font-size: 12px;
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:last-child>ul>li .icon {
@@ -308,7 +431,10 @@ footer .footer>div .section:nth-child(4)>div p a {
   .footer .section.accordion-container:first-of-type .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label::after {
     display: block;
   }
-
+  
+  .footer .section.accordion-container:first-child > .default-content {
+  margin-bottom: 0;
+  }
 
   footer .footer>div {
     display: flex;
@@ -317,6 +443,20 @@ footer .footer>div .section:nth-child(4)>div p a {
 
   footer .footer>div .section>div {
     padding: 0 15px;
+  }
+  
+  .footer>div>div:nth-child(3)>div {
+  width: 100%;
+  }
+
+  .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block > .accordion-item > .accordion-item-label {
+    margin: 0;
+  }
+
+  .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
+    display: block;
+    left: unset;
+    right: 4px;
   }
 
   .footer>div>div:nth-child(2),
@@ -361,6 +501,25 @@ footer .footer>div .section:nth-child(4)>div p a {
     padding: 0;
     order: 2;
     padding-bottom: 14px;
+    flex-direction: column;
+  }
+
+  .footer .section.accordion-container:first-child > .default-content > h6 {
+    color: #D23643;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 2px;
+  }
+
+  .footer .section.accordion-container:first-child > .default-content > h5 {
+    color: #D23643;
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 50px;
+    letter-spacing: -0.5px;
+    padding-top: 4px;
   }
 
   footer .footer>div .section:nth-child(4) {
@@ -388,10 +547,6 @@ footer .footer>div .section:nth-child(4)>div p a {
   .footer>div>div .accordion-wrapper .accordion .accordion-item-label p {
     font-size: 14px;
     line-height: 20px;
-  }
-
-  .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li a {
-    font: 400 14px / 14px 'Roboto', sans-serif;
   }
 
   .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul {
@@ -472,12 +627,12 @@ footer .footer>div .section:nth-child(4)>div p a {
     border-bottom: unset;
   }
 
-  .footer>div>div:nth-child(3) .accordion-wrapper .accordion .accordion-item .accordion-item-label::after {
-    left: unset;
-  }
-
   .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
     border-bottom: unset;
+  }
+
+  .footer>div>div:nth-child(3) h3 {
+    display: none;
   }
 
 }

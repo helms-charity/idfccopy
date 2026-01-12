@@ -35,7 +35,7 @@ export default async function decorate(block) {
     }
   });
 
-  // Open accordion details on desktop
+  // Handle accordion open/close state based on viewport width
   const details = block.querySelectorAll('.footer .section.accordion-container:first-of-type details');
   const mobileQuery = window.matchMedia('(max-width: 767px)');
 
