@@ -173,7 +173,7 @@ export default function decorate(block) {
         if (!isInitialLoad) {
           const detailRect = detail.getBoundingClientRect();
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          const targetPosition = scrollTop + detailRect.top - 100;
+          const targetPosition = scrollTop + detailRect.top - 170;
 
           window.scrollTo({
             top: targetPosition,
