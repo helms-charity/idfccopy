@@ -5,6 +5,7 @@ export default function decorate(block) {
   let ctaUrl = null;
   let ctaText = null;
   let ctaLocation = null;
+  let isInitialLoad = true;
 
   // Find and remove any single-cell configuration rows
   [...block.children].forEach((row) => {
@@ -142,14 +143,17 @@ export default function decorate(block) {
         });
 
         // Auto-scroll to position item 100px from top of viewport
-        const detailRect = detail.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetPosition = scrollTop + detailRect.top - 100;
+        // Only scroll on user interaction, not on initial page load
+        if (!isInitialLoad) {
+          const detailRect = detail.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetPosition = scrollTop + detailRect.top - 100;
 
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth',
-        });
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth',
+          });
+        }
       }
     };
     detail.addEventListener('toggle', toggleHandler);
@@ -157,9 +161,36 @@ export default function decorate(block) {
     detail.accordionToggleHandler = toggleHandler;
   });
 
-  // Open first accordion item by default
+  // Open accordion item by default based on configuration
   // Footer.js will close this if the accordion is in a footer
   if (accordionItems.length > 0) {
-    accordionItems[0].setAttribute('open', '');
+    // Check for open-item configuration
+    const openItemConfig = block.dataset.openitem;
+    let itemToOpen = 1; // Default to first item (1-indexed)
+
+    if (openItemConfig !== undefined && openItemConfig !== '') {
+      const configValue = parseInt(openItemConfig, 10);
+      if (!Number.isNaN(configValue)) {
+        if (configValue === 0) {
+          // 0 means don't open any items
+          itemToOpen = 0;
+        } else if (configValue > 0 && configValue <= accordionItems.length) {
+          // Valid item number (1-indexed)
+          itemToOpen = configValue;
+        }
+        // If invalid (out of range), fall back to default (1)
+      }
+    }
+
+    // Open the specified item (if itemToOpen > 0)
+    if (itemToOpen > 0) {
+      accordionItems[itemToOpen - 1].setAttribute('open', '');
+    }
+
+    // Mark initial load as complete after opening default item
+    // Use setTimeout to ensure it happens after any toggle events
+    setTimeout(() => {
+      isInitialLoad = false;
+    }, 100);
   }
 }

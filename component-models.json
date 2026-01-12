@@ -445,6 +445,13 @@
         "name": "linkText",
         "label": "CTA Text (e.g. Show More)",
         "value": ""
+      },
+      {
+        "component": "text",
+        "name": "open-item",
+        "label": "Number of the item to open by default (0 = none)",
+        "valueType": "number",
+        "value": ""
       }
     ]
   },
