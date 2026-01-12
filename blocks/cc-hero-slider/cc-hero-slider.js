@@ -76,7 +76,7 @@ export default async function decorate(block) {
 
   // Clear block and add swiper structure
   block.textContent = '';
-  block.classList.add('swiper');
+  block.classList.add('cc-hero-slider', 'swiper');
   block.appendChild(swiperWrapper);
 
   // Load Swiper library
