@@ -5,6 +5,7 @@ export default function decorate(block) {
   let ctaUrl = null;
   let ctaText = null;
   let ctaLocation = null;
+  let isInitialLoad = true;
 
   // Find and remove any single-cell configuration rows
   [...block.children].forEach((row) => {
@@ -142,14 +143,17 @@ export default function decorate(block) {
         });
 
         // Auto-scroll to position item 100px from top of viewport
-        const detailRect = detail.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetPosition = scrollTop + detailRect.top - 100;
+        // Only scroll on user interaction, not on initial page load
+        if (!isInitialLoad) {
+          const detailRect = detail.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetPosition = scrollTop + detailRect.top - 100;
 
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth',
-        });
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth',
+          });
+        }
       }
     };
     detail.addEventListener('toggle', toggleHandler);
@@ -161,7 +165,7 @@ export default function decorate(block) {
   // Footer.js will close this if the accordion is in a footer
   if (accordionItems.length > 0) {
     // Check for open-item configuration
-    const openItemConfig = block.dataset.openItem;
+    const openItemConfig = block.dataset.openitem;
     let itemToOpen = 1; // Default to first item (1-indexed)
 
     if (openItemConfig !== undefined && openItemConfig !== '') {
@@ -182,5 +186,11 @@ export default function decorate(block) {
     if (itemToOpen > 0) {
       accordionItems[itemToOpen - 1].setAttribute('open', '');
     }
+
+    // Mark initial load as complete after opening default item
+    // Use setTimeout to ensure it happens after any toggle events
+    setTimeout(() => {
+      isInitialLoad = false;
+    }, 100);
   }
 }
