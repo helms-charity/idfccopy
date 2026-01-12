@@ -43,6 +43,39 @@ function getVideoOnlyPath(tabPanel) {
 // Store video paths mapped to their corresponding tabs
 const tabVideoMap = new Map();
 
+/**
+ * TEMPORARY: Checks if the first tab has an HTTP video URL
+ * If the first child of .tabs-list has an ID starting with 'tab-http' and ending with 'mp4',
+ * extract the URL from the p element and remove that tab
+ * @param {HTMLElement} tablist - The tablist element (with class .tabs-list)
+ * @returns {{url: string, panelId: string}|null} The video URL and panel ID, or null if not found
+ */
+function getHttpVideoUrlFromFirstTab(tablist) {
+  const firstTab = tablist.firstElementChild;
+  if (!firstTab || !firstTab.id) return null;
+
+  const tabId = firstTab.id;
+  // Check if ID starts with 'tab-http' and ends with 'mp4'
+  if (tabId.startsWith('tab-http') && tabId.endsWith('mp4')) {
+    // Get the URL from the p element inside the first tab
+    const pElement = firstTab.querySelector('p');
+    if (pElement) {
+      // The URL might be in a link or as text content
+      const link = pElement.querySelector('a');
+      const videoUrl = link ? link.href : pElement.textContent.trim();
+
+      if (videoUrl && videoUrl.endsWith('.mp4')) {
+        // Get the associated panel ID before removing
+        const panelId = firstTab.getAttribute('aria-controls');
+        // Remove this tab from the tablist
+        firstTab.remove();
+        return { url: videoUrl, panelId };
+      }
+    }
+  }
+  return null;
+}
+
 export default async function decorate(block) {
   // Check if tabs-list already exists - if so, script has already run successfully
   if (block.querySelector('.tabs-list')) {
@@ -160,30 +193,8 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-hidden', false);
       button.setAttribute('aria-selected', true);
 
-      // Update phone video if this tab has a video
-      const videoContainer = block.querySelector('.phone-animation-video-container');
-      if (videoContainer) {
-        // Get tab ID from button ID (remove 'tab-' prefix)
-        const tabId = button.id.replace('tab-', '');
-        const videoPath = tabVideoMap.get(tabId);
-        const existingVideo = videoContainer.querySelector('video');
-
-        if (videoPath) {
-          if (existingVideo) {
-            existingVideo.src = videoPath;
-            existingVideo.style.display = 'block';
-            existingVideo.load();
-            existingVideo.play();
-          } else {
-            const newVideo = createVideoElement(videoPath);
-            videoContainer.appendChild(newVideo);
-          }
-        } else if (existingVideo) {
-          // No video for this tab, hide video
-          existingVideo.pause();
-          existingVideo.style.display = 'none';
-        }
-      }
+      // Note: Video in phone frame stays visible for all tabs
+      // The phone animation is shared across all UPI app tabs
     });
     tablist.append(button);
 
@@ -224,6 +235,11 @@ export default async function decorate(block) {
         const mobilePicture = picture.cloneNode(true);
         mobileImageWrapper.appendChild(mobilePicture);
 
+        // Add video container for mobile phone animation
+        const mobileVideoContainer = document.createElement('div');
+        mobileVideoContainer.className = 'phone-animation-video-container mobile';
+        mobileImageWrapper.appendChild(mobileVideoContainer);
+
         // Extract button container if it exists
         const buttonContainer = tabpanel.querySelector('.button-container');
         if (buttonContainer) {
@@ -259,6 +275,41 @@ export default async function decorate(block) {
   // Add tabs-list to tabs container
   if (tablist.children.length > 0) {
     tabsContainer.appendChild(tablist);
+
+    // TEMPORARY: Check for HTTP video URL in first tab and remove it if found
+    const httpVideoResult = getHttpVideoUrlFromFirstTab(tablist);
+    if (httpVideoResult) {
+      const { url: httpVideoUrl, panelId } = httpVideoResult;
+
+      // Store video URL on the block for easy access
+      block.dataset.phoneVideoUrl = httpVideoUrl;
+
+      // Remove the corresponding tab panel
+      if (panelId) {
+        const panelToRemove = tabPanels.find((p) => p.id === panelId);
+        if (panelToRemove) {
+          panelToRemove.dataset.videoOnly = 'true'; // Mark for removal in the next loop
+        }
+      }
+
+      // Store for the first remaining tab (which will become the active one)
+      const firstRemainingTab = tablist.firstElementChild;
+      if (firstRemainingTab) {
+        // Store the first tab's ID for comparison
+        block.dataset.phoneVideoTabId = firstRemainingTab.id;
+        // Make sure first remaining tab is selected
+        firstRemainingTab.setAttribute('aria-selected', 'true');
+
+        // Show the corresponding panel for the first remaining tab
+        const firstRemainingPanelId = firstRemainingTab.getAttribute('aria-controls');
+        if (firstRemainingPanelId) {
+          const firstRemainingPanel = tabPanels.find((p) => p.id === firstRemainingPanelId);
+          if (firstRemainingPanel) {
+            firstRemainingPanel.setAttribute('aria-hidden', 'false');
+          }
+        }
+      }
+    }
   }
 
   // Move all tab panels to tabs container and add QR code text (skip video-only tabs)
@@ -339,16 +390,13 @@ export default async function decorate(block) {
     resizeTimeout = setTimeout(updateScanToTap, 150);
   });
 
-  // Initialize phone video for the first active tab (if it has a video)
-  const videoContainer = block.querySelector('.phone-animation-video-container');
-  const firstActiveButton = tablist.querySelector('button[aria-selected="true"]');
-  if (videoContainer && firstActiveButton) {
-    // Get tab ID from button ID (remove 'tab-' prefix)
-    const tabId = firstActiveButton.id.replace('tab-', '');
-    const videoPath = tabVideoMap.get(tabId);
-    if (videoPath) {
+  // Initialize phone video in all containers (desktop and mobile)
+  const videoPath = block.dataset.phoneVideoUrl;
+  if (videoPath) {
+    const allVideoContainers = block.querySelectorAll('.phone-animation-video-container');
+    allVideoContainers.forEach((container) => {
       const video = createVideoElement(videoPath);
-      videoContainer.appendChild(video);
-    }
+      container.appendChild(video);
+    });
   }
 }
