@@ -169,6 +169,7 @@ export default function decorate(block) {
         });
 
         // Auto-scroll to position item 100px from top of viewport
+        // using the default browser's default timing
         // Only scroll on user interaction, not on initial page load
         if (!isInitialLoad) {
           const detailRect = detail.getBoundingClientRect();

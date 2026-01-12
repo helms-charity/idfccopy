@@ -117,7 +117,7 @@
 .light-scheme .dark-scheme .accordion details[open] summary {
   background: var(--gradient-pewter);
   color: var(--text-color-light);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .accordion-cta,
