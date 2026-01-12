@@ -12,7 +12,7 @@
     margin-bottom: 35px;
 }
 
-.mayura .dark-scheme .cards-container h2,
-.mayura .dark-scheme .tabs-container h2 {
+.mayura .cards-container .dark-scheme h2,
+.mayura .tabs-container .dark-scheme h2 {
   color: white;
 }
