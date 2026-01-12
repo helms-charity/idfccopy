@@ -574,6 +574,39 @@
           }
         },
         {
+          "title": "Tabs-cc-concept",
+          "id": "tabs-cc-concept",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Tabs-cc-concept",
+                  "filter": "tabs-cc-concept",
+                  "model": "tabs-cc-concept"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Tabs-cc-concept Item",
+          "id": "tabs-cc-concept-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Tab-cc-concept",
+                  "model": "tabs-cc-concept-item",
+                  "tabName": "Tab Name",
+                  "content": "1"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Tabs UPI Link",
           "id": "tabs-upi-link",
           "plugins": {
