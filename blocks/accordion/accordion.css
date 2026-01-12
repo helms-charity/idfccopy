@@ -12,27 +12,61 @@
   margin-top: 0;
 }
 
+.accordion details summary,
+.light-scheme .dark-scheme .accordion details summary {
+  color: var(--text-color);
+  border-bottom: 1px solid var(--text-color-light);
+}
+
 .accordion details summary {
   position: relative;
-  padding: 12px 16px;
   padding-right: 46px;
   cursor: pointer;
   list-style: none;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: all 0.5s ease-in-out;
+  padding: 20px 30px 0;
+  margin: 0 5px;
+}
+
+.accordion details summary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%) rotate(135deg);
+  width: 10px;
+  height: 10px;
+  border: 2px solid;
+  border-width: 2px 2px 0 0;
+  transition: transform 0.2s;
 }
 
 .accordion details summary::-webkit-details-marker {
   display: none;
 }
 
+.accordion details[open] {
+  border-bottom: 1px solid;
+  border-radius: 5px;
+}
+
+.accordion details[open] summary,
+.light-scheme .dark-scheme .accordion details[open] summary {
+  font-weight: 700;
+  border-bottom: 0;
+
+  > p > strong {
+    font-weight: 700;
+  }
+}
+
 .accordion .accordion-cta {
-  color: var(--text-color);
   display: block;
   padding: 10px;
   font-weight: bold;
   text-align: right;
 }
+
 
 /* Smooth transition for hidden accordion items */
 .accordion details.accordion-item {
@@ -65,91 +99,51 @@
     transform: translateY(-50%) rotate(-45deg);
   }
 
-.accordion details summary::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 18px;
-  transform: translateY(-50%) rotate(135deg);
-  width: 10px;
-  height: 10px;
-  border: 2px solid;
-  border-width: 2px 2px 0 0;
-  transition: transform 0.2s;
-}
 .accordion details[open] summary::after {
   transform: translateY(-50%) rotate(-45deg);
 }
 
 .accordion .accordion-item-body {
-  padding: 12px 16px;
+  padding: 12px 30px;
 }
 
 .accordion details p {
   margin: 0 0 0.8em 0;
 }
 
-.accordion details summary {
-  position: relative;
-  padding-right: 46px;
-  cursor: pointer;
-  list-style: none;
-  transition: all 0.2s ease-in-out;
-  padding: 20px 20px 0;
-  font-weight: 400;
-  border-bottom: 1px solid #c8c6c6;
-}
-
-.accordion details[open], .accordion details[open] summary {
-  box-shadow: none;
+.accordion details[open],
+.light-scheme .dark-scheme .accordion details[open],
+.accordion details[open] summary,
+.light-scheme .dark-scheme .accordion details[open] summary {
   background: var(--gradient-pewter);
-  color: #DDDBDA;
-  transition: all 0.2s ease-in-out;
+  color: var(--text-color-light);
+  transition: all 0.3s ease-in-out;
 }
 
-.accordion .accordion-cta {
-  color: var(--white);
-}
-
-.accordion details[open]{
-  border-bottom: 1px solid;
-  border-radius: 5px;
-}
-
-
-.accordion details[open] summary {
-  font-weight: 600;
-  border-bottom: 0;
-
-  > p > strong {
-    font-weight: 600;
-  }
+.accordion-cta,
+.light-scheme .dark-scheme .accordion-cta,
+.light-scheme .dark-scheme .accordion details summary,
+.accordion.light-scheme details summary {
+  color: var(--text-color);
 }
 
 .dark-scheme {
-
-  .accordion details summary {
-    color: var(--text-color);
-  }
   
   .accordion details[open], .accordion details[open] summary {
-    box-shadow: none;
     background: var(--white);
     color: var(--text-color);
-    transition: all 0.2s ease-in-out;
-    border-bottom: 0;
 
     > p > strong {
-      font-weight: 600;
+      font-weight: 700;
     }
   }
   
-  .accordion .accordion-cta {
+  .accordion-cta {
     color: var(--white);
   }
 
   .accordion details summary {
-    color: #c7c7c7;
+    color: var(--text-color-light);
 
     > p > strong {
       font-weight: 400;
@@ -157,7 +151,33 @@
   }
   
   .accordion details[open] summary::after {
-    background-color: var(--white);
     color: var(--text-color);
   }
   }
+
+  /* section.dark-scheme overrides */
+  .dark-scheme .light-scheme {
+
+    .accordion details summary {
+      color: var(--text-color-light);
+    }
+
+    .accordion details[open], .accordion details[open] summary {
+      color: var(--text-color);
+    }
+
+    .accordion-cta {
+      color: var(--white);
+    }
+  }
+
+.accordion.light-scheme details summary,
+.accordion.light-scheme .accordion-cta {
+  color: var(--text-color);
+}
+
+.accordion.light-scheme details[open],
+.accordion.light-scheme details[open] summary {
+  background: var(--gradient-pewter);
+  color: var(--text-color-light);
+}

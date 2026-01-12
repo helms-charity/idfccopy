@@ -57,6 +57,23 @@
             "valueType": "string",
             "name": "classes",
             "label": "Style"
+          },
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "phone-video",
+            "label": "Phone Video",
+            "multi": false,
+            "filter": {
+              "mimeTypes": ["video/mp4"]
+            }
+          },
+          {
+            "component": "richtext",
+            "name": "temp-video-url",
+            "value": "",
+            "label": "Temporary External Phone Video URL",
+            "valueType": "string"
           }
         ]
       },

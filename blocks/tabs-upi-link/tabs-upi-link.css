@@ -1,3 +1,29 @@
+/* ===== PHONE ANIMATION VIDEO ===== */
+
+/* Video container - overlays on phone frame */
+.phone-animation-video-container {
+  position: absolute;
+  inset: 12% 8% 5%;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #000;
+  z-index: 1;
+}
+
+.phone-animation-video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Desktop: Larger phone frame with adjusted positioning */
+@media (width >= 900px) {
+  .tabs-upi-link .tabs-upi-link-image .phone-animation-video-container {
+    inset: 15% 5% 2%;
+    border-radius: 25px;
+  }
+}
+
 /* Section container with gradient background */
 .section:has(.tabs-upi-link),
 .section.tabs-upi-link-container {
@@ -180,6 +206,7 @@
   flex-shrink: 0;
   width: auto;
   max-width: 40%;
+  position: relative; /* For video container positioning */
 }
 
 .tabs-upi-link .tabs-upi-link-panel-image picture {
@@ -288,6 +315,11 @@
     height: auto;
     max-width: 80%;
     display: block;
+  }
+
+  /* Tablet: Adjust video container to match 80% picture width */
+  .tabs-upi-link .tabs-upi-link-panel-image .phone-animation-video-container {
+    inset: 12% 26% 5% 6%;
   }
 
   .tabs-upi-link .tabs-panel .button-container {

@@ -5,8 +5,24 @@ export default function decorate(block) {
   let ctaUrl = null;
   let ctaText = null;
   let ctaLocation = null;
+  let openItemConfig = null;
+  let isInitialLoad = true;
 
-  // Find and remove any single-cell configuration rows
+  // First pass: find if there's a CTA link to determine how to interpret numbers
+  let hasCtaLink = false;
+  [...block.children].forEach((row) => {
+    if (row.children.length === 1) {
+      const cell = row.children[0];
+      const link = cell.querySelector('a');
+      if (link) {
+        hasCtaLink = true;
+      }
+    }
+  });
+
+  let foundLink = false;
+
+  // Second pass: parse configuration rows
   [...block.children].forEach((row) => {
     if (row.children.length === 1) {
       const cell = row.children[0];
@@ -17,16 +33,27 @@ export default function decorate(block) {
       if (valueLower === 'true' || valueLower === 'no-schema') {
         noSchema = true;
       } else {
-        // Check if it's a number for ctaLocation
-        const locationNum = parseInt(value, 10);
-        if (!Number.isNaN(locationNum) && locationNum > 0) {
-          ctaLocation = locationNum;
+        // Check if it's a number
+        const numValue = parseInt(value, 10);
+        if (!Number.isNaN(numValue) && numValue >= 0) {
+          if (hasCtaLink) {
+            // If there's a CTA link, numbers before link are ctaLocation, after are openItem
+            if (!foundLink) {
+              ctaLocation = numValue;
+            } else {
+              openItemConfig = numValue;
+            }
+          } else {
+            // No CTA link, so any number is openItem
+            openItemConfig = numValue;
+          }
         } else {
           // Check if it's a link element (CTA)
           const link = cell.querySelector('a');
           if (link) {
             ctaUrl = link.href;
             ctaText = link.textContent.trim();
+            foundLink = true;
           }
         }
       }
@@ -142,14 +169,18 @@ export default function decorate(block) {
         });
 
         // Auto-scroll to position item 100px from top of viewport
-        const detailRect = detail.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetPosition = scrollTop + detailRect.top - 100;
+        // using the default browser's default timing
+        // Only scroll on user interaction, not on initial page load
+        if (!isInitialLoad) {
+          const detailRect = detail.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const targetPosition = scrollTop + detailRect.top - 170;
 
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth',
-        });
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth',
+          });
+        }
       }
     };
     detail.addEventListener('toggle', toggleHandler);
@@ -157,9 +188,31 @@ export default function decorate(block) {
     detail.accordionToggleHandler = toggleHandler;
   });
 
-  // Open first accordion item by default
+  // Open accordion item by default based on configuration
   // Footer.js will close this if the accordion is in a footer
   if (accordionItems.length > 0) {
-    accordionItems[0].setAttribute('open', '');
+    let itemToOpen = 1; // Default to first item (1-indexed)
+
+    if (openItemConfig !== null && openItemConfig !== undefined) {
+      if (openItemConfig === 0) {
+        // 0 means don't open any items
+        itemToOpen = 0;
+      } else if (openItemConfig > 0 && openItemConfig <= accordionItems.length) {
+        // Valid item number (1-indexed)
+        itemToOpen = openItemConfig;
+      }
+      // If invalid (out of range), fall back to default (1)
+    }
+
+    // Open the specified item (if itemToOpen > 0)
+    if (itemToOpen > 0) {
+      accordionItems[itemToOpen - 1].setAttribute('open', '');
+    }
+
+    // Mark initial load as complete after opening default item
+    // Use setTimeout to ensure it happens after any toggle events
+    setTimeout(() => {
+      isInitialLoad = false;
+    }, 100);
   }
 }

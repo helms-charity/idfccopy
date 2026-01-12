@@ -50,7 +50,6 @@ export default async function decorate(block) {
       }
     });
   };
-
   // Set initial state
   updateAccordionState(mobileQuery.matches);
 
