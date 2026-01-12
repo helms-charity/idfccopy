@@ -14,5 +14,8 @@
 
 .mayura .cards-container .dark-scheme h2,
 .mayura .tabs-container .dark-scheme h2 {
-  color: white;
+  background: var(--gradient-silver);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0);
 }
