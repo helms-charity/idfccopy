@@ -1,5 +1,5 @@
-/* From Charity:I think this allows a table to be created inside a columns 
-but I don't thnik it is the correct way to do it */
+/* From Charity:I think this allows a table to be created inside a columns
+but I don't thnik it is the correct way to do it. */
 export function decorateTable(block) {
   const originalClassList = Array.from(block.classList);
 
