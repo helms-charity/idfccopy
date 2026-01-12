@@ -1506,7 +1506,19 @@
         "valueType": "string",
         "name": "phone-video",
         "label": "Phone Video",
-        "multi": false
+        "multi": false,
+        "filter": {
+          "mimeTypes": [
+            "video/mp4"
+          ]
+        }
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Temporary External Phone Video URL",
+        "valueType": "string"
       }
     ]
   },
