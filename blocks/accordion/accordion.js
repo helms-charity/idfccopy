@@ -7,9 +7,22 @@ export default function decorate(block) {
   let ctaLocation = null;
   let openItemConfig = null;
   let isInitialLoad = true;
-  let foundFirstNumber = false;
 
-  // Find and remove any single-cell configuration rows
+  // First pass: find if there's a CTA link to determine how to interpret numbers
+  let hasCtaLink = false;
+  [...block.children].forEach((row) => {
+    if (row.children.length === 1) {
+      const cell = row.children[0];
+      const link = cell.querySelector('a');
+      if (link) {
+        hasCtaLink = true;
+      }
+    }
+  });
+
+  let foundLink = false;
+
+  // Second pass: parse configuration rows
   [...block.children].forEach((row) => {
     if (row.children.length === 1) {
       const cell = row.children[0];
@@ -23,12 +36,15 @@ export default function decorate(block) {
         // Check if it's a number
         const numValue = parseInt(value, 10);
         if (!Number.isNaN(numValue) && numValue >= 0) {
-          if (!foundFirstNumber) {
-            // First number is ctaLocation
-            ctaLocation = numValue;
-            foundFirstNumber = true;
+          if (hasCtaLink) {
+            // If there's a CTA link, numbers before link are ctaLocation, after are openItem
+            if (!foundLink) {
+              ctaLocation = numValue;
+            } else {
+              openItemConfig = numValue;
+            }
           } else {
-            // Second number is openItem
+            // No CTA link, so any number is openItem
             openItemConfig = numValue;
           }
         } else {
@@ -37,6 +53,7 @@ export default function decorate(block) {
           if (link) {
             ctaUrl = link.href;
             ctaText = link.textContent.trim();
+            foundLink = true;
           }
         }
       }
