@@ -76,13 +76,9 @@ footer .footer ul {
 /* Back to Top Button - styled like IDFC FIRST Bank's TOP button */
 .footer .section.accordion-container:first-child > .default-content > p > a {
   position: absolute;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
   align-items: center;
-  -ms-flex-pack: center;
   justify-content: center;
-  -ms-flex-direction: column;
   flex-direction: column;
   width: 65px;
   height: 65px;
@@ -100,10 +96,6 @@ footer .footer ul {
   color: #525252;
   font-size: 20px;
   font-family: 'icomoon';
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
   line-height: 0.5;
   -webkit-font-smoothing: antialiased;
 }
