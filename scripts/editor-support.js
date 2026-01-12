@@ -11,6 +11,10 @@ import {
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateSections, decorateMain, loadFragment } from './scripts.js';
 
+// Set flag to indicate we're in the Universal Editor - suppresses timed modals etc.
+window.hlx = window.hlx || {};
+window.hlx.isEditor = true;
+
 /**
  * Check if we're editing a framework page (should skip nav building)
  * @returns {boolean} true if we should skip navigation building
