@@ -5,7 +5,9 @@ export default function decorate(block) {
   let ctaUrl = null;
   let ctaText = null;
   let ctaLocation = null;
+  let openItemConfig = null;
   let isInitialLoad = true;
+  let foundFirstNumber = false;
 
   // Find and remove any single-cell configuration rows
   [...block.children].forEach((row) => {
@@ -18,10 +20,17 @@ export default function decorate(block) {
       if (valueLower === 'true' || valueLower === 'no-schema') {
         noSchema = true;
       } else {
-        // Check if it's a number for ctaLocation
-        const locationNum = parseInt(value, 10);
-        if (!Number.isNaN(locationNum) && locationNum > 0) {
-          ctaLocation = locationNum;
+        // Check if it's a number
+        const numValue = parseInt(value, 10);
+        if (!Number.isNaN(numValue) && numValue >= 0) {
+          if (!foundFirstNumber) {
+            // First number is ctaLocation
+            ctaLocation = numValue;
+            foundFirstNumber = true;
+          } else {
+            // Second number is openItem
+            openItemConfig = numValue;
+          }
         } else {
           // Check if it's a link element (CTA)
           const link = cell.querySelector('a');
@@ -164,23 +173,29 @@ export default function decorate(block) {
   // Open accordion item by default based on configuration
   // Footer.js will close this if the accordion is in a footer
   if (accordionItems.length > 0) {
-    // Check for open-item configuration
-    const openItemConfig = block.dataset.openitem;
     let itemToOpen = 1; // Default to first item (1-indexed)
 
-    if (openItemConfig !== undefined && openItemConfig !== '') {
-      const configValue = parseInt(openItemConfig, 10);
-      if (!Number.isNaN(configValue)) {
-        if (configValue === 0) {
-          // 0 means don't open any items
-          itemToOpen = 0;
-        } else if (configValue > 0 && configValue <= accordionItems.length) {
-          // Valid item number (1-indexed)
-          itemToOpen = configValue;
-        }
-        // If invalid (out of range), fall back to default (1)
+    // Debug logging
+    // eslint-disable-next-line no-console
+    console.log('Accordion open-item config:', {
+      openItemConfig,
+      totalItems: accordionItems.length,
+    });
+
+    if (openItemConfig !== null && openItemConfig !== undefined) {
+      // eslint-disable-next-line no-console
+      console.log('Using config value:', openItemConfig);
+      if (openItemConfig === 0) {
+        // 0 means don't open any items
+        itemToOpen = 0;
+      } else if (openItemConfig > 0 && openItemConfig <= accordionItems.length) {
+        // Valid item number (1-indexed)
+        itemToOpen = openItemConfig;
       }
+      // If invalid (out of range), fall back to default (1)
     }
+    // eslint-disable-next-line no-console
+    console.log('Final itemToOpen:', itemToOpen);
 
     // Open the specified item (if itemToOpen > 0)
     if (itemToOpen > 0) {

@@ -92,7 +92,7 @@
         },
         {
           "component": "text",
-          "name": "open-item",
+          "name": "openitem",
           "label": "Number of the item to open by default (0 = none)",
           "valueType": "number",
           "value": ""
