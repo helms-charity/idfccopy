@@ -235,6 +235,11 @@ export default async function decorate(block) {
         const mobilePicture = picture.cloneNode(true);
         mobileImageWrapper.appendChild(mobilePicture);
 
+        // Add video container for mobile phone animation
+        const mobileVideoContainer = document.createElement('div');
+        mobileVideoContainer.className = 'phone-animation-video-container mobile';
+        mobileImageWrapper.appendChild(mobileVideoContainer);
+
         // Extract button container if it exists
         const buttonContainer = tabpanel.querySelector('.button-container');
         if (buttonContainer) {
@@ -385,15 +390,13 @@ export default async function decorate(block) {
     resizeTimeout = setTimeout(updateScanToTap, 150);
   });
 
-  // Initialize phone video for the first active tab (if it has a video)
-  const videoContainer = block.querySelector('.phone-animation-video-container');
-  if (videoContainer) {
-    // Check for video URL stored on block (from HTTP video tab or DAM path)
-    const videoPath = block.dataset.phoneVideoUrl;
-
-    if (videoPath) {
+  // Initialize phone video in all containers (desktop and mobile)
+  const videoPath = block.dataset.phoneVideoUrl;
+  if (videoPath) {
+    const allVideoContainers = block.querySelectorAll('.phone-animation-video-container');
+    allVideoContainers.forEach((container) => {
       const video = createVideoElement(videoPath);
-      videoContainer.appendChild(video);
-    }
+      container.appendChild(video);
+    });
   }
 }
