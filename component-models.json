@@ -428,13 +428,6 @@
       },
       {
         "component": "text",
-        "name": "open-item",
-        "label": "Number of the item to open by default (0 = none)",
-        "valueType": "number",
-        "value": ""
-      },
-      {
-        "component": "text",
         "name": "cta_location",
         "label": "CTA location (number of items before the CTA)",
         "valueType": "number",
@@ -451,6 +444,13 @@
         "component": "text",
         "name": "linkText",
         "label": "CTA Text (e.g. Show More)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "open-item",
+        "label": "Number of the item to open by default (0 = none)",
+        "valueType": "number",
         "value": ""
       }
     ]
