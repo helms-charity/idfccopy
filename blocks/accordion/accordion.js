@@ -157,9 +157,30 @@ export default function decorate(block) {
     detail.accordionToggleHandler = toggleHandler;
   });
 
-  // Open first accordion item by default
+  // Open accordion item by default based on configuration
   // Footer.js will close this if the accordion is in a footer
   if (accordionItems.length > 0) {
-    accordionItems[0].setAttribute('open', '');
+    // Check for open-item configuration
+    const openItemConfig = block.dataset.openItem;
+    let itemToOpen = 1; // Default to first item (1-indexed)
+
+    if (openItemConfig !== undefined && openItemConfig !== '') {
+      const configValue = parseInt(openItemConfig, 10);
+      if (!Number.isNaN(configValue)) {
+        if (configValue === 0) {
+          // 0 means don't open any items
+          itemToOpen = 0;
+        } else if (configValue > 0 && configValue <= accordionItems.length) {
+          // Valid item number (1-indexed)
+          itemToOpen = configValue;
+        }
+        // If invalid (out of range), fall back to default (1)
+      }
+    }
+
+    // Open the specified item (if itemToOpen > 0)
+    if (itemToOpen > 0) {
+      accordionItems[itemToOpen - 1].setAttribute('open', '');
+    }
   }
 }
