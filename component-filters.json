@@ -17,30 +17,20 @@
       "columns",
       "fragment",
       "accordion",
-      "faq-accordion",
-      "carousel",
       "table",
       "tabs",
       "category-nav",
-      "swipper-card",
-      "rte-block",
-      "git-block",
-      "mid-banner",
-      "pl-swipper-blogs",
-      "pl-blogs",
-      "faq-accordion",
-      "overview-rte",
-      "cf-fragment",
-      "library-metadata",
-      "banner",
       "sticky-cta",
       "anchor-nav",
       "steps",
       "tabs-upi-link",
-      "linkToUPI",
+      "link-to-upi",
       "table",
       "cc-hero-slider",
-      "overview"
+      "library-metadata",
+      "banner",
+      "overview",
+      "overview-rte"
     ]
   },
   {
@@ -80,12 +70,6 @@
     ]
   },
   {
-    "id": "cf-fragment",
-    "components": [
-      "cf-fragment-item"
-    ]
-  },
-  {
     "id": "columns",
     "components": [
       "column"
@@ -101,26 +85,8 @@
     ]
   },
   {
-    "id": "faq-accordion",
-    "components": [
-      "faq-accordion-item"
-    ]
-  },
-  {
-    "id": "git-block",
-    "components": [
-      "git-item"
-    ]
-  },
-  {
     "id": "library-metadata",
     "components": []
-  },
-  {
-    "id": "mid-banner",
-    "components": [
-      "mid-banner-item"
-    ]
   },
   {
     "id": "nav-list",
@@ -135,39 +101,9 @@
     ]
   },
   {
-    "id": "personal-loan-block",
-    "components": [
-      "personal-loan-item"
-    ]
-  },
-  {
-    "id": "pl-blogs",
-    "components": [
-      "pl-blogs-item"
-    ]
-  },
-  {
-    "id": "pl-swipper-blogs",
-    "components": [
-      "pl-swipper-blogs-item"
-    ]
-  },
-  {
-    "id": "rte-block",
-    "components": [
-      "rte-item"
-    ]
-  },
-  {
     "id": "steps",
     "components": [
       "steps-item"
-    ]
-  },
-  {
-    "id": "swipper-card",
-    "components": [
-      "swipper-card-item"
     ]
   },
   {
