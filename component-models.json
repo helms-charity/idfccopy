@@ -1770,7 +1770,7 @@
       },
       {
         "component": "richtext",
-        "name": "text",
+        "name": "temp-video-url",
         "value": "",
         "label": "Temporary External Phone Video URL",
         "valueType": "string"
