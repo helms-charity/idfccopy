@@ -1,0 +1,21 @@
+.mayura .cards-container h2,
+.mayura .tabs-container h2 {
+    text-align: center;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    background: var(--gradient-red);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: rgba(0, 0, 0, 0);
+    margin-bottom: 35px;
+}
+
+.mayura .cards-container .dark-scheme h2,
+.mayura .tabs-container .dark-scheme h2 {
+  background: var(--gradient-silver);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0);
+}
