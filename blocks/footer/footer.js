@@ -37,10 +37,24 @@ export default async function decorate(block) {
 
   // Open accordion details on desktop
   const details = block.querySelectorAll('.footer .section.accordion-container:first-of-type details');
-  if (window.innerWidth > 768) {
-    // Use setAttribute to avoid triggering toggle events
+  const mobileQuery = window.matchMedia('(max-width: 767px)');
+
+  const updateAccordionState = (isMobile) => {
     details.forEach((detail) => {
-      detail.setAttribute('open', '');
+      if (isMobile) {
+        // Close accordions on mobile
+        detail.removeAttribute('open');
+      } else {
+        // Open accordions on desktop
+        detail.setAttribute('open', '');
+      }
     });
-  }
+  };
+  // Set initial state
+  updateAccordionState(mobileQuery.matches);
+
+  // Listen for viewport changes
+  mobileQuery.addEventListener('change', (e) => {
+    updateAccordionState(e.matches);
+  });
 }

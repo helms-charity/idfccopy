@@ -23,7 +23,7 @@
   padding-right: 46px;
   cursor: pointer;
   list-style: none;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.5s ease-in-out;
   padding: 20px 30px 0;
   margin: 0 5px;
 }
@@ -117,7 +117,7 @@
 .light-scheme .dark-scheme .accordion details[open] summary {
   background: var(--gradient-pewter);
   color: var(--text-color-light);
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .accordion-cta,
