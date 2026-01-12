@@ -11,8 +11,16 @@ body.modal-open {
   background: var(--modal-backdrop-gradient);
   backdrop-filter: blur(5px);
   background-size: cover;
-  background-position: 0 var(--modal-offset-height), center top var(--modal-offset-height);
-  background-repeat: no-repeat, no-repeat;
+  background-position: center top var(--modal-offset-height);
+  background-repeat: no-repeat;
+}
+
+/* When a page background image is authored, layer it on top of the gradient */
+.modal dialog.has-page-background::backdrop {
+  background:
+    var(--modal-page-background-image) center top var(--modal-offset-height) / cover no-repeat,
+    var(--modal-backdrop-gradient);
+  backdrop-filter: blur(5px);
 }
 
 /* Page background image - sits behind the dialog, above the backdrop */

@@ -78,6 +78,10 @@ export async function createModal(contentNodes, options = {}) {
   // Add page background image if provided (sits behind the dialog)
   let pageBackground = null;
   if (options.pageBackgroundImage) {
+    // Set CSS custom property for ::backdrop to use
+    dialog.style.setProperty('--modal-page-background-image', `url('${options.pageBackgroundImage}')`);
+    dialog.classList.add('has-page-background');
+
     pageBackground = document.createElement('div');
     pageBackground.classList.add('modal-page-background');
 
