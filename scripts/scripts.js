@@ -1202,6 +1202,11 @@ async function loadBreadcrumbs(main) {
  * If both exist, opens the modal after the specified timer
  */
 function loadTimedModal() {
+  // Suppress timed modals in Universal Editor to avoid disrupting content editing
+  if (window.hlx?.isEditor) {
+    return;
+  }
+
   const modalTimer = getMetadata('modal-timer');
   const modalContent = getMetadata('modal-content');
 
