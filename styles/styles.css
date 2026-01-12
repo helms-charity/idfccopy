@@ -277,7 +277,7 @@ button.primary {
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
-  background-color: var(--link-color);
+  background-color: #902a2b;
   color: var(--background-color);
   cursor: pointer;
   overflow: hidden;
@@ -289,14 +289,8 @@ a.button.primary:hover,
 a.button.primary:focus,
 button.primary:hover,
 button.primary:focus {
-  background-color: var(--link-hover-color);
+  background-color: #7a2324;
   cursor: pointer;
-}
-
-button.primary:disabled,
-button.primary:disabled:hover {
-  background-color: var(--light-color);
-  cursor: unset;
 }
 
 a.button.secondary,
@@ -304,6 +298,77 @@ button.secondary {
   background-color: unset;
   border: 2px solid currentcolor;
   color: var(--text-color);
+}
+
+/* Scheme button base states */
+.light-scheme a.button.primary:any-link,
+.light-scheme button.primary {
+  background-color: #902a2b;
+  color: #fff;
+  border-color: transparent;
+}
+
+.dark-scheme a.button.primary:any-link,
+.dark-scheme button.primary {
+  background-color: #fff;
+  color: #902a2b;
+  border-color: transparent;
+}
+
+.light-scheme a.button.secondary:any-link,
+.light-scheme button.secondary {
+  background-color: #fff;
+  border: 2px solid #902a2b;
+  color: #902a2b;
+}
+
+.dark-scheme a.button.secondary:any-link,
+.dark-scheme button.secondary {
+  background-color: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+/* Disabled button states */
+button.primary:disabled,
+button.primary:disabled:hover {
+  background-color: var(--light-color);
+  cursor: unset;
+}
+
+/* Scheme button hover/focus states */
+.light-scheme a.button.primary:hover,
+.light-scheme a.button.primary:focus,
+.light-scheme button.primary:hover,
+.light-scheme button.primary:focus {
+  background-color: #7a2324;
+}
+
+.dark-scheme a.button.primary:hover,
+.dark-scheme a.button.primary:focus,
+.dark-scheme button.primary:hover,
+.dark-scheme button.primary:focus {
+  background-color: #f0f0f0;
+}
+
+.light-scheme a.button.secondary:hover,
+.light-scheme a.button.secondary:focus,
+.light-scheme button.secondary:hover,
+.light-scheme button.secondary:focus {
+  background-color: #f9f0f0;
+}
+
+.dark-scheme a.button.secondary:hover,
+.dark-scheme a.button.secondary:focus,
+.dark-scheme button.secondary:hover,
+.dark-scheme button.secondary:focus {
+  background-color: rgb(255 255 255 / 10%);
+}
+
+/* Remove arrow icon from secondary buttons unless arrow-right-white is used */
+.light-scheme button.secondary .icon:not(.icon-arrow-right-white),
+.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white) {
+  display: none;
 }
 
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */
