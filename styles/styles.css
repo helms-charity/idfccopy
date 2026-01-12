@@ -261,9 +261,9 @@ strong {
   font-weight: 700;
 }
 
-/* buttons */
-a.button.primary:any-link,
-button.primary {
+/* buttons - base styles */
+a.button:any-link,
+button.button {
   box-sizing: border-box;
   display: inline-block;
   max-width: 100%;
@@ -277,12 +277,18 @@ button.primary {
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
-  background-color: #902a2b;
-  color: var(--background-color);
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Primary button */
+a.button.primary:any-link,
+button.primary {
+  background-color: #902a2b;
+  color: #fff;
+  border-color: transparent;
 }
 
 a.button.primary:hover,
@@ -293,11 +299,19 @@ button.primary:focus {
   cursor: pointer;
 }
 
-a.button.secondary,
+/* Secondary button */
+a.button.secondary:any-link,
 button.secondary {
-  background-color: unset;
-  border: 2px solid currentcolor;
-  color: var(--text-color);
+  background-color: #fff;
+  border: 2px solid #902a2b;
+  color: #902a2b;
+}
+
+a.button.secondary:hover,
+a.button.secondary:focus,
+button.secondary:hover,
+button.secondary:focus {
+  background-color: #f9f0f0;
 }
 
 /* Scheme button base states */
