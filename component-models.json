@@ -1011,34 +1011,6 @@
     ]
   },
   {
-    "id": "cf-fragment",
-    "fields": [
-      {
-        "component": "multiselect",
-        "name": "classes",
-        "label": "Style",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Frag",
-            "value": "individual-insurance-teaser"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "cf-fragment-item",
-    "fields": [
-      {
-        "component": "aem-content-fragment",
-        "name": "reference",
-        "variationName": "contentFragmentVariation",
-        "label": "CF Reference"
-      }
-    ]
-  },
-  {
     "id": "columns",
     "fields": [
       {
@@ -1102,104 +1074,12 @@
     ]
   },
   {
-    "id": "faq-accordion",
-    "title": "FAQ Accordion",
-    "fields": [
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "show-schema",
-        "label": "Show schema",
-        "description": "TODO - this toggle is inop"
-      },
-      {
-        "component": "aem-content",
-        "name": "cta",
-        "label": "CTA URL",
-        "value": "#"
-      },
-      {
-        "component": "text",
-        "name": "ctaText",
-        "label": "CTA Text",
-        "value": "More FAQs"
-      },
-      {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Styles",
-        "options": [
-          {
-            "name": "Styles",
-            "children": [
-              {
-                "name": "light text on dark",
-                "value": "light-text"
-              },
-              {
-                "name": "dark text on light",
-                "value": "dark-text-on-light"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "faq-accordion-item",
-    "title": "FAQ Accordion Item",
-    "fields": [
-      {
-        "component": "text",
-        "name": "tab_question",
-        "label": "Question"
-      },
-      {
-        "component": "richtext",
-        "name": "tab_answer",
-        "label": "Answer"
-      },
-      {
-        "component": "text",
-        "name": "tab",
-        "label": "tab title"
-      }
-    ]
-  },
-  {
     "id": "fragment",
     "fields": [
       {
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
-      }
-    ]
-  },
-  {
-    "id": "git-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
       }
     ]
   },
@@ -1276,32 +1156,6 @@
     ]
   },
   {
-    "id": "mid-banner-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
     "id": "nav-item",
     "fields": [
       {
@@ -1362,96 +1216,6 @@
         "component": "text",
         "name": "imageAlt",
         "label": "Alt Text"
-      }
-    ]
-  },
-  {
-    "id": "personal-loan-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "pl-blogs-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "pl-swipper-blogs-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "rte-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
       }
     ]
   },
@@ -1557,32 +1321,6 @@
         "name": "ctaSubtitle",
         "label": "CTA Subtitle",
         "value": ""
-      }
-    ]
-  },
-  {
-    "id": "swipper-card-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image Alt Text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
       }
     ]
   },
