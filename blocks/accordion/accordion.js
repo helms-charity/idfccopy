@@ -193,16 +193,7 @@ export default function decorate(block) {
   if (accordionItems.length > 0) {
     let itemToOpen = 1; // Default to first item (1-indexed)
 
-    // Debug logging
-    // eslint-disable-next-line no-console
-    console.log('Accordion open-item config:', {
-      openItemConfig,
-      totalItems: accordionItems.length,
-    });
-
     if (openItemConfig !== null && openItemConfig !== undefined) {
-      // eslint-disable-next-line no-console
-      console.log('Using config value:', openItemConfig);
       if (openItemConfig === 0) {
         // 0 means don't open any items
         itemToOpen = 0;
@@ -212,8 +203,6 @@ export default function decorate(block) {
       }
       // If invalid (out of range), fall back to default (1)
     }
-    // eslint-disable-next-line no-console
-    console.log('Final itemToOpen:', itemToOpen);
 
     // Open the specified item (if itemToOpen > 0)
     if (itemToOpen > 0) {
