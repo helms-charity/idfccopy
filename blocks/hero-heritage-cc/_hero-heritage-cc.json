@@ -28,7 +28,7 @@
           "value": ""
         },
         {
-          "component": "reference",
+          "component": "aem-content",
           "valueType": "string",
           "name": "headerCta_link",
           "label": "Header CTA Link",
