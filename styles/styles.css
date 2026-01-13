@@ -358,9 +358,9 @@ button.secondary:focus {
 }
 
 .dark-scheme .button.block.primary a {
-  background-color: #fff;
-  color: #902a2b;
-  border-color: transparent;
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
 }
 
 .dark-scheme .button.block.secondary a {
@@ -397,7 +397,8 @@ button.secondary:focus {
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
   background-color: #fff;
-  border-color: #902a2b;
+  border-color: #fff;
+  color: #902a2b;
 }
 
 .dark-scheme .button.block.secondary a:hover,
@@ -415,9 +416,9 @@ button.secondary:focus {
 
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
-  background-color: #fff;
-  color: #902a2b;
-  border-color: transparent;
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
 }
 
 .light-scheme a.button.secondary:any-link,
@@ -456,7 +457,8 @@ button.primary:disabled:hover {
 .dark-scheme button.primary:hover,
 .dark-scheme button.primary:focus {
   background-color: #fff;
-  border-color: #902a2b;
+  border-color: #fff;
+  color: #902a2b;
 }
 
 .light-scheme a.button.secondary:hover,
