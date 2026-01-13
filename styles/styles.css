@@ -24,6 +24,7 @@
   --dark-red-color: #9c1d26;
   --dark-red-link-color:#801c1e;
   --red-color: #d13d3f;
+  --gradient-pearl: linear-gradient(73deg, #C7C6C6 -74.4%, #F1F1F1 23.15%);
   --gradient-upi-steps-red: linear-gradient(165deg, #ca0919 0%, #8C2034 40%, #732C53 80%, #513873 100%);
   --gradient-tabs-upi-link-red: radial-gradient(at top left, #AC2A34 0%, #661E2A 50%, #140F23 100%);
   --gradient-important-documents: linear-gradient(to bottom, #C5767D, #9E1E29);
