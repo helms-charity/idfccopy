@@ -462,9 +462,9 @@ button.primary:disabled:hover {
   background-color: rgb(255 255 255 / 10%);
 }
 
-/* Remove arrow icon from secondary buttons unless arrow-right-white is used */
-.light-scheme button.secondary .icon:not(.icon-arrow-right-white),
-.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white) {
+/* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
+.light-scheme button.secondary .icon:not(.icon-arrow-right-white):not(.icon-arrow-right-red),
+.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white):not(.icon-arrow-right-red) {
   display: none;
 }
 
