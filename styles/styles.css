@@ -322,13 +322,13 @@ button.secondary:focus,
   background-color: #fff;
 }
 
-/* Dark scheme - Primary button (white with red border) */
+/* Dark scheme - Primary button (transparent with white border) */
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary,
 .dark-scheme .button.block.primary a {
-  background-color: #fff;
-  color: #902a2b;
-  border-color: #902a2b;
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
 }
 
 .dark-scheme a.button.primary:hover,
@@ -337,28 +337,17 @@ button.secondary:focus,
 .dark-scheme button.primary:focus,
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
-  background-color: transparent;
+  background-color: #fff;
   border-color: #fff;
-  color: #fff;
+  color: #902a2b;
 }
 
-/* Dark scheme - Secondary button (transparent with white border) */
+/* Dark scheme - Secondary button (white with red border) */
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary,
 .dark-scheme .button.block.secondary a {
-  background-color: transparent;
-  border-color: #fff;
-  color: #fff;
-}
-
-.dark-scheme a.button.secondary:hover,
-.dark-scheme a.button.secondary:focus,
-.dark-scheme button.secondary:hover,
-.dark-scheme button.secondary:focus,
-.dark-scheme .button.block.secondary a:hover,
-.dark-scheme .button.block.secondary a:focus {
   background-color: #fff;
-  border-color: #fff;
+  border-color: #902a2b;
   color: #902a2b;
 }
 
