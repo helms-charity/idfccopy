@@ -43,6 +43,19 @@ main>div.section > .cc-hero-slider-wrapper {
   z-index: 1;
 }
 
+/* Gradient overlay for mobile images */
+.cc-hero-slider-bg-mobile::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--black-gradient-mobile);
+  z-index: 2;
+  pointer-events: none;
+}
+
 .cc-hero-slider-bg picture {
   display: block;
   width: 100%;
@@ -162,6 +175,19 @@ main>div.section > .cc-hero-slider-wrapper {
 
   .cc-hero-slider-bg-mobile {
     display: none;
+  }
+
+  /* Gradient overlay for desktop images */
+  .cc-hero-slider-bg-desktop::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--black-gradient);
+    z-index: 2;
+    pointer-events: none;
   }
 
   /* Content positioned on the right side on desktop */
