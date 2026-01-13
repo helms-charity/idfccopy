@@ -130,6 +130,45 @@ function setupMayuraHotspots(container) {
 }
 
 /**
+ * Sets up click handlers on the last paragraph of each mayura concept section.
+ * - Concept 1's last p: closes the modal
+ * - Concept 2's last p: clicks hotspot 1 (shows concept 1)
+ * - Concept 3's last p: clicks hotspot 2 (shows concept 2)
+ * @param {HTMLElement} container - The modal content container
+ * @param {HTMLDialogElement} dialog - The dialog element to close
+ */
+function setupMayuraLastParagraphActions(container, dialog) {
+  // Concept 1: last p closes modal
+  const concept1LastP = container.querySelector('.section[data-id="mayura-metal-concept-1"] p:last-child');
+  if (concept1LastP) {
+    concept1LastP.style.cursor = 'pointer';
+    concept1LastP.addEventListener('click', () => {
+      dialog.close();
+    });
+  }
+
+  // Concept 2: last p clicks hotspot 1 (shows concept 1)
+  const concept2LastP = container.querySelector('.section[data-id="mayura-metal-concept-2"] p:last-child');
+  if (concept2LastP) {
+    concept2LastP.style.cursor = 'pointer';
+    concept2LastP.addEventListener('click', () => {
+      const hotspot1 = container.querySelector('.section[data-id="mayura-metal-concept-2"] .mayura-hotspot-container > button:nth-child(1)');
+      if (hotspot1) hotspot1.click();
+    });
+  }
+
+  // Concept 3: last p clicks hotspot 2 (shows concept 2)
+  const concept3LastP = container.querySelector('.section[data-id="mayura-metal-concept-3"] p:last-child');
+  if (concept3LastP) {
+    concept3LastP.style.cursor = 'pointer';
+    concept3LastP.addEventListener('click', () => {
+      const hotspot2 = container.querySelector('.section[data-id="mayura-metal-concept-3"] .mayura-hotspot-container > button:nth-child(2)');
+      if (hotspot2) hotspot2.click();
+    });
+  }
+}
+
+/**
  * Line configurations for connecting p elements to hotspot buttons.
  * Each concept section has its own line configuration.
  */
@@ -268,6 +307,9 @@ export async function createModal(contentNodes, options = {}) {
 
   // Setup interactive hotspots for mayura-metal-concept sections
   setupMayuraHotspots(dialogContent);
+
+  // Setup last paragraph click actions (close modal, navigate between concepts)
+  setupMayuraLastParagraphActions(dialogContent, dialog);
 
   // Setup connector lines between text and hotspots (continuously updated)
   const cleanupConnectorLines = setupMayuraConnectorLines(dialogContent);
