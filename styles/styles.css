@@ -361,6 +361,7 @@ button.secondary:focus {
 .dark-scheme .button.block.primary a {
   background-color: var(--btn-light-color);
   border-color: var(--btn-light-color);
+  color: var(--btn-dark-red-color);
 }
 
 .dark-scheme .button.block.secondary a {
@@ -380,6 +381,8 @@ button.secondary:focus {
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
   background-color: var(--btn-light-color);
+  color: var(--btn-dark-red-color);
+  border-color: var(--btn-light-color);
 }
 
 .light-scheme .button.block.primary a:hover,
@@ -399,13 +402,13 @@ button.secondary:focus {
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
   background-color: var(--btn-light-color);
-  border-color: transparent;
+  border-color: var(--btn-dark-red-color);
   color: var(--btn-dark-red-color);
 }
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: transparent;
+  background-color: var(--btn-dark-red-color);
   border-color: var(--btn-light-color);
   color: var(--btn-light-color);
 }
@@ -421,12 +424,13 @@ button.secondary:focus {
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
   background-color: var(--btn-light-color);
-  border-color: transparent;
+  border-color: var(--btn-light-color);
+  color: var(--btn-dark-red-color);
 }
 
 .light-scheme a.button.secondary:any-link,
 .light-scheme button.secondary {
-  background-color: transparent;
+  background-color: var(--btn-light-color);
   border: 2px solid var(--btn-dark-red-color);
   color: var(--btn-dark-red-color);
 }
