@@ -571,7 +571,7 @@
       },
       {
         "component": "richtext",
-        "name": "bottomText",
+        "name": "bottomtext",
         "label": "Bottom Text",
         "valueType": "string"
       },
@@ -1021,13 +1021,13 @@
       },
       {
         "component": "text",
-        "name": "popUpTriggerCTAText",
+        "name": "popup_text",
         "label": "Enter pop-up trigger CTA text",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "popUpId",
+        "name": "popup_id",
         "label": "Add pop-up ID",
         "valueType": "string"
       }
@@ -1048,10 +1048,6 @@
           {
             "name": "Feature Cards",
             "value": "feature-cards"
-          },
-          {
-            "name": "Table",
-            "value": "table"
           }
         ]
       },
@@ -1335,8 +1331,8 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "ctaMobileText",
-        "label": "CTA Mobile Text"
+        "name": "ctaMobiletext",
+        "label": "CTA Mobile Button Text"
       },
       {
         "component": "richtext",

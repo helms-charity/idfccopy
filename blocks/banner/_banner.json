@@ -69,7 +69,7 @@
           },
           {
             "component": "richtext",
-            "name": "bottomText",
+            "name": "bottomtext",
             "label": "Bottom Text",
             "valueType": "string"
           },
