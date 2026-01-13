@@ -416,7 +416,6 @@ button.secondary:focus {
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
   background-color: var(--light-color);
-  color: var(--dark-red-color);
   border-color: transparent;
 }
 
@@ -472,8 +471,7 @@ button.primary:disabled:hover {
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
   background-color: var(--light-color);
-  border-color: var(--dark-red-color);
-  color: var(--dark-red-color);
+  border-color: transparent;
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
