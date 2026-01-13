@@ -432,7 +432,7 @@ button.secondary:focus {
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
   background-color: transparent;
-  border: var(--light-color);
+  border: 2px solid var(--light-color);
   color: var(--light-color);
 }
 
