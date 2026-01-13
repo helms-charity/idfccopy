@@ -304,7 +304,7 @@ button.primary:focus {
 /* Secondary button */
 a.button.secondary:any-link,
 button.secondary {
-  background-color: #fff;
+  background-color: transparent;
   border: 2px solid #902a2b;
   color: #902a2b;
 }
@@ -313,7 +313,7 @@ a.button.secondary:hover,
 a.button.secondary:focus,
 button.secondary:hover,
 button.secondary:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 /* Button block styles (Universal Editor component) - base states */
@@ -341,7 +341,7 @@ button.secondary:focus {
 
 .button.block.secondary a {
   border: 2px solid #902a2b;
-  background-color: #fff;
+  background-color: transparent;
   color: #902a2b;
 }
 
@@ -352,7 +352,7 @@ button.secondary:focus {
 }
 
 .light-scheme .button.block.secondary a {
-  background-color: #fff;
+  background-color: transparent;
   border-color: #902a2b;
   color: #902a2b;
 }
@@ -379,7 +379,7 @@ button.secondary:focus {
 
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 .light-scheme .button.block.primary a:hover,
@@ -391,7 +391,7 @@ button.secondary:focus {
 
 .light-scheme .button.block.secondary a:hover,
 .light-scheme .button.block.secondary a:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 .dark-scheme .button.block.primary a:hover,
@@ -402,7 +402,7 @@ button.secondary:focus {
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 /* Scheme button base states */
@@ -422,7 +422,7 @@ button.secondary:focus {
 
 .light-scheme a.button.secondary:any-link,
 .light-scheme button.secondary {
-  background-color: #fff;
+  background-color: transparent;
   border: 2px solid #902a2b;
   color: #902a2b;
 }
@@ -463,14 +463,14 @@ button.primary:disabled:hover {
 .light-scheme a.button.secondary:focus,
 .light-scheme button.secondary:hover,
 .light-scheme button.secondary:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 .dark-scheme a.button.secondary:hover,
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: #f9f0f0;
+  background-color: #fff;
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
