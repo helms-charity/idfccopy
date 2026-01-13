@@ -544,32 +544,6 @@
         "valueType": "string"
       },
       {
-        "component": "container",
-        "name": "ctas",
-        "label": "Call to Actions",
-        "multi": true,
-        "fields": [
-          {
-            "component": "text",
-            "name": "heading",
-            "label": "CTA Heading",
-            "valueType": "string"
-          },
-          {
-            "component": "aem-content",
-            "name": "link",
-            "label": "CTA Link",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "linkText",
-            "label": "CTA Link Text",
-            "valueType": "string"
-          }
-        ]
-      },
-      {
         "component": "richtext",
         "name": "bottomtext",
         "label": "Bottom Text",
