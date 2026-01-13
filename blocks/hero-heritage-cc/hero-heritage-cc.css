@@ -1,0 +1,95 @@
+/* Mobile-first base styles */
+.hero-heritage-cc-container .hero-heritage-cc-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.hero-heritage-cc {
+  position: relative;
+  padding: 40px 24px;
+  min-height: 400px;
+  background-color: #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-heritage-cc > div {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+}
+
+.hero-heritage-cc h1,
+.hero-heritage-cc h2,
+.hero-heritage-cc h3,
+.hero-heritage-cc h4,
+.hero-heritage-cc h5,
+.hero-heritage-cc h6 {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.hero-heritage-cc p {
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.hero-heritage-cc picture {
+  position: static;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-heritage-cc img {
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+}
+
+/* Tablet: 600px and up */
+@media (width >= 600px) {
+  .hero-heritage-cc {
+    padding: 60px 24px;
+  }
+
+  .hero-heritage-cc h1,
+  .hero-heritage-cc h2,
+  .hero-heritage-cc h3,
+  .hero-heritage-cc h4,
+  .hero-heritage-cc h5,
+  .hero-heritage-cc h6 {
+    font-size: 48px;
+  }
+
+  .hero-heritage-cc p {
+    font-size: 16px;
+  }
+}
+
+/* Desktop: 900px and up */
+@media (width >= 900px) {
+  .hero-heritage-cc {
+    padding: 60px;
+  }
+
+  .hero-heritage-cc-container .hero-heritage-cc-wrapper {
+    max-width: 1200px;
+  }
+
+  .hero-heritage-cc h1,
+  .hero-heritage-cc h2,
+  .hero-heritage-cc h3,
+  .hero-heritage-cc h4,
+  .hero-heritage-cc h5,
+  .hero-heritage-cc h6 {
+    font-size: 36px;
+  }
+}
