@@ -429,8 +429,7 @@ button.secondary:focus {
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
   background-color: transparent;
-  border: 2px solid var(--light-color);
-  color: var(--light-color);
+  border: var(--light-color);
 }
 
 /* Disabled button states */
@@ -456,7 +455,6 @@ button.primary:disabled:hover {
 .dark-scheme button.primary:focus {
   background-color: var(--light-color);
   border-color: transparent;
-  color: var(--dark-red-color);
 }
 
 .light-scheme a.button.secondary:hover,
