@@ -358,15 +358,15 @@ button.secondary:focus {
 }
 
 .dark-scheme .button.block.primary a {
-  background-color: #fff;
-  color: #902a2b;
+  background-color: #902a2b;
+  color: #fff;
   border-color: transparent;
 }
 
 .dark-scheme .button.block.secondary a {
-  background-color: transparent;
-  border-color: #fff;
-  color: #fff;
+  background-color: #fff;
+  border-color: #902a2b;
+  color: #902a2b;
 }
 
 /* Button block hover/focus states */
@@ -398,11 +398,12 @@ button.secondary:focus {
 .dark-scheme .button.block.primary a:focus {
   background-color: #fff;
   border-color: #902a2b;
+  color: #902a2b;
 }
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: rgb(255 255 255 / 10%);
+  background-color: #f9f0f0;
 }
 
 /* Scheme button base states */
@@ -415,8 +416,8 @@ button.secondary:focus {
 
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
-  background-color: #fff;
-  color: #902a2b;
+  background-color: #902a2b;
+  color: #fff;
   border-color: transparent;
 }
 
@@ -429,9 +430,9 @@ button.secondary:focus {
 
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
-  background-color: transparent;
-  border: 2px solid #fff;
-  color: #fff;
+  background-color: #fff;
+  border: 2px solid #902a2b;
+  color: #902a2b;
 }
 
 /* Disabled button states */
@@ -457,6 +458,7 @@ button.primary:disabled:hover {
 .dark-scheme button.primary:focus {
   background-color: #fff;
   border-color: #902a2b;
+  color: #902a2b;
 }
 
 .light-scheme a.button.secondary:hover,
@@ -470,7 +472,7 @@ button.primary:disabled:hover {
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: rgb(255 255 255 / 10%);
+  background-color: #f9f0f0;
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
