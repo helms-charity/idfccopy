@@ -496,13 +496,13 @@ function handleBackground(background, section) {
   }
 }
 
-async function handleStyle(text, section) {
+function handleStyle(text, section) {
   // Split by comma (with or without spaces) and trim each style
   const styles = text.split(',').map((style) => style.trim().replaceAll(' ', '-'));
   section.classList.add(...styles);
 }
 
-async function handleLayout(text, section, type) {
+function handleLayout(text, section, type) {
   // any and all .block-content divs will get this treatment
   // so if you want all blocks in a section to be in the same grid,
   // you can't have default content in between blocks.
@@ -561,13 +561,13 @@ const getSectionMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
   return rdx;
 }, {});
 
-export async function handleSectionMetadata(el) {
+export function handleSectionMetadata(el) {
   const section = el.closest('.section');
   if (!section) return;
   const metadata = getSectionMetadata(el);
 
   // Special cases for SECTION - handle these first
-  if (metadata.style?.text) await handleStyle(metadata.style.text, section);
+  if (metadata.style?.text) handleStyle(metadata.style.text, section);
   if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
   if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
   if (metadata.gap?.text) handleLayout(metadata.gap.text, section, 'gap');
@@ -582,7 +582,7 @@ export async function handleSectionMetadata(el) {
   }
 
   // Define which keys are handled specially for section or block-content
-  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block'];
+  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'doodle-image-top', 'doodle-image-bottom', 'doodle-reverse'];
 
   // Catch-all: set any other metadata as data- attributes on section
   Object.keys(metadata).forEach((key) => {
@@ -603,41 +603,53 @@ export async function handleSectionMetadata(el) {
     handleBackgroundImages(desktopBgImg, mobileBgImg, section);
   }
 
+  // Handle doodle images (background accessory images for ::before and ::after)
+  const doodleImageTop = metadata['doodle-image-top']?.content
+    ? extractImageUrl(metadata['doodle-image-top'].content)
+    : null;
+  const doodleImageBottom = metadata['doodle-image-bottom']?.content
+    ? extractImageUrl(metadata['doodle-image-bottom'].content)
+    : null;
+  const doodleReverse = metadata['doodle-reverse']?.text === 'true';
+
+  if (doodleImageTop || doodleImageBottom) {
+    // Set CSS custom properties for the doodle images
+    // If reversed, swap top and bottom
+    if (doodleReverse) {
+      if (doodleImageBottom) section.style.setProperty('--doodle-before-image', `url(${doodleImageBottom})`);
+      if (doodleImageTop) section.style.setProperty('--doodle-after-image', `url(${doodleImageTop})`);
+    } else {
+      if (doodleImageTop) section.style.setProperty('--doodle-before-image', `url(${doodleImageTop})`);
+      if (doodleImageBottom) section.style.setProperty('--doodle-after-image', `url(${doodleImageBottom})`);
+    }
+    // Add a class to indicate doodle images are present
+    section.classList.add('has-doodles');
+    if (doodleReverse) section.classList.add('doodles-reversed');
+  }
+
   // Handle BLOCK-CONTENT specific properties
   const blockContents = section.querySelectorAll(':scope > div.block-content');
   if (blockContents.length > 0) {
-    // Handle background-block color
-    if (metadata['background-block']?.text) {
-      blockContents.forEach((blockContent) => {
-        handleBackground(metadata['background-block'], blockContent);
-      });
-    }
-
-    // Handle block-content background images
+    // Extract all block-content metadata once
+    const bgBlock = metadata['background-block'];
     const desktopBlockBgImg = metadata['background-block-image']?.content
       ? extractImageUrl(metadata['background-block-image'].content)
       : null;
     const mobileBlockBgImg = metadata['background-block-image-mobile']?.content
       ? extractImageUrl(metadata['background-block-image-mobile'].content)
       : null;
+    const objectFit = metadata['object-fit-block']?.text;
+    const objectPosition = metadata['object-position-block']?.text;
 
-    if (desktopBlockBgImg || mobileBlockBgImg) {
-      blockContents.forEach((blockContent) => {
+    // Consolidated loop - apply all properties in a single iteration
+    blockContents.forEach((blockContent) => {
+      if (bgBlock?.text) handleBackground(bgBlock, blockContent);
+      if (desktopBlockBgImg || mobileBlockBgImg) {
         handleBackgroundImages(desktopBlockBgImg, mobileBlockBgImg, blockContent);
-      });
-    }
-
-    // Set object-fit-block and object-position-block as data attributes on block-content
-    if (metadata['object-fit-block']?.text) {
-      blockContents.forEach((blockContent) => {
-        blockContent.dataset.objectFit = metadata['object-fit-block'].text;
-      });
-    }
-    if (metadata['object-position-block']?.text) {
-      blockContents.forEach((blockContent) => {
-        blockContent.dataset.objectPosition = metadata['object-position-block'].text;
-      });
-    }
+      }
+      if (objectFit) blockContent.dataset.objectFit = objectFit;
+      if (objectPosition) blockContent.dataset.objectPosition = objectPosition;
+    });
   }
 
   el.remove();
