@@ -290,8 +290,8 @@ button.button,
 a.button.primary:any-link,
 button.primary,
 .button.block.primary a {
-  background-color: #902a2b;
-  color: #fff;
+  background-color: var(--dark-red-color);
+  color: var(--light-color);
   border-color: transparent;
 }
 
@@ -301,9 +301,8 @@ button.primary:hover,
 button.primary:focus,
 .button.block.primary a:hover,
 .button.block.primary a:focus {
-  background-color: #fff;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
 }
 
 /* Secondary button - default (light scheme) */
@@ -311,8 +310,7 @@ a.button.secondary:any-link,
 button.secondary,
 .button.block.secondary a {
   background-color: transparent;
-  border-color: #902a2b;
-  color: #902a2b;
+  border-color: var(--light-color);
 }
 
 a.button.secondary:hover,
