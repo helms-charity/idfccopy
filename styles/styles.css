@@ -401,8 +401,8 @@ button.secondary:focus {
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: var(--light-color);
-  border-color: transparent;
+  background-color: transparent;
+  border-color: var(--light-color);
 }
 
 /* Scheme button base states */
@@ -470,8 +470,8 @@ button.primary:disabled:hover {
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: var(--light-color);
-  border-color: transparent;
+  background-color: transparent;
+  border-color: var(--light-color);
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
