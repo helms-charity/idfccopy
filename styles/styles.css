@@ -305,8 +305,8 @@ button.primary:focus {
 a.button.secondary:any-link,
 button.secondary {
   background-color: transparent;
-  border: 2px solid #902a2b;
-  color: #902a2b;
+  border: 2px solid var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 a.button.secondary:hover,
@@ -335,20 +335,20 @@ button.secondary:focus {
 
 .button.block.primary a {
   border: 2px solid transparent;
-  background-color: #902a2b;
-  color: #fff;
+  background-color: var(--dark-red-color);
+  color: var(--light-color);
 }
 
 .button.block.secondary a {
-  border: 2px solid #902a2b;
+  border: 2px solid var(--dark-red-color);
   background-color: transparent;
-  color: #902a2b;
+  color: var(--dark-red-color);
 }
 
 /* Button block scheme variants - base states */
 .light-scheme .button.block.primary a {
-  background-color: #902a2b;
-  color: #fff;
+  background-color: var(--dark-red-color);
+  color: var(--light-color);
 }
 
 .light-scheme .button.block.secondary a {
@@ -370,26 +370,26 @@ button.secondary:focus {
 /* Button block hover/focus states */
 .button.block.primary a:hover,
 .button.block.primary a:focus {
-  background-color: #fff;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
-  background-color: #fff;
+  background-color: var(--light-color);
 }
 
 .light-scheme .button.block.primary a:hover,
 .light-scheme .button.block.primary a:focus {
-  background-color: #fff;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 .light-scheme .button.block.secondary a:hover,
 .light-scheme .button.block.secondary a:focus {
-  background-color: #fff;
+  background-color: var(--light-color);
 }
 
 .dark-scheme .button.block.primary a:hover,
@@ -409,8 +409,8 @@ button.secondary:focus {
 /* Scheme button base states */
 .light-scheme a.button.primary:any-link,
 .light-scheme button.primary {
-  background-color: #902a2b;
-  color: #fff;
+  background-color: var(--dark-red-color);
+  color: var(--light-color);
   border-color: transparent;
 }
 
@@ -424,8 +424,8 @@ button.secondary:focus {
 .light-scheme a.button.secondary:any-link,
 .light-scheme button.secondary {
   background-color: transparent;
-  border: 2px solid #902a2b;
-  color: #902a2b;
+  border: 2px solid var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 .dark-scheme a.button.secondary:any-link,
@@ -447,9 +447,9 @@ button.primary:disabled:hover {
 .light-scheme a.button.primary:focus,
 .light-scheme button.primary:hover,
 .light-scheme button.primary:focus {
-  background-color: #fff;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
+  color: var(--dark-red-color); 
 }
 
 .dark-scheme a.button.primary:hover,
@@ -465,7 +465,7 @@ button.primary:disabled:hover {
 .light-scheme a.button.secondary:focus,
 .light-scheme button.secondary:hover,
 .light-scheme button.secondary:focus {
-  background-color: #fff;
+  background-color: var(--light-color);
 }
 
 .dark-scheme a.button.secondary:hover,
