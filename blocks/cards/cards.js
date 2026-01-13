@@ -787,7 +787,8 @@ export default async function decorate(block) {
       if (classList.contains('explore-other-cards')) {
         li.classList.add('explore-other-cards');
       } else {
-      li.classList.add('benefit-cards');
+        li.classList.add('benefit-cards');
+      }
     }
 
     // Setup interactivity for all card types (links, modals)
