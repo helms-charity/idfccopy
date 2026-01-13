@@ -352,15 +352,13 @@ button.secondary:focus {
 }
 
 .light-scheme .button.block.secondary a {
-  background-color: transparent;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: var(--dark-red-color);
+  border-color: var(--dark-red-color);
 }
 
 .dark-scheme .button.block.primary a {
   background-color: var(--light-color);
-  color: var(--dark-red-color);
-  border-color: transparent;
+  border-color: var(--light-color);
 }
 
 .dark-scheme .button.block.secondary a {
