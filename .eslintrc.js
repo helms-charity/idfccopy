@@ -19,7 +19,15 @@ module.exports = {
     'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
     'xwalk/max-cells': ['error', {
-      section: 100, // section is a key-value block
+      section: 20, // section is a key-value block and over 4 is OK
+      accordion: 5, // the rest of these need adjustments per https://www.aem.live/developer/component-model-definitions#type-inference
+      'banner-item': 6,
+      cards: 8,
+      card: 7,
+      'cc-hero-slider-item': 5,
+      steps: 5,
+      table: 6,
+      'tabs-upi-link': 5,
     }],
     'no-restricted-syntax': [
       'error',

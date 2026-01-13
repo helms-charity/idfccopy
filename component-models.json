@@ -571,7 +571,7 @@
       },
       {
         "component": "richtext",
-        "name": "bottomText",
+        "name": "bottomtext",
         "label": "Bottom Text",
         "valueType": "string"
       },
@@ -1021,13 +1021,13 @@
       },
       {
         "component": "text",
-        "name": "popUpTriggerCTAText",
+        "name": "popup_text",
         "label": "Enter pop-up trigger CTA text",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "popUpId",
+        "name": "popup_id",
         "label": "Add pop-up ID",
         "valueType": "string"
       }
