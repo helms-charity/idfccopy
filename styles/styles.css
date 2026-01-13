@@ -314,7 +314,7 @@ a.button.secondary:focus,
 button.secondary:hover,
 button.secondary:focus {
   background-color: var(--light-color);
-  border-color: var(--dark-red-color);
+  #border-color: var(--dark-red-color);
 }
 
 /* Button block styles (Universal Editor component) - base states */
@@ -379,7 +379,7 @@ button.secondary:focus {
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
   background-color: var(--light-color);
-  border-color: var(--dark-red-color);
+  #border-color: var(--dark-red-color);
 }
 
 .light-scheme .button.block.primary a:hover,
