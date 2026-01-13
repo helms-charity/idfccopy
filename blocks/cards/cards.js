@@ -784,6 +784,9 @@ export default async function decorate(block) {
     } else if (isBlogPosts) {
       li.classList.add('blog-post-card');
     } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks) {
+      if (classList.contains('explore-other-cards')) {
+        li.classList.add('explore-other-cards');
+      } else {
       li.classList.add('benefit-cards');
     }
 
