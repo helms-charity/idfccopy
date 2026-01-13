@@ -1048,10 +1048,6 @@
           {
             "name": "Feature Cards",
             "value": "feature-cards"
-          },
-          {
-            "name": "Table",
-            "value": "table"
           }
         ]
       },
