@@ -1331,8 +1331,8 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "ctaMobileText",
-        "label": "CTA Mobile Text"
+        "name": "ctaMobiletext",
+        "label": "CTA Mobile Button Text"
       },
       {
         "component": "richtext",
