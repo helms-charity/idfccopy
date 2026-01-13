@@ -32,3 +32,36 @@
   text-align: center;
   padding-top: 20px;
 }
+
+.mayura .section[data-id="get-in-touch"] .cards.related-search .benefit-cards {
+  background-color: transparent;
+  box-shadow: none;
+
+  &::after {
+    display: none;
+  }
+  
+  h3 {
+    font-weight: 700;
+    color: #293871;
+  }
+}
+
+.mayura .section[data-id="get-in-touch"] .cards.related-search .grid-cards {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px;
+  }
+
+  @media (width <= 900px) {
+    .mayura .section[data-id="get-in-touch"] .cards.related-search .benefit-cards {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-right:0;
+
+      .cards-card-body {
+        padding-right: 0;
+      }
+    }
+  }
