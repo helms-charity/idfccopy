@@ -43,6 +43,19 @@ main>div.section > .cc-hero-slider-wrapper {
   z-index: 1;
 }
 
+/* Gradient overlay for both desktop and mobile images */
+.cc-hero-slider-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--black-gradient);
+  z-index: 2;
+  pointer-events: none;
+}
+
 .cc-hero-slider-bg picture {
   display: block;
   width: 100%;
