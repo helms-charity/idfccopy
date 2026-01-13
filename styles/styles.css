@@ -24,8 +24,8 @@
   --dark-red-color: #9c1d26;
   --dark-red-link-color:#801c1e;
   --red-color: #d13d3f;
-  --btn-dark-red-color: #902a2b;
-  --btn-light-color: white;
+  --btn-color-red: #902a2b;
+  --btn-color-white: white;
   --gradient-upi-steps-red: linear-gradient(165deg, #ca0919 0%, #8C2034 40%, #732C53 80%, #513873 100%);
   --gradient-tabs-upi-link-red: radial-gradient(at top left, #AC2A34 0%, #661E2A 50%, #140F23 100%);
   --gradient-important-documents: linear-gradient(to bottom, #C5767D, #9E1E29);
@@ -288,8 +288,8 @@ button.button {
 /* Primary button */
 a.button.primary:any-link,
 button.primary {
-  background-color: var(--btn-dark-red-color);
-  color: var(--btn-light-color);
+  background-color: var(--btn-color-red);
+  color: var(--btn-color-white);
   border-color: transparent;
 }
 
@@ -297,9 +297,9 @@ a.button.primary:hover,
 a.button.primary:focus,
 button.primary:hover,
 button.primary:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-red);
+  color: var(--btn-color-red);
   cursor: pointer;
 }
 
@@ -307,15 +307,15 @@ button.primary:focus {
 a.button.secondary:any-link,
 button.secondary {
   background-color: transparent;
-  border: 2px solid var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  border: 2px solid var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 a.button.secondary:hover,
 a.button.secondary:focus,
 button.secondary:hover,
 button.secondary:focus {
-  background-color: var(--btn-light-color);
+  background-color: var(--btn-color-white);
 }
 
 /* Button block styles (Universal Editor component) - base states */
@@ -336,116 +336,116 @@ button.secondary:focus {
 }
 
 .button.block.primary a {
-  background-color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-red);
   border: 2px solid transparent;
-  color: var(--btn-light-color);
+  color: var(--btn-color-white);
 }
 
 .button.block.secondary a {
   background-color: transparent;
-  border: 2px solid var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  border: 2px solid var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 /* Button block scheme variants - base states */
 .light-scheme .button.block.primary a {
-  background-color: var(--btn-dark-red-color);
-  color: var(--btn-light-color);
+  background-color: var(--btn-color-red);
+  color: var(--btn-color-white);
 }
 
 .light-scheme .button.block.secondary a {
-  background-color: var(--btn-dark-red-color);
-  border-color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-red);
+  border-color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.primary a {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.secondary a {
   background-color: transparent;
-  border-color: var(--btn-light-color);
-  color: var(--btn-light-color);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-white);
 }
 
 /* Button block hover/focus states */
 .button.block.primary a:hover,
 .button.block.primary a:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
-  background-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
-  border-color: var(--btn-light-color);
+  background-color: var(--btn-color-white);
+  color: var(--btn-color-red);
+  border-color: var(--btn-color-white);
 }
 
 .light-scheme .button.block.primary a:hover,
 .light-scheme .button.block.primary a:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 .light-scheme .button.block.secondary a:hover,
 .light-scheme .button.block.secondary a:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-red);
 }
 
 /* Scheme button base states */
 .light-scheme a.button.primary:any-link,
 .light-scheme button.primary {
-  background-color: var(--btn-dark-red-color);
-  color: var(--btn-light-color);
+  background-color: var(--btn-color-red);
+  color: var(--btn-color-white);
   border-color: transparent;
 }
 
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-red);
 }
 
 .light-scheme a.button.secondary:any-link,
 .light-scheme button.secondary {
-  background-color: var(--btn-light-color);
-  border: 2px solid var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border: 2px solid var(--btn-color-red);
+  color: var(--btn-color-red);
 }
 
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
   background-color: transparent;
-  border: 2px solid var(--btn-light-color);
-  color: var(--btn-light-color);
+  border: 2px solid var(--btn-color-white);
+  color: var(--btn-color-white);
 }
 
 /* Disabled button states */
 button.primary:disabled,
 button.primary:disabled:hover {
-  background-color: var(--btn-light-color);
+  background-color: var(--btn-color-white);
   cursor: unset;
 }
 
@@ -454,16 +454,16 @@ button.primary:disabled:hover {
 .light-scheme a.button.primary:focus,
 .light-scheme button.primary:hover,
 .light-scheme button.primary:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-dark-red-color);
-  color: var(--btn-dark-red-color); 
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-red);
+  color: var(--btn-color-red); 
 }
 
 .dark-scheme a.button.primary:hover,
 .dark-scheme a.button.primary:focus,
 .dark-scheme button.primary:hover,
 .dark-scheme button.primary:focus {
-  background-color: var(--btn-light-color);
+  background-color: var(--btn-color-white);
   border-color: transparent;
 }
 
@@ -471,16 +471,16 @@ button.primary:disabled:hover {
 .light-scheme a.button.secondary:focus,
 .light-scheme button.secondary:hover,
 .light-scheme button.secondary:focus {
-  background-color: var(--btn-light-color);
+  background-color: var(--btn-color-white);
 }
 
 .dark-scheme a.button.secondary:hover,
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: var(--btn-light-color);
-  border-color: var(--btn-light-color);
-  color: var(--btn-dark-red-color);
+  background-color: var(--btn-color-white);
+  border-color: var(--btn-color-white);
+  color: var(--btn-color-red);
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
