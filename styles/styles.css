@@ -749,6 +749,58 @@ section.faq-accordion-container h4 {
   padding: unset;
 }
 
+/* Base styles for sections with doodles */
+.section.has-doodles {
+  position: relative;
+  overflow: hidden; /* Optional: prevents doodles from overflowing */
+}
+
+/* Top doodle image (top-left by default)
+The height and width are set to 200 assuming the doodles won't be larger. */
+.section.has-doodles::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 0;
+  width: 200px;
+  height: 200px;
+  background-image: var(--doodle-before-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top left;
+  z-index: 1; /* Keep behind content */
+  pointer-events: none;
+}
+
+/* Bottom doodle image (bottom-right by default) */
+.section.has-doodles::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background-image: var(--doodle-after-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Reversed positioning (top-right and bottom-left) */
+.section.has-doodles.doodles-reversed::before {
+  left: auto;
+  right: 0;
+  background-position: top right;
+}
+
+.section.has-doodles.doodles-reversed::after {
+  right: auto;
+  left: 0;
+  background-position: bottom left;
+}
+
 /* Mobile: hide category nav wrapper (redundant with category-nav.css but kept for safety) */
 @media (width <= 600px) {
   .category-nav-wrapper {

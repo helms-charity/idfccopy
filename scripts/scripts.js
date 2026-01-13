@@ -553,7 +553,7 @@ export async function handleSectionMetadata(el) {
   }
 
   // Define which keys are handled specially for section or block-content
-  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block'];
+  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'doodle-image-top', 'doodle-image-bottom', 'doodle-reverse'];
 
   // Catch-all: set any other metadata as data- attributes on section
   Object.keys(metadata).forEach((key) => {
@@ -572,6 +572,30 @@ export async function handleSectionMetadata(el) {
 
   if (desktopBgImg || mobileBgImg) {
     handleBackgroundImages(desktopBgImg, mobileBgImg, section);
+  }
+
+  // Handle doodle images (background accessory images for ::before and ::after)
+  const doodleImageTop = metadata['doodle-image-top']?.content
+    ? extractImageUrl(metadata['doodle-image-top'].content)
+    : null;
+  const doodleImageBottom = metadata['doodle-image-bottom']?.content
+    ? extractImageUrl(metadata['doodle-image-bottom'].content)
+    : null;
+  const doodleReverse = metadata['doodle-reverse']?.text === 'true';
+
+  if (doodleImageTop || doodleImageBottom) {
+    // Set CSS custom properties for the doodle images
+    // If reversed, swap top and bottom
+    if (doodleReverse) {
+      if (doodleImageBottom) section.style.setProperty('--doodle-before-image', `url(${doodleImageBottom})`);
+      if (doodleImageTop) section.style.setProperty('--doodle-after-image', `url(${doodleImageTop})`);
+    } else {
+      if (doodleImageTop) section.style.setProperty('--doodle-before-image', `url(${doodleImageTop})`);
+      if (doodleImageBottom) section.style.setProperty('--doodle-after-image', `url(${doodleImageBottom})`);
+    }
+    // Add a class to indicate doodle images are present
+    section.classList.add('has-doodles');
+    if (doodleReverse) section.classList.add('doodles-reversed');
   }
 
   // Handle BLOCK-CONTENT specific properties
