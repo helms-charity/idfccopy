@@ -519,21 +519,18 @@ body.modal-open {
   justify-content: center;
 }
 
-.section[data-id="mayura-metal-concept-2"] > div > div > div > div:first-child {
+.section[data-id="mayura-metal-concept-1"] > div > div > div > div:first-child {
   margin:0;
-  transition: all .5s ease-in-out;
   position: relative;
 }
 .section[data-id="mayura-metal-concept-2"] > div > div > div > div:first-child {
   margin-top: 13%;
   margin-left: 5%;
-  transition: all .5s ease-in-out;
   position: relative;
 }
 
 .section[data-id="mayura-metal-concept-3"] > div > div > div > div:first-child {
   margin-top: -10%;
-  transition: all .5s ease-in-out;
   position: relative;
   width: 100;
 }
@@ -719,9 +716,6 @@ body.modal-open {
 }
 
 /* Mayura concept section fade transitions */
-.section[data-id^="mayura-metal-concept-"] {
-  transition: opacity 0.5s ease-in-out;
-}
 
 .section[data-id^="mayura-metal-concept-"].fade-out {
   opacity: 0;
@@ -745,5 +739,11 @@ body.modal-open {
   .section[data-id="mayura-metal-concept-3"] > div > div > div > div:first-child {
   margin-top: 5%;
   }
+
+  .section[data-id^="mayura-metal-concept-"] {
+    max-width: 510px;
+    justify-self: center;
+  }
+  
 
 }
