@@ -358,15 +358,15 @@ button.secondary:focus {
 }
 
 .dark-scheme .button.block.primary a {
-  background-color: transparent;
-  color: #fff;
-  border-color: #fff;
+  background-color: var(--light-color);
+  color: var(--dark-red-color);
+  border-color: transparent;
 }
 
 .dark-scheme .button.block.secondary a {
-  background-color: #fff;
-  border-color: #902a2b;
-  color: #902a2b;
+  background-color: transparent;
+  border-color: var(--light-color);
+  color: var(--light-color);
 }
 
 /* Button block hover/focus states */
@@ -396,14 +396,16 @@ button.secondary:focus {
 
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
-  background-color: #fff;
-  border-color: #fff;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: transparent;
+  color: var(--dark-red-color);
 }
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: #fff;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 /* Scheme button base states */
@@ -416,9 +418,9 @@ button.secondary:focus {
 
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
-  background-color: transparent;
-  color: #fff;
-  border-color: #fff;
+  background-color: var(--light-color);
+  color: var(--dark-red-color);
+  border-color: transparent;
 }
 
 .light-scheme a.button.secondary:any-link,
@@ -430,9 +432,9 @@ button.secondary:focus {
 
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
-  background-color: #fff;
-  border: 2px solid #902a2b;
-  color: #902a2b;
+  background-color: transparent;
+  border: 2px solid var(--light-color);
+  color: var(--light-color);
 }
 
 /* Disabled button states */
@@ -456,9 +458,9 @@ button.primary:disabled:hover {
 .dark-scheme a.button.primary:focus,
 .dark-scheme button.primary:hover,
 .dark-scheme button.primary:focus {
-  background-color: #fff;
-  border-color: #fff;
-  color: #902a2b;
+  background-color: var(--light-color);
+  border-color: transparent;
+  color: var(--dark-red-color);
 }
 
 .light-scheme a.button.secondary:hover,
@@ -472,7 +474,9 @@ button.primary:disabled:hover {
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: #fff;
+  background-color: var(--light-color);
+  border-color: var(--dark-red-color);
+  color: var(--dark-red-color);
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
