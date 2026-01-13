@@ -295,7 +295,9 @@ a.button.primary:hover,
 a.button.primary:focus,
 button.primary:hover,
 button.primary:focus {
-  background-color: #7a2324;
+  background-color: #fff;
+  border-color: #902a2b;
+  color: #902a2b;
   cursor: pointer;
 }
 
@@ -358,6 +360,7 @@ button.secondary:focus {
 .dark-scheme .button.block.primary a {
   background-color: #fff;
   color: #902a2b;
+  border-color: transparent;
 }
 
 .dark-scheme .button.block.secondary a {
@@ -369,7 +372,9 @@ button.secondary:focus {
 /* Button block hover/focus states */
 .button.block.primary a:hover,
 .button.block.primary a:focus {
-  background-color: #7a2324;
+  background-color: #fff;
+  border-color: #902a2b;
+  color: #902a2b;
 }
 
 .button.block.secondary a:hover,
@@ -379,7 +384,9 @@ button.secondary:focus {
 
 .light-scheme .button.block.primary a:hover,
 .light-scheme .button.block.primary a:focus {
-  background-color: #7a2324;
+  background-color: #fff;
+  border-color: #902a2b;
+  color: #902a2b;
 }
 
 .light-scheme .button.block.secondary a:hover,
@@ -389,7 +396,8 @@ button.secondary:focus {
 
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
-  background-color: #f0f0f0;
+  background-color: #fff;
+  border-color: #902a2b;
 }
 
 .dark-scheme .button.block.secondary a:hover,
@@ -438,14 +446,17 @@ button.primary:disabled:hover {
 .light-scheme a.button.primary:focus,
 .light-scheme button.primary:hover,
 .light-scheme button.primary:focus {
-  background-color: #7a2324;
+  background-color: #fff;
+  border-color: #902a2b;
+  color: #902a2b;
 }
 
 .dark-scheme a.button.primary:hover,
 .dark-scheme a.button.primary:focus,
 .dark-scheme button.primary:hover,
 .dark-scheme button.primary:focus {
-  background-color: #f0f0f0;
+  background-color: #fff;
+  border-color: #902a2b;
 }
 
 .light-scheme a.button.secondary:hover,
@@ -463,8 +474,8 @@ button.primary:disabled:hover {
 }
 
 /* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
-.light-scheme button.secondary .icon:not(.icon-arrow-right-white):not(.icon-arrow-right-red),
-.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white):not(.icon-arrow-right-red) {
+.light-scheme button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red),
+.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red) {
   display: none;
 }
 
