@@ -955,9 +955,17 @@ export default async function decorate(block) {
 
     // For testimonial cards, update star icons on active slide
     if (isTestimonial) {
+      let updateScheduled = false;
+
       const updateStarIcons = () => {
+        // Debounce multiple rapid calls (both events may fire close together)
+        if (updateScheduled) return;
+        updateScheduled = true;
+
         // Use requestAnimationFrame to ensure DOM is updated
         requestAnimationFrame(() => {
+          updateScheduled = false;
+
           // Get all slides once
           const slides = block.querySelectorAll('.swiper-slide');
           const activeSlide = block.querySelector('.swiper-slide-active');
@@ -983,7 +991,9 @@ export default async function decorate(block) {
       // Update on initial load
       updateStarIcons();
 
-      // Only listen to one event (slideChangeTransitionEnd is sufficient)
+      // Listen to both events: slideChange (swipe) and slideChangeTransitionEnd (dot clicks)
+      // Debouncing prevents redundant updates when both fire
+      swiper.on('slideChange', updateStarIcons);
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
     }
   } else if (
