@@ -341,9 +341,19 @@ function extractBlockProperties(block, ul) {
     // Handle richtext fields (modalCtaContent)
     if (fieldName === 'modalCtaContent') {
       // Check if li contains button-container or links (typical CTA content)
+      // BUT also verify it's not an actual card structure with image div
       const hasButtonContainer = li.querySelector('.button-container');
       const hasLinks = li.querySelector('a');
-      if (hasButtonContainer || hasLinks) {
+      const hasCardImage = li.querySelector('.cards-card-image');
+      const hasCardBody = li.querySelector('.cards-card-body');
+
+      // Only extract as modalCtaContent if it has buttons/links but is NOT a full card structure
+      const isPlaceholderCta = (hasButtonContainer || hasLinks) && !hasCardImage;
+
+      // Additional check: if it has both image and body, it's definitely a real card
+      const isRealCard = hasCardImage && hasCardBody;
+
+      if (isPlaceholderCta && !isRealCard) {
         // Extract the entire innerHTML as richtext content
         propertyValues[fieldName] = li.innerHTML;
         itemsToRemove.push(li);
@@ -352,7 +362,7 @@ function extractBlockProperties(block, ul) {
         // eslint-disable-next-line no-continue
         continue;
       }
-      // Not richtext content - skip to next field, stay on same li
+      // Not richtext content or is a real card - skip to next field, stay on same li
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
