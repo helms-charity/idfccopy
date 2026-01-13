@@ -294,11 +294,8 @@ export async function createModal(contentNodes, options = {}) {
     dialog.classList.add(options.modalTheme);
   }
 
-  // Set decoration image as CSS custom property for pseudo-elements
-  if (options.decorationImage) {
-    dialog.style.setProperty('--modal-decoration-image', `url('${options.decorationImage}')`);
-    dialog.classList.add('has-decoration');
-  }
+  // Store decoration image for later application to page background
+  const { decorationImage } = options;
 
   const dialogContent = document.createElement('div');
   dialogContent.classList.add('modal-content');
@@ -363,6 +360,10 @@ export async function createModal(contentNodes, options = {}) {
   // Add page background image if provided (sits behind the dialog)
   let pageBackground = null;
   if (options.pageBackgroundImage) {
+    // Set CSS custom property for ::backdrop to use
+    dialog.style.setProperty('--modal-page-background-image', `url('${options.pageBackgroundImage}')`);
+    dialog.classList.add('has-page-background');
+
     pageBackground = document.createElement('div');
     pageBackground.classList.add('modal-page-background');
 
@@ -372,6 +373,23 @@ export async function createModal(contentNodes, options = {}) {
     bgImg.loading = 'eager';
 
     pageBackground.append(bgImg);
+
+    // Add decoration images as DOM elements (top-right and bottom-left)
+    // These go INSIDE the dialog to be in the top layer, but use fixed positioning
+    if (decorationImage) {
+      const decorTopRight = document.createElement('img');
+      decorTopRight.src = decorationImage;
+      decorTopRight.alt = '';
+      decorTopRight.classList.add('modal-decoration', 'modal-decoration-top-right');
+
+      const decorBottomLeft = document.createElement('img');
+      decorBottomLeft.src = decorationImage;
+      decorBottomLeft.alt = '';
+      decorBottomLeft.classList.add('modal-decoration', 'modal-decoration-bottom-left');
+
+      // Store decorations to append inside dialog later
+      pageBackground.decorations = [decorTopRight, decorBottomLeft];
+    }
   }
 
   dialog.addEventListener('close', () => {
@@ -383,6 +401,11 @@ export async function createModal(contentNodes, options = {}) {
   block.innerHTML = '';
   if (pageBackground) {
     block.append(pageBackground);
+    // Append decorations inside dialog (so they're in top layer and visible)
+    // They use fixed positioning with calc() to appear at viewport corners
+    if (pageBackground.decorations) {
+      pageBackground.decorations.forEach((decor) => dialog.append(decor));
+    }
   }
   block.append(dialog);
 

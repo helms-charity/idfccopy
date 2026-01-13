@@ -7,12 +7,18 @@ body.modal-open {
 }
 
 .modal dialog::backdrop {
-  /* Top 170px shows blurred nav, then transitions to silver gradient */
+  /* Top 170px shows blurred nav, rest is silver gradient */
   background: var(--modal-backdrop-gradient);
   backdrop-filter: blur(5px);
   background-size: cover;
-  background-position: 0 var(--modal-offset-height), center top var(--modal-offset-height);
-  background-repeat: no-repeat, no-repeat;
+  background-position: center top var(--modal-offset-height);
+  background-repeat: no-repeat;
+}
+
+/* When a page background image is authored, use it instead of the gradient */
+.modal dialog.has-page-background::backdrop {
+  background: var(--modal-page-background-image) center top var(--modal-offset-height) / cover no-repeat;
+  backdrop-filter: blur(5px);
 }
 
 /* Page background image - sits behind the dialog, above the backdrop */
@@ -57,17 +63,8 @@ body.modal-open {
   width: 100%;
   /* max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px); */
   padding: 32px 24px;
-}
-
-@media (width >= 900px) {
-  .modal dialog {
-    width: calc(100vw - 64px);
-  }
-  
-  .modal dialog .modal-content {
-    /* max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px); */
-    padding: 40px 48px;
-  }
+  position: relative;
+  z-index: 2; /* Above decoration images */
 }
 
 /* Heading styles for default modal */
@@ -110,6 +107,7 @@ body.modal-open {
   position: absolute;
   top: -64px;
   right: -128px;
+  z-index: 10; /* Above decoration images */
   width: 64px;
   height: 64px;
   margin: 0;
@@ -120,7 +118,6 @@ body.modal-open {
   color: var(--dark-red-color);
   line-height: 0;
   cursor: pointer;
-  z-index: 10;
 }
 
 .modal .close-button .icon.icon-close {
@@ -299,33 +296,55 @@ body.modal-open {
   margin: 0 0 12px;
 }
 
-/* Decorative corner overlays - uses CSS variable set by JS */
-.modal dialog.has-decoration::before,
-.modal dialog.has-decoration::after {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background-image: var(--modal-decoration-image);
-  background-size: contain;
-  background-repeat: no-repeat;
+/*
+ * Decorative corner overlays - inside dialog to be in top layer, positioned at viewport corners
+ * Dialog has transform: translateX(-50%) which creates a containing block for fixed children
+ * We use calc() to offset from dialog-relative to viewport-relative positioning
+ */
+.modal dialog .modal-decoration {
+  position: fixed;
+  width: 300px;
+  height: 300px;
   pointer-events: none;
-  z-index: 3;
+  z-index: -1; /* Behind dialog content but visible in top layer */
+  object-fit: contain;
 }
 
-/* Top right decoration */
-.modal dialog.has-decoration::before {
-  top: 0;
-  right: 0;
-  background-position: top right;
-}
+  /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
+  .modal dialog .modal-decoration-top-right {
+    top: -300px; /* 300px = height of decoration image */
+    right: -90px;
+  }
 
-/* Bottom left decoration - rotated 180 degrees */
-.modal dialog.has-decoration::after {
-  bottom: 0;
-  left: 0;
-  background-position: bottom left;
-  transform: rotate(180deg);
+  /* Bottom left decoration - offset to viewport left corner */
+  .modal dialog .modal-decoration-bottom-left {
+    bottom: -300px;
+    left: -90px;
+    transform: rotate(180deg);
+  }
+
+@media (width >= 1100px) {
+  .modal dialog {
+    width: calc(100vw - 64px);
+  }
+  
+  .modal dialog .modal-content {
+    max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px);
+    padding: 40px 48px;
+  }
+
+  /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
+  .modal dialog .modal-decoration-top-right {
+    top: -150px;
+    right: calc(-50vw + 460px); /* 460px = half of max dialog width (920px) */
+  }
+
+  /* Bottom left decoration - stick to viewport bottom-left using top calc */
+  .modal dialog .modal-decoration-bottom-left {
+    top: calc(100vh - 300px - var(--modal-offset-height) - 50px); /* 300px = height of decoration image, 50px = offset from bottom of viewport */
+    left: calc(-50vw + 460px);
+    transform: rotate(180deg);
+  }
 }
 
 /* ===== Special Content Styles ===== */
