@@ -1279,28 +1279,6 @@ async function loadLazy(doc) {
 
 window.dataLayer = window.dataLayer || [];
 
-function loadGTM() {
-  const gtmScript = document.createElement('script');
-  gtmScript.async = true;
-  gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-M5CHMQ2Z';
-
-  window.dataLayer.push({
-    'gtm.start': new Date().getTime(),
-    event: 'gtm.js',
-  });
-
-  document.head.appendChild(gtmScript);
-
-  gtmScript.onload = () => {
-    window.dataLayer.push({
-      event: 'gtm_loaded',
-      timestamp: new Date().getTime(),
-    });
-  };
-}
-
-loadGTM();
-
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
