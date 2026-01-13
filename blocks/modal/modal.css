@@ -339,9 +339,9 @@ body.modal-open {
     right: calc(-50vw + 460px); /* 460px = half of max dialog width (920px) */
   }
 
-  /* Bottom left decoration - offset to viewport left corner */
+  /* Bottom left decoration - stick to viewport bottom-left using top calc */
   .modal dialog .modal-decoration-bottom-left {
-    bottom: -250px;
+    top: calc(100vh - 300px - var(--modal-offset-height) - 50px); /* 300px = height of decoration image, 50px = offset from bottom of viewport */
     left: calc(-50vw + 460px);
     transform: rotate(180deg);
   }
