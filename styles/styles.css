@@ -402,8 +402,7 @@ button.secondary:focus {
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
   background-color: var(--light-color);
-  border-color: var(--dark-red-color);
-  color: var(--dark-red-color);
+  border-color: transparent;
 }
 
 /* Scheme button base states */
