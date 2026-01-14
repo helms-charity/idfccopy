@@ -1,0 +1,67 @@
+{
+  "version": 5,
+  "code": {
+    "owner": "aemsites",
+    "repo": "idfc",
+    "source": {
+      "type": "github",
+      "url": "https://github.com/aemsites/idfc"
+    }
+  },
+  "content": {
+    "contentBusId": "ead1bba46cd6ae30d25d89462a93ac8f3fdfa259a86d0de29842a9f30c9",
+    "source": {
+      "url": "https://author-idfc-stage-65.adobecqms.net/bin/franklin.delivery/aemsites/idfc/main",
+      "type": "markup",
+      "suffix": ".html"
+    }
+  },
+  "headers": {
+    "/**": [
+      {
+        "key": "author",
+        "value": "5.0"
+      },
+      {
+        "key": "access-control-allow-origin",
+        "value": "*"
+      },
+      {
+        "key": "access-control-allow-credentials",
+        "value": "true"
+      }
+    ]
+  },
+  "sidekick": {
+    "project": "IDFC",
+    "editUrlLabel": "AEM Editor",
+    "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open",
+    "plugins": [
+      {
+        "id": "library",
+        "title": "Library",
+        "environments": [
+          "preview",
+          "live",
+          "dev"
+        ],
+        "url": "/tools/sidekick/library.html"
+      }
+    ]
+  },
+  "lastModified": "2026-01-14T15:26:29.414Z",
+  "created": "2025-10-08T20:52:09.056Z",
+  "access": {
+    "admin": {
+      "role": {
+        "author": [ "*@adobe.com", "*@idfcfirstbank.com", "*@deptagency.com" ],
+        "publish": [ "*@adobe.com", "*@idfcfirstbank.com", "*@deptagency.com" ],
+        "admin": [
+          "chelms@adobe.com",
+          "dfink@adobe.com"
+        ]
+      },
+      "requireAuth": "auto"
+    }
+  }
+}
