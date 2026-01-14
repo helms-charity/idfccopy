@@ -18,6 +18,7 @@
   --dark-color: #505050;
   --text-color: #25243B;
   --text-color-light: #DDDBDA; /* mayura */
+  --text-color-hero-heritage-cc: #2d3679;
   --link-color: #3b63fb;
   --link-hover-color: #1d3ecf;
   --purple-color: #563b80;
@@ -33,6 +34,7 @@
   --gradient-earn-rewards: radial-gradient(231% 135.8% at 0.9% 2.98%, #FFF6 0%, #FFF0 100%);
   --gradient-red: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
   --gradient-blue: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
+  --gradient-heritage-cc-mayura-intro: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
   --black-gradient: linear-gradient(90deg, rgb(0 0 0 / 0%) 0%, #000 65%);
   --black-gradient-mobile: linear-gradient(180deg, rgb(0 0 0 / 0%) -1.72%, rgb(0 0 0 / 62%) 21.88%, #000 108.06%);
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
@@ -554,6 +556,7 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .section {
   --top-bottom-spacing: 0;
   --section-container-width: var(--grid-container-width);
@@ -681,6 +684,7 @@ main>.section:first-of-type {
 .has-bg-images {
   position: relative;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   > div {
     position: relative;
   }
@@ -1135,7 +1139,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   .section.banner-image .default-content-wrapper ol {
-    display: None;
+    display: none;
   }
 
   .section.banner-image .default-content-wrapper p img {
