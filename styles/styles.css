@@ -373,6 +373,7 @@ main>.section:first-of-type {
   margin-top: 0;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .section {
   --top-bottom-spacing: 0;
   --section-container-width: var(--grid-container-width);
@@ -500,6 +501,7 @@ main>.section:first-of-type {
 .has-bg-images {
   position: relative;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   > div {
     position: relative;
   }
@@ -954,7 +956,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   .section.banner-image .default-content-wrapper ol {
-    display: None;
+    display: none;
   }
 
   .section.banner-image .default-content-wrapper p img {

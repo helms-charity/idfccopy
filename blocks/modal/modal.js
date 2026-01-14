@@ -100,7 +100,7 @@ function setupMayuraHotspots(container) {
           visibleSection.classList.remove('fade-in');
         }
 
-        // After fade out, switch sections and fade in
+        // Wait for fade-out to complete (350ms), then switch sections
         setTimeout(() => {
           // Hide all concept sections
           conceptSections.forEach((s) => {
@@ -110,16 +110,16 @@ function setupMayuraHotspots(container) {
 
           // Show target section starting invisible
           targetSection.style.display = 'flex';
-          targetSection.style.opacity = '0';
+          targetSection.classList.add('fade-out');
 
           // Force reflow before starting fade-in animation
           // eslint-disable-next-line no-unused-expressions
           targetSection.offsetHeight;
 
           // Now fade in
-          targetSection.style.opacity = '';
+          targetSection.classList.remove('fade-out');
           targetSection.classList.add('fade-in');
-        }, 200);
+        }, 350);
       });
 
       hotspotContainer.appendChild(hotspot);
@@ -432,4 +432,23 @@ export async function openModal(fragmentUrl, options = {}) {
   const fragment = await loadFragment(path);
   const { showModal } = await createModal(fragment.childNodes, options);
   showModal();
+}
+
+/**
+ * Sets up modal interactivity (hotspots, connectors, etc.) on inline content
+ * without creating a dialog. Used for embedding modal content directly in page.
+ * @param {HTMLElement} container - The container element with the modal content
+ */
+export async function setupModalInteractivity(container) {
+  await loadCSS(`${window.hlx.codeBasePath}/blocks/modal/modal.css`);
+
+  // Setup interactive hotspots for mayura-metal-concept sections
+  setupMayuraHotspots(container);
+
+  // Setup last paragraph click actions (navigate between concepts)
+  // Pass null for dialog since we're not in a modal
+  setupMayuraLastParagraphActions(container, null);
+
+  // Setup connector lines between text and hotspots
+  setupMayuraConnectorLines(container);
 }

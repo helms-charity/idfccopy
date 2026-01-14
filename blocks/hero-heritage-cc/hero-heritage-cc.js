@@ -1,4 +1,5 @@
 import { decorateButtons } from '../../scripts/aem.js';
+import { loadFragment } from '../../scripts/scripts.js';
 
 /**
  * Checks if a string is a valid CSS color or gradient value
@@ -248,5 +249,127 @@ export default function decorate(block) {
         });
       }
     }
+
+    // Add click handler for "The Concept" button to swap banner content
+    const bannerDiv = rows[2];
+    const bannerInner = bannerDiv.querySelector(':scope > div');
+
+    // Create a separate container for concept content (keeps original intact)
+    let conceptContainer = null;
+
+    // Function to show original banner, hide concept
+    const showOriginalBanner = () => {
+      if (!conceptContainer) return;
+
+      // Fade out concept with scale
+      conceptContainer.style.opacity = '0';
+      conceptContainer.style.transform = 'scale(0.97)';
+
+      setTimeout(() => {
+        conceptContainer.style.display = 'none';
+        conceptContainer.style.opacity = '';
+        conceptContainer.style.transform = '';
+
+        // Show original banner immediately (override animation)
+        bannerInner.style.display = '';
+        bannerInner.style.opacity = '0';
+        bannerInner.style.transform = 'scale(0.97)';
+        bannerInner.style.visibility = 'visible';
+
+        // Force reflow
+        // eslint-disable-next-line no-unused-expressions
+        bannerInner.offsetHeight;
+
+        bannerInner.style.opacity = '1';
+        bannerInner.style.transform = 'scale(1)';
+        bannerDiv.classList.remove('hero-heritage-cc-banner-swapped');
+      }, 350);
+    };
+
+    // Function to show concept, hide original banner
+    const showConceptView = () => {
+      // Fade out original banner with scale
+      bannerInner.style.opacity = '0';
+      bannerInner.style.transform = 'scale(0.97)';
+
+      setTimeout(() => {
+        bannerInner.style.display = 'none';
+
+        // Show concept starting invisible and scaled down
+        conceptContainer.style.display = '';
+        conceptContainer.style.opacity = '0';
+        conceptContainer.style.transform = 'scale(0.97)';
+
+        // Force reflow
+        // eslint-disable-next-line no-unused-expressions
+        conceptContainer.offsetHeight;
+
+        // Fade in with scale
+        conceptContainer.style.opacity = '1';
+        conceptContainer.style.transform = 'scale(1)';
+        bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
+      }, 350);
+    };
+
+    bannerDiv.addEventListener('click', async (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      // Handle "Go back" button (href="#")
+      if (link.href.endsWith('#') || link.getAttribute('href') === '#') {
+        e.preventDefault();
+        e.stopPropagation();
+        showOriginalBanner();
+        return;
+      }
+
+      // Only handle modal links for concept swap
+      if (!link.href.includes('/modals/')) return;
+
+      // Only handle non-primary buttons (The Concept is secondary)
+      if (link.classList.contains('primary')) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // If concept is already loaded, just show it
+      if (conceptContainer) {
+        showConceptView();
+        return;
+      }
+
+      // Fetch the content from the modal page
+      const path = new URL(link.href).pathname;
+      const fragment = await loadFragment(path);
+
+      if (fragment) {
+        // Get ALL sections from the fragment (modal may have multiple concept sections)
+        const fragmentSections = fragment.querySelectorAll('.section');
+        if (fragmentSections.length > 0) {
+          // Create concept container
+          conceptContainer = document.createElement('div');
+          conceptContainer.classList.add('hero-heritage-cc-concept-container');
+          conceptContainer.style.display = 'none';
+
+          fragmentSections.forEach((section, index) => {
+            // Hide all sections except the first one
+            if (index > 0) {
+              section.style.display = 'none';
+            }
+            conceptContainer.appendChild(section);
+          });
+
+          // Add concept container to banner
+          bannerDiv.appendChild(conceptContainer);
+
+          // Setup modal interactivity (hotspots, connectors, etc.)
+          const { setupModalInteractivity } = await import('../modal/modal.js');
+          await setupModalInteractivity(conceptContainer);
+
+          // Show concept view with transition
+          showConceptView();
+        }
+      }
+    });
   }
 }
