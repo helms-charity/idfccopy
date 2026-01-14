@@ -18,17 +18,17 @@ export default function decorate(block) {
   }
 
   // Bottom Text
-  if (children[2]) {
-    children[2].classList.add('banner-bottom-text');
-    const bottomText = children[2].querySelector('p');
+  if (children[1]) {
+    children[1].classList.add('banner-bottom-text');
+    const bottomText = children[1].querySelector('p');
     if (bottomText) bottomText.classList.add('banner-bottom-text-content');
   }
 
   // Desktop Image
-  if (children[3]) {
-    children[3].classList.add('banner-image-desktop', 'banner-image');
-    const picture = children[3].querySelector('picture');
-    const img = children[3].querySelector('img');
+  if (children[2]) {
+    children[2].classList.add('banner-image-desktop', 'banner-image');
+    const picture = children[2].querySelector('picture');
+    const img = children[2].querySelector('img');
     if (picture) picture.classList.add('banner-picture');
     if (img) {
       img.classList.add('banner-img');
@@ -37,10 +37,10 @@ export default function decorate(block) {
   }
 
   // Mobile Image
-  if (children[4]) {
-    children[4].classList.add('banner-image-mobile', 'banner-image');
-    const picture = children[4].querySelector('picture');
-    const img = children[4].querySelector('img');
+  if (children[3]) {
+    children[3].classList.add('banner-image-mobile', 'banner-image');
+    const picture = children[3].querySelector('picture');
+    const img = children[3].querySelector('img');
     if (picture) picture.classList.add('banner-picture');
     if (img) {
       img.classList.add('banner-img');

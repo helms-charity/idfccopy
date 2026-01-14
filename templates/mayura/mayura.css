@@ -19,3 +19,75 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(0, 0, 0, 0);
 }
+
+.mayura .banner-heading h2 {
+  background: #fbf8f2;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0);
+  text-align: left;
+}
+
+.mayura .table-container .button-container:first-child {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.mayura .cards.related-search .benefit-cards .cards-card-body h3 a:hover {
+color: var(--dark-red-color);
+}
+
+.mayura .section[data-id="get-in-touch"] .cards.related-search {
+
+  .grid-cards {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px;
+  }
+
+.benefit-cards {
+  background-color: transparent;
+  box-shadow: none;
+
+  &::after {
+    display: none;
+  }
+  
+  h3 {
+    font-weight: 700;
+    color: #293871;
+  }
+}
+}
+
+.mayura .cards.important-documents li, .cards.important-documents .important-documents-card {
+  background: var(--gradient-earn-rewards);
+  box-shadow: none;
+  border: 1px var(--text-color) solid;
+}
+
+.mayura .accordion .accordion-cta.button{
+  background: var(--gradient-pewter);
+  color: var(--white);
+  width: max-content;
+  margin: var(--spacing-m) auto 0;
+  padding: 8px 20px;
+  border-radius: 40px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+  @media (width <= 900px) {
+    .mayura .section[data-id="get-in-touch"] .cards.related-search .benefit-cards {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-right:0;
+
+      .cards-card-body {
+        padding-right: 0;
+      }
+    }
+  }
