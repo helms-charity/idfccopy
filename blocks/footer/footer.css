@@ -24,12 +24,12 @@ footer {
   color: #FFFFFF;
 } */
 
-footer .footer>div .section>div {
-  max-width: 75%;
+/* swapna removing this for desktop view */
+/* footer .footer>div .section>div {
   margin: 0;
-  /* padding: 50px 0px; */
-  /* padding-top: 50px; */
-}
+  padding: 50px 0px;
+  padding-top: 50px;
+} */ 
 
 footer .footer p,
 footer .footer ul {
@@ -105,6 +105,13 @@ footer .footer ul {
   .footer .section.accordion-container:first-child > .default-content > p {
     display: flex;
   }
+}
+
+/* swapna added for desktop view */
+footer .footer>div .section>div {
+  margin: 0 auto;
+	align-items: anchor-center;
+  max-width: 75%;
 }
 
 .footer>div>div .accordion-wrapper {
@@ -250,8 +257,7 @@ footer .footer ul {
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(2) {
-  flex: 0 0 50%;
-  justify-items: anchor-center;
+  flex: 0 0 50%;  
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(3) {
@@ -295,7 +301,6 @@ footer .footer ul {
   display: flex;
   text-size-adjust: auto;
   position: relative;
-  max-width: 75%;
   width: 100%;
   margin: 0;
   flex-direction: column;
@@ -423,6 +428,12 @@ footer .footer>div .section:nth-child(4)>div p a {
     order: 1;
     padding-top: 14px;
   }
+
+  /* swapna added for mobile view */
+footer .footer>div .section>div {
+  margin: 0;
+  max-width: 100%;
+}
 
   .footer .section.accordion-container:first-of-type .accordion details summary {
     pointer-events: all;
