@@ -511,6 +511,22 @@
   margin: 0 auto;
 }
 
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white {
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 12px;
+  padding-bottom: 4px;
+  vertical-align: middle;
+}
+
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white img {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
 .hero-heritage-cc-header-cta-fees-link .icon-arrow-right-white {
   display: inline-flex;
   align-items: center;

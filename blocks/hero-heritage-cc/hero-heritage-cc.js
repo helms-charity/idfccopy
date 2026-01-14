@@ -96,10 +96,20 @@ export default function decorate(block) {
         ctaLink.textContent = buttonText;
         ctaLink.classList.add('hero-heritage-cc-header-cta-link');
 
-        // Wrap link in <strong> for primary button styling
-        const strong = document.createElement('strong');
-        ctaLink.parentNode.insertBefore(strong, ctaLink);
-        strong.appendChild(ctaLink);
+        // Apply primary button classes manually (decorateButtons skips links with images)
+        ctaLink.classList.add('button', 'primary');
+        linkParagraph.classList.add('button-container');
+
+        // Add arrow icon to Apply Now button (must be after button classes are set)
+        const ctaArrowSpan = document.createElement('span');
+        ctaArrowSpan.className = 'icon icon-arrow-right-white';
+        const ctaArrowImg = document.createElement('img');
+        ctaArrowImg.setAttribute('data-icon-name', 'arrow-right-white');
+        ctaArrowImg.src = '/icons/arrow-right-white.svg';
+        ctaArrowImg.alt = '';
+        ctaArrowImg.loading = 'lazy';
+        ctaArrowSpan.appendChild(ctaArrowImg);
+        ctaLink.appendChild(ctaArrowSpan);
 
         // Remove the separate text paragraph since text is now in the button
         if (textParagraph) textParagraph.remove();
