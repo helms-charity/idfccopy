@@ -488,7 +488,7 @@ body.modal-open {
   padding: 38px 26px 30px;
   border-radius: 25px 25px 0 0;
   height: auto;
-  min-width: 533px;
+  width: 533px;
   margin-bottom: 0;
   }
 
