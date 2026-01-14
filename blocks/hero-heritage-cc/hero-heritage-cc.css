@@ -3,22 +3,23 @@
 /* Section container - fixed height to prevent CLS */
 .hero-heritage-cc-container {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
-  height: 100vh;
-  height: 100dvh;
+  min-height: calc(100vh - 200px);
+  min-height: calc(100dvh - 200px);
+  height: calc(100vh - 200px);
+  height: calc(100dvh - 200px);
   contain: strict;
   overflow: hidden;
 }
 
 /* Decoration image - top right */
 .hero-heritage-cc-container::before {
+  display: none;
   content: '';
   position: absolute;
-  top: 0;
+  top: 30px;
   right: 0;
-  width: 300px;
-  height: 300px;
+  width: 155px;
+  height: 183px;
   background-image: var(--hero-heritage-cc-decoration-top-right);
   background-size: contain;
   background-repeat: no-repeat;
@@ -29,12 +30,13 @@
 
 /* Decoration image - bottom left */
 .hero-heritage-cc-container::after {
+  display: none;
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 300px;
-  height: 300px;
+  width: 155px;
+  height: 132px;
   background-image: var(--hero-heritage-cc-decoration-bottom-left);
   background-size: contain;
   background-repeat: no-repeat;
@@ -519,8 +521,6 @@
     display: flex;
   }
 
-  
-
   .hero-heritage-cc-banner-cta-group {
     flex-flow: row wrap;
     gap: 52px;
@@ -536,5 +536,15 @@
 @media (width >= 900px) {
   .hero-heritage-cc-header-cta {
     padding: 0 60px;
+  }
+
+/* Decoration image - top right */
+.hero-heritage-cc-container::before {
+    display: block;
+  }
+  
+  /* Decoration image - bottom left */
+  .hero-heritage-cc-container::after {
+    display: block;
   }
 }
