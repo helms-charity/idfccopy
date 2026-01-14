@@ -26,7 +26,7 @@ footer {
 
 footer .footer>div .section>div {
   max-width: 75%;
-  margin: 0 auto;
+  margin: 0;
   /* padding: 50px 0px; */
   /* padding-top: 50px; */
 }
@@ -297,10 +297,10 @@ footer .footer ul {
   position: relative;
   max-width: 75%;
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: content-box;
 }
 
@@ -315,6 +315,7 @@ footer .footer ul {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  color: var(--white);
 }
 
 .footer>div>div:nth-child(3)>div {
@@ -625,6 +626,7 @@ footer .footer>div .section:nth-child(4)>div p a {
 
   .footer .section.accordion-container:first-of-type .accordion-wrapper .accordion .accordion-item-label {
     border-bottom: unset;
+    color: var(--white);
   }
 
   .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
