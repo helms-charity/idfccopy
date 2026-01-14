@@ -24,12 +24,12 @@ footer {
   color: #FFFFFF;
 } */
 
-footer .footer>div .section>div {
-  max-width: 75%;
-  margin: 0 auto;
-  /* padding: 50px 0px; */
-  /* padding-top: 50px; */
-}
+/* Removing this for desktop view */
+/* footer .footer>div .section>div {
+  margin: 0;
+  padding: 50px 0px;
+  padding-top: 50px;
+} */ 
 
 footer .footer p,
 footer .footer ul {
@@ -105,6 +105,13 @@ footer .footer ul {
   .footer .section.accordion-container:first-child > .default-content > p {
     display: flex;
   }
+}
+
+/* Added for desktop view */
+footer .footer>div .section>div {
+  margin: 0 auto;
+	align-items: anchor-center;
+  max-width: var(--grid-container-width);
 }
 
 .footer>div>div .accordion-wrapper {
@@ -250,8 +257,7 @@ footer .footer ul {
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(2) {
-  flex: 0 0 50%;
-  justify-items: anchor-center;
+  flex: 0 0 50%;  
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(3) {
@@ -295,13 +301,13 @@ footer .footer ul {
   display: flex;
   text-size-adjust: auto;
   position: relative;
-  max-width: 75%;
   width: 100%;
   margin: 0 auto;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: content-box;
+  max-width: var(--grid-container-width);
 }
 
 .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block {
@@ -315,6 +321,7 @@ footer .footer ul {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  color: var(--white);
 }
 
 .footer>div>div:nth-child(3)>div {
@@ -422,6 +429,12 @@ footer .footer>div .section:nth-child(4)>div p a {
     order: 1;
     padding-top: 14px;
   }
+
+  /* Added for mobile view */
+footer .footer>div .section>div {
+  margin: 0;
+  max-width: 100%;
+}
 
   .footer .section.accordion-container:first-of-type .accordion details summary {
     pointer-events: all;
@@ -625,6 +638,7 @@ footer .footer>div .section:nth-child(4)>div p a {
 
   .footer .section.accordion-container:first-of-type .accordion-wrapper .accordion .accordion-item-label {
     border-bottom: unset;
+    color: var(--white);
   }
 
   .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {
