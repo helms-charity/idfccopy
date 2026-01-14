@@ -4,7 +4,7 @@
 .hero-heritage-cc-container {
   min-height: 100vh;
   height: 100vh;
-  contain: layout style;
+  contain: strict;
 }
 
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
@@ -22,6 +22,11 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Hide block until fully decorated to prevent CLS from JS DOM changes */
+.hero-heritage-cc:not([data-block-status="loaded"]) {
+  visibility: hidden;
 }
 
 /* Header CTA - dedicated 70px space at top */
@@ -75,6 +80,7 @@
   justify-content: center;
   text-align: center;
   z-index: 5;
+  will-change: opacity, visibility;
   animation: intro-fade-out 0.25s ease-out 6s forwards;
 }
 
@@ -88,6 +94,7 @@
   height: 100%;
   background: var(--hero-heritage-cc-intro-gradient);
   z-index: 1;
+  will-change: clip-path;
   animation: gradient-wipe 3s ease-in-out 2s forwards;
 }
 
@@ -153,6 +160,7 @@
 .hero-heritage-cc-intro-logo-hindi {
   position: relative;
   z-index: 2;
+  will-change: clip-path;
   animation: logo-wipe-out 3s ease-in-out 2s forwards;
 }
 
@@ -162,6 +170,7 @@
   top: 0;
   left: 0;
   z-index: 1;
+  will-change: clip-path;
   clip-path: inset(0 100% 0 0);
   animation: logo-wipe-in 3s ease-in-out 2s forwards;
 }
@@ -180,7 +189,7 @@
   z-index: 1;
 }
 
-.hero-heritage-cc .hero-heritage-cc-banner> div {
+.hero-heritage-cc .hero-heritage-cc-banner > div {
   position: absolute;
   opacity: 0;
   visibility: hidden;
@@ -191,6 +200,7 @@
   height: 100%;
   z-index: 2;
   max-width: 100%;
+  will-change: opacity, visibility;
   animation: banner-fade-in 0.25s ease-in-out 6s forwards;
 }
 
