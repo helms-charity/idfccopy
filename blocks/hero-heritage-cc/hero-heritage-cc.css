@@ -46,12 +46,23 @@
 }
 
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
+  position: relative;
   max-width: unset;
   padding: 0;
   height: 100vh;
   height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
+}
+
+/* Position breadcrumbs to overlay on top of header-cta bar (centered in 70px height) */
+.hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
+  position: absolute;
+  top: 35px;
+  left: 16px;
+  z-index: 20;
+  transform: translateY(-50%);
+  margin: 0;
 }
 
 .hero-heritage-cc {
@@ -498,6 +509,22 @@
   max-width: 1200px;
   height: 100%;
   margin: 0 auto;
+}
+
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white {
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 12px;
+  padding-bottom: 4px;
+  vertical-align: middle;
+}
+
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white img {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
 }
 
 .hero-heritage-cc-header-cta-fees-link .icon-arrow-right-white {

@@ -67,6 +67,13 @@ function normalizeCssColorValue(value) {
 }
 
 export default function decorate(block) {
+  // Set modal theme for any modal links within this block (e.g., fees link)
+  // These match the styling used by the cards/key-benefits modals on Mayura pages
+  block.dataset.modalTheme = 'modal-mayura-blue';
+  block.dataset.modalDialogBackgroundImageTexture = '/credit-card/metal-credit-card/media_15a8f844f87bf985cbf4471803bc87278ff6daa36.png';
+  block.dataset.modalPageBackgroundImage = '/credit-card/metal-credit-card/media_1aa917044ef2aa165adb54e6ecc718b1cd83e80a4.png';
+  block.dataset.modalPageDecorationImage = '/credit-card/metal-credit-card/media_13f68aa7e19d4532ae6d8a784fb5c4e140fb55d3e.svg';
+
   // Get all direct child divs (the three main sections)
   const rows = [...block.children].filter((child) => child.tagName === 'DIV');
 
@@ -89,10 +96,20 @@ export default function decorate(block) {
         ctaLink.textContent = buttonText;
         ctaLink.classList.add('hero-heritage-cc-header-cta-link');
 
-        // Wrap link in <strong> for primary button styling
-        const strong = document.createElement('strong');
-        ctaLink.parentNode.insertBefore(strong, ctaLink);
-        strong.appendChild(ctaLink);
+        // Apply primary button classes manually (decorateButtons skips links with images)
+        ctaLink.classList.add('button', 'primary');
+        linkParagraph.classList.add('button-container');
+
+        // Add arrow icon to Apply Now button (must be after button classes are set)
+        const ctaArrowSpan = document.createElement('span');
+        ctaArrowSpan.className = 'icon icon-arrow-right-white';
+        const ctaArrowImg = document.createElement('img');
+        ctaArrowImg.setAttribute('data-icon-name', 'arrow-right-white');
+        ctaArrowImg.src = '/icons/arrow-right-white.svg';
+        ctaArrowImg.alt = '';
+        ctaArrowImg.loading = 'lazy';
+        ctaArrowSpan.appendChild(ctaArrowImg);
+        ctaLink.appendChild(ctaArrowSpan);
 
         // Remove the separate text paragraph since text is now in the button
         if (textParagraph) textParagraph.remove();
@@ -102,6 +119,30 @@ export default function decorate(block) {
         feesLink.href = '/credit-card/metal-credit-card/mayura/modals/fee-and-charges-modal';
         feesLink.textContent = 'Fees and charges on Mayura Metal Card ';
         feesLink.classList.add('hero-heritage-cc-header-cta-fees-link');
+
+        // Custom click handler to strip inline background from table-container
+        feesLink.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+          await openModal(feesLink.href, {
+            modalTheme: block.dataset.modalTheme,
+            textureImage: block.dataset.modalDialogBackgroundImageTexture,
+            pageBackgroundImage: block.dataset.modalPageBackgroundImage,
+            decorationImage: block.dataset.modalPageDecorationImage,
+          });
+
+          // After modal opens, strip inline background from table-container sections
+          setTimeout(() => {
+            const modalDialog = document.querySelector('dialog.modal-mayura-blue[open]');
+            if (modalDialog) {
+              modalDialog.querySelectorAll('.section.table-container').forEach((section) => {
+                section.style.removeProperty('background');
+              });
+            }
+          }, 50);
+        });
 
         // Create arrow icon
         const arrowSpan = document.createElement('span');
