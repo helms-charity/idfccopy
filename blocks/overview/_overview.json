@@ -21,7 +21,7 @@
         "id": "overview",
         "fields": [
          {
-            "component": "text",
+            "component": "richtext",
             "name": "title",
             "label": "Title"
          },
