@@ -177,9 +177,45 @@ export default function decorate(block) {
         if (bgPictureWrapper) bgPictureWrapper.remove();
       }
 
-      // Second and third pictures are the logos - wrap them in a container for stacking
-      const hindiLogoP = pictures[1]?.closest('p');
-      const englishLogoP = pictures[2]?.closest('p');
+      // Second picture is decoration image top-right
+      if (pictures[1]) {
+        const decorTopRight = pictures[1];
+        const decorTopRightImg = decorTopRight.querySelector('img');
+        if (decorTopRightImg?.src) {
+          const sectionContainer = block.closest('.section');
+          if (sectionContainer) {
+            sectionContainer.style.setProperty(
+              '--hero-heritage-cc-decoration-top-right',
+              `url(${decorTopRightImg.src})`,
+            );
+          }
+        }
+        const decorTopRightWrapper = decorTopRight.closest('p');
+        decorTopRight.remove();
+        if (decorTopRightWrapper) decorTopRightWrapper.remove();
+      }
+
+      // Third picture is decoration image bottom-left
+      if (pictures[2]) {
+        const decorBottomLeft = pictures[2];
+        const decorBottomLeftImg = decorBottomLeft.querySelector('img');
+        if (decorBottomLeftImg?.src) {
+          const sectionContainer = block.closest('.section');
+          if (sectionContainer) {
+            sectionContainer.style.setProperty(
+              '--hero-heritage-cc-decoration-bottom-left',
+              `url(${decorBottomLeftImg.src})`,
+            );
+          }
+        }
+        const decorBottomLeftWrapper = decorBottomLeft.closest('p');
+        decorBottomLeft.remove();
+        if (decorBottomLeftWrapper) decorBottomLeftWrapper.remove();
+      }
+
+      // Fourth and fifth pictures are the logos - wrap them in a container for stacking
+      const hindiLogoP = pictures[3]?.closest('p');
+      const englishLogoP = pictures[4]?.closest('p');
 
       if (hindiLogoP && englishLogoP) {
         hindiLogoP.classList.add('hero-heritage-cc-intro-logo-hindi');

@@ -2,12 +2,45 @@
 
 /* Section container - fixed height to prevent CLS */
 .hero-heritage-cc-container {
+  position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   height: 100vh;
   height: 100dvh;
   contain: strict;
   overflow: hidden;
+}
+
+/* Decoration image - top right */
+.hero-heritage-cc-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  background-image: var(--hero-heritage-cc-decoration-top-right);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top right;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Decoration image - bottom left */
+.hero-heritage-cc-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  height: 300px;
+  background-image: var(--hero-heritage-cc-decoration-bottom-left);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
