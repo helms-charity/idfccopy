@@ -140,7 +140,7 @@ export default function decorate(block) {
       // Get all pictures in intro (order follows model field order)
       const pictures = introContent.querySelectorAll('picture');
 
-      // First picture is the background image - extract URL and apply to section container
+      // First picture is the background image - apply to section container
       if (pictures[0]) {
         const bgPictureWrapper = pictures[0].closest('p');
         const bgImg = pictures[0].querySelector('img');
@@ -153,6 +153,14 @@ export default function decorate(block) {
             sectionContainer.style.backgroundRepeat = 'repeat';
             sectionContainer.style.backgroundPosition = 'center center';
             sectionContainer.style.backgroundAttachment = 'fixed';
+
+            // Add preload link for LCP optimization
+            const preloadLink = document.createElement('link');
+            preloadLink.rel = 'preload';
+            preloadLink.as = 'image';
+            preloadLink.href = bgImg.src;
+            preloadLink.fetchPriority = 'high';
+            document.head.appendChild(preloadLink);
           }
         }
         // Remove the picture element and its wrapper from DOM
