@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button Test</title>
+  <link rel="stylesheet" href="styles/styles.css?v=9">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      padding: 40px;
+      display: block;
+    }
+    .test-section {
+      margin-bottom: 40px;
+      padding: 30px;
+      border-radius: 12px;
+    }
+    .test-section h2 {
+      margin-top: 0;
+    }
+    .light-bg {
+      background: #f5f5f5;
+    }
+    .dark-bg {
+      background: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
+    }
+    .icon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    .icon img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body class="appear">
+
+  <!-- Light Scheme Test -->
+  <div class="test-section light-bg light-scheme">
+    <h2>Light Scheme Buttons</h2>
+    
+    <p><strong>Primary Button:</strong></p>
+    <a href="#" class="button primary">Install Now</a>
+    
+    <p><strong>Secondary Button (no arrow):</strong></p>
+    <a href="#" class="button secondary">View awards</a>
+    
+    <p><strong>Secondary Button (with red arrow):</strong></p>
+    <a href="#" class="button secondary">
+      View awards
+      <span class="icon icon-arrow-right-red"><img src="icons/arrow-right-red.svg" alt=""></span>
+    </a>
+  </div>
+
+  <!-- Dark Scheme Test -->
+  <div class="test-section dark-bg dark-scheme">
+    <h2 style="color: white;">Dark Scheme Buttons</h2>
+    
+    <p style="color: white;"><strong>Primary Button:</strong></p>
+    <a href="#" class="button primary">Install Now</a>
+    
+    <p style="color: white;"><strong>Secondary Button:</strong></p>
+    <a href="#" class="button secondary">View awards</a>
+    
+    <p style="color: white;"><strong>Secondary Button (with arrow):</strong></p>
+    <a href="#" class="button secondary">
+      View awards
+      <span class="icon icon-arrow-right-red"><img src="icons/arrow-right-red.svg" alt=""></span>
+    </a>
+  </div>
+
+  <!-- Button Block Test (Universal Editor structure) -->
+  <div class="test-section light-bg light-scheme">
+    <h2>Button Block (Universal Editor Component)</h2>
+    
+    <p><strong>Primary Block:</strong></p>
+    <div class="button block primary">
+      <div><a href="#">Install Now</a></div>
+    </div>
+    
+    <p><strong>Secondary Block:</strong></p>
+    <div class="button block secondary">
+      <div><a href="#">View awards</a></div>
+    </div>
+    
+    <p><strong>Secondary Block (with arrow):</strong></p>
+    <div class="button block secondary">
+      <div>
+        <a href="#">
+          View awards
+          <span class="icon icon-arrow-right-red"><img src="icons/arrow-right-red.svg" alt=""></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+
