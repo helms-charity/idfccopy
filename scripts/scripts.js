@@ -82,11 +82,11 @@ function autolinkModals(element) {
       e.preventDefault();
       e.stopPropagation();
 
-      // Build modal options from parent cards block (if any)
+      // Build modal options from parent block with modal theme data attributes
       const modalOptions = {};
-      const parentCardsBlock = origin.closest('.cards');
-      if (parentCardsBlock?.dataset) {
-        const { dataset } = parentCardsBlock;
+      const parentWithTheme = origin.closest('[data-modal-theme]');
+      if (parentWithTheme?.dataset) {
+        const { dataset } = parentWithTheme;
         if (dataset.modalTheme) modalOptions.modalTheme = dataset.modalTheme;
         if (dataset.modalDialogBackgroundImageTexture) {
           modalOptions.textureImage = dataset.modalDialogBackgroundImageTexture;
