@@ -111,7 +111,7 @@ footer .footer ul {
 footer .footer>div .section>div {
   margin: 0 auto;
 	align-items: anchor-center;
-  max-width: 75%;
+  max-width: var(--grid-container-width);
 }
 
 .footer>div>div .accordion-wrapper {
@@ -302,11 +302,12 @@ footer .footer>div .section>div {
   text-size-adjust: auto;
   position: relative;
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   box-sizing: content-box;
+  max-width: var(--grid-container-width);
 }
 
 .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block {
