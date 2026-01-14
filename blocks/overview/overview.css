@@ -1,5 +1,37 @@
-/* placeholder for merge */
-
 .section:has(.overview) {
-    margin: 0;
-  }
+  margin: 0;
+}
+
+.overview .overview-title {
+  color: var(--text-color);
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: -0.6px;
+  margin-bottom: 12px;
+}
+
+.overview .overview-para,
+.overview .overview-hiddenPara {
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+}
+
+.overview .overview-hiddenPara {
+  margin-top: 1rem;
+}
+
+.overview .overview-readMore {
+  margin-top: 1rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #54565b;
+  cursor: pointer;
+  background-color: transparent !important;
+  padding: 0;
+  width: max-content;
+}
