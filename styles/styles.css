@@ -89,7 +89,7 @@
   --nav-height: 64px;
 
   /* grid */
-  --grid-container-width: 1200px;
+  --grid-container-width: 1160px;
   --grid-column-width: calc(var(--grid-container-width) / 12);
   --grid-gutter-width: 24px;
 
@@ -236,7 +236,7 @@ a {
 }
 
 a:any-link {
-  color: var(--link-color);
+  color: var(--text-color);
   text-decoration: none;
   word-break: break-word;
 }
@@ -490,6 +490,12 @@ button.primary:disabled:hover {
 .light-scheme button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red),
 .light-scheme a.button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red) {
   display: none;
+}
+
+a.button:has(span.icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */

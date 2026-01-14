@@ -69,7 +69,7 @@ color: var(--dark-red-color);
   background: var(--gradient-pewter);
   color: var(--white);
   width: max-content;
-  margin: var(--spacing-m) auto 0;
+  margin: var(--spacing-m) auto 0 calc(50% - 100px);
   padding: 8px 20px;
   border-radius: 40px;
   text-decoration: none;

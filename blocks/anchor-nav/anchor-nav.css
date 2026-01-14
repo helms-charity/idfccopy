@@ -29,7 +29,7 @@
     top: var(--sticky-top, 54px);
     left: 0;
     right: 0;
-    z-index: 98;
+    z-index: 2;
     box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
   }
 

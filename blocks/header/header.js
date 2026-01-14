@@ -563,17 +563,6 @@ export default async function decorate(block) {
   }
 
   /**
-   * Process standard section content for desktop flat list
-   */
-  function processStandardSectionDesktop(section) {
-    const defaultContent = section.querySelector('.default-content');
-    if (!defaultContent) return null;
-
-    const children = Array.from(defaultContent.children);
-    return children.length > 0 ? children : null;
-  }
-
-  /**
    * Decorate category-nav blocks after adding to DOM
    */
   function decorateCategoryNavBlocks(ul) {
@@ -639,9 +628,40 @@ export default async function decorate(block) {
   }
 
   /**
+   * Setup desktop accordion behavior - click section titles to show content in column 2
+   */
+  function setupDesktopAccordionBehavior(ul) {
+    ul.addEventListener('click', (e) => {
+      // Find the closest nav-fragment-section
+      const sectionItem = e.target.closest('.nav-fragment-section');
+
+      // Only process clicks on the title (column 1)
+      if (!sectionItem || !e.target.closest('.nav-fragment-section-title')) return;
+
+      const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
+
+      // Close all other sections first (accordion behavior)
+      const allSections = ul.querySelectorAll('.nav-fragment-section');
+      allSections.forEach((section) => {
+        if (section !== sectionItem) {
+          section.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Toggle the clicked section
+      sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+      // Auto-expand first section on load (for desktop)
+      if (!expanded && allSections.length > 0 && sectionItem === allSections[0]) {
+        sectionItem.setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  /**
    * Load fragment content and build structure based on viewport
-   * Desktop: Flat list of all content
-   * Mobile: Nested accordion by section
+   * Both Desktop and Mobile: Use nested accordion structure
+   * Desktop has different visual presentation via CSS
    */
   async function loadNavFragmentContent(navSection, isMobile = false) {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
@@ -657,60 +677,36 @@ export default async function decorate(block) {
       const ul = document.createElement('ul');
       ul.classList.add('nav-fragment-content');
 
-      if (isMobile) {
-        // Mobile: Create nested accordion structure
-        fragmentSections.forEach((section) => {
-          // Try category-nav first, then standard processing
-          const processed = processCategoryNavSection(section)
-            || processStandardSectionMobile(section);
+      // Both mobile and desktop use nested accordion structure now
+      fragmentSections.forEach((section) => {
+        // Try category-nav first, then standard processing
+        const processed = processCategoryNavSection(section)
+          || processStandardSectionMobile(section);
 
-          if (!processed) return;
+        if (!processed) return;
 
-          // Create accordion item for this section
-          const sectionLi = document.createElement('li');
-          sectionLi.classList.add('nav-fragment-section');
-          sectionLi.setAttribute('aria-expanded', 'false');
+        // Create accordion item for this section
+        const sectionLi = document.createElement('li');
+        sectionLi.classList.add('nav-fragment-section');
+        sectionLi.setAttribute('aria-expanded', 'false');
 
-          // Create clickable title
-          const titleWrapper = document.createElement('p');
-          titleWrapper.classList.add('nav-fragment-section-title');
-          titleWrapper.textContent = processed.titleText;
-          sectionLi.appendChild(titleWrapper);
+        // Create clickable title
+        const titleWrapper = document.createElement('p');
+        titleWrapper.classList.add('nav-fragment-section-title');
+        titleWrapper.textContent = processed.titleText;
+        sectionLi.appendChild(titleWrapper);
 
-          // Create container for section content
-          const sectionUl = document.createElement('ul');
-          sectionUl.classList.add('nav-fragment-section-content');
+        // Create container for section content
+        const sectionUl = document.createElement('ul');
+        sectionUl.classList.add('nav-fragment-section-content');
 
-          const contentLi = document.createElement('li');
-          contentLi.appendChild(processed.content);
-          sectionUl.appendChild(contentLi);
+        const contentLi = document.createElement('li');
+        contentLi.appendChild(processed.content);
+        sectionUl.appendChild(contentLi);
 
-          sectionLi.appendChild(sectionUl);
-          ul.appendChild(sectionLi);
-        });
-      } else {
-        // Desktop: Flat list of all content
-        fragmentSections.forEach((section) => {
-          const categoryNavBlock = section.querySelector('.category-nav.block');
-
-          if (categoryNavBlock) {
-            // For category-nav sections, add the entire block
-            const li = document.createElement('li');
-            li.appendChild(categoryNavBlock.cloneNode(true));
-            ul.appendChild(li);
-          } else {
-            // For regular sections, add all children from default-content
-            const children = processStandardSectionDesktop(section);
-            if (children) {
-              children.forEach((child) => {
-                const li = document.createElement('li');
-                li.appendChild(child.cloneNode(true));
-                ul.appendChild(li);
-              });
-            }
-          }
-        });
-      }
+        sectionLi.appendChild(sectionUl);
+        ul.appendChild(sectionLi);
+      });
 
       if (ul.children.length > 0) {
         navSection.appendChild(ul);
@@ -723,9 +719,11 @@ export default async function decorate(block) {
         // Decorate any category-nav blocks that were added dynamically
         decorateCategoryNavBlocks(ul);
 
-        // Setup mobile accordion behavior using event delegation
+        // Setup accordion behavior using event delegation
         if (isMobile) {
           setupMobileAccordionBehavior(ul);
+        } else {
+          setupDesktopAccordionBehavior(ul);
         }
 
         return true;
@@ -748,11 +746,22 @@ export default async function decorate(block) {
       await loadNavFragmentContent(navSection, false); // false = desktop
       toggleAllNavSections(navSections);
       navSection.setAttribute('aria-expanded', 'true');
+
+      // Auto-expand first section in the dropdown
+      const firstSection = navSection.querySelector('.nav-fragment-section:first-child');
+      if (firstSection) {
+        firstSection.setAttribute('aria-expanded', 'true');
+      }
     });
 
     // Hide dropdown when mouse leaves
     navSection.addEventListener('mouseleave', () => {
       navSection.setAttribute('aria-expanded', 'false');
+      // Reset all inner sections
+      const allInnerSections = navSection.querySelectorAll('.nav-fragment-section');
+      allInnerSections.forEach((section) => {
+        section.setAttribute('aria-expanded', 'false');
+      });
     });
 
     // Title link navigates normally (no preventDefault)

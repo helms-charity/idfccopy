@@ -980,21 +980,6 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     color: var(--dark-red-color);
   }
 
-  header nav .nav-sections .default-content-wrapper>ul>li.nav-drop:first-child::after {
-    content: '';
-    display: inline-block;
-    position: absolute;
-    top: 45%;
-    right: 8px;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    color: #da3442;
-    border: 2px solid currentcolor;
-    border-width: 2px 2px 0 0;
-    rotate: 135deg;
-  }
-
   header nav .nav-sections .nav-drop:hover::after {
     top: unset;
     bottom: 0.5em;
@@ -1022,7 +1007,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   header nav .nav-sections .default-content-wrapper>ul>li p {
     min-height: auto;
     height: auto;
-    padding: 0;
+    padding: 10px 0;
     font-size: 12px;
     line-height: normal;
   }
@@ -1064,33 +1049,184 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     border-bottom: 1px solid #f1f1f1;
   }
 
-  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul {
-    display: block;
-    position: absolute;
-    width: 260px;
-    padding: 12px 11px;
+  /* Desktop: Full-width dropdown with 3-column layout */
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
+  header nav .nav-sections .default-content-wrapper>ul>li>ul:hover {
+    display: grid;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 60px;
+    width: 100vw;
+    max-width: none;
+    padding: 0;
     white-space: initial;
-    z-index: 99;
-    top: 30px;
-    left: 5px;
-    border-radius: 0 4px 8px 8px;
+    z-index: 999;
     background: #fff;
-    box-shadow: 0 0 6.8px 0 rgb(0 0 0 / 25%);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    border-radius: 0;
   }
 
-  header nav .nav-sections .default-content-wrapper>ul>li:first-child:hover>ul {
-    display: block;
+  /* Desktop: Create invisible bridge between nav button and dropdown */
+  header nav .nav-sections .default-content-wrapper>ul>li>ul::before {
+    content: '';
     position: absolute;
-    width: 180px;
-    padding: 12px 11px;
-    white-space: initial;
-    z-index: 99;
-    top: 38px;
+    top: -30px;
     left: 0;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 0 2px 0 rgb(0 0 0 / 50%);
+    right: 0;
+    height: 30px;
+    background: transparent;
   }
+
+  /* Desktop: 3-column grid layout */
+  header nav .nav-sections .nav-fragment-content {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    grid-auto-rows: auto;
+    gap: 0;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 70px;
+    min-height: 400px;
+    position: relative;
+  }
+
+  /* Desktop: Each section LI occupies only column 1 */
+  header nav .nav-sections .nav-fragment-section {
+    grid-column: 1;
+    border: none;
+    cursor: pointer;
+    display: contents;
+  }
+
+  /* Desktop: Section title stays in column 1 */
+  header nav .nav-sections .nav-fragment-section-title {
+    grid-column: 1;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #353535;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+
+  header nav .nav-sections .nav-fragment-section:hover .nav-fragment-section-title {
+    background-color: #f9f9f9;
+    color: var(--dark-red-color);
+  }
+
+  header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-title {
+    background-color: #f9f9f9;
+    color: var(--dark-red-color);
+    font-weight: 600;
+  }
+
+  /* Desktop: Column 2 - Section content (initially hidden) */
+  header nav .nav-sections .nav-fragment-section-content {
+    display: none;
+    grid-column: 2;
+    grid-row: 1 / span 100;
+    padding: 0 32px;
+    overflow-y: auto;
+    max-height: calc(70vh - 64px);
+    background: #f9f9f9;
+    box-shadow: none;
+    align-self: start;
+  }
+
+  /* Desktop: Show content in column 2 when section is expanded */
+  header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
+    display: block;
+  }
+
+  /* Desktop: Column 3 - Image placeholder */
+  header nav .nav-sections .nav-fragment-content::after {
+    content: '';
+    grid-column: 3;
+    grid-row: 1 / span 100;
+    background-color: #f9f9f9;
+    min-height: 300px;
+  }
+
+  /* Desktop: Style content items in column 2 */
+  header nav .nav-sections .nav-fragment-section-content > li {
+    padding: 0;
+    margin: 0;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content p.button-container,
+  header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
+    padding: 10px 16px;
+    margin: 0;
+    border-bottom: none;
+    font-size: 15px;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content p.button-container:hover,
+  header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
+    background-color: #f9f9f9;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content p.button-container a,
+  header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
+    color: #353535;
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  /* Desktop: View All button in column 2 */
+  header nav .nav-sections .nav-view-all-btn {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  /* Desktop: H4 sections in column 2 */
+  header nav .nav-sections .nav-h4-section {
+    margin: 24px 0 16px;
+  }
+
+  header nav .nav-sections .nav-h4-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #757575;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 16px 8px;
+    background-color: transparent;
+  }
+
+  header nav .nav-sections .nav-h4-section-content {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Override first-child special styles for new layout */
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
+  /*  position: fixed;
+    left: 0;
+    right: 0;
+    top: 60px;
+    width: 100vw;
+    max-width: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    */
+    padding: 20px 0 30px 70px;
+    width: 100%;
+    background: #fff;
+    box-shadow: 2px 2px 24px rgba(120, 120, 120, .08);
+    z-index: 2;
+    height: 518px;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
     color: var(--dark-red-color);
@@ -1098,36 +1234,9 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     cursor: pointer;
   }
 
-  header nav .nav-sections .default-content-wrapper>ul>li>ul::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 20px;
-    width: 20px;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-
-  }
-
   .header nav .nav-sections .default-content-wrapper>ul>li>ul>li:hover a {
     color: var(--dark-red-color);
     font-weight: 700;
-    font-family: var(--body-font-family-bold);
-    background: #f1f1f1;
-    border-radius: 4px;
-    display: block;
-    padding: 12px;
-  }
-
-
-  header nav .nav-sections .default-content-wrapper>ul>li:first-child>ul>li:first-child:hover a {
-    color: var(--dark-red-color);
-    font-weight: 700;
-    background: #f1f1f1;
-    border-radius: 4px;
-    display: block;
-    padding: 12px;
   }
 
   .nav-tools .default-content-wrapper {
