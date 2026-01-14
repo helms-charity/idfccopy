@@ -566,10 +566,10 @@
   }
 
   .hero-heritage-cc-container {
-    min-height: calc(100vh - 200px);
-    min-height: calc(100dvh - 200px);
-    height: calc(100vh - 200px);
-    height: calc(100dvh - 200px);
+    min-height: calc(100vh - 120px);
+    min-height: calc(100dvh - 120px);
+    height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
   }
 
 /* Decoration image - top right */
