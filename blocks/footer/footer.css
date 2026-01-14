@@ -24,7 +24,7 @@ footer {
   color: #FFFFFF;
 } */
 
-/* swapna removing this for desktop view */
+/* Removing this for desktop view */
 /* footer .footer>div .section>div {
   margin: 0;
   padding: 50px 0px;
@@ -107,7 +107,7 @@ footer .footer ul {
   }
 }
 
-/* swapna added for desktop view */
+/* Added for desktop view */
 footer .footer>div .section>div {
   margin: 0 auto;
 	align-items: anchor-center;
@@ -430,7 +430,7 @@ footer .footer>div .section:nth-child(4)>div p a {
     padding-top: 14px;
   }
 
-  /* swapna added for mobile view */
+  /* Added for mobile view */
 footer .footer>div .section>div {
   margin: 0;
   max-width: 100%;
