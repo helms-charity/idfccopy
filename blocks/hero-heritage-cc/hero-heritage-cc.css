@@ -1,14 +1,24 @@
 /* Mobile-first base styles */
+
+/* Section container - fixed height to prevent CLS */
+.hero-heritage-cc-container {
+  min-height: 100vh;
+  height: 100vh;
+  contain: layout style;
+}
+
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
   max-width: unset;
   padding: 0;
   height: 100vh;
+  min-height: 100vh;
 }
 
 .hero-heritage-cc {
   position: relative;
   padding: 0 0 40px;
   height: 100%;
+  min-height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -78,7 +88,7 @@
   height: 100%;
   background: var(--hero-heritage-cc-intro-gradient);
   z-index: 1;
-  animation: gradient-wipe 3s linear 2s forwards;
+  animation: gradient-wipe 3s ease-in-out 2s forwards;
 }
 
 .hero-heritage-cc-intro > div {
@@ -108,10 +118,11 @@
   max-width: 100%;
 }
 
-/* Logo wrapper - full width to match gradient coverage */
+/* Logo wrapper - full width to match gradient coverage, min-height to prevent CLS */
 .hero-heritage-cc-intro-logo-wrapper {
   position: relative;
   width: 100%;
+  min-height: 80px;
 }
 
 /* Both logos full-width, image centered inside - clip-path now syncs with gradient */
@@ -124,9 +135,14 @@
   align-items: center;
 }
 
-/* Logo images at native size */
+/* Logo images at native size with reserved space to prevent CLS */
 .hero-heritage-cc-intro-logo-hindi picture,
-.hero-heritage-cc-intro-logo-english picture,
+.hero-heritage-cc-intro-logo-english picture {
+  width: auto;
+  height: auto;
+  min-height: 80px;
+}
+
 .hero-heritage-cc-intro-logo-hindi img,
 .hero-heritage-cc-intro-logo-english img {
   width: auto;
@@ -137,7 +153,7 @@
 .hero-heritage-cc-intro-logo-hindi {
   position: relative;
   z-index: 2;
-  animation: logo-wipe-out 3s linear 2s forwards;
+  animation: logo-wipe-out 3s ease-in-out 2s forwards;
 }
 
 /* English logo - positioned absolutely, revealed by wipe synced with gradient */
@@ -147,7 +163,7 @@
   left: 0;
   z-index: 1;
   clip-path: inset(0 100% 0 0);
-  animation: logo-wipe-in 3s linear 2s forwards;
+  animation: logo-wipe-in 3s ease-in-out 2s forwards;
 }
 
 /* Banner section - positioned behind intro, centered content */
