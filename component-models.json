@@ -544,34 +544,8 @@
         "valueType": "string"
       },
       {
-        "component": "container",
-        "name": "ctas",
-        "label": "Call to Actions",
-        "multi": true,
-        "fields": [
-          {
-            "component": "text",
-            "name": "heading",
-            "label": "CTA Heading",
-            "valueType": "string"
-          },
-          {
-            "component": "aem-content",
-            "name": "link",
-            "label": "CTA Link",
-            "valueType": "string"
-          },
-          {
-            "component": "text",
-            "name": "linkText",
-            "label": "CTA Link Text",
-            "valueType": "string"
-          }
-        ]
-      },
-      {
         "component": "richtext",
-        "name": "bottomText",
+        "name": "bottomtext",
         "label": "Bottom Text",
         "valueType": "string"
       },
@@ -1021,13 +995,13 @@
       },
       {
         "component": "text",
-        "name": "popUpTriggerCTAText",
+        "name": "popup_text",
         "label": "Enter pop-up trigger CTA text",
         "valueType": "string"
       },
       {
         "component": "text",
-        "name": "popUpId",
+        "name": "popup_id",
         "label": "Add pop-up ID",
         "valueType": "string"
       }
@@ -1048,10 +1022,6 @@
           {
             "name": "Feature Cards",
             "value": "feature-cards"
-          },
-          {
-            "name": "Table",
-            "value": "table"
           }
         ]
       },
@@ -1103,6 +1073,95 @@
         "component": "aem-content",
         "name": "reference",
         "label": "Reference"
+      }
+    ]
+  },
+  {
+    "id": "hero-heritage-cc",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "headerCta_text",
+        "label": "Header CTA Text",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "headerCta_link",
+        "label": "Header CTA Link",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "intro_textTop",
+        "label": "Intro Text Top",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "intro_backgroundImage",
+        "label": "Intro Background Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "intro_gradientRevealColor",
+        "label": "Intro Gradient Reveal Color",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "intro_logoHindi",
+        "label": "Intro Logo Hindi",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "intro_logoEnglish",
+        "label": "Intro Logo English",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "intro_textCreditCardName",
+        "label": "Intro Credit Card Name Text",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "banner_topLogo",
+        "label": "Banner Top Logo",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "banner_text",
+        "label": "Banner Text",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "banner_image",
+        "label": "Banner Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "banner_ctaSection",
+        "label": "Banner CTA Section",
+        "value": ""
       }
     ]
   },
@@ -1335,8 +1394,8 @@
       {
         "component": "text",
         "valueType": "string",
-        "name": "ctaMobileText",
-        "label": "CTA Mobile Text"
+        "name": "ctaMobiletext",
+        "label": "CTA Mobile Button Text"
       },
       {
         "component": "richtext",

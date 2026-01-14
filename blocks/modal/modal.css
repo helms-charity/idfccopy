@@ -7,12 +7,18 @@ body.modal-open {
 }
 
 .modal dialog::backdrop {
-  /* Top 170px shows blurred nav, then transitions to silver gradient */
+  /* Top 170px shows blurred nav, rest is silver gradient */
   background: var(--modal-backdrop-gradient);
   backdrop-filter: blur(5px);
   background-size: cover;
-  background-position: 0 var(--modal-offset-height), center top var(--modal-offset-height);
-  background-repeat: no-repeat, no-repeat;
+  background-position: center top var(--modal-offset-height);
+  background-repeat: no-repeat;
+}
+
+/* When a page background image is authored, use it instead of the gradient */
+.modal dialog.has-page-background::backdrop {
+  background: var(--modal-page-background-image) center top var(--modal-offset-height) / cover no-repeat;
+  backdrop-filter: blur(5px);
 }
 
 /* Page background image - sits behind the dialog, above the backdrop */
@@ -55,19 +61,10 @@ body.modal-open {
   overflow-y: auto;
   overscroll-behavior: none;
   width: 100%;
-  max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px);
+  /* max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px); */
   padding: 32px 24px;
-}
-
-@media (width >= 900px) {
-  .modal dialog {
-    width: calc(100vw - 64px);
-  }
-  
-  .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px);
-    padding: 40px 48px;
-  }
+  position: relative;
+  z-index: 2; /* Above decoration images */
 }
 
 /* Heading styles for default modal */
@@ -110,6 +107,7 @@ body.modal-open {
   position: absolute;
   top: -64px;
   right: -128px;
+  z-index: 10; /* Above decoration images */
   width: 64px;
   height: 64px;
   margin: 0;
@@ -120,7 +118,6 @@ body.modal-open {
   color: var(--dark-red-color);
   line-height: 0;
   cursor: pointer;
-  z-index: 10;
 }
 
 .modal .close-button .icon.icon-close {
@@ -299,33 +296,55 @@ body.modal-open {
   margin: 0 0 12px;
 }
 
-/* Decorative corner overlays - uses CSS variable set by JS */
-.modal dialog.has-decoration::before,
-.modal dialog.has-decoration::after {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background-image: var(--modal-decoration-image);
-  background-size: contain;
-  background-repeat: no-repeat;
+/*
+ * Decorative corner overlays - inside dialog to be in top layer, positioned at viewport corners
+ * Dialog has transform: translateX(-50%) which creates a containing block for fixed children
+ * We use calc() to offset from dialog-relative to viewport-relative positioning
+ */
+.modal dialog .modal-decoration {
+  position: fixed;
+  width: 300px;
+  height: 300px;
   pointer-events: none;
-  z-index: 3;
+  z-index: -1; /* Behind dialog content but visible in top layer */
+  object-fit: contain;
 }
 
-/* Top right decoration */
-.modal dialog.has-decoration::before {
-  top: 0;
-  right: 0;
-  background-position: top right;
-}
+  /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
+  .modal dialog .modal-decoration-top-right {
+    top: -300px; /* 300px = height of decoration image */
+    right: -90px;
+  }
 
-/* Bottom left decoration - rotated 180 degrees */
-.modal dialog.has-decoration::after {
-  bottom: 0;
-  left: 0;
-  background-position: bottom left;
-  transform: rotate(180deg);
+  /* Bottom left decoration - offset to viewport left corner */
+  .modal dialog .modal-decoration-bottom-left {
+    bottom: -300px;
+    left: -90px;
+    transform: rotate(180deg);
+  }
+
+@media (width >= 1100px) {
+  .modal dialog {
+    width: calc(100vw - 64px);
+  }
+  
+  .modal dialog .modal-content {
+    max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px);
+    padding: 40px 48px;
+  }
+
+  /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
+  .modal dialog .modal-decoration-top-right {
+    top: -150px;
+    right: calc(-50vw + 460px); /* 460px = half of max dialog width (920px) */
+  }
+
+  /* Bottom left decoration - stick to viewport bottom-left using top calc */
+  .modal dialog .modal-decoration-bottom-left {
+    top: calc(100vh - 300px - var(--modal-offset-height) - 50px); /* 300px = height of decoration image, 50px = offset from bottom of viewport */
+    left: calc(-50vw + 460px);
+    transform: rotate(180deg);
+  }
 }
 
 /* ===== Special Content Styles ===== */
@@ -500,4 +519,250 @@ body.modal-open {
   .modal .section[data-id="mayura-card-modal"] > .default-content a {
   display: block;
   }
+}
+
+/* ===== Mayura Metal Concept Modal Styles ===== */
+
+.section[data-id="mayura-metal-concept-1"] {
+  display: flex;
+  justify-content: center;
+}
+
+.section[data-id="mayura-metal-concept-2"] {
+  display: none;
+  justify-content: center;
+}
+
+.section[data-id="mayura-metal-concept-3"] {
+  display: none;
+  justify-content: center;
+}
+
+.section[data-id="mayura-metal-concept-1"] > div > div > div > div:first-child {
+  margin:0;
+  position: relative;
+}
+.section[data-id="mayura-metal-concept-2"] > div > div > div > div:first-child {
+  margin-top: 13%;
+  margin-left: 5%;
+  position: relative;
+}
+
+.section[data-id="mayura-metal-concept-3"] > div > div > div > div:first-child {
+  margin-top: -10%;
+  position: relative;
+  width: 100;
+}
+
+.section[data-id^="mayura-metal-concept-"] p {
+  background: var(--Primary, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  padding-right: 10px;
+}
+
+.section[data-id^="mayura-metal-concept-"] p:last-child {
+  margin-top: 1rem;
+  background: unset;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  display: block;
+}
+
+.section[data-id^="mayura-metal-concept-"] p > a {
+  text-decoration: underline;
+  color: black;
+}
+
+.section[data-id^="mayura-metal-concept-"] div.columns-img-col {
+  position: relative;
+}
+
+.section[data-id="mayura-metal-concept-1"] div.columns-img-col::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 35%;
+  left: 11%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+.section[data-id="mayura-metal-concept-1"] div.columns-img-col::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 55%;
+  left: 52%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+  .section[data-id="mayura-metal-concept-1"] div.columns-img-col > picture::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16%;
+  left: 61%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+.section[data-id="mayura-metal-concept-2"] div.columns-img-col::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 22%;
+  left: 14%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+.section[data-id="mayura-metal-concept-2"] div.columns-img-col::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 62%;
+  left: 51%;
+  background: white;
+  width: 20px;
+  height: 20px; 
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+  .section[data-id="mayura-metal-concept-2"] div.columns-img-col > picture::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16%;
+  left: 61%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+.section[data-id="mayura-metal-concept-3"] div.columns-img-col::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 11%;
+  left: 22%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+.section[data-id="mayura-metal-concept-3"] div.columns-img-col::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 61%;
+  left: 42%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+  .section[data-id="mayura-metal-concept-3"] div.columns-img-col > picture::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 22%;
+  left: 81%;
+  background: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: zoomFade 2s infinite;
+}
+
+@keyframes zoomFade {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.5
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1
+  }
+
+  60% {
+    transform: scale(1);
+    opacity: 1
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0
+  }
+}
+
+/* Mayura hotspot container - covers the image column for click detection */
+.mayura-hotspot-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mayura-hotspot {
+  pointer-events: auto;
+}
+
+/* Mayura concept section fade transitions */
+
+.section[data-id^="mayura-metal-concept-"].fade-out {
+  opacity: 0;
+}
+
+.section[data-id^="mayura-metal-concept-"].fade-in {
+  opacity: 1;
+}
+
+@media (width < 900px) {
+
+  .section[data-id="mayura-metal-concept-1"] > div > div > div > div:first-child {
+  margin-top: 5%;
+  }
+  
+  .section[data-id="mayura-metal-concept-2"] > div > div > div > div:first-child {
+  margin-top: 5%;
+  margin-left: 30%;
+  }
+    
+  .section[data-id="mayura-metal-concept-3"] > div > div > div > div:first-child {
+  margin-top: 5%;
+  }
+
+  .section[data-id^="mayura-metal-concept-"] {
+    max-width: 510px;
+    justify-self: center;
+  }
+  
+
 }

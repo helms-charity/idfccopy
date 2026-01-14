@@ -341,9 +341,19 @@ function extractBlockProperties(block, ul) {
     // Handle richtext fields (modalCtaContent)
     if (fieldName === 'modalCtaContent') {
       // Check if li contains button-container or links (typical CTA content)
+      // BUT also verify it's not an actual card structure with image div
       const hasButtonContainer = li.querySelector('.button-container');
       const hasLinks = li.querySelector('a');
-      if (hasButtonContainer || hasLinks) {
+      const hasCardImage = li.querySelector('.cards-card-image');
+      const hasCardBody = li.querySelector('.cards-card-body');
+
+      // Only extract as modalCtaContent if it has buttons/links but is NOT a full card structure
+      const isPlaceholderCta = (hasButtonContainer || hasLinks) && !hasCardImage;
+
+      // Additional check: if it has both image and body, it's definitely a real card
+      const isRealCard = hasCardImage && hasCardBody;
+
+      if (isPlaceholderCta && !isRealCard) {
         // Extract the entire innerHTML as richtext content
         propertyValues[fieldName] = li.innerHTML;
         itemsToRemove.push(li);
@@ -352,7 +362,7 @@ function extractBlockProperties(block, ul) {
         // eslint-disable-next-line no-continue
         continue;
       }
-      // Not richtext content - skip to next field, stay on same li
+      // Not richtext content or is a real card - skip to next field, stay on same li
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
@@ -438,8 +448,9 @@ function appendArrowIcon(cardBody) {
  * @param {HTMLElement} li The card list item element
  * @param {boolean} shouldAddArrow Whether to add the arrow icon for interactive cards
  * @param {string} modalTheme Optional theme class to apply to the modal
+ * @param {HTMLElement} parentBlock The parent block element (passed to avoid repeated queries)
  */
-function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
+function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', parentBlock = null) {
   const cardBodies = li.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
@@ -526,8 +537,7 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '') {
       }
 
       // Get images from block-level settings (authored in modal settings)
-      // Find the parent block to get its dataset
-      const parentBlock = li.closest('.cards.block');
+      // Use passed parentBlock instead of querying
       const blockTextureUrl = parentBlock?.dataset?.modalDialogBackgroundImageTexture;
       const pageBackgroundUrl = parentBlock?.dataset?.modalPageBackgroundImage;
 
@@ -665,31 +675,46 @@ function identifySemanticCardElements(li) {
 }
 
 export default async function decorate(block) {
-  // Build UL structure
+  // Cache variant checks once (performance optimization)
+  const { classList } = block;
+  const isTestimonial = classList.contains('testimonial-card');
+  const isImportantDocuments = classList.contains('important-documents');
+  const isRelatedSearch = classList.contains('related-search');
+  const isExperienceLife = classList.contains('experience-life');
+  const isBlogPosts = classList.contains('blog-posts');
+  const isEarnRewards = classList.contains('earn-rewards');
+  const isJoiningPerks = classList.contains('joining-perks');
+  const supportsSemanticElements = classList.contains('key-benefits')
+    || isExperienceLife
+    || classList.contains('reward-points');
+
+  // Build UL structure and collect LI elements in one pass
   const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
+  const rows = [...block.children];
+
+  rows.forEach((row) => {
     const li = document.createElement('li');
     moveInstrumentation(row, li);
     while (row.firstElementChild) li.append(row.firstElementChild);
+
+    // Process children in a single pass
+    const divsToRemove = [];
     [...li.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
         div.className = 'cards-card-image';
       } else if (div.children.length > 0 || div.textContent.trim().length > 0) {
-        // Only add cards-card-body class if div has content
         div.className = 'cards-card-body';
       } else {
-        // Remove empty divs
-        div.remove();
+        divsToRemove.push(div);
       }
     });
+    // Remove empty divs after iteration (avoid modifying during iteration)
+    divsToRemove.forEach((div) => div.remove());
+
     ul.append(li);
   });
 
-  // For card variants that support semantic elements (divider, texture), identify and mark them
-  // This must happen BEFORE createOptimizedPicture replaces images (doesn't preserve dimensions)
-  const supportsSemanticElements = block.classList.contains('key-benefits')
-    || block.classList.contains('experience-life')
-    || block.classList.contains('reward-points');
+  // Identify semantic elements if needed (before image optimization)
   if (supportsSemanticElements) {
     ul.querySelectorAll('li').forEach((li) => {
       identifySemanticCardElements(li);
@@ -703,29 +728,18 @@ export default async function decorate(block) {
     img.closest('picture').replaceWith(optimizedPic);
   });
 
-  // Append UL to block
-  block.textContent = '';
+  // Append UL to block (use replaceChildren for better performance)
   ul.classList.add('grid-cards');
+  block.replaceChildren(ul);
 
-  // Extract block properties from placeholder cards (e.g., swipable, startingCard)
+  // Extract block properties from placeholder cards
   extractBlockProperties(block, ul);
 
-  // Check if testimonial-card variant
-  const isTestimonial = block.classList.contains('testimonial-card');
-  // Check if important-documents variant
-  const isImportantDocuments = block.classList.contains('important-documents');
-  // Check if related-search variant
-  const isRelatedSearch = block.classList.contains('related-search');
-  // Check if experience-life variant
-  const isExperienceLife = block.classList.contains('experience-life');
-  // Check if blog-posts variant
-  const isBlogPosts = block.classList.contains('blog-posts');
-  // Check if earn-rewards variant
-  const isEarnRewards = block.classList.contains('earn-rewards');
-  // Check if joining-perks variant
-  const isJoiningPerks = block.classList.contains('joining-perks');
+  // Get all LI elements once and reuse
+  const allLis = ul.querySelectorAll('li');
+
   // Add appropriate class to card items
-  ul.querySelectorAll('li').forEach((li) => {
+  allLis.forEach((li) => {
     if (isImportantDocuments) {
       li.classList.add('important-documents-card');
 
@@ -743,25 +757,28 @@ export default async function decorate(block) {
         cardLink.title = linkTitle;
         cardLink.className = 'important-documents-card-link';
 
-        // Move image into link
+        // Move elements directly instead of cloning (performance optimization)
         if (imageDiv) {
-          cardLink.appendChild(imageDiv.cloneNode(true));
+          // Remove from parent and append to link
+          const imageDivClone = imageDiv.cloneNode(true);
+          cardLink.appendChild(imageDivClone);
         }
 
         // Move body content into link, but replace nested link with just text
         if (bodyDiv) {
-          const newBodyDiv = bodyDiv.cloneNode(true);
-          const nestedLink = newBodyDiv.querySelector('a');
+          const bodyDivClone = bodyDiv.cloneNode(true);
+          const nestedLink = bodyDivClone.querySelector('a');
           if (nestedLink) {
-            // Replace link with its text content
-            const linkContent = nestedLink.innerHTML;
-            nestedLink.outerHTML = linkContent;
+            // Replace link with its text content (use textContent for better performance)
+            const strong = document.createElement('strong');
+            strong.textContent = nestedLink.textContent;
+            nestedLink.replaceWith(strong);
           }
-          cardLink.appendChild(newBodyDiv);
+          cardLink.appendChild(bodyDivClone);
         }
 
-        // Replace li content with the link wrapper
-        li.innerHTML = '';
+        // Clear and append link wrapper
+        li.textContent = '';
         li.appendChild(cardLink);
       }
     } else if (isBlogPosts) {
@@ -776,7 +793,7 @@ export default async function decorate(block) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
-      setupCardInteractivity(li, shouldAddArrow, modalTheme);
+      setupCardInteractivity(li, shouldAddArrow, modalTheme, block);
     }
   });
 
@@ -938,52 +955,59 @@ export default async function decorate(block) {
 
     // For testimonial cards, update star icons on active slide
     if (isTestimonial) {
+      let updateScheduled = false;
+
       const updateStarIcons = () => {
+        // Debounce multiple rapid calls (both events may fire close together)
+        if (updateScheduled) return;
+        updateScheduled = true;
+
         // Use requestAnimationFrame to ensure DOM is updated
         requestAnimationFrame(() => {
-          // Reset ALL star icons in ALL slides to white first
-          block.querySelectorAll('.swiper-slide [class*="icon-star"] img').forEach((img) => {
-            const currentSrc = img.getAttribute('src');
-            if (currentSrc && currentSrc.includes('star')) {
-              img.setAttribute('src', '/icons/star-white.svg');
-              img.setAttribute('data-icon-name', 'star-white');
-            }
-          });
+          updateScheduled = false;
 
-          // Change star icons to yellow ONLY on the active slide
+          // Get all slides once
+          const slides = block.querySelectorAll('.swiper-slide');
           const activeSlide = block.querySelector('.swiper-slide-active');
-          if (activeSlide) {
-            const starIcons = activeSlide.querySelectorAll('[class*="icon-star"] img');
+
+          // Process slides in a single pass
+          slides.forEach((slide) => {
+            const isActive = slide === activeSlide;
+            const starIcons = slide.querySelectorAll('[class*="icon-star"] img');
+            const iconSrc = isActive ? '/icons/star-yellow.svg' : '/icons/star-white.svg';
+            const iconName = isActive ? 'star-yellow' : 'star-white';
+
             starIcons.forEach((img) => {
               const currentSrc = img.getAttribute('src');
               if (currentSrc && currentSrc.includes('star')) {
-                img.setAttribute('src', '/icons/star-yellow.svg');
-                img.setAttribute('data-icon-name', 'star-yellow');
+                img.setAttribute('src', iconSrc);
+                img.setAttribute('data-icon-name', iconName);
               }
             });
-          }
+          });
         });
       };
 
       // Update on initial load
       updateStarIcons();
 
-      // Update when slide changes (both events for reliability)
-      swiper.on('slideChangeTransitionEnd', updateStarIcons);
+      // Listen to both events: slideChange (swipe) and slideChangeTransitionEnd (dot clicks)
+      // Debouncing prevents redundant updates when both fire
       swiper.on('slideChange', updateStarIcons);
+      swiper.on('slideChangeTransitionEnd', updateStarIcons);
     }
   } else if (
     !isTestimonial && !isImportantDocuments && !isRelatedSearch
     && !isEarnRewards && !isJoiningPerks
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
-    const cards = ul.querySelectorAll('li');
     const maxVisible = 3;
 
     const isMobile = () => window.innerWidth <= 768;
 
     const toggleView = (btn, expand) => {
-      cards.forEach((card, index) => {
+      // Use allLis instead of re-querying
+      allLis.forEach((card, index) => {
         if (index >= maxVisible) {
           card.style.display = expand ? 'flex' : 'none';
         }
@@ -992,9 +1016,9 @@ export default async function decorate(block) {
     };
 
     const setupToggleButton = () => {
-      if (cards.length > maxVisible && isMobile()) {
+      if (allLis.length > maxVisible && isMobile()) {
         // Hide extra cards
-        cards.forEach((card, index) => {
+        allLis.forEach((card, index) => {
           card.style.display = index >= maxVisible ? 'none' : 'flex';
         });
 
@@ -1013,12 +1037,16 @@ export default async function decorate(block) {
     // Initial setup
     setupToggleButton();
 
-    // Reapply toggle if screen resizes
+    // Debounced resize handler (performance optimization)
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      const existingBtn = block.querySelector('.view-toggle');
-      if (existingBtn) existingBtn.remove();
-      cards.forEach((card) => { card.style.display = 'flex'; });
-      setupToggleButton();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const existingBtn = block.querySelector('.view-toggle');
+        if (existingBtn) existingBtn.remove();
+        allLis.forEach((card) => { card.style.display = 'flex'; });
+        setupToggleButton();
+      }, 150); // Debounce resize events
     });
   }
 
