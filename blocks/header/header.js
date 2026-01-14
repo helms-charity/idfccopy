@@ -287,6 +287,16 @@ export default async function decorate(block) {
     navToolsWrapper.appendChild(searchElement);
   }
 
+  // Extract odometer items from original list (before cloning/modifying)
+  let odometerItemTexts = [];
+  if (toolsUl) {
+    const originalLis = Array.from(toolsUl.querySelectorAll('li'));
+    if (originalLis.length > 1) {
+      // Get all items except the last one (Login)
+      odometerItemTexts = originalLis.slice(0, -1).map((li) => li.textContent.trim());
+    }
+  }
+
   // Build the tools list with dynamic odometer
   if (toolsUl) {
     const toolsUlClone = toolsUl.cloneNode(true);
@@ -371,8 +381,76 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Create mobile odometer for Customer Service (displayed at top when nav expanded)
+  const mobileOdometerContainer = document.createElement('div');
+  mobileOdometerContainer.className = 'mobile-customer-service-odometer';
+
+  // Use the same odometer items extracted above
+  if (odometerItemTexts.length > 0) {
+    const mobileOdometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
+    const firstItemText = odometerItemTexts[0];
+
+    mobileOdometerContainer.innerHTML = `
+      <div class="grnt-animation-odometer">
+        <div class="grnt-odometer-track">
+          ${mobileOdometerSpans}
+          <span>${firstItemText}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Start mobile odometer animation (only when nav is first expanded)
+  let mobileOdometerStarted = false;
+  function startMobileOdometerAnimation() {
+    if (mobileOdometerStarted) return;
+    mobileOdometerStarted = true;
+
+    const mobileOdometerTrack = mobileOdometerContainer.querySelector('.grnt-odometer-track');
+    if (!mobileOdometerTrack) return;
+
+    const spans = mobileOdometerTrack.querySelectorAll('span');
+    const spanHeight = 20;
+    const totalItems = spans.length - 1;
+    let currentIndex = 0;
+
+    // Ensure we start at the first item
+    mobileOdometerTrack.style.transform = 'translateY(0)';
+
+    setInterval(() => {
+      currentIndex += 1;
+      const translateY = currentIndex * spanHeight;
+      mobileOdometerTrack.style.transform = `translateY(-${translateY}px)`;
+
+      if (currentIndex >= totalItems) {
+        setTimeout(() => {
+          mobileOdometerTrack.style.transition = 'none';
+          mobileOdometerTrack.style.transform = 'translateY(0)';
+          currentIndex = 0;
+          setTimeout(() => {
+            mobileOdometerTrack.style.transition = 'transform 0.6s ease-in-out';
+          }, 50);
+        }, 600);
+      }
+    }, 1500);
+  }
+
+  // Watch for nav expansion to start mobile odometer
+  const navObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'aria-expanded') {
+        const isExpanded = nav.getAttribute('aria-expanded') === 'true';
+        if (isExpanded && !mobileOdometerStarted) {
+          setTimeout(startMobileOdometerAnimation, 100);
+        }
+      }
+    });
+  });
+  navObserver.observe(nav, { attributes: true });
+
   // Assemble the navigation
   nav.appendChild(navBrand);
+  nav.appendChild(mobileOdometerContainer); // Add mobile odometer
   nav.appendChild(navSections);
   nav.appendChild(navTools);
 
@@ -542,9 +620,19 @@ export default async function decorate(block) {
 
       const subUl = sectionItem.querySelector('.nav-fragment-section-content');
       if (subUl) {
+        const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
+
+        // Close all other sections first (accordion behavior)
+        const allSections = ul.querySelectorAll('.nav-fragment-section');
+        allSections.forEach((section) => {
+          if (section !== sectionItem) {
+            section.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Toggle the clicked section
         const { scrollHeight } = subUl;
         sectionItem.style.setProperty('--section-scroll-height', `${scrollHeight}px`);
-        const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
         sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       }
     });

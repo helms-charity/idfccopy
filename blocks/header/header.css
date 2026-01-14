@@ -4,7 +4,7 @@
 
 /* header and nav layout */
 header .nav-wrapper {
-  background-color: #fff;
+  background-color: #f9f9f9;
   width: 100%;
   z-index: 2;
   position: fixed;
@@ -286,7 +286,9 @@ header nav .nav-sections .nav-fragment-section-content {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.3s ease-in-out;
-  background-color: #fff;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 12px 1px rgb(0 0 0 / 4%);
 }
 
 header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
@@ -317,13 +319,13 @@ header nav .nav-sections .nav-fragment-section-content p.button-container a {
 }
 
 /* Privilege Program items (p elements with icons, not button-container) */
-header nav .nav-sections .nav-fragment-section-content p:not(.button-container) {
+header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
   padding: 12px 20px 12px 32px;
   margin: 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
-header nav .nav-sections .nav-fragment-section-content p:not(.button-container):hover {
+header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
   background-color: #f9f9f9;
 }
 
@@ -433,7 +435,9 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content {
   list-style: none;
   padding: 0;
   margin: 0;
-  background-color: #fff;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 12px 1px rgb(0 0 0 / 4%);
   text-indent: 0;
 }
 
@@ -468,7 +472,7 @@ header nav .nav-sections .nav-tab-bar {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #fff;
+  background-color: #f9f9f9;
   z-index: 10;
 }
 
@@ -552,6 +556,13 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-title {
   padding-right: 40px;
 }
 
+/* Tab view: Change background when section is expanded */
+header nav .nav-sections.tab-view-active .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-title {
+  background-color: #f2f2f2;
+  border-radius: 16px;
+  box-shadow: 0 0 12px 1px rgb(0 0 0 / 4%);
+}
+
 header nav .nav-sections.tab-view-active .nav-fragment-section-content > li {
   font-size: var(--body-font-size-s);
   font-weight: 400;
@@ -627,9 +638,15 @@ header nav .nav-sections.tab-view-active .nav-h4-section-content > li {
   margin: 0;
 }
 
+/* Tab view: Ensure H4 content has same indentation as other content */
+header nav .nav-sections.tab-view-active .nav-h4-section-content p {
+  padding-left: 40px;
+  padding-right: 20px;
+}
+
 /* Tab view overrides: simpler padding and styling */
 header nav .nav-sections.tab-view-active .nav-fragment-section-content p.button-container {
-  padding-left: 20px;
+  padding-left: 40px;
   padding-right: 20px;
   border-bottom: none;
   font-size: var(--body-font-size-s);
@@ -646,8 +663,8 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-content p.button-
 }
 
 /* Tab view: Privilege Program items (with icons) */
-header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.button-container) {
-  padding-left: 20px;
+header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
+  padding-left: 40px;
   padding-right: 20px;
   border-bottom: none;
   font-size: var(--body-font-size-s);
@@ -800,11 +817,10 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper {
   flex-wrap: nowrap;
 }
 
-/* Mobile: Create customer service text at top when expanded */
-header nav[aria-expanded='true']::before {
-  content: 'Customer Service';
+/* Mobile: Customer service odometer container */
+.mobile-customer-service-odometer {
   grid-area: customer-service;
-  display: flex;
+  display: none; /* Hidden by default, shown when nav expanded */
   align-items: center;
   justify-self: start;
   font-size: 13px;
@@ -813,6 +829,33 @@ header nav[aria-expanded='true']::before {
   padding: 8px 16px;
   border: 1px solid #353535;
   border-radius: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 36px;
+}
+
+header nav[aria-expanded='true'] .mobile-customer-service-odometer {
+  display: flex;
+}
+
+.mobile-customer-service-odometer .grnt-animation-odometer {
+  display: inline-block;
+  height: 20px;
+  overflow: hidden;
+  vertical-align: middle;
+  line-height: 20px;
+}
+
+.mobile-customer-service-odometer .grnt-odometer-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s ease-in-out;
+}
+
+.mobile-customer-service-odometer .grnt-odometer-track span {
+  display: block;
+  height: 20px;
+  line-height: 20px;
   white-space: nowrap;
 }
 
