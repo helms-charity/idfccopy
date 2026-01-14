@@ -591,6 +591,11 @@ export function handleSectionMetadata(el) {
     }
   });
 
+  // If 'id' metadata is defined, also set it as the actual HTML id attribute
+  if (metadata.id?.text) {
+    section.id = metadata.id.text;
+  }
+
   // Handle SECTION background images (desktop and mobile variants)
   const desktopBgImg = metadata.sectionbackgroundimage?.content
     ? extractImageUrl(metadata.sectionbackgroundimage.content)
