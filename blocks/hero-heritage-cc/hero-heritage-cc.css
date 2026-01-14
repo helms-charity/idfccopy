@@ -3,10 +3,10 @@
 /* Section container - fixed height to prevent CLS */
 .hero-heritage-cc-container {
   position: relative;
-  min-height: calc(100vh - 200px);
-  min-height: calc(100dvh - 200px);
-  height: calc(100vh - 200px);
-  height: calc(100dvh - 200px);
+  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 60px);
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
   contain: strict;
   overflow: hidden;
 }
@@ -536,6 +536,13 @@
 @media (width >= 900px) {
   .hero-heritage-cc-header-cta {
     padding: 0 60px;
+  }
+
+  .hero-heritage-cc-container {
+    min-height: calc(100vh - 200px);
+    min-height: calc(100dvh - 200px);
+    height: calc(100vh - 200px);
+    height: calc(100dvh - 200px);
   }
 
 /* Decoration image - top right */
