@@ -103,7 +103,7 @@ function buildCardFromRow(row) {
 /**
  * Parse a single category-nav block to extract its data
  */
-function parseCategoryNavBlock(block) {
+export function parseCategoryNavBlock(block) {
   // Get the category name from the section's first text element
   const section = block.closest('.section');
   const textElements = section?.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
@@ -178,7 +178,7 @@ function parseCategoryNavBlock(block) {
 /**
  * Build dropdown content
  */
-function buildDropdown(categoryData) {
+export function buildDropdown(categoryData) {
   if (!categoryData.items || categoryData.items.length === 0) return null;
 
   const dropdown = document.createElement('div');

@@ -1,5 +1,6 @@
 import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../../scripts/scripts.js';
+import { parseCategoryNavBlock, buildDropdown } from '../category-nav/category-nav.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -20,18 +21,6 @@ function closeOnEscape(e) {
     }
   }
 }
-
-// function closeOnFocusLost(e) {
-//   const nav = e.currentTarget;
-//   const relatedTarget = e.relatedTarget;
-
-//   // Only close mobile menu if focus is lost to something outside the nav
-//   if (!isDesktop.matches && (!relatedTarget || !nav.contains(relatedTarget))) {
-//     const navSections = nav.querySelector('.nav-sections');
-//     // eslint-disable-next-line no-use-before-define
-//     toggleMenu(nav, navSections, false);
-//   }
-// }
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
@@ -70,6 +59,29 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+  // Reset tab view when closing menu
+  if (expanded) {
+    navSections.classList.remove('tab-view-active');
+    const tabBar = navSections.querySelector('.nav-tab-bar');
+    if (tabBar) {
+      tabBar.remove();
+    }
+    // Reset all sections display
+    const sectionsUl = navSections.querySelector('.default-content-wrapper > ul');
+    const allSections = sectionsUl ? Array.from(sectionsUl.querySelectorAll(':scope > li')) : [];
+    allSections.forEach((section) => {
+      section.style.display = '';
+      section.classList.remove('active-tab-content');
+      section.setAttribute('aria-expanded', 'false');
+      // Remove explore links
+      const exploreLink = section.querySelector('.explore-section-link');
+      if (exploreLink) {
+        exploreLink.remove();
+      }
+    });
+  }
+
   // Always collapse all nav sections when toggling the menu
   toggleAllNavSections(navSections, false);
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
@@ -131,19 +143,32 @@ export default async function decorate(block) {
   navTools.classList.add('nav-tools', 'section');
 
   // Extract logo from fragment (if exists) or use default
+  // Authoring contract: Logo should be in a section with data-id="logo"
   let logoImgSrc = './media_104481e8050954141720a87a3e4a576a65e2e8774.png';
   let logoImgAlt = 'IDFC FIRST Bank';
 
-  // Look for the last image in the fragment (logo should be at the bottom)
-  const allImages = fragment.querySelectorAll('img');
-  if (allImages.length > 0) {
-    const lastImg = allImages[allImages.length - 1];
-    const srcFromFragment = lastImg.getAttribute('src');
-    logoImgAlt = lastImg.getAttribute('alt') || logoImgAlt;
+  const logoSection = fragment.querySelector('.section[data-id="logo"]');
+  if (logoSection) {
+    const logoImg = logoSection.querySelector('img');
+    if (logoImg) {
+      const srcFromFragment = logoImg.getAttribute('src');
+      logoImgAlt = logoImg.getAttribute('alt') || logoImgAlt;
 
-    // Use the image from fragment if it exists and looks valid
-    if (srcFromFragment) {
-      logoImgSrc = srcFromFragment;
+      if (srcFromFragment) {
+        logoImgSrc = srcFromFragment;
+      }
+    }
+  } else {
+    // Fallback: Look for the last image in the fragment (backward compatibility)
+    const allImages = fragment.querySelectorAll('img');
+    if (allImages.length > 0) {
+      const lastImg = allImages[allImages.length - 1];
+      const srcFromFragment = lastImg.getAttribute('src');
+      logoImgAlt = lastImg.getAttribute('alt') || logoImgAlt;
+
+      if (srcFromFragment) {
+        logoImgSrc = srcFromFragment;
+      }
     }
   }
 
@@ -157,16 +182,8 @@ export default async function decorate(block) {
   navSectionsWrapper.classList.add('default-content-wrapper');
   const navSectionsUl = document.createElement('ul');
 
-  // Debug: log what we got from the fragment
-  // eslint-disable-next-line no-console
-  console.log('Fragment:', fragment);
-  // eslint-disable-next-line no-console
-  console.log('ContentWrapper:', contentWrapper);
-
   // Get sections from the fragment
   const sections = fragment.querySelectorAll(':scope > .section');
-  // eslint-disable-next-line no-console
-  console.log('Found sections:', sections.length, sections);
 
   sections.forEach((section) => {
     // Get section data-id as title
@@ -225,18 +242,24 @@ export default async function decorate(block) {
   navSectionsWrapper.appendChild(navSectionsUl);
   navSections.appendChild(navSectionsWrapper);
 
-  // Build nav-tools section - look for tools/customer-service section
+  // Cache frequently accessed DOM elements for performance
+  const domCache = {
+    navSectionsUl,
+    get allNavSections() {
+      // Lazy getter that returns fresh array each time (in case DOM changes)
+      return Array.from(this.navSectionsUl.querySelectorAll(':scope > li'));
+    },
+  };
+
+  // Build nav-tools section
+  // Authoring contract: Section must have data-id="nav-tools"
   const navToolsWrapper = document.createElement('div');
   navToolsWrapper.classList.add('default-content-wrapper');
 
-  // Find the tools section (could be "tools", "customer service", "customer-service", etc.)
+  // Find the nav-tools section by exact ID match
   const toolsSection = Array.from(sections).find((section) => {
     const sectionId = section.getAttribute('data-id');
-    return sectionId && (
-      sectionId.toLowerCase().includes('tool')
-      || sectionId.toLowerCase().includes('customer')
-      || sectionId.toLowerCase().includes('service')
-    );
+    return sectionId === 'nav-tools';
   });
 
   let searchP;
@@ -246,13 +269,10 @@ export default async function decorate(block) {
     // Get content from the tools section
     const toolsContent = toolsSection.querySelector('.default-content');
     if (toolsContent) {
-      // Find search bar text
-      searchP = Array.from(toolsContent.querySelectorAll('p')).find((p) => {
-        const strong = p.querySelector('strong');
-        return strong && strong.textContent.toLowerCase().includes('what are you looking for');
-      });
+      // Authoring contract: First <p> with <strong> is the search bar text
+      searchP = toolsContent.querySelector('p strong')?.parentElement;
 
-      // Find the tools list (Customer Service items + Login)
+      // Authoring contract: First <ul> is the tools list (odometer items + login)
       toolsUl = toolsContent.querySelector('ul');
     }
   }
@@ -265,6 +285,16 @@ export default async function decorate(block) {
     const searchElement = document.createElement('p');
     searchElement.innerHTML = `<span class="icon icon-search"></span><strong>${searchText}</strong>`;
     navToolsWrapper.appendChild(searchElement);
+  }
+
+  // Extract odometer items from original list (before cloning/modifying)
+  let odometerItemTexts = [];
+  if (toolsUl) {
+    const originalLis = Array.from(toolsUl.querySelectorAll('li'));
+    if (originalLis.length > 1) {
+      // Get all items except the last one (Login)
+      odometerItemTexts = originalLis.slice(0, -1).map((li) => li.textContent.trim());
+    }
   }
 
   // Build the tools list with dynamic odometer
@@ -299,8 +329,8 @@ export default async function decorate(block) {
       // Remove the middle items (they're now in the odometer)
       odometerItems.slice(1).forEach((li) => li.remove());
 
-      // Add login icon to the Login li (should now be the last child)
-      if (loginLi && loginLi.textContent.toLowerCase().includes('login')) {
+      // Add login icon to the last <li> (authoring contract: last item is always Login)
+      if (loginLi) {
         const existingIcon = loginLi.querySelector('.icon-login_header');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
@@ -351,10 +381,262 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Create mobile odometer for Customer Service (displayed at top when nav expanded)
+  const mobileOdometerContainer = document.createElement('div');
+  mobileOdometerContainer.className = 'mobile-customer-service-odometer';
+
+  // Use the same odometer items extracted above
+  if (odometerItemTexts.length > 0) {
+    const mobileOdometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
+    const firstItemText = odometerItemTexts[0];
+
+    mobileOdometerContainer.innerHTML = `
+      <div class="grnt-animation-odometer">
+        <div class="grnt-odometer-track">
+          ${mobileOdometerSpans}
+          <span>${firstItemText}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Start mobile odometer animation (only when nav is first expanded)
+  let mobileOdometerStarted = false;
+  function startMobileOdometerAnimation() {
+    if (mobileOdometerStarted) return;
+    mobileOdometerStarted = true;
+
+    const mobileOdometerTrack = mobileOdometerContainer.querySelector('.grnt-odometer-track');
+    if (!mobileOdometerTrack) return;
+
+    const spans = mobileOdometerTrack.querySelectorAll('span');
+    const spanHeight = 20;
+    const totalItems = spans.length - 1;
+    let currentIndex = 0;
+
+    // Ensure we start at the first item
+    mobileOdometerTrack.style.transform = 'translateY(0)';
+
+    setInterval(() => {
+      currentIndex += 1;
+      const translateY = currentIndex * spanHeight;
+      mobileOdometerTrack.style.transform = `translateY(-${translateY}px)`;
+
+      if (currentIndex >= totalItems) {
+        setTimeout(() => {
+          mobileOdometerTrack.style.transition = 'none';
+          mobileOdometerTrack.style.transform = 'translateY(0)';
+          currentIndex = 0;
+          setTimeout(() => {
+            mobileOdometerTrack.style.transition = 'transform 0.6s ease-in-out';
+          }, 50);
+        }, 600);
+      }
+    }, 1500);
+  }
+
+  // Watch for nav expansion to start mobile odometer
+  const navObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'aria-expanded') {
+        const isExpanded = nav.getAttribute('aria-expanded') === 'true';
+        if (isExpanded && !mobileOdometerStarted) {
+          setTimeout(startMobileOdometerAnimation, 100);
+        }
+      }
+    });
+  });
+  navObserver.observe(nav, { attributes: true });
+
   // Assemble the navigation
   nav.appendChild(navBrand);
+  nav.appendChild(mobileOdometerContainer); // Add mobile odometer
   nav.appendChild(navSections);
   nav.appendChild(navTools);
+
+  /**
+   * Process category-nav section content
+   */
+  function processCategoryNavSection(section) {
+    const defaultContent = section.querySelector('.default-content');
+    if (!defaultContent) return null;
+
+    const categoryNavBlock = section.querySelector('.category-nav.block');
+    if (!categoryNavBlock) return null;
+
+    // Get title from default-content
+    const titleP = defaultContent.querySelector('p');
+    if (!titleP) return null;
+
+    return {
+      titleText: titleP.textContent.trim(),
+      content: categoryNavBlock.cloneNode(true),
+    };
+  }
+
+  /**
+   * Process standard section content for mobile accordion view
+   */
+  function processStandardSectionMobile(section) {
+    const defaultContent = section.querySelector('.default-content');
+    if (!defaultContent) return null;
+
+    const children = Array.from(defaultContent.children);
+    if (children.length === 0) return null;
+
+    const titleElement = children.find((child) => child.tagName === 'H3');
+    if (!titleElement) return null;
+
+    const titleText = titleElement.textContent;
+
+    // Extract "View All" link from H3 if it exists
+    let viewAllLink = null;
+    const h3Link = titleElement.querySelector('a');
+    if (h3Link) {
+      viewAllLink = {
+        text: 'View All',
+        url: h3Link.href,
+      };
+    }
+
+    // Create wrapper for non-title children
+    const sectionContent = document.createElement('div');
+
+    // Add "View All" button at the top if link exists
+    if (viewAllLink) {
+      const viewAllBtn = document.createElement('a');
+      viewAllBtn.href = viewAllLink.url;
+      viewAllBtn.classList.add('nav-view-all-btn');
+      viewAllBtn.innerHTML = `${viewAllLink.text} <span class="icon icon-arrow-right-alt"></span>`;
+      sectionContent.appendChild(viewAllBtn);
+      // Decorate the icon we just created (it wasn't in the fragment)
+      decorateIcons(viewAllBtn);
+    }
+
+    // Process children and handle H4 subsections
+    let currentH4Section = null;
+    let currentH4Content = null;
+
+    children.forEach((child) => {
+      if (child.tagName === 'H3') {
+        return; // Skip H3, we already processed it
+      }
+
+      if (child.tagName === 'H4') {
+        // Close previous H4 section if exists
+        if (currentH4Section) {
+          sectionContent.appendChild(currentH4Section);
+        }
+
+        // Create new H4 section (not an accordion, just a header with content)
+        currentH4Section = document.createElement('div');
+        currentH4Section.classList.add('nav-h4-section');
+
+        const h4Title = document.createElement('p');
+        h4Title.classList.add('nav-h4-section-title');
+        h4Title.textContent = child.textContent.trim();
+        currentH4Section.appendChild(h4Title);
+
+        currentH4Content = document.createElement('ul');
+        currentH4Content.classList.add('nav-h4-section-content');
+        currentH4Section.appendChild(currentH4Content);
+      } else if (currentH4Section) {
+        // Add content under current H4
+        const li = document.createElement('li');
+        li.appendChild(child.cloneNode(true));
+        currentH4Content.appendChild(li);
+      } else {
+        // Top-level content (no H4)
+        sectionContent.appendChild(child.cloneNode(true));
+      }
+    });
+
+    // Don't forget to append the last H4 section if exists
+    if (currentH4Section) {
+      sectionContent.appendChild(currentH4Section);
+    }
+
+    return {
+      titleText,
+      content: sectionContent,
+    };
+  }
+
+  /**
+   * Process standard section content for desktop flat list
+   */
+  function processStandardSectionDesktop(section) {
+    const defaultContent = section.querySelector('.default-content');
+    if (!defaultContent) return null;
+
+    const children = Array.from(defaultContent.children);
+    return children.length > 0 ? children : null;
+  }
+
+  /**
+   * Decorate category-nav blocks after adding to DOM
+   */
+  function decorateCategoryNavBlocks(ul) {
+    const categoryNavBlocks = ul.querySelectorAll('.category-nav.block');
+    if (categoryNavBlocks.length === 0) return;
+
+    // Load category-nav CSS if not already loaded
+    const cssPath = '/blocks/category-nav/category-nav.css';
+    if (!document.querySelector(`link[href="${cssPath}"]`)) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = cssPath;
+      document.head.appendChild(link);
+    }
+
+    // Decorate category-nav blocks
+    categoryNavBlocks.forEach((navBlock) => {
+      // Mark as fragment block to prevent duplicate decoration
+      navBlock.setAttribute('data-fragment-block', 'true');
+
+      // For fragment blocks, we need to manually parse and build the dropdown
+      // instead of using the full decorate() function which builds a unified nav
+      const categoryData = parseCategoryNavBlock(navBlock);
+      const dropdown = buildDropdown(categoryData);
+
+      if (dropdown) {
+        // Replace the raw block content with the styled dropdown
+        navBlock.innerHTML = '';
+        navBlock.appendChild(dropdown);
+      }
+    });
+  }
+
+  /**
+   * Setup mobile accordion behavior using event delegation
+   */
+  function setupMobileAccordionBehavior(ul) {
+    ul.addEventListener('click', (e) => {
+      // Find the closest nav-fragment-section
+      const sectionItem = e.target.closest('.nav-fragment-section');
+
+      // Only process if we're inside a section but not clicking content links
+      if (!sectionItem || e.target.closest('.nav-fragment-section-content')) return;
+
+      const subUl = sectionItem.querySelector('.nav-fragment-section-content');
+      if (subUl) {
+        const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
+
+        // Close all other sections first (accordion behavior)
+        const allSections = ul.querySelectorAll('.nav-fragment-section');
+        allSections.forEach((section) => {
+          if (section !== sectionItem) {
+            section.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Toggle the clicked section
+        const { scrollHeight } = subUl;
+        sectionItem.style.setProperty('--section-scroll-height', `${scrollHeight}px`);
+        sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      }
+    });
+  }
 
   /**
    * Load fragment content and build structure based on viewport
@@ -369,148 +651,92 @@ export default async function decorate(block) {
 
     try {
       const fragmentContent = await loadFragment(fragmentPath);
-      if (fragmentContent) {
-        const fragmentSections = fragmentContent.querySelectorAll('.section');
-        const ul = document.createElement('ul');
-        ul.classList.add('nav-fragment-content');
+      if (!fragmentContent) return false;
 
-        if (isMobile) {
-          // Mobile: Create nested accordion structure
-          fragmentSections.forEach((section) => {
-            const defaultContent = section.querySelector('.default-content');
-            if (!defaultContent) return;
+      const fragmentSections = fragmentContent.querySelectorAll('.section');
+      const ul = document.createElement('ul');
+      ul.classList.add('nav-fragment-content');
 
-            // Check if this section has a category-nav block (special case for ccnav)
-            const categoryNavBlock = section.querySelector('.category-nav.block');
+      if (isMobile) {
+        // Mobile: Create nested accordion structure
+        fragmentSections.forEach((section) => {
+          // Try category-nav first, then standard processing
+          const processed = processCategoryNavSection(section)
+            || processStandardSectionMobile(section);
 
-            let titleText;
-            let contentToAdd;
+          if (!processed) return;
 
-            if (categoryNavBlock) {
-              // Special handling for category-nav sections
-              // Get title from default-content
-              const titleP = defaultContent.querySelector('p');
-              if (!titleP) return;
-              titleText = titleP.textContent.trim();
+          // Create accordion item for this section
+          const sectionLi = document.createElement('li');
+          sectionLi.classList.add('nav-fragment-section');
+          sectionLi.setAttribute('aria-expanded', 'false');
 
-              // Use the entire category-nav block as content
-              contentToAdd = categoryNavBlock.cloneNode(true);
-            } else {
-              // Standard handling for regular sections with H3 titles
-              const children = Array.from(defaultContent.children);
-              if (children.length === 0) return;
+          // Create clickable title
+          const titleWrapper = document.createElement('p');
+          titleWrapper.classList.add('nav-fragment-section-title');
+          titleWrapper.textContent = processed.titleText;
+          sectionLi.appendChild(titleWrapper);
 
-              const titleElement = children.find((child) => child.tagName === 'H3');
-              if (!titleElement) return;
+          // Create container for section content
+          const sectionUl = document.createElement('ul');
+          sectionUl.classList.add('nav-fragment-section-content');
 
-              titleText = titleElement.textContent;
+          const contentLi = document.createElement('li');
+          contentLi.appendChild(processed.content);
+          sectionUl.appendChild(contentLi);
 
-              // Create wrapper for non-title children
-              contentToAdd = document.createElement('div');
-              children.forEach((child) => {
-                if (child.tagName !== 'H3') {
-                  contentToAdd.appendChild(child.cloneNode(true));
-                }
-              });
-            }
+          sectionLi.appendChild(sectionUl);
+          ul.appendChild(sectionLi);
+        });
+      } else {
+        // Desktop: Flat list of all content
+        fragmentSections.forEach((section) => {
+          const categoryNavBlock = section.querySelector('.category-nav.block');
 
-            if (!titleText) return;
-
-            // Create accordion item for this section
-            const sectionLi = document.createElement('li');
-            sectionLi.classList.add('nav-fragment-section');
-            sectionLi.setAttribute('aria-expanded', 'false');
-
-            // Create clickable title
-            const titleWrapper = document.createElement('p');
-            titleWrapper.classList.add('nav-fragment-section-title');
-            titleWrapper.textContent = titleText;
-            sectionLi.appendChild(titleWrapper);
-
-            // Create container for section content
-            const sectionUl = document.createElement('ul');
-            sectionUl.classList.add('nav-fragment-section-content');
-
-            const contentLi = document.createElement('li');
-            contentLi.appendChild(contentToAdd);
-            sectionUl.appendChild(contentLi);
-
-            sectionLi.appendChild(sectionUl);
-            ul.appendChild(sectionLi);
-          });
-        } else {
-          // Desktop: Flat list of all content
-          fragmentSections.forEach((section) => {
-            const defaultContent = section.querySelector('.default-content');
-            if (!defaultContent) return;
-
-            // Check if this section has a category-nav block
-            const categoryNavBlock = section.querySelector('.category-nav.block');
-
-            if (categoryNavBlock) {
-              // For category-nav sections, add the entire block
-              const li = document.createElement('li');
-              li.appendChild(categoryNavBlock.cloneNode(true));
-              ul.appendChild(li);
-            } else {
-              // For regular sections, add all children from default-content
-              const children = Array.from(defaultContent.children);
+          if (categoryNavBlock) {
+            // For category-nav sections, add the entire block
+            const li = document.createElement('li');
+            li.appendChild(categoryNavBlock.cloneNode(true));
+            ul.appendChild(li);
+          } else {
+            // For regular sections, add all children from default-content
+            const children = processStandardSectionDesktop(section);
+            if (children) {
               children.forEach((child) => {
                 const li = document.createElement('li');
                 li.appendChild(child.cloneNode(true));
                 ul.appendChild(li);
               });
             }
-          });
-        }
-
-        if (ul.children.length > 0) {
-          navSection.appendChild(ul);
-          navSection.setAttribute('data-fragment-loaded', 'true');
-          navSection.classList.add('nav-drop');
-
-          // Decorate any category-nav blocks that were added
-          const categoryNavBlocks = ul.querySelectorAll('.category-nav.block');
-          if (categoryNavBlocks.length > 0) {
-            // Dynamically import and decorate category-nav blocks
-            import('../category-nav/category-nav.js').then((module) => {
-              categoryNavBlocks.forEach((navBlock) => {
-                // Mark as fragment block to prevent duplicate decoration
-                navBlock.setAttribute('data-fragment-block', 'true');
-                module.default(navBlock);
-              });
-            }).catch((error) => {
-              // eslint-disable-next-line no-console
-              console.error('Failed to load category-nav module:', error);
-            });
           }
-
-          // Setup mobile accordion behavior for section items
-          if (isMobile) {
-            ul.querySelectorAll('.nav-fragment-section').forEach((sectionItem) => {
-              sectionItem.addEventListener('click', (e) => {
-                // Only toggle if clicking on the title, not on links
-                if (e.target.closest('.nav-fragment-section-content')) return;
-
-                const subUl = sectionItem.querySelector('.nav-fragment-section-content');
-                if (subUl) {
-                  const { scrollHeight } = subUl;
-                  sectionItem.style.setProperty('--section-scroll-height', `${scrollHeight}px`);
-                  const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
-                  sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-                }
-              });
-            });
-          }
-
-          return true;
-        }
+        });
       }
+
+      if (ul.children.length > 0) {
+        navSection.appendChild(ul);
+        navSection.setAttribute('data-fragment-loaded', 'true');
+        navSection.classList.add('nav-drop');
+
+        // Note: Fragment content icons are already decorated by loadFragment()
+        // Only newly created elements (like View All buttons) need decoration
+
+        // Decorate any category-nav blocks that were added dynamically
+        decorateCategoryNavBlocks(ul);
+
+        // Setup mobile accordion behavior using event delegation
+        if (isMobile) {
+          setupMobileAccordionBehavior(ul);
+        }
+
+        return true;
+      }
+
+      return false;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to load fragment:', error);
+      return false;
     }
-    return false;
   }
 
   /**
@@ -534,12 +760,111 @@ export default async function decorate(block) {
   }
 
   /**
-   * Mobile: Click to expand accordion-style with nested sections
+   * Switch displayed tab content
+   */
+  async function switchTabContent(selectedSection) {
+    const allSections = domCache.allNavSections;
+    const tabBar = navSections.querySelector('.nav-tab-bar');
+
+    // Load fragment if needed
+    await loadNavFragmentContent(selectedSection, true);
+
+    // Hide all sections
+    allSections.forEach((section) => {
+      section.style.display = 'none';
+      section.classList.remove('active-tab-content');
+    });
+
+    // Show selected section
+    selectedSection.style.display = 'block';
+    selectedSection.classList.add('active-tab-content');
+    selectedSection.setAttribute('aria-expanded', 'true');
+
+    // Update tab active state
+    if (tabBar) {
+      const tabs = tabBar.querySelectorAll('.nav-tab');
+      tabs.forEach((tab) => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-section-id') === selectedSection.getAttribute('data-fragment-path')) {
+          tab.classList.add('active');
+        }
+      });
+    }
+
+    // Create/update "Explore" link
+    let exploreLink = selectedSection.querySelector('.explore-section-link');
+    if (!exploreLink) {
+      const titleUrl = selectedSection.getAttribute('data-title-url');
+      const titleText = selectedSection.querySelector('.nav-title-link')?.textContent || '';
+
+      if (titleUrl) {
+        exploreLink = document.createElement('a');
+        exploreLink.classList.add('explore-section-link');
+        exploreLink.href = titleUrl;
+        exploreLink.innerHTML = `Explore ${titleText} <span class="arrow">→</span>`;
+
+        // Insert before the fragment content
+        const fragmentContent = selectedSection.querySelector('.nav-fragment-content');
+        if (fragmentContent) {
+          fragmentContent.before(exploreLink);
+        }
+      }
+    }
+  }
+
+  /**
+   * Mobile: Switch to tab view when a nav section is clicked
+   */
+  function switchToTabView(selectedSection) {
+    const sectionsUl = domCache.navSectionsUl;
+    const allSections = domCache.allNavSections;
+
+    // Mark the sections container as in tab-view mode
+    navSections.classList.add('tab-view-active');
+
+    // Create tab bar if it doesn't exist
+    let tabBar = navSections.querySelector('.nav-tab-bar');
+    if (!tabBar) {
+      tabBar = document.createElement('div');
+      tabBar.classList.add('nav-tab-bar');
+
+      allSections.forEach((section) => {
+        const titleLink = section.querySelector('.nav-title-link');
+        const titleText = titleLink ? titleLink.textContent : '';
+        const titleUrl = section.getAttribute('data-title-url');
+
+        const tab = document.createElement('button');
+        tab.classList.add('nav-tab');
+        tab.textContent = titleText;
+        tab.setAttribute('data-section-id', section.getAttribute('data-fragment-path'));
+        tab.setAttribute('data-title-url', titleUrl || '');
+
+        tab.addEventListener('click', () => {
+          switchTabContent(section);
+        });
+
+        tabBar.appendChild(tab);
+      });
+
+      sectionsUl.before(tabBar);
+    }
+
+    // Show tab content
+    switchTabContent(selectedSection);
+  }
+
+  /**
+   * Mobile: Click to switch to tab view
    */
   function setupMobileNavigation(navSection) {
     const titleLink = navSection.querySelector('.nav-title-link');
 
     navSection.addEventListener('click', async (e) => {
+      // Don't handle clicks if already in tab view
+      if (navSections.classList.contains('tab-view-active')) {
+        return;
+      }
+
       // Don't handle clicks on nested section items
       if (e.target.closest('.nav-fragment-section')) return;
 
@@ -548,25 +873,15 @@ export default async function decorate(block) {
         e.preventDefault();
       }
 
-      // Load fragment if needed (with mobile structure)
-      await loadNavFragmentContent(navSection, true); // true = mobile
-
-      // Toggle accordion with height animation
-      const subUl = navSection.querySelector('ul');
-      if (subUl) {
-        const { scrollHeight } = subUl;
-        navSection.style.setProperty('--scroll-height', `${scrollHeight}px`);
-        const expanded = navSection.getAttribute('aria-expanded') === 'true';
-        toggleAllNavSections(navSections);
-        navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      }
+      // Switch to tab view
+      switchToTabView(navSection);
     });
   }
 
   /**
    * Initialize navigation behavior based on viewport
    */
-  navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
+  domCache.allNavSections.forEach((navSection) => {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
     if (!fragmentPath) return;
 
@@ -591,9 +906,9 @@ export default async function decorate(block) {
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
 
-  // prevent mobile nav behavior on window resize
-  toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+  // prevent mobile nav behavior on window resize - always start collapsed
+  toggleMenu(nav, navSections, false);
+  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, false));
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
