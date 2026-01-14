@@ -142,29 +142,37 @@ export default function decorate(block) {
 
       // First picture is the background image - apply to section container
       if (pictures[0]) {
-        const bgPictureWrapper = pictures[0].closest('p');
-        const bgImg = pictures[0].querySelector('img');
-        if (bgImg && bgImg.src) {
+        const bgPicture = pictures[0];
+        const bgPictureWrapper = bgPicture.closest('p');
+        const bgImg = bgPicture.querySelector('img');
+
+        // Get WebP source for better compression (prefer mobile size for LCP)
+        const webpSource = bgPicture.querySelector('source[type="image/webp"]');
+        const bgUrl = webpSource?.srcset?.split(',')[0]?.trim()?.split(' ')[0]
+          || bgImg?.src;
+
+        if (bgUrl) {
           // Find the section container and set background image
           const sectionContainer = block.closest('.section');
           if (sectionContainer) {
-            sectionContainer.style.backgroundImage = `url(${bgImg.src})`;
+            sectionContainer.style.backgroundImage = `url(${bgUrl})`;
             sectionContainer.style.backgroundSize = 'cover';
             sectionContainer.style.backgroundRepeat = 'repeat';
             sectionContainer.style.backgroundPosition = 'center center';
             sectionContainer.style.backgroundAttachment = 'fixed';
 
-            // Add preload link for LCP optimization
+            // Add preload link for LCP optimization with WebP
             const preloadLink = document.createElement('link');
             preloadLink.rel = 'preload';
             preloadLink.as = 'image';
-            preloadLink.href = bgImg.src;
+            preloadLink.href = bgUrl;
             preloadLink.fetchPriority = 'high';
+            if (webpSource) preloadLink.type = 'image/webp';
             document.head.appendChild(preloadLink);
           }
         }
         // Remove the picture element and its wrapper from DOM
-        pictures[0].remove();
+        bgPicture.remove();
         if (bgPictureWrapper) bgPictureWrapper.remove();
       }
 
