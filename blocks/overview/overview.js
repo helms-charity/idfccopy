@@ -14,7 +14,7 @@ export default function decorate(block) {
     hiddenWrapper.classList.add('overview-hiddenPara');
     hiddenWrapper.style.display = 'none';
 
-    // Move all paragraphs after the first into the hidden wrapper 
+    // Move all paragraphs after the first into the hidden wrapper
     paragraphs.forEach((p, i) => {
       if (i > 0) hiddenWrapper.appendChild(p);
     });
