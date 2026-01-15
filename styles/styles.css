@@ -324,6 +324,11 @@ button.secondary:focus {
 }
 
 /* Button block styles (Universal Editor component) - base states */
+.button.block.primary,
+.button.block.secondary {
+  display: inline-block;
+}
+
 .button.block.primary a,
 .button.block.secondary a {
   box-sizing: border-box;
