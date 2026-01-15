@@ -383,7 +383,8 @@ export default async function decorate(block) {
 
   // Customer service dropdown
   const odometerEl = navTools.querySelector('.grnt-animation-odometer');
-  if (odometerEl) {
+  const odometerLi = odometerEl?.closest('li');
+  if (odometerLi) {
     const dropdown = document.createElement('div');
     dropdown.className = 'cs-dropdown';
     const overlay = document.createElement('div');
@@ -391,7 +392,7 @@ export default async function decorate(block) {
     document.body.append(dropdown, overlay);
 
     let loaded = false;
-    odometerEl.style.cursor = 'pointer';
+    odometerLi.style.cursor = 'pointer';
 
     const openDropdown = async () => {
       if (!loaded) {
@@ -409,18 +410,18 @@ export default async function decorate(block) {
     };
 
     // Desktop: hover behavior
-    odometerEl.addEventListener('mouseenter', () => {
+    odometerLi.addEventListener('mouseenter', () => {
       if (isDesktop.matches) openDropdown();
     });
     dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !odometerEl.contains(e.relatedTarget)) closeDropdown();
+      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) closeDropdown();
     });
-    odometerEl.addEventListener('mouseleave', (e) => {
+    odometerLi.addEventListener('mouseleave', (e) => {
       if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) closeDropdown();
     });
 
     // Mobile: click behavior
-    odometerEl.addEventListener('click', () => {
+    odometerLi.addEventListener('click', () => {
       if (!isDesktop.matches) openDropdown();
     });
     overlay.addEventListener('click', closeDropdown);
