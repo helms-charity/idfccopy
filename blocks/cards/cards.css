@@ -1256,6 +1256,11 @@
   margin-bottom: 0;
 }
 
+.explore-other-cards .card-clickable:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .explore-other-cards .swiper-slide {
   display: flex;
   flex-direction: column;
