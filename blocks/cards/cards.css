@@ -1274,7 +1274,7 @@
 
 .explore-other-cards .swiper-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: none;
   width: auto;
 }
 
@@ -1914,6 +1914,10 @@
 
   .cards.related-search .benefit-cards .cards-card-body h3 {
     font-size: 16px;
+  }
+
+  .explore-other-cards .swiper-wrapper {
+    justify-content: center;
   }
 }
 
