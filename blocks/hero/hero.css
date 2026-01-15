@@ -187,9 +187,9 @@
 
 .dark-scheme .hero a.button.secondary:hover,
 .dark-scheme .hero a.button.secondary:focus {
-  background-color: var(--btn-color-white);
-  color: var(--btn-color-red);
-  border: 1px solid transparent;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
 }
 
 /* Tablet: 600px and up */
