@@ -1568,12 +1568,21 @@
     min-height: 720px;
   }
 
+  .section.cards-container:has(.cards[data-swipable="true"]):not([data-section-status="loaded"]) {
+    max-height: 720px;
+    overflow: hidden;
+  }
+
+  .section.cards-container:has(.cards[data-swipable="true"]) .cards-wrapper {
+    min-height: 590px;
+  }
+
   .cards[data-swipable="true"] {
-    min-height: 520px;
+    min-height: 590px;
   }
 
   .cards[data-swipable="true"] > ul {
-    min-height: 480px;
+    min-height: 560px;
   }
 
   .cards[data-swipable="true"]:not([data-block-status="loaded"]) {
