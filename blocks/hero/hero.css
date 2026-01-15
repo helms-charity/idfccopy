@@ -69,12 +69,6 @@
   aspect-ratio: 4 / 3;
 }
 
-.hero .hero-picture-wrapper {
-  display: contents;
-  margin: 0;
-  padding: 0;
-}
-
 .hero img {
   object-fit: contain;
   width: 100%;
@@ -242,7 +236,6 @@
 @media (width >= 900px) {
   .hero {
     padding: 10px 60px 80px;
-    min-height: 540px;
   }
 
   .hero-container .hero-wrapper {
@@ -275,10 +268,6 @@
 
   .hero .button-group {
     width: auto;
-  }
-
-  .hero:not([data-block-status="loaded"]) {
-    visibility: hidden;
   }
 }
 
