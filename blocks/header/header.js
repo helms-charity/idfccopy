@@ -387,9 +387,7 @@ export default async function decorate(block) {
   if (odometerLi) {
     const dropdown = document.createElement('div');
     dropdown.className = 'cs-dropdown';
-    const overlay = document.createElement('div');
-    overlay.className = 'cs-dropdown-overlay';
-    document.body.append(dropdown, overlay);
+    document.body.appendChild(dropdown);
 
     let loaded = false;
     let closeTimeout = null;
@@ -403,12 +401,10 @@ export default async function decorate(block) {
         loaded = true;
       }
       dropdown.classList.add('open');
-      overlay.classList.add('open');
     };
 
     const closeDropdown = () => {
       dropdown.classList.remove('open');
-      overlay.classList.remove('open');
     };
 
     const scheduleClose = () => {
@@ -430,11 +426,15 @@ export default async function decorate(block) {
       if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) scheduleClose();
     });
 
-    // Mobile: click behavior
+    // Mobile: click behavior, close on click outside
     odometerLi.addEventListener('click', () => {
       if (!isDesktop.matches) openDropdown();
     });
-    overlay.addEventListener('click', closeDropdown);
+    document.addEventListener('click', (e) => {
+      if (!isDesktop.matches && !dropdown.contains(e.target) && !odometerLi.contains(e.target)) {
+        closeDropdown();
+      }
+    });
   }
 
   // Create mobile odometer for Customer Service (displayed at top when nav expanded)

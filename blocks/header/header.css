@@ -1270,14 +1270,3 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   display: block;
 }
 
-.cs-dropdown-overlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  z-index: 1000;
-  display: none;
-}
-
-.cs-dropdown-overlay.open {
-  display: block;
-}
