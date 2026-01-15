@@ -679,9 +679,16 @@ export default async function decorate(block) {
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
+  const isAllAboutCard = block.classList.contains('all-about-card');
   const initialBlockHeight = block.getBoundingClientRect().height;
   const initialWrapperHeight = wrapper?.getBoundingClientRect().height;
   const initialSectionHeight = section?.getBoundingClientRect().height;
+
+  if (isDesktop && isAllAboutCard && section) {
+    section.style.minHeight = '1412px';
+    if (wrapper) wrapper.style.minHeight = '1412px';
+    block.style.minHeight = '1412px';
+  }
 
   // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
   if (isDesktop && initialBlockHeight > 0) {
