@@ -488,10 +488,8 @@ button.primary:disabled:hover {
   color: var(--btn-color-red);
 }
 
-/* Remove arrow icon from secondary buttons unless arrow-right-white or arrow-right-red is used */
-.light-scheme button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red),
-.light-scheme a.button.secondary .icon:not(.icon-arrow-right-white, .icon-arrow-right-red) {
-  display: none;
+.button > span.icon {
+  vertical-align: bottom;
 }
 
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */
@@ -741,6 +739,10 @@ main .section.highlight {
 main .section.upi-steps-red-bg {
   background: var(--gradient-upi-steps-red);
   margin: 0;
+
+  h2, h3 {
+    color: var(--white);
+  }
 }
 
 /* when scheme is manually chosen from the section style */
@@ -760,6 +762,12 @@ main .section.upi-steps-red-bg {
   > .block-content.dark-scheme {
     color: var(--text-color);
   }
+}
+
+.section h2 + h3 {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: normal;
 }
 
 /* Category navbar is now part of header, so simpler styling */
@@ -787,33 +795,6 @@ main .section.upi-steps-red-bg {
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-}
-
-.section.overview-rte-container {
-  background-color: var(--light-color);
-  margin-top: 0;
-  padding: 42px 0 23px;
-}
-
-.section.columns-container h2 {
-  color: var(--text-color);
-  font-size: 21px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 30px;
-  margin-bottom: 14px;
-  letter-spacing: -0.6px;
-}
-
-section.faq-accordion-container h4 {
-  color: var(--text-color);
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 36px;
-  letter-spacing: -0.923px;
-  margin-bottom: 24px;
-  display: block;
 }
 
 .section.banner-image .default-content-wrapper ol {
