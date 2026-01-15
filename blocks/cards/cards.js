@@ -676,6 +676,30 @@ function identifySemanticCardElements(li) {
 
 export default async function decorate(block) {
   const clsDebugEnabled = new URLSearchParams(window.location.search).has('clsdebug');
+  const isDesktop = window.matchMedia('(min-width: 900px)').matches;
+  const section = block.closest('.section');
+  const wrapper = block.closest('.cards-wrapper') || block.parentElement;
+  const initialBlockHeight = block.getBoundingClientRect().height;
+  const initialWrapperHeight = wrapper?.getBoundingClientRect().height;
+  const initialSectionHeight = section?.getBoundingClientRect().height;
+
+  // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
+  if (isDesktop && initialBlockHeight > 0) {
+    block.style.minHeight = `${initialBlockHeight}px`;
+    if (wrapper && initialWrapperHeight) {
+      wrapper.style.minHeight = `${initialWrapperHeight}px`;
+    }
+    if (section?.classList.contains('cards-container') && initialSectionHeight) {
+      section.style.minHeight = `${initialSectionHeight}px`;
+    }
+  }
+
+  const releaseLayoutLock = () => {
+    if (!isDesktop) return;
+    block.style.minHeight = '';
+    if (wrapper) wrapper.style.minHeight = '';
+    if (section) section.style.minHeight = '';
+  };
   const logCardLayout = (stage) => {
     if (!clsDebugEnabled) return;
     const section = block.closest('.section');
@@ -980,6 +1004,7 @@ export default async function decorate(block) {
     const swiper = new Swiper(block, swiperConfig);
     logCardLayout('after-swiper-init');
     window.requestAnimationFrame(() => logCardLayout('after-swiper-raf'));
+    window.requestAnimationFrame(() => releaseLayoutLock());
 
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
@@ -1079,6 +1104,10 @@ export default async function decorate(block) {
         setupToggleButton();
       }, 150); // Debounce resize events
     });
+  }
+
+  if (!isSwipable) {
+    window.requestAnimationFrame(() => releaseLayoutLock());
   }
 
   // Generate and inject JSON-LD schema for ALL testimonial cards (with or without swiper)
