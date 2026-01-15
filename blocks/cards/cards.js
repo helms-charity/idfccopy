@@ -688,6 +688,7 @@ export default async function decorate(block) {
     section.style.minHeight = '1412px';
     if (wrapper) wrapper.style.minHeight = '1412px';
     block.style.minHeight = '1412px';
+    block.style.visibility = 'hidden';
   }
 
   // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
@@ -1012,6 +1013,9 @@ export default async function decorate(block) {
     logCardLayout('after-swiper-init');
     window.requestAnimationFrame(() => logCardLayout('after-swiper-raf'));
     window.requestAnimationFrame(() => releaseLayoutLock());
+    if (isAllAboutCard) {
+      block.style.visibility = '';
+    }
 
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
@@ -1115,6 +1119,9 @@ export default async function decorate(block) {
 
   if (!isSwipable) {
     window.requestAnimationFrame(() => releaseLayoutLock());
+    if (isAllAboutCard) {
+      block.style.visibility = '';
+    }
   }
 
   // Generate and inject JSON-LD schema for ALL testimonial cards (with or without swiper)
