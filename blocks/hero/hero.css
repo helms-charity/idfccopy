@@ -264,7 +264,6 @@
   .hero .button-groups-wrapper {
     flex-direction: row;
     gap: 20px;
-    align-items: flex-end;
   }
 
   .hero .button-group {
