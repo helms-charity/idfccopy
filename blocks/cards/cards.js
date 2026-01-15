@@ -719,6 +719,19 @@ export default async function decorate(block) {
       }
     });
   };
+
+  const getStaticImageDimensions = (img) => {
+    if (block.classList.contains('all-about-card')) {
+      return { width: 280, height: 350 };
+    }
+    if (block.classList.contains('important-documents')) {
+      return { width: 175, height: 175 };
+    }
+    if (img.closest('.swiper-slide')) {
+      return { width: 232, height: 358 };
+    }
+    return null;
+  };
   const logCardLayout = (stage) => {
     if (!clsDebugEnabled) return;
     const section = block.closest('.section');
@@ -793,6 +806,12 @@ export default async function decorate(block) {
     if (width && height) {
       optimizedImg.setAttribute('width', width);
       optimizedImg.setAttribute('height', height);
+    } else {
+      const staticSize = getStaticImageDimensions(img);
+      if (staticSize) {
+        optimizedImg.setAttribute('width', staticSize.width);
+        optimizedImg.setAttribute('height', staticSize.height);
+      }
     }
 
     img.closest('picture').replaceWith(optimizedPic);
