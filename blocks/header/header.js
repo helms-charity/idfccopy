@@ -381,6 +381,32 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Customer service dropdown
+  const odometerEl = navTools.querySelector('.grnt-animation-odometer');
+  if (odometerEl) {
+    const dropdown = document.createElement('div');
+    dropdown.className = 'cs-dropdown';
+    const overlay = document.createElement('div');
+    overlay.className = 'cs-dropdown-overlay';
+    document.body.append(dropdown, overlay);
+
+    let loaded = false;
+    odometerEl.style.cursor = 'pointer';
+    odometerEl.addEventListener('click', async () => {
+      if (!loaded) {
+        const fragment = await loadFragment('/fragments/customer-service-dropdown');
+        if (fragment) dropdown.append(...fragment.childNodes);
+        loaded = true;
+      }
+      dropdown.classList.add('open');
+      overlay.classList.add('open');
+    });
+    overlay.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+      overlay.classList.remove('open');
+    });
+  }
+
   // Create mobile odometer for Customer Service (displayed at top when nav expanded)
   const mobileOdometerContainer = document.createElement('div');
   mobileOdometerContainer.className = 'mobile-customer-service-odometer';

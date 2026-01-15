@@ -1245,3 +1245,33 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   white-space: nowrap;
   text-align: center;
 }
+
+/* Customer Service Dropdown */
+.cs-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background: #fff;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--nav-height));
+}
+
+.cs-dropdown.open {
+  display: block;
+}
+
+.cs-dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 40%);
+  z-index: 1000;
+  display: none;
+}
+
+.cs-dropdown-overlay.open {
+  display: block;
+}
