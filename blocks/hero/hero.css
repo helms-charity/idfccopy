@@ -138,6 +138,7 @@
   border-color: var(--dark-red-color);
 }
 
+.hero a.button.secondary:any-link,
 .hero .button.secondary {
   background-color: transparent;
   color: #fff;
@@ -151,6 +152,19 @@
 .hero .button.secondary:hover {
   background-color: var(--dark-red-color);
   border-color: var(--dark-red-color);
+}
+
+/* Override dark-scheme global styles to maintain hero button consistency */
+.dark-scheme .hero a.button.primary:any-link {
+  background-color: var(--red-color);
+  color: #fff;
+  border: 1px solid var(--red-color);
+}
+
+.dark-scheme .hero a.button.secondary:any-link {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
 }
 
 /* Tablet: 600px and up */
