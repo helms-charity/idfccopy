@@ -407,12 +407,9 @@ export default async function decorate(block) {
     const overlay = document.createElement('div');
     overlay.classList.add('customer-service-dropdown-overlay');
 
-    // Append dropdown and overlay to nav-wrapper (so it can be full width)
-    const navWrapper = block.querySelector('.nav-wrapper');
-    if (navWrapper) {
-      navWrapper.appendChild(dropdown);
-      navWrapper.appendChild(overlay);
-    }
+    // Append dropdown and overlay to document body (so it can be full width and positioned correctly)
+    document.body.appendChild(dropdown);
+    document.body.appendChild(overlay);
 
     let fragmentLoaded = false;
 
