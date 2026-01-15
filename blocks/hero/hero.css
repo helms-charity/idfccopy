@@ -138,19 +138,58 @@
   border-color: var(--dark-red-color);
 }
 
+.hero a.button.secondary:any-link,
 .hero .button.secondary {
   background-color: transparent;
   color: #fff;
   border: 1px solid #fff;
   font-weight: 700;
   font-style: normal;
-  display: inline-block;
   overflow: hidden;
+  margin: 0;
 }
 
 .hero .button.secondary:hover {
   background-color: var(--dark-red-color);
   border-color: var(--dark-red-color);
+}
+
+/* Override dark-scheme global styles to maintain hero button consistency */
+.dark-scheme .hero a.button.primary:any-link,
+.dark-scheme .hero a.button.secondary:any-link {
+  padding: 14px 18px;
+  height: 52px;
+  line-height: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark-scheme .hero a.button.primary:any-link {
+  background-color: var(--red-color);
+  color: var(--btn-color-white);
+  border: 1px solid transparent;
+}
+
+.dark-scheme .hero a.button.primary:hover,
+.dark-scheme .hero a.button.primary:focus {
+  background-color: var(-red-color);
+  color: var(--btn-color-white);
+  border: 1px solid transparent;
+}
+
+.dark-scheme .hero a.button.secondary:any-link {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.dark-scheme .hero a.button.secondary:hover,
+.dark-scheme .hero a.button.secondary:focus {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
 }
 
 /* Tablet: 600px and up */
@@ -219,16 +258,23 @@
   }
 
   .hero .button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: auto;
     padding: 14px 18px;
     font-size: 15px;
     height: 52px;
-    line-height: 1.5;
+    line-height: 1;
+    box-sizing: border-box;
   }
 
-  .hero a.button.primary {
+  .hero a.button.primary,
+  .hero a.button.secondary {
     padding: 14px 18px;
+    height: 52px;
+    line-height: 1;
+    box-sizing: border-box;
   }
 }
 
@@ -264,6 +310,7 @@
   .hero .button-groups-wrapper {
     flex-direction: row;
     gap: 20px;
+    align-items: flex-end;
   }
 
   .hero .button-group {
