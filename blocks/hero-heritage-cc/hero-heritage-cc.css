@@ -443,6 +443,11 @@
   padding: 11px 20px;
   font-size: 14px;
   border: none;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--btn-color-white);
+  }
 }
 
 .hero-heritage-cc-banner-cta a.button.primary:any-link {

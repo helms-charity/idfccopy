@@ -1096,7 +1096,6 @@
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   background: var(--dark-red-color);
   color: var(--white);
   font-family: var(--body-font-family);
@@ -1230,7 +1229,8 @@
 .cards.swiper {
   width: 100%;
   height: auto;
-  padding-bottom: 60px; /* Space for pagination */
+  padding-bottom: var(--spacing-xl);
+  padding-top: var(--spacing-s);
   position: relative;
   overflow: visible;
 }

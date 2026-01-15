@@ -138,8 +138,10 @@
     }
   }
   
-  .accordion-cta {
+  a.accordion-cta.button {
     color: var(--white);
+    display: block;
+    text-align: right;
   }
 
   .accordion details summary {
