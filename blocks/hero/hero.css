@@ -146,6 +146,7 @@
   font-style: normal;
   display: inline-block;
   overflow: hidden;
+  margin: 0;
 }
 
 .hero .button.secondary:hover {
@@ -264,6 +265,7 @@
   .hero .button-groups-wrapper {
     flex-direction: row;
     gap: 20px;
+    align-items: flex-end;
   }
 
   .hero .button-group {
