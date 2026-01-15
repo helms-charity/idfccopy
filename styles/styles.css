@@ -1035,6 +1035,11 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     height: 126px; /* nav + category-nav = 62px + 64px */
   }
 
+  /* CLS guard: reserve space for all-about cards before block CSS loads */
+  .section.cards-container:has(.cards.all-about-card) {
+    min-height: 1400px;
+  }
+
   
   main .breadcrumbs {
     display: inline-block;
