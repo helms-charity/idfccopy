@@ -24,6 +24,71 @@ const MEDIA_QUERIES = {
   desktop: window.matchMedia('(min-width: 900px)'),
 };
 
+const CLS_DEBUG_ENABLED = new URLSearchParams(window.location.search).has('clsdebug');
+
+function getNodeSelector(node) {
+  if (!node || node.nodeType !== Node.ELEMENT_NODE) return '';
+  const el = /** @type {Element} */ (node);
+  const parts = [];
+  let current = el;
+  for (let i = 0; i < 3 && current; i += 1) {
+    let part = current.tagName.toLowerCase();
+    if (current.id) {
+      part += `#${current.id}`;
+      parts.unshift(part);
+      break;
+    }
+    if (current.classList.length) {
+      part += `.${[...current.classList].slice(0, 3).join('.')}`;
+    }
+    parts.unshift(part);
+    current = current.parentElement;
+  }
+  return parts.join(' > ');
+}
+
+function logLayoutShifts() {
+  if (!CLS_DEBUG_ENABLED || typeof PerformanceObserver === 'undefined') return;
+  const observer = new PerformanceObserver((list) => {
+    list.getEntries().forEach((entry) => {
+      if (entry.hadRecentInput) return;
+      const sources = (entry.sources || []).slice(0, 5).map((source) => ({
+        selector: getNodeSelector(source.node),
+        oldRect: source.previousRect,
+        newRect: source.currentRect,
+      }));
+      // eslint-disable-next-line no-console
+      console.log('[CLS]', { value: entry.value, sources });
+    });
+  });
+  try {
+    observer.observe({ type: 'layout-shift', buffered: true });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('[CLS] Observer failed', error);
+  }
+}
+
+function logCardsContainerSizes(stage) {
+  if (!CLS_DEBUG_ENABLED) return;
+  const sections = document.querySelectorAll('.section.cards-container');
+  sections.forEach((section) => {
+    const wrapper = section.querySelector('.cards-wrapper');
+    const block = section.querySelector('.cards');
+    const sectionRect = section.getBoundingClientRect();
+    const wrapperRect = wrapper?.getBoundingClientRect();
+    const blockRect = block?.getBoundingClientRect();
+    // eslint-disable-next-line no-console
+    console.log('[CLS][cards]', {
+      stage,
+      section: sectionRect.height,
+      wrapper: wrapperRect?.height,
+      block: blockRect?.height,
+      selector: getNodeSelector(section),
+    });
+  });
+}
+
 /**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
@@ -1252,6 +1317,7 @@ function loadTimedModal() {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  logLayoutShifts();
   autolinkModals(doc);
   const main = doc.querySelector('main');
 
@@ -1271,7 +1337,10 @@ async function loadLazy(doc) {
 
   // Now load all sections including category-nav blocks
   // The category-nav blocks will find the wrapper and populate it
+  logCardsContainerSizes('before-load-sections');
   await loadSections(main);
+  logCardsContainerSizes('after-load-sections');
+  window.setTimeout(() => logCardsContainerSizes('after-load-sections-timeout'), 2000);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
