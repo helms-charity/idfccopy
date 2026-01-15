@@ -381,6 +381,105 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Setup customer service dropdown functionality
+  function setupCustomerServiceDropdown() {
+    const odometerContainer = navTools.querySelector('.grnt-animation-odometer');
+    if (!odometerContainer) return;
+
+    // Create dropdown container
+    const dropdown = document.createElement('div');
+    dropdown.classList.add('customer-service-dropdown');
+    dropdown.setAttribute('aria-hidden', 'true');
+
+    // Create dropdown content wrapper
+    const dropdownContent = document.createElement('div');
+    dropdownContent.classList.add('customer-service-dropdown-content');
+    dropdown.appendChild(dropdownContent);
+
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.classList.add('customer-service-dropdown-close');
+    closeBtn.setAttribute('aria-label', 'Close dropdown');
+    closeBtn.innerHTML = '&times;';
+    dropdown.appendChild(closeBtn);
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.classList.add('customer-service-dropdown-overlay');
+
+    // Append dropdown and overlay to nav-wrapper (so it can be full width)
+    const navWrapper = block.querySelector('.nav-wrapper');
+    if (navWrapper) {
+      navWrapper.appendChild(dropdown);
+      navWrapper.appendChild(overlay);
+    }
+
+    let fragmentLoaded = false;
+
+    // Load fragment content
+    async function loadDropdownFragment() {
+      if (fragmentLoaded) return;
+
+      try {
+        const fragment = await loadFragment('/fragments/customer-service-dropdown');
+        if (fragment) {
+          const fragmentSection = fragment.querySelector(':scope .section');
+          if (fragmentSection) {
+            dropdownContent.innerHTML = '';
+            dropdownContent.appendChild(fragmentSection);
+          } else {
+            dropdownContent.innerHTML = '';
+            dropdownContent.append(...fragment.childNodes);
+          }
+          fragmentLoaded = true;
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load customer service dropdown fragment:', error);
+      }
+    }
+
+    // Toggle dropdown
+    function toggleDropdown(show) {
+      const isShowing = show !== undefined ? show : dropdown.getAttribute('aria-hidden') === 'true';
+
+      if (isShowing) {
+        loadDropdownFragment();
+        dropdown.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } else {
+        dropdown.setAttribute('aria-hidden', 'true');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Click handler for odometer track
+    const odometerTrack = odometerContainer.querySelector('.grnt-odometer-track');
+    if (odometerTrack) {
+      odometerTrack.style.cursor = 'pointer';
+      odometerTrack.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDropdown(true);
+      });
+    }
+
+    // Close handlers
+    closeBtn.addEventListener('click', () => toggleDropdown(false));
+    overlay.addEventListener('click', () => toggleDropdown(false));
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dropdown.getAttribute('aria-hidden') === 'false') {
+        toggleDropdown(false);
+      }
+    });
+  }
+
+  // Initialize customer service dropdown
+  setupCustomerServiceDropdown();
+
   // Create mobile odometer for Customer Service (displayed at top when nav expanded)
   const mobileOdometerContainer = document.createElement('div');
   mobileOdometerContainer.className = 'mobile-customer-service-odometer';
