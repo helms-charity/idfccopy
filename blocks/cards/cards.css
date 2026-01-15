@@ -1257,16 +1257,20 @@
 }
 
 .explore-other-cards .swiper-slide {
+  display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
   height: auto;
-  padding-bottom: 60px; /* Space for pagination */
-  position: relative;
   overflow: visible;
   background-color: transparent;
-  width: 322px;
+}
+
+.explore-other-cards .swiper-wrapper {
+  display: flex;
+  justify-content: center;
+  width: auto;
 }
 
 .explore-other-cards .swiper-slide .cards-card-body {
@@ -1282,6 +1286,17 @@
   text-align: center;
   font-size: 24px;
   color: var(--white);
+}
+
+.explore-other-cards .swiper-slide .cards-card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.explore-other-cards .swiper-slide .cards-card-image picture {
+  display: block;
+  width: 80%
 }
 
 /* Swiper Navigation Buttons */
