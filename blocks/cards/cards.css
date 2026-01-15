@@ -1559,6 +1559,10 @@
 
 /* Desktop adjustments for All About variant */
 @media (width >= 900px) {
+  .section.cards-container .cards:not([data-block-status="loaded"]) {
+    visibility: hidden;
+  }
+
   /* Reserve desktop space for swipable cards to reduce CLS */
   .section.cards-container .cards-wrapper {
     min-height: 520px;
