@@ -392,7 +392,8 @@ export default async function decorate(block) {
 
     let loaded = false;
     odometerEl.style.cursor = 'pointer';
-    odometerEl.addEventListener('click', async () => {
+
+    const openDropdown = async () => {
       if (!loaded) {
         const fragment = await loadFragment('/fragments/customer-service-dropdown');
         if (fragment) dropdown.append(...fragment.childNodes);
@@ -400,11 +401,29 @@ export default async function decorate(block) {
       }
       dropdown.classList.add('open');
       overlay.classList.add('open');
-    });
-    overlay.addEventListener('click', () => {
+    };
+
+    const closeDropdown = () => {
       dropdown.classList.remove('open');
       overlay.classList.remove('open');
+    };
+
+    // Desktop: hover behavior
+    odometerEl.addEventListener('mouseenter', () => {
+      if (isDesktop.matches) openDropdown();
     });
+    dropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !odometerEl.contains(e.relatedTarget)) closeDropdown();
+    });
+    odometerEl.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) closeDropdown();
+    });
+
+    // Mobile: click behavior
+    odometerEl.addEventListener('click', () => {
+      if (!isDesktop.matches) openDropdown();
+    });
+    overlay.addEventListener('click', closeDropdown);
   }
 
   // Create mobile odometer for Customer Service (displayed at top when nav expanded)

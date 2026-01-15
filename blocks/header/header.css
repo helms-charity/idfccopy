@@ -1258,7 +1258,12 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   display: none;
   overflow-y: auto;
   max-height: calc(100vh - var(--nav-height));
-  padding-top: 30px;
+}
+
+.cs-dropdown::before {
+  content: '';
+  display: block;
+  height: 30px;
 }
 
 .cs-dropdown.open {
