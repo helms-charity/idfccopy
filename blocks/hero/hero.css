@@ -167,14 +167,14 @@
 }
 
 .dark-scheme .hero a.button.primary:any-link {
-  background-color: var(--dark-red-color);
+  background-color: var(--red-color);
   color: var(--btn-color-white);
   border: 1px solid transparent;
 }
 
 .dark-scheme .hero a.button.primary:hover,
 .dark-scheme .hero a.button.primary:focus {
-  background-color: var(--dark-red-color);
+  background-color: var(-red-color);
   color: var(--btn-color-white);
   border: 1px solid transparent;
 }
