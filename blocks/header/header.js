@@ -392,9 +392,11 @@ export default async function decorate(block) {
     document.body.append(dropdown, overlay);
 
     let loaded = false;
+    let closeTimeout = null;
     odometerLi.style.cursor = 'pointer';
 
     const openDropdown = async () => {
+      clearTimeout(closeTimeout);
       if (!loaded) {
         const fragment = await loadFragment('/fragments/customer-service-dropdown');
         if (fragment) dropdown.append(...fragment.childNodes);
@@ -409,15 +411,23 @@ export default async function decorate(block) {
       overlay.classList.remove('open');
     };
 
+    const scheduleClose = () => {
+      clearTimeout(closeTimeout);
+      closeTimeout = setTimeout(closeDropdown, 100);
+    };
+
     // Desktop: hover behavior
     odometerLi.addEventListener('mouseenter', () => {
       if (isDesktop.matches) openDropdown();
     });
+    dropdown.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimeout);
+    });
     dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) closeDropdown();
+      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) scheduleClose();
     });
     odometerLi.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) closeDropdown();
+      if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) scheduleClose();
     });
 
     // Mobile: click behavior
