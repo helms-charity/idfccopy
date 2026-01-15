@@ -144,7 +144,6 @@
   border: 1px solid #fff;
   font-weight: 700;
   font-style: normal;
-  display: inline-block;
   overflow: hidden;
   margin: 0;
 }
@@ -220,7 +219,9 @@
   }
 
   .hero .button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: auto;
     padding: 14px 18px;
     font-size: 15px;
