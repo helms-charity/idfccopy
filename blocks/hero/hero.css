@@ -155,6 +155,17 @@
 }
 
 /* Override dark-scheme global styles to maintain hero button consistency */
+.dark-scheme .hero a.button.primary:any-link,
+.dark-scheme .hero a.button.secondary:any-link {
+  padding: 14px 18px;
+  height: 52px;
+  line-height: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .dark-scheme .hero a.button.primary:any-link {
   background-color: var(--red-color);
   color: #fff;
@@ -240,11 +251,16 @@
     padding: 14px 18px;
     font-size: 15px;
     height: 52px;
-    line-height: 1.5;
+    line-height: 1;
+    box-sizing: border-box;
   }
 
-  .hero a.button.primary {
+  .hero a.button.primary,
+  .hero a.button.secondary {
     padding: 14px 18px;
+    height: 52px;
+    line-height: 1;
+    box-sizing: border-box;
   }
 }
 
