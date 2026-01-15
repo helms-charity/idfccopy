@@ -724,7 +724,16 @@ export default async function decorate(block) {
   // Replace images with optimized pictures
   ul.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
+    const optimizedImg = optimizedPic.querySelector('img');
+    moveInstrumentation(img, optimizedImg);
+
+    const width = img.getAttribute('width');
+    const height = img.getAttribute('height');
+    if (width && height) {
+      optimizedImg.setAttribute('width', width);
+      optimizedImg.setAttribute('height', height);
+    }
+
     img.closest('picture').replaceWith(optimizedPic);
   });
 
