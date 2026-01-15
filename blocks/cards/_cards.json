@@ -84,6 +84,10 @@
             {
               "name": "Joining Perks",
               "value": "joining-perks"
+            },
+            {
+              "name": "Explore Other Cards",
+              "value": "explore-other-cards"
             }
           ]
         },

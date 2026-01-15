@@ -687,6 +687,7 @@ export default async function decorate(block) {
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
     || classList.contains('reward-points');
+  const isExploreOtherCards = classList.contains('explore-other-cards');
 
   // Build UL structure and collect LI elements in one pass
   const ul = document.createElement('ul');
@@ -784,7 +785,11 @@ export default async function decorate(block) {
     } else if (isBlogPosts) {
       li.classList.add('blog-post-card');
     } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks) {
-      li.classList.add('benefit-cards');
+      if (isExploreOtherCards) {
+        li.classList.add('explore-other-cards');
+      } else {
+        li.classList.add('benefit-cards');
+      }
     }
 
     // Setup interactivity for all card types (links, modals)
@@ -906,6 +911,23 @@ export default async function decorate(block) {
         900: {
           slidesPerView: 3,
           spaceBetween: 60,
+        },
+      };
+    } else if (isExploreOtherCards) {
+      // For explore-other-cards: show edges on mobile, 3 cards at larger breakpoints
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 42,
         },
       };
     } else {
