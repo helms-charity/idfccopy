@@ -708,6 +708,17 @@ export default async function decorate(block) {
     if (wrapper) wrapper.style.minHeight = '';
     if (section) section.style.minHeight = '';
   };
+
+  const setRenderedImageDimensions = () => {
+    block.querySelectorAll('img').forEach((img) => {
+      if (img.hasAttribute('width') && img.hasAttribute('height')) return;
+      const rect = img.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        img.setAttribute('width', Math.round(rect.width));
+        img.setAttribute('height', Math.round(rect.height));
+      }
+    });
+  };
   const logCardLayout = (stage) => {
     if (!clsDebugEnabled) return;
     const section = block.closest('.section');
@@ -1016,6 +1027,7 @@ export default async function decorate(block) {
     if (isAllAboutCard) {
       block.style.visibility = '';
     }
+    window.requestAnimationFrame(() => setRenderedImageDimensions());
 
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
@@ -1122,6 +1134,7 @@ export default async function decorate(block) {
     if (isAllAboutCard) {
       block.style.visibility = '';
     }
+    window.requestAnimationFrame(() => setRenderedImageDimensions());
   }
 
   // Generate and inject JSON-LD schema for ALL testimonial cards (with or without swiper)
