@@ -1568,6 +1568,19 @@
     min-height: 520px;
   }
 
+  .section.cards-container:has(.cards.all-about-card) {
+    min-height: 1900px;
+  }
+
+  .section.cards-container:has(.cards.all-about-card) .cards-wrapper,
+  .cards.all-about-card {
+    min-height: 1810px;
+  }
+
+  .cards.all-about-card > ul {
+    min-height: 1760px;
+  }
+
   .section.cards-container:has(.cards[data-swipable="true"]) {
     min-height: 720px;
   }
