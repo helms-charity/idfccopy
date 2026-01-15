@@ -1075,6 +1075,21 @@
     ]
   },
   {
+    "id": "form",
+    "fields": [
+      {
+        "component": "text",
+        "name": "form_title",
+        "label": "Form Title"
+      },
+      {
+        "component": "text",
+        "name": "form_description",
+        "label": "Form Description"
+      }
+    ]
+  },
+  {
     "id": "fragment",
     "fields": [
       {
