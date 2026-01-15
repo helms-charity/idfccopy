@@ -1,10 +1,8 @@
 export default function decorate(block) {
-  // Move the picture element to be positioned absolutely on the right
+  // Keep picture in place to avoid layout shifts; style via CSS
   const picture = block.querySelector('picture');
   if (picture) {
-    const pictureParent = picture.parentElement;
-    pictureParent.remove();
-    block.appendChild(picture);
+    picture.parentElement?.classList.add('hero-picture-wrapper');
   }
 
   // Wrap button groups in a container for flexbox layout

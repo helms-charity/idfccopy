@@ -1559,6 +1559,27 @@
 
 /* Desktop adjustments for All About variant */
 @media (width >= 900px) {
+  /* Reserve desktop space for swipable cards to reduce CLS */
+  .section.cards-container .cards-wrapper {
+    min-height: 520px;
+  }
+
+  .section.cards-container:has(.cards[data-swipable="true"]) {
+    min-height: 720px;
+  }
+
+  .cards[data-swipable="true"] {
+    min-height: 520px;
+  }
+
+  .cards[data-swipable="true"] > ul {
+    min-height: 480px;
+  }
+
+  .cards[data-swipable="true"]:not([data-block-status="loaded"]) {
+    visibility: hidden;
+  }
+
   /* Important Documents Cards - Desktop View (900px+) */
   .cards.important-documents .grid-cards {
     grid-template-columns: repeat(4, 175px);
