@@ -327,6 +327,7 @@ button.secondary:focus {
 .button.block.primary,
 .button.block.secondary {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .button.block.primary a,
