@@ -455,15 +455,12 @@ export default async function decorate(block) {
       }
     }
 
-    // Click handler for odometer track
-    const odometerTrack = odometerContainer.querySelector('.grnt-odometer-track');
-    if (odometerTrack) {
-      odometerTrack.style.cursor = 'pointer';
-      odometerTrack.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleDropdown(true);
-      });
-    }
+    // Click handler for odometer container
+    odometerContainer.style.cursor = 'pointer';
+    odometerContainer.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(true);
+    });
 
     // Close handlers
     closeBtn.addEventListener('click', () => toggleDropdown(false));
