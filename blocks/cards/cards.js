@@ -675,7 +675,6 @@ function identifySemanticCardElements(li) {
 }
 
 export default async function decorate(block) {
-  const clsDebugEnabled = new URLSearchParams(window.location.search).has('clsdebug');
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
@@ -732,23 +731,6 @@ export default async function decorate(block) {
     }
     return null;
   };
-  const logCardLayout = (stage) => {
-    if (!clsDebugEnabled) return;
-    const section = block.closest('.section');
-    const wrapper = block.closest('.cards-wrapper') || block.parentElement;
-    const sectionRect = section?.getBoundingClientRect();
-    const wrapperRect = wrapper?.getBoundingClientRect();
-    const blockRect = block.getBoundingClientRect();
-    // eslint-disable-next-line no-console
-    console.log('[CLS][cards]', {
-      stage,
-      section: sectionRect?.height,
-      wrapper: wrapperRect?.height,
-      block: blockRect.height,
-    });
-  };
-
-  logCardLayout('decorate-start');
   // Cache variant checks once (performance optimization)
   const { classList } = block;
   const isTestimonial = classList.contains('testimonial-card');
@@ -816,7 +798,6 @@ export default async function decorate(block) {
 
     img.closest('picture').replaceWith(optimizedPic);
   });
-  logCardLayout('after-image-opt');
 
   // Append UL to block (use replaceChildren for better performance)
   ul.classList.add('grid-cards');
@@ -895,7 +876,6 @@ export default async function decorate(block) {
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (isSwipable) {
-    logCardLayout('before-swiper-init');
     // Load Swiper library
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
@@ -1040,8 +1020,6 @@ export default async function decorate(block) {
 
     // eslint-disable-next-line no-undef
     const swiper = new Swiper(block, swiperConfig);
-    logCardLayout('after-swiper-init');
-    window.requestAnimationFrame(() => logCardLayout('after-swiper-raf'));
     window.requestAnimationFrame(() => releaseLayoutLock());
     if (isAllAboutCard) {
       block.style.visibility = '';
