@@ -488,7 +488,7 @@
 }
 
 /* Related Search Card Styling */
-.cards.related-search .benefit-cards {
+.cards.related-search li {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -504,13 +504,13 @@
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.cards.related-search .benefit-cards:hover {
+.cards.related-search li:hover {
   box-shadow: 0 4px 16px rgba(0 0 0 / 12%);
   transform: translateY(-2px);
 }
 
 /* Related Search Card Image */
-.cards.related-search .benefit-cards .cards-card-image {
+.cards.related-search li .cards-card-image {
   flex-shrink: 0;
   width: 70px;
   height: 70px;
@@ -519,7 +519,7 @@
   justify-content: center;
 }
 
-.cards.related-search .benefit-cards .cards-card-image img {
+.cards.related-search li .cards-card-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -527,30 +527,30 @@
 }
 
 /* Related Search Card Body */
-.cards.related-search .benefit-cards .cards-card-body {
+.cards.related-search li .cards-card-body {
   flex: 1;
   margin: 0;
   padding-right: 40px;
 }
 
-.cards.related-search .benefit-cards .cards-card-body h3 {
+.cards.related-search li .cards-card-body h3 {
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
   margin: 0;
 }
 
-.cards.related-search .benefit-cards .cards-card-body h3 a {
+.cards.related-search li .cards-card-body h3 a {
   color: inherit;
   text-decoration: none;
 }
 
-.cards.related-search .benefit-cards .cards-card-body h3 a:hover {
+.cards.related-search li .cards-card-body h3 a:hover {
   text-decoration: none;
 }
 
 /* Related Search Arrow Circle */
-.cards.related-search .benefit-cards::after {
+.cards.related-search li::after {
   content: '';
   position: absolute;
   right: 16px;
@@ -1211,16 +1211,16 @@
     gap: 20px 30px;
   }
 
-  .cards.related-search .benefit-cards {
+  .cards.related-search li {
     margin-bottom: 0;
   }
 
-  .cards.related-search .benefit-cards .cards-card-image {
+  .cards.related-search li .cards-card-image {
     width: 80px;
     height: 70px;
   }
 
-  .cards.related-search .benefit-cards .cards-card-body h3 {
+  .cards.related-search li .cards-card-body h3 {
     font-size: 15px;
   }
 }
@@ -1976,17 +1976,17 @@
     margin: 0 auto;
   }
 
-  .cards.related-search .benefit-cards {
+  .cards.related-search li {
     padding: 0 20px;
     margin-bottom: 0;
   }
 
-  .cards.related-search .benefit-cards .cards-card-image {
+  .cards.related-search li .cards-card-image {
     width: 90px;
     height: 75px;
   }
 
-  .cards.related-search .benefit-cards .cards-card-body h3 {
+  .cards.related-search li .cards-card-body h3 {
     font-size: 16px;
   }
 

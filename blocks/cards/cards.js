@@ -855,12 +855,10 @@ export default async function decorate(block) {
       }
     } else if (isBlogPosts) {
       li.classList.add('blog-post-card');
-    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks) {
-      if (isExploreOtherCards) {
-        li.classList.add('explore-other-cards');
-      } else {
-        li.classList.add('benefit-cards');
-      }
+    } else if (supportsSemanticElements || isRelatedSearch) {
+      li.classList.add('benefit-cards');
+    } else if (isExploreOtherCards) {
+      li.classList.add('explore-other-cards');
     }
 
     // Setup interactivity for all card types (links, modals)
