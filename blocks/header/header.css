@@ -1813,7 +1813,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   top: var(--nav-height);
   left: 0;
   width: 100vw;
-  background-color: #902a2c;
+  background-color: #511211;
   z-index: 1001;
   display: none;
   overflow-y: auto;
