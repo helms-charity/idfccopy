@@ -1,9 +1,19 @@
 :root {
-  --modal-offset-height: calc(2 * var(--nav-height) + 42px); /* Generally 170px */
+  --modal-offset-height: calc(var(--nav-height) + var(--category-nav-height)); /* When category nav is present, 144px (80px nav + 64px category-nav), otherwise 80px */
 }
 
 body.modal-open {
   overflow: hidden;
+}
+
+/* Modal fade transitions - use class-based approach for proper fade-in */
+.modal dialog {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.modal dialog.modal-visible {
+  opacity: 1;
 }
 
 .modal dialog::backdrop {
@@ -13,6 +23,32 @@ body.modal-open {
   background-size: cover;
   background-position: center top var(--modal-offset-height);
   background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.modal dialog.modal-visible::backdrop {
+  opacity: 1;
+}
+
+/* Auto-popup modals (timed page modals) use simple dark overlay instead of gradient */
+.modal dialog.modal-auto-popup::backdrop {
+  background: rgb(0 0 0 / 80%);
+  backdrop-filter: blur(4px);
+}
+
+.modal dialog.modal-auto-popup h2 {
+  font-size: 22px;
+  margin-bottom: 0;
+}
+
+.modal dialog.modal-auto-popup h6 {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.modal dialog.modal-auto-popup p {
+  font-size: 16px;
 }
 
 /* When a page background image is authored, use it instead of the gradient */
@@ -151,25 +187,18 @@ body.modal-open {
 }
 
 .modal.block:has(.section[data-id="mayura-card-modal"]) {
-	display: flex;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	bottom: 0;
-	left: 0;
-	margin: 0;
+	display: block;
 }
 
 .modal dialog:has(.section[data-id="mayura-card-modal"]) {
   max-width: 730px;
-  position: relative !important;
-  align-self: anchor-center;
-  justify-self: anchor-center;
+  position: fixed !important;
   min-height: 462px;
   width: 730px;
-  top: unset !important;
   inset: unset !important;
-  transform: unset;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
   padding: 40px;
   border-radius: 6px;
   box-sizing: border-box;
@@ -519,30 +548,24 @@ body.modal-open {
 @media (width < 768px) {
 
   .modal dialog[open]:has(.section[data-id="mayura-card-modal"]) {
-    width: auto;
+    width: calc(100vw - 32px);
+    max-width: 730px;
     height: auto;
-    max-height: 100%;
-    align-self: flex-end;
+    max-height: 90vh;
+    min-height: 0;
     border-radius: 25px 25px 0 0;
-    position: relative !important;
+    position: fixed !important;
     inset: unset !important;
-    left: unset !important;
-    right: unset !important;
+    left: 50% !important;
     top: unset !important;
     bottom: 0 !important;
-    margin-top: auto;
-    margin-bottom: auto !important;
-    margin: 0 auto !important;
-    transform: unset;
+    transform: translateX(-50%);
     overscroll-behavior: none;
-    justify-self: anchor-center;
     overflow: visible;
     padding: 38px 26px 30px;
     border: none;
     box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
     box-sizing: border-box;
-    flex-shrink: 1; /* Allow it to shrink */
-    min-height: 0;   /* Override content-based minimum height */
     overflow-y: auto;
   }
 

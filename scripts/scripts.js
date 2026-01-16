@@ -1272,7 +1272,7 @@ function loadTimedModal() {
   setTimeout(async () => {
     try {
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(modalContent);
+      openModal(modalContent, { isAutoPopup: true });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to load timed modal:', error);
