@@ -335,6 +335,7 @@ export default async function decorate(block) {
 
       // Add login icon to the last <li> (authoring contract: last item is always Login)
       if (loginLi) {
+        loginLi.id = 'login-button';
         const existingIcon = loginLi.querySelector('.icon-login_header');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
@@ -529,6 +530,102 @@ export default async function decorate(block) {
         && !searchBridge.contains(e.target);
       if (isOutsideClick && searchDropdown.classList.contains('open')) {
         closeSearchDropdown();
+      }
+    });
+  }
+
+  // Login dropdown (reusing search dropdown pattern)
+  const loginButton = navToolsWrapper.querySelector('#login-button');
+  if (loginButton) {
+    const loginDropdown = document.createElement('div');
+    loginDropdown.className = 'login-dropdown';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'login-close-btn';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.setAttribute('aria-label', 'Close');
+    loginDropdown.appendChild(closeBtn);
+    
+    document.body.appendChild(loginDropdown);
+
+    const loginBridge = document.createElement('div');
+    loginBridge.className = 'login-dropdown-bridge';
+    document.body.appendChild(loginBridge);
+
+    let loginLoaded = false;
+    let loginCloseTimeout = null;
+
+    const openLoginDropdown = async () => {
+      clearTimeout(loginCloseTimeout);
+      if (!loginLoaded) {
+        const loginFragment = await loadFragment('/fragments/login');
+        if (loginFragment) loginDropdown.append(...loginFragment.childNodes);
+        loginLoaded = true;
+      }
+      loginDropdown.classList.add('open');
+      loginBridge.classList.add('open');
+    };
+
+    const closeLoginDropdown = () => {
+      loginDropdown.classList.remove('open');
+      loginBridge.classList.remove('open');
+    };
+
+    const scheduleLoginClose = () => {
+      clearTimeout(loginCloseTimeout);
+      loginCloseTimeout = setTimeout(closeLoginDropdown, 200);
+    };
+
+    // Desktop: hover behavior
+    loginButton.addEventListener('mouseenter', () => {
+      if (isDesktop.matches) openLoginDropdown();
+    });
+
+    loginDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    loginBridge.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    loginDropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginButton.contains(e.relatedTarget)
+        && !loginBridge.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    loginBridge.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginButton.contains(e.relatedTarget)
+        && !loginDropdown.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    loginButton.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginDropdown.contains(e.relatedTarget)
+        && !loginBridge.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    // Mobile: click behavior
+    loginButton.addEventListener('click', () => {
+      if (!isDesktop.matches) openLoginDropdown();
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLoginDropdown();
+    });
+
+    document.addEventListener('click', (e) => {
+      const isOutsideClick = !loginDropdown.contains(e.target)
+        && !loginButton.contains(e.target)
+        && !loginBridge.contains(e.target);
+      if (isOutsideClick && loginDropdown.classList.contains('open')) {
+        closeLoginDropdown();
       }
     });
   }
