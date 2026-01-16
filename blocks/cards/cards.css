@@ -1622,7 +1622,7 @@
   .section.cards-container .cards-wrapper {
     min-height: 520px;
   }
-    */
+  
 
   .section.cards-container:has(.cards.all-about-card) {
     min-height: 1900px;
@@ -1636,6 +1636,7 @@
   .cards.all-about-card > ul {
     min-height: 1760px;
   }
+  */
 
   .cards.all-about-card > ul > li {
     min-height: 520px;

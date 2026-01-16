@@ -1023,10 +1023,11 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px * = 144px */
   }
 
-  /* CLS guard: reserve space for all-about cards before block CSS loads */
+  /* CLS guard: reserve space for all-about cards before block CSS loads
   .section.cards-container:has(.cards.all-about-card) {
     min-height: 1412px;
   }
+  */
 
   .cards.all-about-card:not([data-block-status="loaded"]) {
     visibility: hidden;
