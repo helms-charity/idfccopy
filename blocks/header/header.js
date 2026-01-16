@@ -396,8 +396,8 @@ export default async function decorate(block) {
     const openDropdown = async () => {
       clearTimeout(closeTimeout);
       if (!loaded) {
-        const fragment = await loadFragment('/fragments/customer-service-dropdown');
-        if (fragment) dropdown.append(...fragment.childNodes);
+        const csFragment = await loadFragment('/fragments/customer-service-dropdown');
+        if (csFragment) dropdown.append(...csFragment.childNodes);
         loaded = true;
       }
       dropdown.classList.add('open');
