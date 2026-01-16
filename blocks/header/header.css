@@ -1734,7 +1734,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   top: var(--nav-height);
   left: 0;
   width: 100vw;
-  background: #fff;
+  background-color: #f6f6f6;
   z-index: 1001;
   display: none;
   overflow-y: auto;
