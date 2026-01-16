@@ -178,6 +178,11 @@ body.modal-open {
   background-color: currentcolor;
 }
 
+.modal-mayura-blue .close-button .icon.icon-close::before,
+.modal-mayura-blue .close-button .icon.icon-close::after {
+  background-color: var(--white);
+}
+
 .modal .close-button .icon.icon-close::after {
   transform: translate(-50%, -50%) rotate(-45deg)
 }
@@ -414,9 +419,9 @@ body.modal-open {
 
 /* H2 styling for modals with fees-and-charges table */
 .modal:has(#fees-and-charges) h2 {
-  background: var(--gradient-red);
+  /*background: var(--gradient-red);
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent; */
   font-size: 32px;
   font-weight: 700;
   text-align: center;
@@ -468,7 +473,6 @@ body.modal-open {
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div {
-  margin-top: 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
