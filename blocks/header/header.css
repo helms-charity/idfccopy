@@ -1731,26 +1731,30 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 /* Search Dropdown */
 .search-dropdown {
   position: fixed;
-  top: calc(var(--nav-height) + 32px);
+  top: var(--nav-height);
   left: 0;
   width: 100vw;
   background: #fff;
   z-index: 1001;
   display: none;
   overflow-y: auto;
-  max-height: calc(100vh - var(--nav-height) - 32px);
+  max-height: calc(100vh - var(--nav-height));
   transition: all 0.3s ease-out;
   transform-origin: top;
+  text-align: center;
 }
 
 .search-dropdown.open {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.search-dropdown::before {
-  content: '';
-  display: block;
-  height: 20px;
+.search-dropdown > * {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* Search box input styling */
@@ -1782,7 +1786,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
 @media (width >= 900px) {
   .search-dropdown {
-    top: calc(var(--nav-height) + 32px);
+    top: var(--nav-height);
   }
 
   #search-box .search-input {
