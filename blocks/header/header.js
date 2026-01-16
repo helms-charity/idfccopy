@@ -5,6 +5,9 @@ import { parseCategoryNavBlock, buildDropdown } from '../category-nav/category-n
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+// Cache for dynamically imported block modules (performance optimization)
+const blockModuleCache = new Map();
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -464,7 +467,6 @@ export default async function decorate(block) {
     const categoryNavBlock = section.querySelector('.category-nav.block');
     if (!categoryNavBlock) return null;
 
-    // Get title from default-content
     const titleP = defaultContent.querySelector('p');
     if (!titleP) return null;
 
@@ -484,6 +486,9 @@ export default async function decorate(block) {
     const children = Array.from(defaultContent.children);
     if (children.length === 0) return null;
 
+    // Check for Cards blocks at the section level (they're siblings of default-content)
+    const cardsBlocks = section.querySelectorAll('.cards.block');
+
     const titleElement = children.find((child) => child.tagName === 'H3');
     if (!titleElement) return null;
 
@@ -502,16 +507,27 @@ export default async function decorate(block) {
     // Create wrapper for non-title children
     const sectionContent = document.createElement('div');
 
-    // Add "View All" button at the top if link exists
+    // Always add section title at the top, with optional "View All" button
+    const viewAllWrapper = document.createElement('div');
+    viewAllWrapper.classList.add('nav-view-all-wrapper');
+
+    const sectionTitle = document.createElement('span');
+    sectionTitle.classList.add('nav-view-all-section-title');
+    sectionTitle.textContent = titleText;
+    viewAllWrapper.appendChild(sectionTitle);
+
+    // Add "View All" button only if link exists
     if (viewAllLink) {
       const viewAllBtn = document.createElement('a');
       viewAllBtn.href = viewAllLink.url;
       viewAllBtn.classList.add('nav-view-all-btn');
       viewAllBtn.innerHTML = `${viewAllLink.text} <span class="icon icon-arrow-right-alt"></span>`;
-      sectionContent.appendChild(viewAllBtn);
+      viewAllWrapper.appendChild(viewAllBtn);
       // Decorate the icon we just created (it wasn't in the fragment)
       decorateIcons(viewAllBtn);
     }
+
+    sectionContent.appendChild(viewAllWrapper);
 
     // Process children and handle H4 subsections
     let currentH4Section = null;
@@ -521,6 +537,9 @@ export default async function decorate(block) {
       if (child.tagName === 'H3') {
         return; // Skip H3, we already processed it
       }
+
+      // Check if this is a block element (like Cards, etc.)
+      const isBlock = child.classList && (child.classList.contains('block') || child.classList.contains('cards'));
 
       if (child.tagName === 'H4') {
         // Close previous H4 section if exists
@@ -540,6 +559,16 @@ export default async function decorate(block) {
         currentH4Content = document.createElement('ul');
         currentH4Content.classList.add('nav-h4-section-content');
         currentH4Section.appendChild(currentH4Content);
+      } else if (isBlock) {
+        // Blocks should ALWAYS be top-level, never nested under H4
+        // Close current H4 section if exists
+        if (currentH4Section) {
+          sectionContent.appendChild(currentH4Section);
+          currentH4Section = null;
+          currentH4Content = null;
+        }
+        // Add block at top level
+        sectionContent.appendChild(child.cloneNode(true));
       } else if (currentH4Section) {
         // Add content under current H4
         const li = document.createElement('li');
@@ -556,21 +585,26 @@ export default async function decorate(block) {
       sectionContent.appendChild(currentH4Section);
     }
 
+    // Add any Cards blocks from the section (they're siblings of default-content)
+    cardsBlocks.forEach((cardsBlock) => {
+      // Wrap the cards block in a container with "Discover" heading
+      const discoverContainer = document.createElement('div');
+      discoverContainer.classList.add('nav-discover-section');
+
+      const discoverHeading = document.createElement('p');
+      discoverHeading.classList.add('nav-discover-heading');
+      discoverHeading.textContent = 'Discover';
+
+      discoverContainer.appendChild(discoverHeading);
+      discoverContainer.appendChild(cardsBlock.cloneNode(true));
+
+      sectionContent.appendChild(discoverContainer);
+    });
+
     return {
       titleText,
       content: sectionContent,
     };
-  }
-
-  /**
-   * Process standard section content for desktop flat list
-   */
-  function processStandardSectionDesktop(section) {
-    const defaultContent = section.querySelector('.default-content');
-    if (!defaultContent) return null;
-
-    const children = Array.from(defaultContent.children);
-    return children.length > 0 ? children : null;
   }
 
   /**
@@ -639,9 +673,40 @@ export default async function decorate(block) {
   }
 
   /**
+   * Setup desktop accordion behavior - click section titles to show content in column 2
+   */
+  function setupDesktopAccordionBehavior(ul) {
+    ul.addEventListener('click', (e) => {
+      // Find the closest nav-fragment-section
+      const sectionItem = e.target.closest('.nav-fragment-section');
+
+      // Only process clicks on the title (column 1)
+      if (!sectionItem || !e.target.closest('.nav-fragment-section-title')) return;
+
+      const expanded = sectionItem.getAttribute('aria-expanded') === 'true';
+
+      // Close all other sections first (accordion behavior)
+      const allSections = ul.querySelectorAll('.nav-fragment-section');
+      allSections.forEach((section) => {
+        if (section !== sectionItem) {
+          section.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Toggle the clicked section
+      sectionItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+
+      // Auto-expand first section on load (for desktop)
+      if (!expanded && allSections.length > 0 && sectionItem === allSections[0]) {
+        sectionItem.setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  /**
    * Load fragment content and build structure based on viewport
-   * Desktop: Flat list of all content
-   * Mobile: Nested accordion by section
+   * Both Desktop and Mobile: Use nested accordion structure
+   * Desktop has different visual presentation via CSS
    */
   async function loadNavFragmentContent(navSection, isMobile = false) {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
@@ -657,60 +722,36 @@ export default async function decorate(block) {
       const ul = document.createElement('ul');
       ul.classList.add('nav-fragment-content');
 
-      if (isMobile) {
-        // Mobile: Create nested accordion structure
-        fragmentSections.forEach((section) => {
-          // Try category-nav first, then standard processing
-          const processed = processCategoryNavSection(section)
-            || processStandardSectionMobile(section);
+      // Both mobile and desktop use nested accordion structure now
+      fragmentSections.forEach((section) => {
+        // Try category-nav first, then standard processing
+        const processed = processCategoryNavSection(section)
+          || processStandardSectionMobile(section);
 
-          if (!processed) return;
+        if (!processed) return;
 
-          // Create accordion item for this section
-          const sectionLi = document.createElement('li');
-          sectionLi.classList.add('nav-fragment-section');
-          sectionLi.setAttribute('aria-expanded', 'false');
+        // Create accordion item for this section
+        const sectionLi = document.createElement('li');
+        sectionLi.classList.add('nav-fragment-section');
+        sectionLi.setAttribute('aria-expanded', 'false');
 
-          // Create clickable title
-          const titleWrapper = document.createElement('p');
-          titleWrapper.classList.add('nav-fragment-section-title');
-          titleWrapper.textContent = processed.titleText;
-          sectionLi.appendChild(titleWrapper);
+        // Create clickable title
+        const titleWrapper = document.createElement('p');
+        titleWrapper.classList.add('nav-fragment-section-title');
+        titleWrapper.textContent = processed.titleText;
+        sectionLi.appendChild(titleWrapper);
 
-          // Create container for section content
-          const sectionUl = document.createElement('ul');
-          sectionUl.classList.add('nav-fragment-section-content');
+        // Create container for section content
+        const sectionUl = document.createElement('ul');
+        sectionUl.classList.add('nav-fragment-section-content');
 
-          const contentLi = document.createElement('li');
-          contentLi.appendChild(processed.content);
-          sectionUl.appendChild(contentLi);
+        const contentLi = document.createElement('li');
+        contentLi.appendChild(processed.content);
+        sectionUl.appendChild(contentLi);
 
-          sectionLi.appendChild(sectionUl);
-          ul.appendChild(sectionLi);
-        });
-      } else {
-        // Desktop: Flat list of all content
-        fragmentSections.forEach((section) => {
-          const categoryNavBlock = section.querySelector('.category-nav.block');
-
-          if (categoryNavBlock) {
-            // For category-nav sections, add the entire block
-            const li = document.createElement('li');
-            li.appendChild(categoryNavBlock.cloneNode(true));
-            ul.appendChild(li);
-          } else {
-            // For regular sections, add all children from default-content
-            const children = processStandardSectionDesktop(section);
-            if (children) {
-              children.forEach((child) => {
-                const li = document.createElement('li');
-                li.appendChild(child.cloneNode(true));
-                ul.appendChild(li);
-              });
-            }
-          }
-        });
-      }
+        sectionLi.appendChild(sectionUl);
+        ul.appendChild(sectionLi);
+      });
 
       if (ul.children.length > 0) {
         navSection.appendChild(ul);
@@ -723,9 +764,37 @@ export default async function decorate(block) {
         // Decorate any category-nav blocks that were added dynamically
         decorateCategoryNavBlocks(ul);
 
-        // Setup mobile accordion behavior using event delegation
+        // Decorate any other blocks (like Cards) that were added dynamically
+        // Using cached imports for better performance
+        const otherBlocks = ul.querySelectorAll('.block:not(.category-nav)');
+        // eslint-disable-next-line no-restricted-syntax
+        for (const blockElement of otherBlocks) {
+          const blockName = Array.from(blockElement.classList).find((c) => c !== 'block');
+          if (blockName) {
+            try {
+              // Check cache first
+              let mod = blockModuleCache.get(blockName);
+              if (!mod) {
+                // Import and cache the module
+                // eslint-disable-next-line no-await-in-loop
+                mod = await import(`../${blockName}/${blockName}.js`);
+                blockModuleCache.set(blockName, mod);
+              }
+              if (mod.default) {
+                // eslint-disable-next-line no-await-in-loop
+                await mod.default(blockElement);
+              }
+            } catch (error) {
+              // Block doesn't have a JS file, that's ok
+            }
+          }
+        }
+
+        // Setup accordion behavior using event delegation
         if (isMobile) {
           setupMobileAccordionBehavior(ul);
+        } else {
+          setupDesktopAccordionBehavior(ul);
         }
 
         return true;
@@ -733,8 +802,7 @@ export default async function decorate(block) {
 
       return false;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to load fragment:', error);
+      // Silently fail - fragment loading is optional
       return false;
     }
   }
@@ -748,11 +816,22 @@ export default async function decorate(block) {
       await loadNavFragmentContent(navSection, false); // false = desktop
       toggleAllNavSections(navSections);
       navSection.setAttribute('aria-expanded', 'true');
+
+      // Auto-expand first section in the dropdown
+      const firstSection = navSection.querySelector('.nav-fragment-section:first-child');
+      if (firstSection) {
+        firstSection.setAttribute('aria-expanded', 'true');
+      }
     });
 
     // Hide dropdown when mouse leaves
     navSection.addEventListener('mouseleave', () => {
       navSection.setAttribute('aria-expanded', 'false');
+      // Reset all inner sections
+      const allInnerSections = navSection.querySelectorAll('.nav-fragment-section');
+      allInnerSections.forEach((section) => {
+        section.setAttribute('aria-expanded', 'false');
+      });
     });
 
     // Title link navigates normally (no preventDefault)
@@ -760,42 +839,13 @@ export default async function decorate(block) {
   }
 
   /**
-   * Switch displayed tab content
+   * Create "Explore" link for a section (DRY helper)
    */
-  async function switchTabContent(selectedSection) {
-    const allSections = domCache.allNavSections;
-    const tabBar = navSections.querySelector('.nav-tab-bar');
-
-    // Load fragment if needed
-    await loadNavFragmentContent(selectedSection, true);
-
-    // Hide all sections
-    allSections.forEach((section) => {
-      section.style.display = 'none';
-      section.classList.remove('active-tab-content');
-    });
-
-    // Show selected section
-    selectedSection.style.display = 'block';
-    selectedSection.classList.add('active-tab-content');
-    selectedSection.setAttribute('aria-expanded', 'true');
-
-    // Update tab active state
-    if (tabBar) {
-      const tabs = tabBar.querySelectorAll('.nav-tab');
-      tabs.forEach((tab) => {
-        tab.classList.remove('active');
-        if (tab.getAttribute('data-section-id') === selectedSection.getAttribute('data-fragment-path')) {
-          tab.classList.add('active');
-        }
-      });
-    }
-
-    // Create/update "Explore" link
-    let exploreLink = selectedSection.querySelector('.explore-section-link');
+  function createExploreLinkIfNeeded(section) {
+    let exploreLink = section.querySelector('.explore-section-link');
     if (!exploreLink) {
-      const titleUrl = selectedSection.getAttribute('data-title-url');
-      const titleText = selectedSection.querySelector('.nav-title-link')?.textContent || '';
+      const titleUrl = section.getAttribute('data-title-url');
+      const titleText = section.querySelector('.nav-title-link')?.textContent || '';
 
       if (titleUrl) {
         exploreLink = document.createElement('a');
@@ -804,7 +854,7 @@ export default async function decorate(block) {
         exploreLink.innerHTML = `Explore ${titleText} <span class="arrow">→</span>`;
 
         // Insert before the fragment content
-        const fragmentContent = selectedSection.querySelector('.nav-fragment-content');
+        const fragmentContent = section.querySelector('.nav-fragment-content');
         if (fragmentContent) {
           fragmentContent.before(exploreLink);
         }
@@ -813,43 +863,75 @@ export default async function decorate(block) {
   }
 
   /**
+   * Update tab bar active state (DRY helper)
+   */
+  function updateTabBarActiveState(selectedSection) {
+    const tabBar = navSections.querySelector('.nav-tab-bar');
+    if (tabBar) {
+      const tabs = tabBar.querySelectorAll('.nav-tab');
+      const selectedPath = selectedSection.getAttribute('data-fragment-path');
+      tabs.forEach((tab) => {
+        tab.classList.toggle('active', tab.getAttribute('data-section-id') === selectedPath);
+      });
+    }
+  }
+
+  /**
+   * Switch displayed tab content
+   */
+  async function switchTabContent(selectedSection) {
+    const allSections = domCache.allNavSections;
+
+    await loadNavFragmentContent(selectedSection, true);
+
+    allSections.forEach((section) => {
+      const isSelected = section === selectedSection;
+      section.style.display = isSelected ? 'block' : 'none';
+      section.classList.toggle('active-tab-content', isSelected);
+      section.setAttribute('aria-expanded', isSelected ? 'true' : 'false');
+    });
+
+    updateTabBarActiveState(selectedSection);
+    createExploreLinkIfNeeded(selectedSection);
+  }
+
+  /**
+   * Create tab bar (DRY helper)
+   */
+  function createTabBar() {
+    const sectionsUl = domCache.navSectionsUl;
+    const allSections = domCache.allNavSections;
+    const tabBar = document.createElement('div');
+    tabBar.classList.add('nav-tab-bar');
+
+    allSections.forEach((section) => {
+      const titleLink = section.querySelector('.nav-title-link');
+      const titleText = titleLink ? titleLink.textContent : '';
+
+      const tab = document.createElement('button');
+      tab.classList.add('nav-tab');
+      tab.textContent = titleText;
+      tab.setAttribute('data-section-id', section.getAttribute('data-fragment-path'));
+      tab.setAttribute('data-title-url', section.getAttribute('data-title-url') || '');
+
+      tab.addEventListener('click', () => switchTabContent(section));
+      tabBar.appendChild(tab);
+    });
+
+    sectionsUl.before(tabBar);
+    return tabBar;
+  }
+
+  /**
    * Mobile: Switch to tab view when a nav section is clicked
    */
   function switchToTabView(selectedSection) {
-    const sectionsUl = domCache.navSectionsUl;
-    const allSections = domCache.allNavSections;
-
-    // Mark the sections container as in tab-view mode
     navSections.classList.add('tab-view-active');
 
-    // Create tab bar if it doesn't exist
-    let tabBar = navSections.querySelector('.nav-tab-bar');
-    if (!tabBar) {
-      tabBar = document.createElement('div');
-      tabBar.classList.add('nav-tab-bar');
-
-      allSections.forEach((section) => {
-        const titleLink = section.querySelector('.nav-title-link');
-        const titleText = titleLink ? titleLink.textContent : '';
-        const titleUrl = section.getAttribute('data-title-url');
-
-        const tab = document.createElement('button');
-        tab.classList.add('nav-tab');
-        tab.textContent = titleText;
-        tab.setAttribute('data-section-id', section.getAttribute('data-fragment-path'));
-        tab.setAttribute('data-title-url', titleUrl || '');
-
-        tab.addEventListener('click', () => {
-          switchTabContent(section);
-        });
-
-        tabBar.appendChild(tab);
-      });
-
-      sectionsUl.before(tabBar);
+    if (!navSections.querySelector('.nav-tab-bar')) {
+      createTabBar();
     }
 
-    // Show tab content
     switchTabContent(selectedSection);
   }
 
