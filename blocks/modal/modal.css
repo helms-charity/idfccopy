@@ -419,9 +419,9 @@ body.modal-open {
 
 /* H2 styling for modals with fees-and-charges table */
 .modal:has(#fees-and-charges) h2 {
-  background: var(--gradient-red);
+  /*background: var(--gradient-red);
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent; */
   font-size: 32px;
   font-weight: 700;
   text-align: center;
