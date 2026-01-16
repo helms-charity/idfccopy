@@ -1741,20 +1741,10 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   max-height: calc(100vh - var(--nav-height));
   transition: all 0.3s ease-out;
   transform-origin: top;
-  text-align: center;
 }
 
 .search-dropdown.open {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-dropdown > * {
-  max-width: 1440px;
-  width: 100%;
-  margin: 0 auto;
+  display: block;
 }
 
 /* Search box input styling */
