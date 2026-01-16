@@ -1016,11 +1016,11 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   header {
-    height: 80px; /* nav = 80px */
+    height: var(--nav-height); /* nav = 80px */
   }
 
   header:has(.category-nav-wrapper) {
-    height: 144px; /* nav + category-nav = 80px + 64px */
+    height: var(--category-nav-height) + var(--nav-height); /* nav + category-nav = 80px + 64px * = 144px */
   }
 
   /* CLS guard: reserve space for all-about cards before block CSS loads */
