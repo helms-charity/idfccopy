@@ -381,6 +381,9 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Customer service dropdown - shared reference for both desktop and mobile
+  let csDropdownOpen = null;
+
   // Customer service dropdown
   const odometerEl = navTools.querySelector('.grnt-animation-odometer');
   const odometerLi = odometerEl?.closest('li');
@@ -426,12 +429,19 @@ export default async function decorate(block) {
       if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) scheduleClose();
     });
 
+    // Store openDropdown function for mobile odometer use
+    csDropdownOpen = openDropdown;
+
     // Mobile: click behavior, close on click outside
     odometerLi.addEventListener('click', () => {
       if (!isDesktop.matches) openDropdown();
     });
     document.addEventListener('click', (e) => {
-      if (!isDesktop.matches && !dropdown.contains(e.target) && !odometerLi.contains(e.target)) {
+      const clickedMobileOdometer = e.target.closest('.mobile-customer-service-odometer');
+      const isOutsideClick = !dropdown.contains(e.target)
+        && !odometerLi.contains(e.target)
+        && !clickedMobileOdometer;
+      if (!isDesktop.matches && isOutsideClick) {
         closeDropdown();
       }
     });
@@ -454,6 +464,16 @@ export default async function decorate(block) {
         </div>
       </div>
     `;
+  }
+
+  // Mobile odometer click handler - open customer service dropdown
+  if (mobileOdometerContainer) {
+    mobileOdometerContainer.style.cursor = 'pointer';
+    mobileOdometerContainer.addEventListener('click', () => {
+      if (!isDesktop.matches && csDropdownOpen) {
+        csDropdownOpen();
+      }
+    });
   }
 
   // Start mobile odometer animation (only when nav is first expanded)
