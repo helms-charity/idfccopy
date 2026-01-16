@@ -10,6 +10,19 @@ import { loadFragment } from '../../scripts/scripts.js';
 */
 
 /**
+ * Closes a dialog with a fade-out animation.
+ * @param {HTMLDialogElement} dialog - The dialog element to close
+ */
+function animatedClose(dialog) {
+  if (!dialog || !dialog.open) return;
+  // Remove visible class to trigger fade-out transition
+  dialog.classList.remove('modal-visible');
+  setTimeout(() => {
+    dialog.close();
+  }, 300); // matches --modal-transition-duration in CSS
+}
+
+/**
  * Hotspot positions for each mayura-metal-concept section.
  * Each section has 3 hotspots that correspond to pseudo-elements:
  * - hotspot1 (::before on columns-img-col) → shows concept-1
@@ -143,7 +156,7 @@ function setupMayuraLastParagraphActions(container, dialog) {
   if (concept1LastP) {
     concept1LastP.style.cursor = 'pointer';
     concept1LastP.addEventListener('click', () => {
-      dialog.close();
+      animatedClose(dialog);
     });
   }
 
@@ -294,6 +307,11 @@ export async function createModal(contentNodes, options = {}) {
     dialog.classList.add(options.modalTheme);
   }
 
+  // Mark auto-popup modals for different backdrop styling
+  if (options.isAutoPopup) {
+    dialog.classList.add('modal-auto-popup');
+  }
+
   // Store decoration image for later application to page background
   const { decorationImage } = options;
 
@@ -330,7 +348,7 @@ export async function createModal(contentNodes, options = {}) {
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  closeButton.addEventListener('click', () => dialog.close());
+  closeButton.addEventListener('click', () => animatedClose(dialog));
   dialog.prepend(closeButton);
 
   // Add CTA content if provided (positioned top-right, above close button)
@@ -353,7 +371,7 @@ export async function createModal(contentNodes, options = {}) {
     } = dialog.getBoundingClientRect();
     const { clientX, clientY } = e;
     if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
-      dialog.close();
+      animatedClose(dialog);
     }
   });
 
@@ -417,6 +435,10 @@ export async function createModal(contentNodes, options = {}) {
       dialog.showModal();
       // Restore scroll position immediately
       window.scrollTo(0, scrollY);
+      // Trigger fade-in after dialog is in top layer (needs a frame for transition to work)
+      requestAnimationFrame(() => {
+        dialog.classList.add('modal-visible');
+      });
       // Reset scroll position of dialog content only
       setTimeout(() => { dialogContent.scrollTop = 0; }, 0);
       document.body.classList.add('modal-open');
