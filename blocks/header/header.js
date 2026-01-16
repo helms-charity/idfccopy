@@ -534,7 +534,90 @@ export default async function decorate(block) {
     });
   }
 
-  // Login dropdown
+  // Create mobile odometer for Customer Service (displayed at top when nav expanded)
+  const mobileOdometerContainer = document.createElement('div');
+  mobileOdometerContainer.className = 'mobile-customer-service-odometer';
+
+  // Use the same odometer items extracted above
+  if (odometerItemTexts.length > 0) {
+    const mobileOdometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
+    const firstItemText = odometerItemTexts[0];
+
+    mobileOdometerContainer.innerHTML = `
+      <div class="grnt-animation-odometer">
+        <div class="grnt-odometer-track">
+          ${mobileOdometerSpans}
+          <span>${firstItemText}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Mobile odometer click handler - open customer service dropdown
+  if (mobileOdometerContainer) {
+    mobileOdometerContainer.style.cursor = 'pointer';
+    mobileOdometerContainer.addEventListener('click', () => {
+      if (!isDesktop.matches && csDropdownOpen) {
+        csDropdownOpen();
+      }
+    });
+  }
+
+  // Start mobile odometer animation (only when nav is first expanded)
+  let mobileOdometerStarted = false;
+  function startMobileOdometerAnimation() {
+    if (mobileOdometerStarted) return;
+    mobileOdometerStarted = true;
+
+    const mobileOdometerTrack = mobileOdometerContainer.querySelector('.grnt-odometer-track');
+    if (!mobileOdometerTrack) return;
+
+    const spans = mobileOdometerTrack.querySelectorAll('span');
+    const spanHeight = 20;
+    const totalItems = spans.length - 1;
+    let currentIndex = 0;
+
+    // Ensure we start at the first item
+    mobileOdometerTrack.style.transform = 'translateY(0)';
+
+    setInterval(() => {
+      currentIndex += 1;
+      const translateY = currentIndex * spanHeight;
+      mobileOdometerTrack.style.transform = `translateY(-${translateY}px)`;
+
+      if (currentIndex >= totalItems) {
+        setTimeout(() => {
+          mobileOdometerTrack.style.transition = 'none';
+          mobileOdometerTrack.style.transform = 'translateY(0)';
+          currentIndex = 0;
+          setTimeout(() => {
+            mobileOdometerTrack.style.transition = 'transform 0.6s ease-in-out';
+          }, 50);
+        }, 600);
+      }
+    }, 1500);
+  }
+
+  // Watch for nav expansion to start mobile odometer
+  const navObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'aria-expanded') {
+        const isExpanded = nav.getAttribute('aria-expanded') === 'true';
+        if (isExpanded && !mobileOdometerStarted) {
+          setTimeout(startMobileOdometerAnimation, 100);
+        }
+      }
+    });
+  });
+  navObserver.observe(nav, { attributes: true });
+
+  // Assemble the navigation
+  nav.appendChild(navBrand);
+  nav.appendChild(mobileOdometerContainer); // Add mobile odometer
+  nav.appendChild(navSections);
+  nav.appendChild(navTools);
+
+  // Login dropdown - setup after nav is assembled
   const loginButton = document.getElementById('login-button');
   if (loginButton) {
     const loginDropdown = document.createElement('div');
@@ -639,89 +722,6 @@ export default async function decorate(block) {
       }
     });
   }
-
-  // Create mobile odometer for Customer Service (displayed at top when nav expanded)
-  const mobileOdometerContainer = document.createElement('div');
-  mobileOdometerContainer.className = 'mobile-customer-service-odometer';
-
-  // Use the same odometer items extracted above
-  if (odometerItemTexts.length > 0) {
-    const mobileOdometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
-    const firstItemText = odometerItemTexts[0];
-
-    mobileOdometerContainer.innerHTML = `
-      <div class="grnt-animation-odometer">
-        <div class="grnt-odometer-track">
-          ${mobileOdometerSpans}
-          <span>${firstItemText}</span>
-        </div>
-      </div>
-    `;
-  }
-
-  // Mobile odometer click handler - open customer service dropdown
-  if (mobileOdometerContainer) {
-    mobileOdometerContainer.style.cursor = 'pointer';
-    mobileOdometerContainer.addEventListener('click', () => {
-      if (!isDesktop.matches && csDropdownOpen) {
-        csDropdownOpen();
-      }
-    });
-  }
-
-  // Start mobile odometer animation (only when nav is first expanded)
-  let mobileOdometerStarted = false;
-  function startMobileOdometerAnimation() {
-    if (mobileOdometerStarted) return;
-    mobileOdometerStarted = true;
-
-    const mobileOdometerTrack = mobileOdometerContainer.querySelector('.grnt-odometer-track');
-    if (!mobileOdometerTrack) return;
-
-    const spans = mobileOdometerTrack.querySelectorAll('span');
-    const spanHeight = 20;
-    const totalItems = spans.length - 1;
-    let currentIndex = 0;
-
-    // Ensure we start at the first item
-    mobileOdometerTrack.style.transform = 'translateY(0)';
-
-    setInterval(() => {
-      currentIndex += 1;
-      const translateY = currentIndex * spanHeight;
-      mobileOdometerTrack.style.transform = `translateY(-${translateY}px)`;
-
-      if (currentIndex >= totalItems) {
-        setTimeout(() => {
-          mobileOdometerTrack.style.transition = 'none';
-          mobileOdometerTrack.style.transform = 'translateY(0)';
-          currentIndex = 0;
-          setTimeout(() => {
-            mobileOdometerTrack.style.transition = 'transform 0.6s ease-in-out';
-          }, 50);
-        }, 600);
-      }
-    }, 1500);
-  }
-
-  // Watch for nav expansion to start mobile odometer
-  const navObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.attributeName === 'aria-expanded') {
-        const isExpanded = nav.getAttribute('aria-expanded') === 'true';
-        if (isExpanded && !mobileOdometerStarted) {
-          setTimeout(startMobileOdometerAnimation, 100);
-        }
-      }
-    });
-  });
-  navObserver.observe(nav, { attributes: true });
-
-  // Assemble the navigation
-  nav.appendChild(navBrand);
-  nav.appendChild(mobileOdometerContainer); // Add mobile odometer
-  nav.appendChild(navSections);
-  nav.appendChild(navTools);
 
   /**
    * Process category-nav section content
