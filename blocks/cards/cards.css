@@ -1636,13 +1636,13 @@
   .cards.all-about-card > ul {
     min-height: 1760px;
   }
+  */
 
   .cards.all-about-card > ul > li {
     min-height: 520px;
     display: grid;
     grid-template-rows: 240px 1fr;
   }
-  */
 
   .cards.all-about-card .cards-card-image {
     min-height: 360px;
