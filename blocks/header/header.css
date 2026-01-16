@@ -424,6 +424,7 @@ header nav .nav-sections .nav-view-all-btn:hover {
 header nav .nav-sections .nav-view-all-btn .icon {
   width: 16px;
   height: 16px;
+  vertical-align: middle;
 }
 
 /* H4 subsections */
@@ -635,7 +636,7 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-content .category
 
 /* Tab view: Simplified universal rules */
 header nav .nav-sections.tab-view-active .nav-view-all-btn {
-  padding-left: 20px;
+  padding-left: 40px;
   border-bottom: none;
   font-size: var(--body-font-size-s);
 }
@@ -890,6 +891,26 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 /* Hide Discover cards on mobile (shown on desktop only) */
 .nav-discover-section {
   display: none;
+}
+
+/* Hide section title text on mobile (shown on desktop only), but keep "View All" button */
+header nav .nav-sections .nav-view-all-section-title {
+  display: none;
+}
+
+/* Privilege program icons - display at half native SVG size (51x34) */
+header nav .nav-sections .icon-privilage-img1a,
+header nav .nav-sections .icon-privilage-img2a,
+header nav .nav-sections .icon-privilage-img3a {
+  width: 51px;
+  height: 34px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+/* Vertically center link text next to icons */
+header nav .nav-sections .nav-h4-section-content p > a {
+  vertical-align: middle;
 }
 
 @media (width >= 900px) {
@@ -1161,18 +1182,56 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   /* Desktop: Show content in columns 2-3 when section is expanded */
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
     display: block;
-    padding: 16px 32px;
-    background: #f2f2f2;
+    padding: 0;
+    background: transparent;
     box-shadow: none;
-    border-radius: 8px;
+    border-radius: 0;
     max-height: 600px;
     overflow-y: auto;
   }
 
-  /* Desktop: Wrapper div inside section content */
+  /* Desktop: Wrapper div inside section content - apply background and padding here */
+  header nav .nav-sections .nav-fragment-section-content > li {
+    min-height: 568px; /* 600px - 32px padding top/bottom */
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Desktop: Wrapper div inside section content - use CSS Grid for 2-column sub-layout */
   header nav .nav-sections .nav-fragment-section-content > li > div {
     position: relative;
+    padding: 16px 32px;
     padding-right: 412px; /* 380px card + 32px gap */
+    background: #f2f2f2;
+    border-radius: 8px;
+    min-height: 568px; /* Fill available height */
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns for primary links + first H4 */
+    gap: 16px;
+    grid-auto-flow: dense; /* Allow flexible positioning */
+  }
+
+  /* Primary links (nav-view-all + top-level buttons) in left column */
+  header nav .nav-sections .nav-fragment-section-content .nav-primary-links {
+    grid-column: 1; /* Left column */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ensure view-all wrapper inside primary links maintains styling */
+  header nav .nav-sections .nav-fragment-section-content .nav-primary-links .nav-view-all-wrapper {
+    margin-bottom: 8px;
+  }
+
+  /* First H4 section in right column */
+  header nav .nav-sections .nav-fragment-section-content .nav-h4-section.first-h4 {
+    grid-column: 2; /* Right column */
+    grid-row: 1; /* Align with first row */
+  }
+
+  /* Subsequent H4 sections span full width below */
+  header nav .nav-sections .nav-fragment-section-content .nav-h4-section:not(.first-h4) {
+    grid-column: 1 / -1; /* Span both columns */
   }
 
   /* Desktop: Discover section positioned absolutely on the right */
@@ -1183,6 +1242,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     width: 380px;
     max-height: 568px; /* 600px container - 32px padding */
     overflow: hidden;
+    grid-column: auto; /* Don't participate in grid */
   }
 
   /* Desktop: Ensure section content sits above background */
@@ -1347,12 +1407,6 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
      DESKTOP: COLUMN 2 CONTENT STYLING
      ================================================================= */
 
-  /* Base container styles */
-  header nav .nav-sections .nav-fragment-section-content > li {
-    padding: 0;
-    margin: 0;
-  }
-
   /* Content items: Default state (button-container and regular p tags) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
@@ -1407,6 +1461,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-section-title {
+    display: inline; /* Override mobile display: none */
     font-size: var(--body-font-size-s);
     font-weight: 600;
     color: var(--text-color);
@@ -1420,7 +1475,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     min-height: 0;
     height: auto;
     border-bottom: none;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.3;
     color: var(--dark-red-link-color);
     background-color: transparent;
@@ -1428,6 +1483,22 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 
   header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn:hover {
     font-weight: 700;
+  }
+
+  /* Desktop: Change arrow icon to chevron-right-red for view-all buttons */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn .icon-arrow-right-alt {
+    display: none;
+  }
+
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('/icons/chevron-right-red.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
   }
 
   /* =================================================================
@@ -1440,6 +1511,11 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     background: #f2f2f2;
   }
 
+  /* First H4 section - align with top, no top margin */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section.first-h4 {
+    margin-top: 0;
+  }
+
   /* H4 section title */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-title {
     font-size: var(--body-font-size-s);
@@ -1447,8 +1523,9 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     color: var(--text-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 0 16px 4px;
+    padding: 10px 16px;
     background-color: #f2f2f2;
+    margin-bottom: 4px;
   }
 
   /* H4 section content */
@@ -1629,21 +1706,16 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   top: calc(var(--nav-height) - 3px);
   left: 0;
   width: 100vw;
-  background: #fff;
+  background: #f6f6f6;
   box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
   z-index: 1001;
   display: none;
   overflow-y: auto;
   max-height: calc(100vh - var(--nav-height));
-}
-
-.cs-dropdown {
   transition: all .5s ease-out;
   transform: rotateX(0deg);
   transform-origin: top;
   border-top: 1px solid #e9e9e9;
-  z-index: 100;
-  background: #f6f6f6;
 }
 
 .cs-dropdown::before {
@@ -1687,7 +1759,6 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   }
 
   .cards.related-search .benefit-cards::after {
-    background-color: transparent;
     width: 7px;
     height: 7px;
     border: 1px solid;

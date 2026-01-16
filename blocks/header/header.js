@@ -583,6 +583,10 @@ export default async function decorate(block) {
     // Create wrapper for non-title children
     const sectionContent = document.createElement('div');
 
+    // Create primary links wrapper (will contain viewAllWrapper + top-level links)
+    const primaryLinksWrapper = document.createElement('div');
+    primaryLinksWrapper.classList.add('nav-primary-links');
+
     // Always add section title at the top, with optional "View All" button
     const viewAllWrapper = document.createElement('div');
     viewAllWrapper.classList.add('nav-view-all-wrapper');
@@ -603,11 +607,13 @@ export default async function decorate(block) {
       decorateIcons(viewAllBtn);
     }
 
-    sectionContent.appendChild(viewAllWrapper);
+    primaryLinksWrapper.appendChild(viewAllWrapper);
 
     // Process children and handle H4 subsections
     let currentH4Section = null;
     let currentH4Content = null;
+    let firstH4Found = false;
+    const h4Sections = [];
 
     children.forEach((child) => {
       if (child.tagName === 'H3') {
@@ -618,14 +624,20 @@ export default async function decorate(block) {
       const isBlock = child.classList && (child.classList.contains('block') || child.classList.contains('cards'));
 
       if (child.tagName === 'H4') {
-        // Close previous H4 section if exists
+        // Close previous H4 section if exists and add to collection
         if (currentH4Section) {
-          sectionContent.appendChild(currentH4Section);
+          h4Sections.push(currentH4Section);
         }
 
         // Create new H4 section (not an accordion, just a header with content)
         currentH4Section = document.createElement('div');
         currentH4Section.classList.add('nav-h4-section');
+
+        // Mark the first H4 section for special layout positioning
+        if (!firstH4Found) {
+          currentH4Section.classList.add('first-h4');
+          firstH4Found = true;
+        }
 
         const h4Title = document.createElement('p');
         h4Title.classList.add('nav-h4-section-title');
@@ -639,11 +651,11 @@ export default async function decorate(block) {
         // Blocks should ALWAYS be top-level, never nested under H4
         // Close current H4 section if exists
         if (currentH4Section) {
-          sectionContent.appendChild(currentH4Section);
+          h4Sections.push(currentH4Section);
           currentH4Section = null;
           currentH4Content = null;
         }
-        // Add block at top level
+        // Add block at top level (will be added later)
         sectionContent.appendChild(child.cloneNode(true));
       } else if (currentH4Section) {
         // Add content under current H4
@@ -651,15 +663,24 @@ export default async function decorate(block) {
         li.appendChild(child.cloneNode(true));
         currentH4Content.appendChild(li);
       } else {
-        // Top-level content (no H4)
-        sectionContent.appendChild(child.cloneNode(true));
+        // Top-level content (no H4) - add to primary links wrapper
+        primaryLinksWrapper.appendChild(child.cloneNode(true));
       }
     });
 
     // Don't forget to append the last H4 section if exists
     if (currentH4Section) {
-      sectionContent.appendChild(currentH4Section);
+      h4Sections.push(currentH4Section);
     }
+
+    // Now assemble the final structure
+    // Add primary links wrapper first
+    sectionContent.appendChild(primaryLinksWrapper);
+
+    // Add all H4 sections
+    h4Sections.forEach((h4Section) => {
+      sectionContent.appendChild(h4Section);
+    });
 
     // Add any Cards blocks from the section (they're siblings of default-content)
     cardsBlocks.forEach((cardsBlock) => {
