@@ -484,7 +484,7 @@ export default async function decorate(block) {
 
     const scheduleSearchClose = () => {
       clearTimeout(searchCloseTimeout);
-      searchCloseTimeout = setTimeout(closeSearchDropdown, 100);
+      searchCloseTimeout = setTimeout(closeSearchDropdown, 200);
     };
 
     // Click to open (on the search box container, not just the input)

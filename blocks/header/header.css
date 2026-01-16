@@ -1757,17 +1757,17 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 /* Invisible bridge to keep dropdown open when moving mouse from search box */
 .search-dropdown-bridge {
   position: fixed;
-  top: var(--nav-height);
+  top: calc(var(--nav-height) - 20px);
   left: 0;
   width: 100vw;
   height: 0;
-  z-index: 1000;
+  z-index: 1002;
   display: none;
 }
 
 .search-dropdown-bridge.open {
   display: block;
-  height: 50px;
+  height: 40px;
 }
 
 /* Search box input styling */
