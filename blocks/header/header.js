@@ -335,6 +335,7 @@ export default async function decorate(block) {
 
       // Add login icon to the last <li> (authoring contract: last item is always Login)
       if (loginLi) {
+        loginLi.id = 'login-button';
         const existingIcon = loginLi.querySelector('.icon-login_header');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
@@ -529,6 +530,112 @@ export default async function decorate(block) {
         && !searchBridge.contains(e.target);
       if (isOutsideClick && searchDropdown.classList.contains('open')) {
         closeSearchDropdown();
+      }
+    });
+  }
+
+  // Login dropdown
+  const loginButton = document.getElementById('login-button');
+  if (loginButton) {
+    const loginDropdown = document.createElement('div');
+    loginDropdown.className = 'login-dropdown';
+    document.body.appendChild(loginDropdown);
+
+    // Create close button for mobile
+    const closeButton = document.createElement('button');
+    closeButton.className = 'login-dropdown-close';
+    closeButton.innerHTML = '&times;';
+    closeButton.setAttribute('aria-label', 'Close login menu');
+    loginDropdown.appendChild(closeButton);
+
+    // Create invisible bridge element to keep dropdown open when moving mouse
+    const loginBridge = document.createElement('div');
+    loginBridge.className = 'login-dropdown-bridge';
+    document.body.appendChild(loginBridge);
+
+    let loginLoaded = false;
+    let loginCloseTimeout = null;
+
+    const openLoginDropdown = async () => {
+      clearTimeout(loginCloseTimeout);
+      if (!loginLoaded) {
+        const loginFragment = await loadFragment('/fragments/login-dropdown');
+        if (loginFragment) loginDropdown.append(...loginFragment.childNodes);
+        loginLoaded = true;
+      }
+      loginDropdown.classList.add('open');
+      loginBridge.classList.add('open');
+    };
+
+    const closeLoginDropdown = () => {
+      loginDropdown.classList.remove('open');
+      loginBridge.classList.remove('open');
+    };
+
+    const scheduleLoginClose = () => {
+      clearTimeout(loginCloseTimeout);
+      loginCloseTimeout = setTimeout(closeLoginDropdown, 200);
+    };
+
+    // Desktop: hover to open
+    loginButton.addEventListener('mouseenter', () => {
+      if (isDesktop.matches) openLoginDropdown();
+    });
+
+    // Mobile: click to open
+    loginButton.addEventListener('click', () => {
+      if (!isDesktop.matches) openLoginDropdown();
+    });
+
+    // Close button click handler (mobile only)
+    closeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLoginDropdown();
+    });
+
+    // Keep open when mouse enters dropdown or bridge
+    loginDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    loginBridge.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    // Close when mouse leaves dropdown (not going to login button or bridge)
+    loginDropdown.addEventListener('mouseleave', (e) => {
+      const notGoingToButton = !loginButton.contains(e.relatedTarget);
+      const notGoingToBridge = !loginBridge.contains(e.relatedTarget);
+      if (isDesktop.matches && notGoingToButton && notGoingToBridge) {
+        scheduleLoginClose();
+      }
+    });
+
+    // Close when mouse leaves bridge (not going to login button or dropdown)
+    loginBridge.addEventListener('mouseleave', (e) => {
+      const notGoingToButton = !loginButton.contains(e.relatedTarget);
+      const notGoingToDropdown = !loginDropdown.contains(e.relatedTarget);
+      if (isDesktop.matches && notGoingToButton && notGoingToDropdown) {
+        scheduleLoginClose();
+      }
+    });
+
+    // Close when mouse leaves login button (not going to dropdown or bridge)
+    loginButton.addEventListener('mouseleave', (e) => {
+      const notGoingToDropdown = !loginDropdown.contains(e.relatedTarget);
+      const notGoingToBridge = !loginBridge.contains(e.relatedTarget);
+      if (isDesktop.matches && notGoingToDropdown && notGoingToBridge) {
+        scheduleLoginClose();
+      }
+    });
+
+    // Close on click outside (mobile and desktop)
+    document.addEventListener('click', (e) => {
+      const isOutsideClick = !loginDropdown.contains(e.target)
+        && !loginButton.contains(e.target)
+        && !loginBridge.contains(e.target);
+      if (isOutsideClick && loginDropdown.classList.contains('open')) {
+        closeLoginDropdown();
       }
     });
   }

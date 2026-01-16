@@ -1806,3 +1806,86 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     min-width: 120px;
   }
 }
+
+/* Login Dropdown */
+.login-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background-color: #902a2c;
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: 1042px;
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+  color: #fff;
+}
+
+.login-dropdown.open {
+  display: block;
+}
+
+/* Center the main content sections inside login dropdown */
+.login-dropdown > .section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 70px;
+}
+
+/* Close button for login dropdown (mobile only) */
+.login-dropdown-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.login-dropdown-close:hover {
+  opacity: 0.8;
+}
+
+/* Invisible bridge to keep login dropdown open when moving mouse */
+.login-dropdown-bridge {
+  position: fixed;
+  top: calc(var(--nav-height) - 20px);
+  left: 0;
+  width: 100vw;
+  height: 0;
+  z-index: 1002;
+  display: none;
+}
+
+.login-dropdown-bridge.open {
+  display: block;
+  height: 40px;
+}
+
+/* Ensure login button is hoverable */
+#login-button {
+  cursor: pointer;
+}
+
+@media (width >= 900px) {
+  /* Hide close button on desktop */
+  .login-dropdown-close {
+    display: none;
+  }
+
+  .login-dropdown {
+    top: var(--nav-height);
+  }
+}
