@@ -384,6 +384,72 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  // Customer service dropdown - shared reference for both desktop and mobile
+  let csDropdownOpen = null;
+
+  // Customer service dropdown
+  const odometerEl = navTools.querySelector('.grnt-animation-odometer');
+  const odometerLi = odometerEl?.closest('li');
+  if (odometerLi) {
+    const dropdown = document.createElement('div');
+    dropdown.className = 'cs-dropdown';
+    document.body.appendChild(dropdown);
+
+    let loaded = false;
+    let closeTimeout = null;
+    odometerLi.style.cursor = 'pointer';
+
+    const openDropdown = async () => {
+      clearTimeout(closeTimeout);
+      if (!loaded) {
+        const csFragment = await loadFragment('/fragments/customer-service-dropdown');
+        if (csFragment) dropdown.append(...csFragment.childNodes);
+        loaded = true;
+      }
+      dropdown.classList.add('open');
+    };
+
+    const closeDropdown = () => {
+      dropdown.classList.remove('open');
+    };
+
+    const scheduleClose = () => {
+      clearTimeout(closeTimeout);
+      closeTimeout = setTimeout(closeDropdown, 100);
+    };
+
+    // Desktop: hover behavior
+    odometerLi.addEventListener('mouseenter', () => {
+      if (isDesktop.matches) openDropdown();
+    });
+    dropdown.addEventListener('mouseenter', () => {
+      clearTimeout(closeTimeout);
+    });
+    dropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) scheduleClose();
+    });
+    odometerLi.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) scheduleClose();
+    });
+
+    // Store openDropdown function for mobile odometer use
+    csDropdownOpen = openDropdown;
+
+    // Mobile: click behavior, close on click outside
+    odometerLi.addEventListener('click', () => {
+      if (!isDesktop.matches) openDropdown();
+    });
+    document.addEventListener('click', (e) => {
+      const clickedMobileOdometer = e.target.closest('.mobile-customer-service-odometer');
+      const isOutsideClick = !dropdown.contains(e.target)
+        && !odometerLi.contains(e.target)
+        && !clickedMobileOdometer;
+      if (!isDesktop.matches && isOutsideClick) {
+        closeDropdown();
+      }
+    });
+  }
+
   // Create mobile odometer for Customer Service (displayed at top when nav expanded)
   const mobileOdometerContainer = document.createElement('div');
   mobileOdometerContainer.className = 'mobile-customer-service-odometer';
@@ -401,6 +467,16 @@ export default async function decorate(block) {
         </div>
       </div>
     `;
+  }
+
+  // Mobile odometer click handler - open customer service dropdown
+  if (mobileOdometerContainer) {
+    mobileOdometerContainer.style.cursor = 'pointer';
+    mobileOdometerContainer.addEventListener('click', () => {
+      if (!isDesktop.matches && csDropdownOpen) {
+        csDropdownOpen();
+      }
+    });
   }
 
   // Start mobile odometer animation (only when nav is first expanded)
