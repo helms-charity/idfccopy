@@ -675,6 +675,62 @@ function identifySemanticCardElements(li) {
 }
 
 export default async function decorate(block) {
+  const isDesktop = window.matchMedia('(min-width: 900px)').matches;
+  const section = block.closest('.section');
+  const wrapper = block.closest('.cards-wrapper') || block.parentElement;
+  const isAllAboutCard = block.classList.contains('all-about-card');
+  const initialBlockHeight = block.getBoundingClientRect().height;
+  const initialWrapperHeight = wrapper?.getBoundingClientRect().height;
+  const initialSectionHeight = section?.getBoundingClientRect().height;
+
+  if (isDesktop && isAllAboutCard && section) {
+    section.style.minHeight = '1412px';
+    if (wrapper) wrapper.style.minHeight = '1412px';
+    block.style.minHeight = '1412px';
+    block.style.visibility = 'hidden';
+  }
+
+  // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
+  if (isDesktop && initialBlockHeight > 0) {
+    block.style.minHeight = `${initialBlockHeight}px`;
+    if (wrapper && initialWrapperHeight) {
+      wrapper.style.minHeight = `${initialWrapperHeight}px`;
+    }
+    if (section?.classList.contains('cards-container') && initialSectionHeight) {
+      section.style.minHeight = `${initialSectionHeight}px`;
+    }
+  }
+
+  const releaseLayoutLock = () => {
+    if (!isDesktop) return;
+    block.style.minHeight = '';
+    if (wrapper) wrapper.style.minHeight = '';
+    if (section) section.style.minHeight = '';
+  };
+
+  const setRenderedImageDimensions = () => {
+    block.querySelectorAll('img').forEach((img) => {
+      if (img.hasAttribute('width') && img.hasAttribute('height')) return;
+      const rect = img.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        img.setAttribute('width', Math.round(rect.width));
+        img.setAttribute('height', Math.round(rect.height));
+      }
+    });
+  };
+
+  const getStaticImageDimensions = (img) => {
+    if (block.classList.contains('all-about-card')) {
+      return { width: 280, height: 350 };
+    }
+    if (block.classList.contains('important-documents')) {
+      return { width: 175, height: 175 };
+    }
+    if (img.closest('.swiper-slide')) {
+      return { width: 232, height: 358 };
+    }
+    return null;
+  };
   // Cache variant checks once (performance optimization)
   const { classList } = block;
   const isTestimonial = classList.contains('testimonial-card');
@@ -725,7 +781,22 @@ export default async function decorate(block) {
   // Replace images with optimized pictures
   ul.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
+    const optimizedImg = optimizedPic.querySelector('img');
+    moveInstrumentation(img, optimizedImg);
+
+    const width = img.getAttribute('width');
+    const height = img.getAttribute('height');
+    if (width && height) {
+      optimizedImg.setAttribute('width', width);
+      optimizedImg.setAttribute('height', height);
+    } else {
+      const staticSize = getStaticImageDimensions(img);
+      if (staticSize) {
+        optimizedImg.setAttribute('width', staticSize.width);
+        optimizedImg.setAttribute('height', staticSize.height);
+      }
+    }
+
     img.closest('picture').replaceWith(optimizedPic);
   });
 
@@ -971,6 +1042,11 @@ export default async function decorate(block) {
 
     // eslint-disable-next-line no-undef
     const swiper = new Swiper(block, swiperConfig);
+    window.requestAnimationFrame(() => releaseLayoutLock());
+    if (isAllAboutCard) {
+      block.style.visibility = '';
+    }
+    window.requestAnimationFrame(() => setRenderedImageDimensions());
 
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
@@ -1070,6 +1146,14 @@ export default async function decorate(block) {
         setupToggleButton();
       }, 150); // Debounce resize events
     });
+  }
+
+  if (!isSwipable) {
+    window.requestAnimationFrame(() => releaseLayoutLock());
+    if (isAllAboutCard) {
+      block.style.visibility = '';
+    }
+    window.requestAnimationFrame(() => setRenderedImageDimensions());
   }
 
   // Generate and inject JSON-LD schema for ALL testimonial cards (with or without swiper)

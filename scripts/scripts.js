@@ -24,6 +24,7 @@ const MEDIA_QUERIES = {
   desktop: window.matchMedia('(min-width: 900px)'),
 };
 
+
 /**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
@@ -188,6 +189,37 @@ function decorateButtonGroups(element) {
       buttonGroup.appendChild(previousSibling);
       buttonGroup.appendChild(buttonContainer);
     }
+  });
+}
+
+function prepareHeroForCLS(main) {
+  if (!window.matchMedia('(min-width: 900px)').matches) {
+    return;
+  }
+  main.querySelectorAll('.hero').forEach((block) => {
+    if (block.dataset.heroPrepared === 'true') return;
+
+    const picture = block.querySelector('picture');
+    if (picture) {
+      const pictureParent = picture.parentElement;
+      if (pictureParent) {
+        pictureParent.remove();
+        block.appendChild(picture);
+      }
+    }
+
+    const buttonGroups = block.querySelectorAll('.button-group');
+    if (buttonGroups.length > 0 && !block.querySelector('.button-groups-wrapper')) {
+      const buttonGroupsWrapper = document.createElement('div');
+      buttonGroupsWrapper.className = 'button-groups-wrapper';
+      const firstGroup = buttonGroups[0];
+      firstGroup.parentElement.insertBefore(buttonGroupsWrapper, firstGroup);
+      buttonGroups.forEach((group) => {
+        buttonGroupsWrapper.appendChild(group);
+      });
+    }
+
+    block.dataset.heroPrepared = 'true';
   });
 }
 
@@ -843,6 +875,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    prepareHeroForCLS(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }

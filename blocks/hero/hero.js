@@ -1,4 +1,12 @@
 export default function decorate(block) {
+  if (!window.matchMedia('(min-width: 900px)').matches) {
+    return;
+  }
+
+  if (block.dataset.heroPrepared === 'true') {
+    return;
+  }
+
   // Move the picture element to be positioned absolutely on the right
   const picture = block.querySelector('picture');
   if (picture) {
@@ -23,4 +31,6 @@ export default function decorate(block) {
       buttonGroupsWrapper.appendChild(group);
     });
   }
+
+  block.dataset.heroPrepared = 'true';
 }
