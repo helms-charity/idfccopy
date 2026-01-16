@@ -1,4 +1,8 @@
 export default function decorate(block) {
+  if (!window.matchMedia('(min-width: 900px)').matches) {
+    return;
+  }
+
   if (block.dataset.heroPrepared === 'true') {
     return;
   }

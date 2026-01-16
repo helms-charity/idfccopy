@@ -257,6 +257,9 @@ function decorateButtonGroups(element) {
 }
 
 function prepareHeroForCLS(main) {
+  if (!window.matchMedia('(min-width: 900px)').matches) {
+    return;
+  }
   main.querySelectorAll('.hero').forEach((block) => {
     if (block.dataset.heroPrepared === 'true') return;
 
