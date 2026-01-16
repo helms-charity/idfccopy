@@ -458,6 +458,11 @@ export default async function decorate(block) {
     searchDropdown.className = 'search-dropdown';
     document.body.appendChild(searchDropdown);
 
+    // Create invisible bridge element to keep dropdown open when moving mouse
+    const searchBridge = document.createElement('div');
+    searchBridge.className = 'search-dropdown-bridge';
+    document.body.appendChild(searchBridge);
+
     let searchLoaded = false;
     let searchCloseTimeout = null;
 
@@ -469,10 +474,12 @@ export default async function decorate(block) {
         searchLoaded = true;
       }
       searchDropdown.classList.add('open');
+      searchBridge.classList.add('open');
     };
 
     const closeSearchDropdown = () => {
       searchDropdown.classList.remove('open');
+      searchBridge.classList.remove('open');
     };
 
     const scheduleSearchClose = () => {
@@ -485,21 +492,32 @@ export default async function decorate(block) {
       openSearchDropdown();
     });
 
-    // Keep open when mouse enters dropdown
+    // Keep open when mouse enters dropdown or bridge
     searchDropdown.addEventListener('mouseenter', () => {
       clearTimeout(searchCloseTimeout);
     });
 
-    // Close when mouse leaves dropdown (not going to search box)
+    searchBridge.addEventListener('mouseenter', () => {
+      clearTimeout(searchCloseTimeout);
+    });
+
+    // Close when mouse leaves dropdown (not going to search box or bridge)
     searchDropdown.addEventListener('mouseleave', (e) => {
-      if (!searchBox.contains(e.relatedTarget)) {
+      if (!searchBox.contains(e.relatedTarget) && !searchBridge.contains(e.relatedTarget)) {
         scheduleSearchClose();
       }
     });
 
-    // Close when mouse leaves search box (not going to dropdown)
+    // Close when mouse leaves bridge (not going to search box or dropdown)
+    searchBridge.addEventListener('mouseleave', (e) => {
+      if (!searchBox.contains(e.relatedTarget) && !searchDropdown.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close when mouse leaves search box (not going to dropdown or bridge)
     searchBox.addEventListener('mouseleave', (e) => {
-      if (!searchDropdown.contains(e.relatedTarget)) {
+      if (!searchDropdown.contains(e.relatedTarget) && !searchBridge.contains(e.relatedTarget)) {
         scheduleSearchClose();
       }
     });
@@ -507,7 +525,8 @@ export default async function decorate(block) {
     // Close on click outside (header or below modal)
     document.addEventListener('click', (e) => {
       const isOutsideClick = !searchDropdown.contains(e.target)
-        && !searchBox.contains(e.target);
+        && !searchBox.contains(e.target)
+        && !searchBridge.contains(e.target);
       if (isOutsideClick && searchDropdown.classList.contains('open')) {
         closeSearchDropdown();
       }
