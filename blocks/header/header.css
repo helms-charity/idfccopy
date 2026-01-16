@@ -1732,10 +1732,8 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 .search-dropdown {
   position: fixed;
   top: var(--nav-height);
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   width: 100vw;
-  max-width: 1440px;
   background: #fff;
   z-index: 1001;
   display: none;
@@ -1749,15 +1747,27 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   display: block;
 }
 
+/* Center the main content sections inside dropdown, but not nested items */
+.search-dropdown > .section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 70px;
+}
+
 /* Invisible bridge to keep dropdown open when moving mouse from search box */
-.search-dropdown::before {
-  content: '';
-  position: absolute;
-  top: -30px;
+.search-dropdown-bridge {
+  position: fixed;
+  top: var(--nav-height);
   left: 0;
-  right: 0;
-  height: 30px;
-  background: transparent;
+  width: 100vw;
+  height: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.search-dropdown-bridge.open {
+  display: block;
+  height: 50px;
 }
 
 /* Search box input styling */
