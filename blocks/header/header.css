@@ -828,6 +828,12 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-c
   color: #353535;
 }
 
+/* Mobile: Search input in expanded state */
+header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-child .search-input {
+  flex: 1;
+  font-size: 14px;
+}
+
 /* Mobile: Show all UL items when expanded */
 header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
   display: none;
@@ -1539,6 +1545,13 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     font-weight: 400;
   }
 
+  .nav-tools .default-content-wrapper>p:first-child .search-input {
+    margin-left: 8px;
+    color: #353535;
+    font-weight: 400;
+    flex: 1;
+  }
+
   .nav-tools .default-content-wrapper .icon-search {
     width: 20px;
     height: 20px;
@@ -1713,4 +1726,66 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 .cards .card-clickable:hover {
   transform: none;
 }
+}
+
+/* Search Dropdown */
+.search-dropdown {
+  position: fixed;
+  top: calc(var(--nav-height) + 32px);
+  left: 0;
+  width: 100vw;
+  background: #fff;
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--nav-height) - 32px);
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+}
+
+.search-dropdown.open {
+  display: block;
+}
+
+.search-dropdown::before {
+  content: '';
+  display: block;
+  height: 20px;
+}
+
+/* Search box input styling */
+#search-box {
+  cursor: pointer;
+}
+
+#search-box .search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: #353535;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#search-box .search-input::placeholder {
+  color: #353535;
+  font-weight: 400;
+}
+
+/* Mobile: Search input in expanded nav */
+header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
+  flex: 1;
+}
+
+@media (width >= 900px) {
+  .search-dropdown {
+    top: calc(var(--nav-height) + 32px);
+  }
+
+  #search-box .search-input {
+    min-width: 120px;
+  }
 }

@@ -280,13 +280,14 @@ export default async function decorate(block) {
     }
   }
 
-  // Add search bar with icon (created programmatically)
+  // Add search bar with icon and input field (created programmatically)
   if (searchP) {
     // Extract just the text content from the authored paragraph
     const searchText = searchP.textContent.trim();
-    // Create new search element with icon
+    // Create new search element with icon and input
     const searchElement = document.createElement('p');
-    searchElement.innerHTML = `<span class="icon icon-search"></span><strong>${searchText}</strong>`;
+    searchElement.id = 'search-box';
+    searchElement.innerHTML = `<span class="icon icon-search"></span><input type="text" placeholder="${searchText}" class="search-input" />`;
     navToolsWrapper.appendChild(searchElement);
   }
 
@@ -446,6 +447,69 @@ export default async function decorate(block) {
         && !clickedMobileOdometer;
       if (!isDesktop.matches && isOutsideClick) {
         closeDropdown();
+      }
+    });
+  }
+
+  // Search dropdown
+  const searchBox = navToolsWrapper.querySelector('#search-box');
+  if (searchBox) {
+    const searchDropdown = document.createElement('div');
+    searchDropdown.className = 'search-dropdown';
+    document.body.appendChild(searchDropdown);
+
+    let searchLoaded = false;
+    let searchCloseTimeout = null;
+
+    const openSearchDropdown = async () => {
+      clearTimeout(searchCloseTimeout);
+      if (!searchLoaded) {
+        const searchFragment = await loadFragment('/fragments/search-dropdown');
+        if (searchFragment) searchDropdown.append(...searchFragment.childNodes);
+        searchLoaded = true;
+      }
+      searchDropdown.classList.add('open');
+    };
+
+    const closeSearchDropdown = () => {
+      searchDropdown.classList.remove('open');
+    };
+
+    const scheduleSearchClose = () => {
+      clearTimeout(searchCloseTimeout);
+      searchCloseTimeout = setTimeout(closeSearchDropdown, 100);
+    };
+
+    // Click to open (on the search box container, not just the input)
+    searchBox.addEventListener('click', () => {
+      openSearchDropdown();
+    });
+
+    // Keep open when mouse enters dropdown
+    searchDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(searchCloseTimeout);
+    });
+
+    // Close when mouse leaves dropdown (not going to search box)
+    searchDropdown.addEventListener('mouseleave', (e) => {
+      if (!searchBox.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close when mouse leaves search box (not going to dropdown)
+    searchBox.addEventListener('mouseleave', (e) => {
+      if (!searchDropdown.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close on click outside (header or below modal)
+    document.addEventListener('click', (e) => {
+      const isOutsideClick = !searchDropdown.contains(e.target)
+        && !searchBox.contains(e.target);
+      if (isOutsideClick && searchDropdown.classList.contains('open')) {
+        closeSearchDropdown();
       }
     });
   }
