@@ -256,6 +256,34 @@ function decorateButtonGroups(element) {
   });
 }
 
+function prepareHeroForCLS(main) {
+  main.querySelectorAll('.hero').forEach((block) => {
+    if (block.dataset.heroPrepared === 'true') return;
+
+    const picture = block.querySelector('picture');
+    if (picture) {
+      const pictureParent = picture.parentElement;
+      if (pictureParent) {
+        pictureParent.remove();
+        block.appendChild(picture);
+      }
+    }
+
+    const buttonGroups = block.querySelectorAll('.button-group');
+    if (buttonGroups.length > 0 && !block.querySelector('.button-groups-wrapper')) {
+      const buttonGroupsWrapper = document.createElement('div');
+      buttonGroupsWrapper.className = 'button-groups-wrapper';
+      const firstGroup = buttonGroups[0];
+      firstGroup.parentElement.insertBefore(buttonGroupsWrapper, firstGroup);
+      buttonGroups.forEach((group) => {
+        buttonGroupsWrapper.appendChild(group);
+      });
+    }
+
+    block.dataset.heroPrepared = 'true';
+  });
+}
+
 /**
  * Check if we're viewing a framework page (either in Universal Editor or directly)
  * Framework pages are template/fragment pages and should display their raw content
@@ -908,6 +936,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    prepareHeroForCLS(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
