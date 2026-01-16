@@ -178,6 +178,11 @@ body.modal-open {
   background-color: currentcolor;
 }
 
+.modal-mayura-blue .close-button .icon.icon-close::before,
+.modal-mayura-blue .close-button .icon.icon-close::after {
+  background-color: var(--white);
+}
+
 .modal .close-button .icon.icon-close::after {
   transform: translate(-50%, -50%) rotate(-45deg)
 }
@@ -468,7 +473,6 @@ body.modal-open {
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div {
-  margin-top: 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;

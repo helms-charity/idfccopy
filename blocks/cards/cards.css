@@ -1335,10 +1335,11 @@
   justify-content: center;
   gap: 8px;
 }
-
+/*
 .cards.key-benefits .swiper-pagination {
   bottom: 36px;
 }
+  */
 
 .cards .swiper-pagination-bullet {
   width: 12px;
@@ -1617,10 +1618,11 @@
     visibility: hidden;
   }
 
-  /* Reserve desktop space for swipable cards to reduce CLS */
+  /* Reserve desktop space for swipable cards to reduce CLS 
   .section.cards-container .cards-wrapper {
     min-height: 520px;
   }
+    */
 
   .section.cards-container:has(.cards.all-about-card) {
     min-height: 1900px;
@@ -1649,7 +1651,7 @@
   .cards.all-about-card .cards-card-body {
     min-height: 280px;
   }
-
+/*
   .section.cards-container:has(.cards[data-swipable="true"]) {
     min-height: 720px;
   }
@@ -1658,7 +1660,7 @@
     max-height: 720px;
     overflow: hidden;
   }
-
+  
   .section.cards-container:has(.cards[data-swipable="true"]) .cards-wrapper {
     min-height: 590px;
   }
@@ -1670,6 +1672,8 @@
   .cards[data-swipable="true"] > ul {
     min-height: 480px;
   }
+
+  */
 
   .cards[data-swipable="true"]:not([data-block-status="loaded"]) {
     visibility: hidden;
