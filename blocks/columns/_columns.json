@@ -26,6 +26,10 @@
           "label": "Style",
           "options": [
             {
+              "name": "center",
+              "value": "center"
+            },
+            {
               "name": "Hero Banner",
               "value": "hero-banner"
             },

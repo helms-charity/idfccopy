@@ -1096,7 +1096,6 @@
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   background: var(--dark-red-color);
   color: var(--white);
   font-family: var(--body-font-family);
@@ -1230,7 +1229,8 @@
 .cards.swiper {
   width: 100%;
   height: auto;
-  padding-bottom: 60px; /* Space for pagination */
+  padding-bottom: var(--spacing-xl);
+  padding-top: var(--spacing-s);
   position: relative;
   overflow: visible;
 }
@@ -1254,6 +1254,54 @@
 .cards .swiper-slide .benefit-cards {
   width: 100%;
   margin-bottom: 0;
+}
+
+.explore-other-cards .card-clickable:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.explore-other-cards .swiper-slide {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  height: auto;
+  overflow: visible;
+  background-color: transparent;
+}
+
+.explore-other-cards .swiper-wrapper {
+  display: flex;
+  justify-content: none;
+  width: auto;
+}
+
+.explore-other-cards .swiper-slide .cards-card-body {
+  width: 100%;
+  border-radius: 20px;
+  margin-top: -30px;
+  padding: 55px 20px 40px 20px;
+  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  z-index: -1;
+}
+
+.explore-other-cards .swiper-slide .cards-card-body h3 {
+  text-align: center;
+  font-size: 24px;
+  color: var(--white);
+}
+
+.explore-other-cards .swiper-slide .cards-card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.explore-other-cards .swiper-slide .cards-card-image picture {
+  display: block;
+  width: 80%
 }
 
 /* Swiper Navigation Buttons */
@@ -1866,6 +1914,10 @@
 
   .cards.related-search .benefit-cards .cards-card-body h3 {
     font-size: 16px;
+  }
+
+  .explore-other-cards .swiper-wrapper {
+    justify-content: center;
   }
 }
 

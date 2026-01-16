@@ -49,7 +49,7 @@ body.modal-open {
   width: calc(100vw - 48px);
   max-width: 1060px;
   max-height: calc(100dvh - (2 * var(--modal-offset-height)));
-  margin: 0 !important;
+  margin: 0;
   padding: 0;
   border: none;
   border-radius: 16px;
@@ -58,10 +58,11 @@ body.modal-open {
 
 .modal dialog .modal-content {
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: visible;
+  overflow-x: hidden;
   overscroll-behavior: none;
   width: 100%;
-  /* max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px); */
+  max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px);
   padding: 32px 24px;
   position: relative;
   z-index: 2; /* Above decoration images */
@@ -105,8 +106,8 @@ body.modal-open {
 .modal .close-button {
   /* 64px is the width of the close button (icon itself is 30px), 128px is the offset outside the right edge of the modal */
   position: absolute;
-  top: -64px;
-  right: -128px;
+  top: 0;
+  right: 0;
   z-index: 10; /* Above decoration images */
   width: 64px;
   height: 64px;
@@ -115,15 +116,15 @@ body.modal-open {
   border-radius: 0;
   padding: 0;
   background-color: transparent;
-  color: var(--dark-red-color);
+  color: black;
   line-height: 0;
   cursor: pointer;
 }
 
 .modal .close-button .icon.icon-close {
   content: '';
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 }
 
 .modal .close-button .icon.icon-close::before,
@@ -135,8 +136,8 @@ body.modal-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
-  width: 36px;
-  height: 3px;
+  width: 24px;
+  height: 2px;
   border-radius: 2px;
   background-color: currentcolor;
 }
@@ -145,8 +146,38 @@ body.modal-open {
   transform: translate(-50%, -50%) rotate(-45deg)
 }
 
-.modal dialog .section {
+.modal dialog .section {			
   padding: 0;
+}
+
+.modal.block:has(.section[data-id="mayura-card-modal"]) {
+	display: flex;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	bottom: 0;
+	left: 0;
+	margin: 0;
+}
+
+.modal dialog:has(.section[data-id="mayura-card-modal"]) {
+  max-width: 730px;
+  position: relative !important;
+  align-self: anchor-center;
+  justify-self: anchor-center;
+  min-height: 462px;
+  width: 730px;
+  top: unset !important;
+  inset: unset !important;
+  transform: unset;
+  padding: 40px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
+ padding: 0;
+ overflow: visible;
 }
 
 /* Modal texture overlay - added via JS as img element */
@@ -333,6 +364,9 @@ body.modal-open {
     padding: 40px 48px;
   }
 
+  .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
+  }
+
   /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
   .modal dialog .modal-decoration-top-right {
     top: -150px;
@@ -366,6 +400,9 @@ body.modal-open {
 .modal .section[data-id="mayura-card-modal"] {
   position: relative;
   font: var(--body-font-size-xs);
+  max-width: 650px;
+  width: 650px;
+  justify-self: center;
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:first-child > div {
@@ -394,7 +431,7 @@ body.modal-open {
     font-weight: 700;
     color: #fff;
     display: block;
-    padding: 13px 40px;
+    padding: 11px 40px;
     background: #9b1e26;
     border-radius: 23px;
     max-width: fit-content;
@@ -407,6 +444,7 @@ body.modal-open {
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
   align-items: center;
+  font-size: 12px;
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div > div {
@@ -446,12 +484,13 @@ body.modal-open {
   border-radius: 4px;
   text-align: center;
   padding: 12px 25px;
+  height: 72px;
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div p:first-child {
   font-size: 12px;
   line-height: 18px;
-  margin-bottom: 6px;
+  margin: 0 0 6px;
   font-weight: 500;
   color: #222;
 }
@@ -461,6 +500,7 @@ body.modal-open {
   line-height: 24px;
   font-weight: 700;
   color: #9b1e26;
+  margin: 0;
 }
 
 .modal .section[data-id="mayura-card-modal"] > .default-content a {
@@ -477,6 +517,99 @@ body.modal-open {
 }
 
 @media (width < 768px) {
+
+  .modal dialog[open]:has(.section[data-id="mayura-card-modal"]) {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    align-self: flex-end;
+    border-radius: 25px 25px 0 0;
+    position: relative !important;
+    inset: unset !important;
+    left: unset !important;
+    right: unset !important;
+    top: unset !important;
+    bottom: 0 !important;
+    margin-top: auto;
+    margin-bottom: auto !important;
+    margin: 0 auto !important;
+    transform: unset;
+    overscroll-behavior: none;
+    justify-self: anchor-center;
+    overflow: visible;
+    padding: 38px 26px 30px;
+    border: none;
+    box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
+    box-sizing: border-box;
+    flex-shrink: 1; /* Allow it to shrink */
+    min-height: 0;   /* Override content-based minimum height */
+    overflow-y: auto;
+  }
+
+  .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div h3 {
+    font-size:12px;
+  }
+
+  .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div {
+    padding: 10px 10px;
+  }
+
+	
+  .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
+	padding: 0;
+	max-height: unset;
+	}
+
+  .modal .section[data-id="mayura-card-modal"] {
+    position: relative;
+    font: var(--body-font-size-xs);
+    max-width: 533px;
+    width: auto;
+  }
+
+  .modal .close-button {
+  /* 64px is the width of the close button (icon itself is 30px), 128px is the offset outside the right edge of the modal */
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10; /* Above decoration images */
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background-color: transparent;
+  color: black;
+  line-height: 0;
+  cursor: pointer;
+}
+
+  .modal .close-button .icon.icon-close {
+    content: '';
+    width: 24px;
+    height: 24px;
+  }
+  
+  .modal .close-button .icon.icon-close::before,
+  .modal .close-button .icon.icon-close::after {
+    content: '';
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 16px;
+    height: 1.5px;
+    border-radius: 2px;
+    background-color: currentcolor;
+  }
+  
+  .modal .close-button .icon.icon-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg)
+  }
+  
   .modal .section[data-id="mayura-card-modal"] > div > div:first-child > div {
     grid-template-columns: repeat(1, 1fr);
     gap: 14px;
@@ -522,6 +655,11 @@ body.modal-open {
 }
 
 /* ===== Mayura Metal Concept Modal Styles ===== */
+
+.modal dialog .section[data-id^="mayura-metal-concept-"] {
+  width: 75vw;
+  max-width: 75vw;
+} 
 
 .section[data-id="mayura-metal-concept-1"] {
   display: flex;
@@ -578,6 +716,10 @@ body.modal-open {
 .section[data-id^="mayura-metal-concept-"] p > a {
   text-decoration: underline;
   color: black;
+  padding: 0;
+  margin: 0;
+  border-radius: unset;
+  font-weight: normal;
 }
 
 .section[data-id^="mayura-metal-concept-"] div.columns-img-col {

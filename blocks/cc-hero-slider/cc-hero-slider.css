@@ -130,11 +130,15 @@ main>div.section > .cc-hero-slider-wrapper {
   transform: translateY(-2px);
 }
 
+.cc-hero-slider-content a.button {
+  background: var(--gradient-silver);
+}
 /* Arrow icon in button - display in black and align properly */
-.cc-hero-slider-content a .icon-arrow-right-white {
+.cc-hero-slider-content a.button span.icon {
   display: inline-flex;
   align-items: center;
   line-height: 1;
+  margin-left: 8px;
 }
 
 .cc-hero-slider-content a .icon-arrow-right-white img {

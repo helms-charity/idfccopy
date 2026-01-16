@@ -1,34 +1,38 @@
-/* eslint-disable */
+export default function decorate(block) {
+  block.id = 'overview';
+  const heading = block.querySelector('h2');
+  const paragraphs = block.querySelectorAll('p');
 
-/* placeholder-script for merge */
-$(document).ready(function () {
-  var length = $("#gcoverview").data("words") || 150;
-  cHtml = sanitize($("#gcoverview").html());
-  cText = sanitize($("#gcoverview").text().substr(0, length).trim());
-  $("#gcoverview")
-    .addClass("compressed")
-    .html(cText + "... <a href='#' class='exp'>Read More</a>");
-  window.handler = function () {
-    $(".exp").click(function () {
-      if ($("#gcoverview").hasClass("compressed")) {
-        $("#gcoverview").html(
-          cHtml + "<a href='#' class='exp'>Read Less</a>"
-        );
-        $("#gcoverview").removeClass("compressed");
-        handler();
-        return false;
-      } else {
-        $("#gcoverview").html(
-          cText + "... <a href='#' class='exp'>Read More</a>"
-        );
-        $("#gcoverview").addClass("compressed");
-        handler();
-        return false;
-      }
+  // Apply class to heading and first paragraph
+  if (heading) heading.classList.add('overview-title');
+  if (paragraphs[0]) paragraphs[0].classList.add('overview-para');
+
+  // If there's more than one paragraph, create hidden container and button
+  if (paragraphs.length > 1) {
+    // Create the hidden container
+    const hiddenWrapper = document.createElement('div');
+    hiddenWrapper.classList.add('overview-hiddenPara');
+    hiddenWrapper.style.display = 'none';
+
+    // Move all paragraphs after the first into the hidden wrapper
+    paragraphs.forEach((p, i) => {
+      if (i > 0) hiddenWrapper.appendChild(p);
     });
-  };
-  handler();
 
-  
- 
-});
+    // Add hidden wrapper after the first paragraph
+    paragraphs[0].insertAdjacentElement('afterend', hiddenWrapper);
+
+    // Create the Read More button
+    const readMoreBtn = document.createElement('p');
+    readMoreBtn.className = 'overview-readMore';
+    readMoreBtn.textContent = 'Read more';
+    readMoreBtn.addEventListener('click', () => {
+      const expanded = hiddenWrapper.style.display === 'none';
+      hiddenWrapper.style.display = expanded ? 'block' : 'none';
+      readMoreBtn.textContent = expanded ? 'Read less' : 'Read more';
+    });
+
+    // Insert the button after the hidden content
+    hiddenWrapper.insertAdjacentElement('afterend', readMoreBtn);
+  }
+}

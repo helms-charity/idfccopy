@@ -620,6 +620,10 @@
           {
             "name": "Joining Perks",
             "value": "joining-perks"
+          },
+          {
+            "name": "Explore Other Cards",
+            "value": "explore-other-cards"
           }
         ]
       },
@@ -1016,6 +1020,10 @@
         "label": "Style",
         "options": [
           {
+            "name": "center",
+            "value": "center"
+          },
+          {
             "name": "Hero Banner",
             "value": "hero-banner"
           },
@@ -1105,6 +1113,20 @@
         "valueType": "string",
         "name": "intro_backgroundImage",
         "label": "Intro Background Image",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "intro_decorationImageTopRight",
+        "label": "Intro Decoration Image (Top Right)",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "intro_decorationImageBottomLeft",
+        "label": "Intro Decoration Image (Bottom Left)",
         "multi": false
       },
       {
@@ -1279,7 +1301,7 @@
     "id": "overview",
     "fields": [
       {
-        "component": "text",
+        "component": "richtext",
         "name": "title",
         "label": "Title"
       },

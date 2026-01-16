@@ -1,43 +1,144 @@
 /* Mobile-first base styles */
+
+/* Section container - fixed height to prevent CLS */
+.hero-heritage-cc-container {
+  position: relative;
+  min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 60px);
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
+  contain: strict;
+  overflow: hidden;
+}
+
+/* Decoration image - top right */
+.hero-heritage-cc-container::before {
+  display: none;
+  content: '';
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 155px;
+  height: 183px;
+  background-image: var(--hero-heritage-cc-decoration-top-right);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top right;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Decoration image - bottom left */
+.hero-heritage-cc-container::after {
+  display: none;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 155px;
+  height: 132px;
+  background-image: var(--hero-heritage-cc-decoration-bottom-left);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
+  position: relative;
   max-width: unset;
   padding: 0;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Position breadcrumbs to overlay on top of header-cta bar (centered in 70px height) */
+.hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
+  position: absolute;
+  top: 35px;
+  left: 16px;
+  z-index: 20;
+  transform: translateY(-50%);
+  margin: 0;
 }
 
 .hero-heritage-cc {
   position: relative;
-  padding: 40px 24px;
-  min-height: 400px;
-  background-color: #000;
+  padding: 0 0 40px;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.hero-heritage-cc > div {
+/* Hide block until fully decorated to prevent CLS from JS DOM changes */
+.hero-heritage-cc:not([data-block-status="loaded"]) {
+  visibility: hidden;
+}
+
+/* Header CTA - dedicated 70px space at top */
+.hero-heritage-cc-header-cta {
   position: relative;
-  z-index: 2;
-  max-width: 100%;
+  background-color: rgba(255 255 255 / 15%);
+  z-index: 10;
+  height: 70px;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  backdrop-filter: blur(21px);
 }
 
-.hero-heritage-cc h1,
-.hero-heritage-cc h2,
-.hero-heritage-cc h3,
-.hero-heritage-cc h4,
-.hero-heritage-cc h5,
-.hero-heritage-cc h6 {
-  color: #fff;
-  font-size: 32px;
+.hero-heritage-cc-header-cta a.button.primary {
+  background: var(--dark-red-color);
+  padding: 14px 40px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 24px;
+  border: none;
+  color: #fff;
 }
 
-.hero-heritage-cc p {
-  color: #fff;
+.hero-heritage-cc-header-cta-fees-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-color);
+  text-decoration: none;
   font-size: 14px;
-  line-height: 1.4;
-  margin: 0;
+  white-space: nowrap;
+  min-height: 16px;
+}
+
+.hero-heritage-cc-header-cta .hero-heritage-cc-header-cta-fees-link {
+  color: rgb(136 128 122);
+  text-decoration: underline;
+  font-size: 16px;
+  margin-left: 20px;
+  font-weight: 700;
+  line-height: normal;
+  white-space: nowrap;
+  min-height: 24px;
+}
+
+.hero-heritage-cc-header-cta > div {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.hero-heritage-cc-header-cta-fees-link:hover {
+  text-decoration: underline;
 }
 
 .hero-heritage-cc picture {
@@ -49,24 +150,413 @@
 }
 
 .hero-heritage-cc img {
-  object-fit: contain;
+  object-fit: scale-down;
   width: 100%;
   height: auto;
 }
 
-/* Tablet: 600px and up */
-@media (width >= 600px) {
-  .hero-heritage-cc {
-    padding: 60px 24px;
+/* Intro section - layered on top for reveal animation */
+.hero-heritage-cc-intro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  will-change: opacity, visibility;
+  animation: intro-fade-out 0.25s ease-out 6s forwards;
+}
+
+/* Gradient overlay as pseudo-element for wipe animation */
+.hero-heritage-cc-intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--hero-heritage-cc-intro-gradient);
+  z-index: 1;
+  will-change: clip-path;
+  animation: gradient-wipe 3s ease-in-out 2s forwards;
+}
+
+.hero-heritage-cc-intro > div {
+  position: relative;
+  padding-top: 70px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-heritage-cc-banner > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-heritage-cc .hero-heritage-cc-intro> div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  max-width: 100%;
+}
+
+/* Logo wrapper - full width to match gradient coverage, min-height to prevent CLS */
+.hero-heritage-cc-intro-logo-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 80px;
+  margin-bottom: 20px;
+}
+
+/* Hindi logo - stays in flow, wipes away synced with gradient (2s delay, 3s duration) */
+.hero-heritage-cc-intro-logo-hindi {
+  position: relative;
+  z-index: 2;
+  will-change: clip-path;
+  animation: logo-wipe-out 3s ease-in-out 2s forwards;
+}
+
+/* English logo - positioned absolutely, revealed by wipe synced with gradient */
+.hero-heritage-cc-intro-logo-english {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  will-change: clip-path;
+  clip-path: inset(0 100% 0 0);
+  animation: logo-wipe-in 3s ease-in-out 2s forwards;
+}
+
+/* Both logos full-width, image centered inside - clip-path now syncs with gradient */
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-hindi,
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-english {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Logo images at native size with reserved space to prevent CLS */
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-hindi picture,
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-english picture {
+  width: auto;
+  height: auto;
+  min-height: 80px;
+}
+
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-hindi img,
+.hero-heritage-cc-intro .hero-heritage-cc-intro-logo-english img {
+  width: auto;
+  height: auto;
+}
+
+/* Banner section - positioned behind intro, centered content */
+.hero-heritage-cc-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner > div {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  max-width: 100%;
+  will-change: opacity, visibility;
+  animation: banner-fade-in 0.25s ease-in-out 6s forwards;
+}
+
+/* Concept container - holds modal content separately from original banner */
+.hero-heritage-cc-concept-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  transform: scale(1);
+}
+
+/* Override animation for banner inner when toggling */
+.hero-heritage-cc .hero-heritage-cc-banner > div:first-child {
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner.hero-heritage-cc-banner-swapped > div {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  animation: none;
+  flex-direction: column;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner-swapped .section {
+  width: 100%;
+  max-width: 100%;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+/* Smooth fade transitions for concept section switching */
+.hero-heritage-cc .hero-heritage-cc-banner-swapped .section.fade-out {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner-swapped .section.fade-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/*  ============================================
+    REVEAL ANIMATION KEYFRAMES
+    Timeline:
+    0s-2s    : Initial state (gradient + hindi visible)
+    2s-5s    : Gradient wipes left-to-right (english fades in, hindi fades out)
+    5s-6s    : Pause
+    6s-6.5s  : Entire intro fades out, revealing banner quickly fades in
+    ============================================ */
+
+/* Gradient wipe from left to right */
+@keyframes gradient-wipe {
+  0% {
+    clip-path: inset(0 0 0 0);
   }
 
-  .hero-heritage-cc h1,
-  .hero-heritage-cc h2,
-  .hero-heritage-cc h3,
-  .hero-heritage-cc h4,
-  .hero-heritage-cc h5,
-  .hero-heritage-cc h6 {
-    font-size: 48px;
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+/* English logo wipe in - reveals from left as gradient wipes */
+@keyframes logo-wipe-in {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Hindi logo wipe out - hides from left matching gradient wipe */
+@keyframes logo-wipe-out {
+  0% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+/* Intro section fade out */
+@keyframes intro-fade-out {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Banner section fade in */
+@keyframes banner-fade-in {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.hero-heritage-cc-banner-top-logo {
+  max-width: 135px;
+  height: auto;
+}
+
+/* Banner CTA buttons - stacked on mobile, side-by-side on tablet+ */
+.hero-heritage-cc-banner-cta-group {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-heritage-cc-banner-cta a.button {
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 36px;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-text-decoration-line: underline;
+  text-decoration-line: underline;
+}
+
+.hero-heritage-cc-banner-cta {
+  margin: 0;
+}
+
+.hero-heritage-cc-banner-cta a.button.primary {
+  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  padding: 11px 20px;
+  font-size: 14px;
+  border: none;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--btn-color-white);
+  }
+}
+
+.hero-heritage-cc-banner-cta a.button.primary:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-heritage-cc h1,
+.hero-heritage-cc h2 {
+  color: var(--text-color-hero-heritage-cc);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 10px 0 0;
+}
+
+.hero-heritage-cc h3,
+.hero-heritage-cc h4,
+.hero-heritage-cc h5,
+.hero-heritage-cc h6 {
+  color: var(--text-color-hero-heritage-cc);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.hero-heritage-cc-intro-text-top, 
+.hero-heritage-cc-intro-credit-card-name {
+  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  background-clip: text;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(0 0 0 / 0%);
+}
+
+.hero-heritage-cc .hero-heritage-cc-intro-text-top h2,
+.hero-heritage-cc .hero-heritage-cc-intro-credit-card-name h2 {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hero-heritage-cc p {
+  color: var(--text-color-hero-heritage-cc);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.hero-heritage-cc p.hero-heritage-cc-banner-image {
+  margin: 10px 0 0;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner-cta-group {
+  margin-top: 40px;
+}
+
+.hero-heritage-cc .hero-heritage-cc-banner {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white {
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 12px;
+  padding-bottom: 4px;
+  vertical-align: middle;
+}
+
+.hero-heritage-cc-header-cta-link .icon-arrow-right-white img {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.hero-heritage-cc-header-cta-fees-link .icon-arrow-right-white {
+  display: inline-flex;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  filter: invert(1);
+}
+
+.hero-heritage-cc-header-cta-fees-link .icon-arrow-right-white img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Tablet: 600px and up */
+@media (width >= 600px) {
+  .hero-heritage-cc-header-cta {
+    padding: 0 18px;
+    display: flex;
+  }
+
+  .hero-heritage-cc-banner-cta-group {
+    flex-flow: row wrap;
+    gap: 52px;
+    width: auto;
   }
 
   .hero-heritage-cc p {
@@ -76,20 +566,24 @@
 
 /* Desktop: 900px and up */
 @media (width >= 900px) {
-  .hero-heritage-cc {
-    padding: 60px;
+  .hero-heritage-cc-header-cta {
+    padding: 0 60px;
   }
 
-  .hero-heritage-cc-container .hero-heritage-cc-wrapper {
-    max-width: 1200px;
+  .hero-heritage-cc-container {
+    min-height: calc(100vh - 120px);
+    min-height: calc(100dvh - 120px);
+    height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
   }
 
-  .hero-heritage-cc h1,
-  .hero-heritage-cc h2,
-  .hero-heritage-cc h3,
-  .hero-heritage-cc h4,
-  .hero-heritage-cc h5,
-  .hero-heritage-cc h6 {
-    font-size: 36px;
+/* Decoration image - top right */
+.hero-heritage-cc-container::before {
+    display: block;
+  }
+  
+  /* Decoration image - bottom left */
+  .hero-heritage-cc-container::after {
+    display: block;
   }
 }
