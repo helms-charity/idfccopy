@@ -586,6 +586,7 @@
 .cards.key-benefits.swiper {
   overflow: clip;
   overflow-clip-margin: 10px;
+  padding-bottom: 40px;
 }
 
 .cards.key-benefits .swiper-wrapper {
@@ -634,7 +635,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 24px 24px 16px;
+  padding: 32px 24px 12px;
   position: relative;
   z-index: 2;
 }
@@ -642,8 +643,8 @@
 .cards.key-benefits .benefit-cards .cards-card-image img {
   width: auto;
   height: auto;
-  max-width: 80px;
-  max-height: 80px;
+  max-width: 72px;
+  max-height: 72px;
   object-fit: contain;
   border-radius: 0;
 }
@@ -1287,6 +1288,10 @@
   gap: 8px;
 }
 
+.cards.key-benefits .swiper-pagination {
+  bottom: 36px;
+}
+
 .cards .swiper-pagination-bullet {
   width: 12px;
   height: 12px;
@@ -1518,7 +1523,8 @@
   width: 100%;
   margin: 0;
   position: relative;
-  background: linear-gradient(135deg, rgb(139 92 246 / 20%) 0%, rgb(59 130 246 / 20%) 100%);
+  
+  /* background: linear-gradient(135deg, rgb(139 92 246 / 20%) 0%, rgb(59 130 246 / 20%) 100%); */
   padding: 20px;
   min-height: 200px;
   display: flex;
@@ -1588,8 +1594,8 @@
   }
 
   .cards.all-about-card .cards-card-image {
-    min-height: 240px;
-    height: 240px;
+    min-height: 360px;
+    height: 360px;
   }
 
   .cards.all-about-card .cards-card-body {
@@ -1614,7 +1620,7 @@
   }
 
   .cards[data-swipable="true"] > ul {
-    min-height: 560px;
+    min-height: 480px;
   }
 
   .cards[data-swipable="true"]:not([data-block-status="loaded"]) {
@@ -1781,7 +1787,8 @@
   }
 
   .cards.all-about-card .cards-card-image {
-    min-height: 280px;
+    min-height: 360px;
+    height: 360px;
     padding: 30px;
   }
 
