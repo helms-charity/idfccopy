@@ -2,22 +2,19 @@
 
 /* Modal styling */
 #user-verification-modal .modal-dialog {
-  max-width: 500px;
-  margin: 1.75rem auto;
+  max-width: 600px;
+  /* margin: 1.75rem auto; */
 }
 
 #user-verification-modal .modal-content {
   border-radius: 8px;
   border: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); */
 }
 
 #user-verification-modal .modal-header {
-  background-color: #EC1C24;
-  color: #ffffff;
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  padding: 1.5rem;
+  background-color: none;
+  color: #000000;
 }
 
 #user-verification-modal .modal-title {
@@ -34,8 +31,12 @@
   text-shadow: none;
 }
 
+#modal-description {
+    padding-bottom: 20px;
+}
+
 #user-verification-modal .modal-body {
-  padding: 2rem;
+  /* padding: 2rem; */
 }
 
 /* Form styling */

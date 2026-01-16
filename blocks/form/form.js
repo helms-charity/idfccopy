@@ -33,24 +33,18 @@ export default function decorate(block) {
   const modalHeader = document.createElement('div');
   modalHeader.className = 'modal-header';
   
-  const modalTitle = document.createElement('h5');
+  const modalTitle = document.createElement('h3');
   modalTitle.className = 'modal-title';
   modalTitle.id = 'modal-title';
-  modalTitle.textContent = 'User Verification';
+  modalTitle.textContent = 'Login to activate UPI on your credit card';
   
-  const closeButton = document.createElement('button');
-  closeButton.type = 'button';
-  closeButton.className = 'close';
-  closeButton.setAttribute('data-dismiss', 'modal');
-  closeButton.setAttribute('aria-label', 'Close');
+  const modalDescription = document.createElement('p');
+  modalDescription.className = 'modal-description';
+  modalDescription.id = 'modal-description';
+  modalDescription.textContent = 'Please enter the following details';
   
-  const closeIcon = document.createElement('span');
-  closeIcon.setAttribute('aria-hidden', 'true');
-  closeIcon.innerHTML = '&times;';
-  
-  closeButton.appendChild(closeIcon);
   modalHeader.appendChild(modalTitle);
-  modalHeader.appendChild(closeButton);
+  modalHeader.appendChild(modalDescription);
   
   // Create modal body
   const modalBody = document.createElement('div');
@@ -77,12 +71,20 @@ export default function decorate(block) {
   const dobLabel = document.createElement('label');
   dobLabel.setAttribute('for', 'date-of-birth');
   dobLabel.innerHTML = 'Date of Birth <span class="required">*</span>';
+  dobLabel.className = 'dob-label';
+
+  const dobErrorLabel = document.createElement('label');
+  dobErrorLabel.setAttribute('for', 'date-of-birth');
+  dobErrorLabel.innerHTML = 'Kindly enter a valid date';
+  dobErrorLabel.className = 'dob-error-label';
+  dobErrorLabel.style.display = 'none';
   
   const dobInput = document.createElement('input');
-  dobInput.type = 'date';
+  dobInput.type = 'text';
   dobInput.className = 'form-control';
   dobInput.id = 'date-of-birth';
   dobInput.name = 'date-of-birth';
+  dobInput.placeholder = 'Date of Birth (DD/MM/YYYY)*';
   dobInput.required = true;
   
   // Set date constraints
@@ -92,8 +94,9 @@ export default function decorate(block) {
   minDate.setFullYear(minDate.getFullYear() - 100);
   dobInput.setAttribute('min', minDate.toISOString().split('T')[0]);
   
-  dobGroup.appendChild(dobLabel);
   dobGroup.appendChild(dobInput);
+  dobGroup.appendChild(dobLabel);
+  dobGroup.appendChild(dobErrorLabel);
   
   // Create Mobile form group
   const mobileGroup = document.createElement('div');
@@ -108,22 +111,16 @@ export default function decorate(block) {
   mobileInput.className = 'form-control';
   mobileInput.id = 'mobile-number';
   mobileInput.name = 'mobile-number';
-  mobileInput.placeholder = 'Enter 10-digit mobile number';
+  mobileInput.placeholder = 'Enter 10-digit mobile number*';
   mobileInput.maxLength = 10;
   mobileInput.required = true;
   
-  mobileGroup.appendChild(mobileLabel);
   mobileGroup.appendChild(mobileInput);
+  mobileGroup.appendChild(mobileLabel);
   
   // Create form actions
   const formActions = document.createElement('div');
   formActions.className = 'form-actions';
-  
-  const cancelButton = document.createElement('button');
-  cancelButton.type = 'button';
-  cancelButton.className = 'btn-cancel';
-  cancelButton.setAttribute('data-dismiss', 'modal');
-  cancelButton.textContent = 'Cancel';
   
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
@@ -131,7 +128,6 @@ export default function decorate(block) {
   submitButton.id = 'submit-btn';
   submitButton.textContent = 'Submit';
   
-  formActions.appendChild(cancelButton);
   formActions.appendChild(submitButton);
   
   // Assemble form
@@ -157,151 +153,21 @@ export default function decorate(block) {
   // Append modal to block
   block.appendChild(modal);
   
-  // Initialize form after DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeForm);
-  } else {
-    initializeForm();
-  }
+  // Initialize form with element references
+  initializeFormWithElements(modal, dobInput, mobileInput, form, submitButton);
 }
 
-// Utility function for sanitizing inputs
-function sanitize(string) {
-  if (typeof (string) == "string") {
-    const map = {
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-    };
-    const reg = /[<>"']/ig;
-    return string.replace(reg, (match) => (map[match]));
-  } else {
-    return string;
-  }
-}
-
-// Validation functions
-const formValidation = {
-  // Validate mobile number (10 digits)
-  validateMobile: function(mobile) {
-    const mobilePattern = /^[6-9]\d{9}$/;
-    if (!mobile || mobile.trim() === '') {
-      return {
-        valid: false,
-        message: 'Mobile number is required'
-      };
-    }
-    if (!mobilePattern.test(mobile)) {
-      return {
-        valid: false,
-        message: 'Please enter a valid 10-digit mobile number'
-      };
-    }
-    return {
-      valid: true,
-      message: ''
-    };
-  },
-
-  // Validate date of birth
-  validateDOB: function(dob) {
-    if (!dob || dob.trim() === '') {
-      return {
-        valid: false,
-        message: 'Date of birth is required'
-      };
-    }
-
-    const dobDate = new Date(dob);
-    const today = new Date();
-    
-    // Check if date is valid
-    if (isNaN(dobDate.getTime())) {
-      return {
-        valid: false,
-        message: 'Please enter a valid date'
-      };
-    }
-
-    // Check if date is not in future
-    if (dobDate > today) {
-      return {
-        valid: false,
-        message: 'Date of birth cannot be in the future'
-      };
-    }
-
-    // Calculate age (must be at least 18 years old)
-    const age = today.getFullYear() - dobDate.getFullYear();
-    const monthDiff = today.getMonth() - dobDate.getMonth();
-    const dayDiff = today.getDate() - dobDate.getDate();
-    
-    const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
-
-    if (actualAge < 18) {
-      return {
-        valid: false,
-        message: 'You must be at least 18 years old'
-      };
-    }
-
-    if (actualAge > 100) {
-      return {
-        valid: false,
-        message: 'Please enter a valid date of birth'
-      };
-    }
-
-    return {
-      valid: true,
-      message: ''
-    };
-  }
-};
-
-// Show error message
-function showError(fieldId, message) {
-  const field = document.getElementById(fieldId);
-  if (!field) return;
+// Initialize form with element references
+function initializeFormWithElements(modal, dobInput, mobileInput, form, submitButton) {
   
-  const errorDiv = field.nextElementSibling;
+  // Setup field validation with direct element references
+  setupFieldValidationWithElements(dobInput, mobileInput);
   
-  field.classList.add('error');
+  // Handle form submission with direct element references
+  handleFormSubmissionWithElements(form, dobInput, mobileInput, submitButton);
   
-  if (errorDiv && errorDiv.classList.contains('error-message')) {
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-  } else {
-    const newErrorDiv = document.createElement('div');
-    newErrorDiv.className = 'error-message';
-    newErrorDiv.textContent = message;
-    field.parentNode.insertBefore(newErrorDiv, field.nextSibling);
-  }
-}
-
-// Clear error message
-function clearError(fieldId) {
-  const field = document.getElementById(fieldId);
-  if (!field) return;
-  
-  field.classList.remove('error');
-  const errorDiv = field.nextElementSibling;
-  if (errorDiv && errorDiv.classList.contains('error-message')) {
-    errorDiv.style.display = 'none';
-  }
-}
-
-// Initialize form
-function initializeForm() {
   // Initialize modal events
   initializeFormModal();
-  
-  // Setup field validation
-  setupFieldValidation();
-  
-  // Handle form submission
-  handleFormSubmission();
   
   // Handle trigger button clicks
   const triggerButtons = document.querySelectorAll('.open-verification-modal');
@@ -313,52 +179,14 @@ function initializeForm() {
   });
 }
 
-// Initialize form modal
-function initializeFormModal() {
-  const modal = document.getElementById('user-verification-modal');
-  if (!modal) return;
+// Validate form field on blur with element references
+function setupFieldValidationWithElements(dobField, mobileField) {
   
-  // Handle modal show event (Bootstrap 3/4 compatible)
-  if (typeof $ !== 'undefined' && $.fn.modal) {
-    $('#user-verification-modal').on('show.bs.modal', function () {
-      resetForm();
-    });
+  if (!mobileField || !dobField) {
+    console.error('setupFieldValidation: mobileField or dobField is null');
+    return;
+  }
     
-    $('#user-verification-modal').on('hidden.bs.modal', function () {
-      resetForm();
-    });
-  }
-}
-
-// Reset form
-function resetForm() {
-  const form = document.getElementById('user-verification-form');
-  const successMsg = document.getElementById('form-success-message');
-  const errorMsg = document.getElementById('form-error-message');
-  
-  if (form) {
-    form.reset();
-  }
-  
-  // Clear error messages
-  const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(msg => msg.style.display = 'none');
-  
-  // Remove error class from form controls
-  const formControls = document.querySelectorAll('.form-control');
-  formControls.forEach(control => control.classList.remove('error'));
-  
-  if (successMsg) successMsg.style.display = 'none';
-  if (errorMsg) errorMsg.style.display = 'none';
-}
-
-// Validate form field on blur
-function setupFieldValidation() {
-  const mobileField = document.getElementById('mobile-number');
-  const dobField = document.getElementById('date-of-birth');
-  
-  if (!mobileField || !dobField) return;
-  
   // Mobile number validation on blur
   mobileField.addEventListener('blur', function() {
     const mobile = this.value.trim();
@@ -392,12 +220,58 @@ function setupFieldValidation() {
   dobField.addEventListener('blur', function() {
     const dob = this.value.trim();
     const validation = formValidation.validateDOB(dob);
+    const dobLabel = document.querySelector('.dob-label');
+    const dobErrorLabel = document.querySelector('.dob-error-label');
     
     if (!validation.valid) {
+      // Hide normal label and show error label
+      if (dobLabel) dobLabel.style.display = 'none';
+      if (dobErrorLabel) dobErrorLabel.style.display = 'block';
       showError('date-of-birth', validation.message);
     } else {
+      // Show normal label and hide error label
+      if (dobLabel) dobLabel.style.display = 'block';
+      if (dobErrorLabel) dobErrorLabel.style.display = 'none';
       clearError('date-of-birth');
     }
+  });
+
+  // Auto-format DOB input as DD/MM/YYYY
+  dobField.addEventListener('input', function(e) {
+    let value = this.value.replace(/\D/g, ''); // Remove non-digits
+    
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    if (value.length >= 5) {
+      value = value.slice(0, 5) + '/' + value.slice(5);
+    }
+    if (value.length > 10) {
+      value = value.slice(0, 10);
+    }
+    
+    this.value = value;
+  });
+
+  // Restrict DOB input to numbers and slashes
+  dobField.addEventListener('keypress', function(e) {
+    const charCode = (e.which) ? e.which : e.keyCode;
+    // Allow numbers (48-57) and forward slash (47)
+    if (charCode !== 47 && (charCode < 48 || charCode > 57)) {
+        console.log('keypress prevented', charCode);
+      e.preventDefault();
+      return false;
+    }
+    return true;
+  });
+
+  // Reset labels on focus
+  dobField.addEventListener('focus', function() {
+    const dobLabel = document.querySelector('.dob-label');
+    const dobErrorLabel = document.querySelector('.dob-error-label');
+    if (dobLabel) dobLabel.style.display = 'block';
+    if (dobErrorLabel) dobErrorLabel.style.display = 'none';
+    clearError('date-of-birth');
   });
 
   // Clear error on focus
@@ -409,18 +283,20 @@ function setupFieldValidation() {
   });
 }
 
-// Handle form submission
-function handleFormSubmission() {
-  const form = document.getElementById('user-verification-form');
-  if (!form) return;
+// Handle form submission with element references
+function handleFormSubmissionWithElements(form, dobField, mobileField, submitButton) {
+  if (!form) {
+    console.error('handleFormSubmission: form is null');
+    return;
+  }
   
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const mobileField = document.getElementById('mobile-number');
-    const dobField = document.getElementById('date-of-birth');
-    
-    if (!mobileField || !dobField) return;
+    if (!mobileField || !dobField) {
+      console.error('handleFormSubmission: mobileField or dobField is null');
+      return;
+    }
     
     // Get form values
     const mobile = mobileField.value.trim();
@@ -466,6 +342,212 @@ function handleFormSubmission() {
     
     return false;
   });
+}
+
+// Utility function for sanitizing inputs
+function sanitize(string) {
+  if (typeof (string) == "string") {
+    const map = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+    };
+    const reg = /[<>"']/ig;
+    return string.replace(reg, (match) => (map[match]));
+  } else {
+    return string;
+  }
+}
+
+// Validation functions
+const formValidation = {
+  // Validate mobile number (10 digits)
+  validateMobile: function(mobile) {
+    const mobilePattern = /^[6-9]\d{9}$/;
+    if (!mobile || mobile.trim() === '') {
+      return {
+        valid: false,
+        message: 'Mobile number is required'
+      };
+    }
+    if (!mobilePattern.test(mobile)) {
+      return {
+        valid: false,
+        message: 'Please enter a valid 10-digit mobile number'
+      };
+    }
+    return {
+      valid: true,
+      message: ''
+    };
+  },
+
+  // Validate date of birth in DD/MM/YYYY format
+  validateDOB: function(dob) {
+    if (!dob || dob.trim() === '') {
+      return {
+        valid: false,
+        message: 'Date of birth is required'
+      };
+    }
+
+    // Check format DD/MM/YYYY
+    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = dob.match(datePattern);
+    
+    if (!match) {
+      return {
+        valid: false,
+        message: 'Please enter date in DD/MM/YYYY format'
+      };
+    }
+
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+
+    // Check if date values are valid
+    if (month < 1 || month > 12) {
+      return {
+        valid: false,
+        message: 'Kindly enter a valid date'
+      };
+    }
+
+    if (day < 1 || day > 31) {
+      return {
+        valid: false,
+        message: 'Kindly enter a valid date'
+      };
+    }
+
+    // Create date object (month is 0-indexed in JavaScript)
+    const dobDate = new Date(year, month - 1, day);
+    
+    // Check if the date is actually valid (e.g., 31/02/2020 would be invalid)
+    if (dobDate.getDate() !== day || dobDate.getMonth() !== month - 1 || dobDate.getFullYear() !== year) {
+      return {
+        valid: false,
+        message: 'Kindly enter a valid date'
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+    
+    // Check if date is not in future or today
+    if (dobDate >= today) {
+      return {
+        valid: false,
+        message: 'Date of birth must be earlier than today'
+      };
+    }
+
+    // Calculate age (must be at least 18 years old)
+    const age = today.getFullYear() - dobDate.getFullYear();
+    const monthDiff = today.getMonth() - dobDate.getMonth();
+    const dayDiff = today.getDate() - dobDate.getDate();
+    
+    const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+
+    if (actualAge < 18) {
+      return {
+        valid: false,
+        message: 'You must be at least 18 years old'
+      };
+    }
+
+    if (actualAge > 100) {
+      return {
+        valid: false,
+        message: 'Kindly enter a valid date'
+      };
+    }
+
+    return {
+      valid: true,
+      message: ''
+    };
+  }
+};
+
+// Show error message
+function showError(fieldId, message) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  
+  const errorDiv = field.nextElementSibling;
+  
+  field.classList.add('error');
+  
+  if (errorDiv && errorDiv.classList.contains('error-message')) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+  } else {
+    const newErrorDiv = document.createElement('div');
+    newErrorDiv.className = 'error-message';
+    newErrorDiv.textContent = message;
+    field.parentNode.insertBefore(newErrorDiv, field.nextSibling);
+  }
+}
+
+// Clear error message
+function clearError(fieldId) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+  
+  field.classList.remove('error');
+  const errorDiv = field.nextElementSibling;
+  if (errorDiv && errorDiv.classList.contains('error-message')) {
+    errorDiv.style.display = 'none';
+  }
+}
+
+// Initialize form
+// Initialize form modal
+function initializeFormModal() {
+  const modal = document.getElementById('user-verification-modal');
+  if (!modal) return;
+  
+  // Handle modal show event (Bootstrap 3/4 compatible)
+  if (typeof $ !== 'undefined' && $.fn.modal) {
+    $('#user-verification-modal').on('show.bs.modal', function () {
+      resetForm();
+    });
+    
+    $('#user-verification-modal').on('hidden.bs.modal', function () {
+      resetForm();
+    });
+  }
+}
+
+// Reset form
+function resetForm() {
+  const form = document.getElementById('user-verification-form');
+  const successMsg = document.getElementById('form-success-message');
+  const errorMsg = document.getElementById('form-error-message');
+  const dobLabel = document.querySelector('.dob-label');
+  const dobErrorLabel = document.querySelector('.dob-error-label');
+  
+  if (form) {
+    form.reset();
+  }
+  
+  // Reset DOB labels to initial state
+  if (dobLabel) dobLabel.style.display = 'block';
+  if (dobErrorLabel) dobErrorLabel.style.display = 'none';
+  
+  // Clear error messages
+  const errorMessages = document.querySelectorAll('.error-message');
+  errorMessages.forEach(msg => msg.style.display = 'none');
+  
+  // Remove error class from form controls
+  const formControls = document.querySelectorAll('.form-control');
+  formControls.forEach(control => control.classList.remove('error'));
+  
+  if (successMsg) successMsg.style.display = 'none';
+  if (errorMsg) errorMsg.style.display = 'none';
 }
 
 // Submit form data
