@@ -1622,7 +1622,7 @@
   .section.cards-container .cards-wrapper {
     min-height: 520px;
   }
-    */
+  
 
   .section.cards-container:has(.cards.all-about-card) {
     min-height: 1900px;
@@ -1642,6 +1642,7 @@
     display: grid;
     grid-template-rows: 240px 1fr;
   }
+  */
 
   .cards.all-about-card .cards-card-image {
     min-height: 360px;
