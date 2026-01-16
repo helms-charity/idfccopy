@@ -81,7 +81,7 @@ header nav .nav-sections .default-content-wrapper>ul>li p a {
   font-weight: 600;
 }
 
-/* Mobile: Accordion chevron icon (SVG) */
+/* Accordion chevron icon */
 header nav .nav-sections .default-content-wrapper>ul>li::after {
   content: '';
   position: absolute;
@@ -97,7 +97,6 @@ header nav .nav-sections .default-content-wrapper>ul>li::after {
   transition: transform 0.3s ease;
 }
 
-/* Mobile: Rotate chevron when expanded (90deg to point down) */
 header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']::after {
   transform: translateY(-50%) rotate(90deg);
 }
@@ -239,7 +238,7 @@ header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul
   max-height: var(--scroll-height, 2000px);
 }
 
-/* Mobile: Nested accordion for fragment sections */
+/* Nested accordion for fragment sections */
 header nav .nav-sections .nav-fragment-section {
   border-top: 1px solid #e0e0e0;
   cursor: pointer;
@@ -258,7 +257,6 @@ header nav .nav-sections .nav-fragment-section-title {
   position: relative;
 }
 
-/* Mobile: Nested accordion chevron icon (SVG) */
 header nav .nav-sections .nav-fragment-section::after {
   content: '';
   position: absolute;
@@ -274,7 +272,6 @@ header nav .nav-sections .nav-fragment-section::after {
   transition: transform 0.3s ease;
 }
 
-/* Mobile: Rotate nested chevron when expanded (90deg to point down) */
 header nav .nav-sections .nav-fragment-section[aria-expanded='true']::after {
   transform: rotate(90deg);
 }
@@ -300,11 +297,14 @@ header nav .nav-sections .nav-fragment-section-content>li {
   margin: 0;
 }
 
-/* Universal styling for ALL content items in nav-sections */
+/* Content items in nav-sections */
 header nav .nav-sections .nav-fragment-section-content p.button-container {
   padding: 12px 20px 12px 32px;
   margin: 0;
   border-bottom: 1px solid #f0f0f0;
+  min-height: 0; /* Override line 66 */
+  height: auto;
+  line-height: 1.3;
 }
 
 header nav .nav-sections .nav-fragment-section-content p.button-container:hover {
@@ -315,14 +315,25 @@ header nav .nav-sections .nav-fragment-section-content p.button-container a {
   color: #353535;
   text-decoration: none;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.3;
+
+  /* Override global .button styles */
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  background: transparent;
 }
 
-/* Privilege Program items (p elements with icons, not button-container) */
+/* Non-button content items */
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
   padding: 12px 20px 12px 32px;
   margin: 0;
   border-bottom: 1px solid #f0f0f0;
+  min-height: 0; /* Override line 66 */
+  height: auto;
+  line-height: 1.3;
 }
 
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
@@ -333,7 +344,7 @@ header nav .nav-sections .nav-fragment-section-content p:not(.button-container) 
   color: #353535;
   text-decoration: none;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.3;
   margin-left: 8px;
 }
 
@@ -390,7 +401,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-card {
   width: 100%;
 }
 
-/* View All button (appears at top of accordion content) */
+/* View All button */
 header nav .nav-sections .nav-view-all-btn {
   display: flex;
   align-items: center;
@@ -445,6 +456,23 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content >
   padding: 0;
   margin: 0;
   text-indent: 0;
+}
+
+/* H4 section content: height constraints */
+header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container {
+  min-height: 0;
+  height: auto;
+  line-height: 1.3;
+}
+
+header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  background: transparent;
+  line-height: 1.3;
 }
 
 /* Mobile: Tab View Mode */
@@ -693,7 +721,7 @@ header nav .nav-tools .default-content-wrapper {
 
 /* Mobile: Hide search bar text (first paragraph) */
 header nav .nav-tools .default-content-wrapper > p:first-child {
-  display: none;
+    display: none;
 }
 
 /* Mobile: Show only login and search from the UL */
@@ -859,6 +887,11 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   white-space: nowrap;
 }
 
+/* Hide Discover cards on mobile (shown on desktop only) */
+.nav-discover-section {
+  display: none;
+}
+
 @media (width >= 900px) {
   /* Header wrapper is now a container for both nav and secondary navbar */
   header .nav-wrapper {
@@ -940,27 +973,23 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     order: 3;
   }
 
-  /* Desktop: Hide the search icon pseudo-element */
   header nav .nav-tools::after {
     display: none;
   }
 
-  /* Desktop: Show search bar text */
   header nav .nav-tools .default-content-wrapper > p:first-child {
     display: flex;
   }
 
-  /* Desktop: Show all odometer items (customer service) */
   header nav .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
     display: flex;
   }
 
-  /* Desktop: Ensure all UL items visible even when nav is "expanded" (though that shouldn't happen on desktop) */
   header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
     display: flex;
   }
 
-  /* Desktop: Hide mobile accordion icons */
+  /* Hide mobile accordion icons */
   header nav .nav-sections .default-content-wrapper>ul>li::after,
   header nav .nav-sections .nav-fragment-section::after {
     display: none;
@@ -1012,7 +1041,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     line-height: normal;
   }
 
-  /* Desktop: Nav title links - red text, no border */
+  /* Nav title links */
   header nav .nav-sections .default-content-wrapper>ul>li p a {
     color: var(--dark-red-color);
     font-weight: 400;
@@ -1032,15 +1061,26 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     position: absolute;
   }
 
-  /* Desktop: Remove nested accordion styling */
   header nav .nav-sections .nav-fragment-section {
-    border-bottom: none;
-    cursor: default;
+    grid-column: 1;
+    border: none;
+    cursor: pointer;
+    display: contents;
   }
 
   header nav .nav-sections .nav-fragment-section-content {
-    max-height: none;
-    overflow: visible;
+    display: none;
+    grid-column: 2 / 4; /* Span columns 2 and 3 */
+    grid-row: 1 / span 100;
+    padding: 16px 32px;
+    overflow-y: auto;
+    max-height: calc(70vh - 64px);
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    align-self: start;
+    position: relative;
+    z-index: 1;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li>ul>li {
@@ -1051,7 +1091,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     border-bottom: 1px solid #f1f1f1;
   }
 
-  /* Desktop: Full-width dropdown with 3-column layout */
+  /* Full-width dropdown */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
   header nav .nav-sections .default-content-wrapper>ul>li>ul:hover {
     display: grid;
@@ -1069,7 +1109,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     border-radius: 0;
   }
 
-  /* Desktop: Create invisible bridge between nav button and dropdown */
+  /* Invisible bridge between nav button and dropdown */
   header nav .nav-sections .default-content-wrapper>ul>li>ul::before {
     content: '';
     position: absolute;
@@ -1080,10 +1120,10 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     background: transparent;
   }
 
-  /* Desktop: 3-column grid layout */
+  /* 3-column grid layout */
   header nav .nav-sections .nav-fragment-content {
     display: grid;
-    grid-template-columns: 300px 1fr 300px;
+    grid-template-columns: 300px 1fr 450px;
     grid-auto-rows: auto;
     gap: 0;
     width: 100%;
@@ -1095,15 +1135,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     position: relative;
   }
 
-  /* Desktop: Each section LI occupies only column 1 */
-  header nav .nav-sections .nav-fragment-section {
-    grid-column: 1;
-    border: none;
-    cursor: pointer;
-    display: contents;
-  }
-
-  /* Desktop: Section title stays in column 1 - needs high specificity to override line 63 */
+  /* Section title in column 1 */
   header nav .nav-sections .default-content-wrapper>ul>li p.nav-fragment-section-title {
     grid-column: 1;
     padding: 12px 20px;
@@ -1126,23 +1158,180 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     border-radius: 16px 0 0 16px;
   }
 
-  /* Desktop: Column 2 - Section content (initially hidden) */
-  header nav .nav-sections .nav-fragment-section-content {
-    display: none;
-    grid-column: 2;
-    grid-row: 1 / span 100;
-    padding: 16px 32px;
-    overflow-y: auto;
-    max-height: calc(70vh - 64px);
-    background: #f2f2f2;
-    box-shadow: none;
-    border-radius: 0;
-    align-self: start;
-  }
-
-  /* Desktop: Show content in column 2 when section is expanded */
+  /* Desktop: Show content in columns 2-3 when section is expanded */
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
     display: block;
+    padding: 16px 32px;
+    background: #f2f2f2;
+    box-shadow: none;
+    border-radius: 8px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  /* Desktop: Wrapper div inside section content */
+  header nav .nav-sections .nav-fragment-section-content > li > div {
+    position: relative;
+    padding-right: 412px; /* 380px card + 32px gap */
+  }
+
+  /* Desktop: Discover section positioned absolutely on the right */
+  header nav .nav-sections .nav-fragment-section-content > li > div > .nav-discover-section {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 380px;
+    max-height: 568px; /* 600px container - 32px padding */
+    overflow: hidden;
+  }
+
+  /* Desktop: Ensure section content sits above background */
+  header nav .nav-sections .nav-fragment-content > .nav-fragment-section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Desktop: Discover section wrapper */
+  header nav .nav-sections .nav-discover-section {
+    display: block; /* Override mobile display: none */
+    background: transparent;
+    padding: 0;
+  }
+
+  /* Desktop: Discover heading */
+  header nav .nav-sections .nav-discover-heading {
+    font-size: var(--body-font-size-s);
+    font-weight: 700;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+
+  /* Desktop: Cards block in Discover section */
+  header nav .nav-sections .nav-discover-section .cards.block {
+    width: 100%;
+  }
+
+  /* Override flex layout since we only have one card */
+  header nav .nav-sections .nav-discover-section .cards.block ul.grid-cards {
+    display: block;
+    gap: 0;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards.block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards.block li {
+    display: block;
+    width: 100%;
+  }
+
+  /* Gray padding on top/left/right only */
+  header nav .nav-sections .nav-discover-section .cards.block li.cards-card-body.blog-post-card {
+    padding: 16px 16px 0; /* No bottom padding */
+    background: #f2f2f2;
+    border-radius: 16px;
+  }
+
+  /* White card container - image and text connect seamlessly */
+  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image,
+  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+    background: #fff;
+    margin: 0; /* No gap between divs */
+  }
+
+  /* Image at top with top rounded corners only */
+  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image {
+    border-radius: 12px 12px 0 0;
+  }
+
+  /* Text body with bottom rounded corners and shadow */
+  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 16px; /* Creates gray space at bottom */
+    box-shadow: 0 4px 12px rgba(0 0 0 / 15%);
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-image {
+    width: 100%;
+    overflow: hidden;
+    max-height: 150px;
+    border-radius: 12px 12px 0 0; /* Only round top corners */
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-image picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-image img {
+    width: 100%;
+    height: 150px;
+    display: block;
+    object-fit: cover;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-body {
+    padding: 16px;
+    background: #fff;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-body h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--text-color);
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  /* =================================================================
+     DISCOVER CARD OVERRIDES (High specificity needed to override line 1308)
+     ================================================================= */
+
+  /* Discover card: Body text */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-discover-section .cards-card-body p:not(.button-container) {
+    font-size: 14px;
+    margin: 0 0 12px;
+    padding: 0;
+    color: #666;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  /* Discover card: Button container */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-discover-section .cards-card-body .button-container {
+    margin: 0;
+    padding: 0;
+    min-height: auto;
+    background: #fff;
+    text-align: left;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-body .button {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: transparent;
+    color: var(--dark-red-link-color);
+    border: 2px solid var(--dark-red-link-color);
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards-card-body .button:hover {
+    background-color: var(--dark-red-link-color);
+    color: #fff;
   }
 
   /* Desktop: Column 3 - Image placeholder */
@@ -1154,12 +1343,17 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     min-height: 300px;
   }
 
-  /* Desktop: Style content items in column 2 */
+  /* =================================================================
+     DESKTOP: COLUMN 2 CONTENT STYLING
+     ================================================================= */
+
+  /* Base container styles */
   header nav .nav-sections .nav-fragment-section-content > li {
     padding: 0;
     margin: 0;
   }
 
+  /* Content items: Default state (button-container and regular p tags) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
     padding: 10px 16px;
@@ -1173,15 +1367,17 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     display: block;
   }
 
+  /* Content items: Hover state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
     font-weight: 700;
     background-color: transparent;
   }
 
+  /* Content items: Links default state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container) a {
-    color: #353535;
+    color: var(--dark-red-link-color);
     text-decoration: none;
     font-size: 15px;
     font-weight: 400;
@@ -1193,20 +1389,40 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     display: inline;
   }
 
+  /* Content items: Links hover state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container):hover a {
     font-weight: 700;
   }
 
-  /* Desktop: View All button in column 2 */
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn {
+  /* =================================================================
+     VIEW ALL BUTTON AND SECTION TITLES
+     ================================================================= */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
     padding: 10px 16px;
     margin-bottom: 8px;
+  }
+
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-section-title {
+    font-size: var(--body-font-size-s);
+    font-weight: 600;
+    color: var(--text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn {
+    padding: 0;
+    margin: 0;
     min-height: 0;
     height: auto;
     border-bottom: none;
     font-weight: 400;
     line-height: 1.3;
+    color: var(--dark-red-link-color);
     background-color: transparent;
   }
 
@@ -1214,12 +1430,17 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     font-weight: 700;
   }
 
-  /* Desktop: H4 sections in column 2 */
+  /* =================================================================
+     H4 SUBSECTIONS (Tools & Calculators, Privilege Program, etc.)
+     ================================================================= */
+
+  /* H4 section container */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section {
     margin: 16px 0 8px;
     background: #f2f2f2;
   }
 
+  /* H4 section title */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-title {
     font-size: var(--body-font-size-s);
     font-weight: 600;
@@ -1230,10 +1451,17 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     background-color: #f2f2f2;
   }
 
+  /* H4 section content */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content {
     background: #f2f2f2;
     box-shadow: none;
     border-radius: 0;
+    display: block;
+  }
+
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content > li {
+    display: block;
+    width: 100%;
   }
 
   /* Desktop: Remove transparent hover backgrounds from tab-view-active styles */
@@ -1260,7 +1488,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
     padding: 20px 0 30px 70px;
     width: 100%;
     background: #fff;
-    box-shadow: 2px 2px 24px rgba(120, 120, 120, .08);
+    box-shadow: 2px 2px 24px rgb(120 120 120 / 8%);
     z-index: 2;
     height: 518px;
     max-height: 100%;
