@@ -1249,7 +1249,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 /* Customer Service Dropdown */
 .cs-dropdown {
   position: fixed;
-  top: var(--nav-height);
+  top: calc(var(--nav-height) - 3px);
   left: 0;
   width: 100vw;
   background: #fff;
@@ -1260,6 +1260,15 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   max-height: calc(100vh - var(--nav-height));
 }
 
+.cs-dropdown {
+  transition: all .5s ease-out;
+  transform: rotateX(0deg);
+  transform-origin: top;
+  border-top: 1px solid #e9e9e9;
+  z-index: 100;
+  background: #f6f6f6;
+}
+
 .cs-dropdown::before {
   content: '';
   display: block;
@@ -1268,5 +1277,63 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
 
 .cs-dropdown.open {
   display: block;
+
+  .section:nth-child(3) {
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .cards .benefit-cards {
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .cards .benefit-cards .cards-card-body p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #222;
+  }
+
+  .cards .benefit-cards img {
+    width: 58px;
+    height: 58px;
+    margin-left:10px;
+  }
+
+  .cards.related-search .benefit-cards .cards-card-image {
+    width: unset;
+  }
+
+  .cards.related-search .grid-cards {
+    margin: 0;
+  }
+
+  .cards.related-search .benefit-cards::after {
+    background-color: transparent;
+    width: 7px;
+    height: 7px;
+    border: 1px solid;
+    border-width: 2px 2px 0 0;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 16px;
+    top: 30%;
+    border-radius: 0;
+    background: none;
+    color: var(--dark-red-color);
 }
 
+.cards.related-search .benefit-cards {
+  box-shadow: none;
+  padding: 24px 12px 24px 16px;
+    background: #eee;
+    border-radius: 16px;
+    height: unset;
+}
+
+.cards.related-search .benefit-cards:hover,
+.cards .card-clickable:hover {
+  transform: none;
+}
+}
