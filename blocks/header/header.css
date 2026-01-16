@@ -1738,8 +1738,7 @@ header nav[aria-expanded='true'] .mobile-customer-service-odometer {
   z-index: 1001;
   display: none;
   overflow-y: auto;
-  height: 1042px;
-  max-height: calc(100vh - var(--nav-height));
+  max-height: 1042px;
   transition: all 0.3s ease-out;
   transform-origin: top;
 }
