@@ -27,8 +27,12 @@ body.modal-open {
   opacity: 1;
 }
 
-/* Hide native dialog backdrop - we use .modal-page-background::before instead */
 .modal dialog::backdrop {
+	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(2.5px);
+}
+
+.modal:has(dialog.has-page-background) dialog::backdrop {
   background: transparent;
   background-color: transparent;
   backdrop-filter: none;
@@ -232,12 +236,6 @@ body.modal-open {
   border-radius: 6px;
   box-sizing: border-box;
   overflow-y: auto;
-}
-
-.modal dialog:has(.section[data-id="mayura-card-modal"])::backdrop {
-	background: rgba(0, 0, 0, 0.8);
-	opacity: 1;
-	backdrop-filter: blur(2.5px);
 }
 
 .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
