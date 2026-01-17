@@ -81,7 +81,7 @@ main>div.section > .cc-hero-slider-wrapper {
   justify-content: flex-end;
   width: 100%;
   max-width: 90%;
-  padding: 40px 20px 60px;
+  padding: 80px 20px 30px;
 }
 
 .cc-hero-slider-content h2 {
@@ -133,6 +133,7 @@ main>div.section > .cc-hero-slider-wrapper {
 .cc-hero-slider-content a.button {
   background: var(--gradient-silver);
 }
+
 /* Arrow icon in button - display in black and align properly */
 .cc-hero-slider-content a.button span.icon {
   display: inline-flex;
