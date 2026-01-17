@@ -1269,8 +1269,7 @@
 
 .explore-other-cards .swiper-slide {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
   align-items: center;
   align-content: center;
   height: auto;
@@ -1288,7 +1287,7 @@
   width: 100%;
   border-radius: 20px;
   margin-top: -30px;
-  padding: 55px 20px 40px 20px;
+  padding: 55px 20px 40px;
   background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   z-index: -1;
 }
@@ -1340,6 +1339,7 @@
   justify-content: center;
   gap: 8px;
 }
+
 /*
 .cards.key-benefits .swiper-pagination {
   bottom: 36px;
