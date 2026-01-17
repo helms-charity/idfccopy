@@ -1833,10 +1833,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   padding: 0 70px;
 }
 
-.login-dropdown img[src*="loginPhone.png"] {
-  max-width: 660px;
-  width: 100%;
-  height: auto;
+.login-dropdown img[src*="loginPhone.png"],
+.login-dropdown img[src*="loginPhone"] {
+  max-width: 660px !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 .login-close-btn {
