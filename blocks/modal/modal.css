@@ -2,6 +2,17 @@
   --modal-offset-height: calc(var(--nav-height) + var(--category-nav-height)); /* When category nav is present, 144px (80px nav + 64px category-nav), otherwise 80px */
 }
 
+.modal.block {
+	display: flex;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	margin: 0;
+	z-index: 99;
+}
+
 body.modal-open {
   overflow: hidden;
 }
@@ -16,25 +27,12 @@ body.modal-open {
   opacity: 1;
 }
 
+/* Hide native dialog backdrop - we use .modal-page-background::before instead */
 .modal dialog::backdrop {
-  /* Top 170px shows blurred nav, rest is silver gradient */
-  background: var(--modal-backdrop-gradient);
-  backdrop-filter: blur(5px);
-  background-size: cover;
-  background-position: center top var(--modal-offset-height);
-  background-repeat: no-repeat;
+  background: transparent;
+  background-color: transparent;
+  backdrop-filter: none;
   opacity: 0;
-  transition: opacity 0.3s ease-out;
-}
-
-.modal dialog.modal-visible::backdrop {
-  opacity: 1;
-}
-
-/* Auto-popup modals (timed page modals) use simple dark overlay instead of gradient */
-.modal dialog.modal-auto-popup::backdrop {
-  background: rgb(0 0 0 / 80%);
-  backdrop-filter: blur(4px);
 }
 
 .modal dialog.modal-auto-popup h2 {
@@ -51,22 +49,55 @@ body.modal-open {
   font-size: 16px;
 }
 
-/* When a page background image is authored, use it instead of the gradient */
-.modal dialog.has-page-background::backdrop {
+/* Page background - contains backdrop effect via ::before pseudo-element */
+.modal .modal-page-background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Backdrop effect - replaces dialog::backdrop */
+.modal .modal-page-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--modal-backdrop-gradient);
+  backdrop-filter: blur(5px);
+  background-size: cover;
+  background-position: center top var(--modal-offset-height);
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  z-index: 1;
+}
+
+/* Fade in backdrop when modal is visible */
+.modal:has(dialog.modal-visible) .modal-page-background::before {
+  opacity: 1;
+}
+
+/* Auto-popup modals use simple dark overlay */
+.modal:has(dialog.modal-auto-popup) .modal-page-background::before {
+  background: rgb(0 0 0 / 80%);
+  backdrop-filter: blur(4px);
+}
+
+/* When a page background image is authored, use it */
+.modal:has(dialog.has-page-background) .modal-page-background::before {
   background: var(--modal-page-background-image) center top var(--modal-offset-height) / cover no-repeat;
   backdrop-filter: blur(5px);
 }
 
-/* Page background image - sits behind the dialog, above the backdrop */
-.modal .modal-page-background {
-  position: fixed;
+/* Page background image */
+.modal .modal-page-background > img:first-child {
+  position: absolute;
   inset: 0;
   top: var(--modal-offset-height);
-  z-index: -1;
-  pointer-events: none;
+  z-index: 2;
 }
 
-.modal .modal-page-background img {
+.modal .modal-page-background > img:first-child {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -75,21 +106,20 @@ body.modal-open {
 
 .modal dialog,
 .modal dialog[open] {
-  position: fixed !important;
-  inset: unset !important;
-  top: calc(var(--modal-offset-height) + 100px) !important;
-  left: 50% !important;
-  transform: translateX(-50%);
-  overscroll-behavior: none;
-  overflow: visible;
-  width: calc(100vw - 48px);
+  display: flex;
+  position: fixed;
+  justify-self: center;
+  align-self: center;
+  width: fit-content;
   max-width: 1060px;
-  max-height: calc(100dvh - (2 * var(--modal-offset-height)));
-  margin: 0;
+  height: 100%;
+  max-height: max-content;
+  margin: 0 15px;
   padding: 0;
   border: none;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
+  z-index: 10; /* Above page-background and decorations */
 }
 
 .modal dialog .modal-content {
@@ -98,7 +128,7 @@ body.modal-open {
   overflow-x: hidden;
   overscroll-behavior: none;
   width: 100%;
-  max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 48px);
+  height: fit-content;
   padding: 32px 24px;
   position: relative;
   z-index: 2; /* Above decoration images */
@@ -197,21 +227,22 @@ body.modal-open {
 
 .modal dialog:has(.section[data-id="mayura-card-modal"]) {
   max-width: 730px;
-  position: fixed !important;
-  min-height: 462px;
-  width: 730px;
-  inset: unset !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%);
+  width: auto;
   padding: 40px;
   border-radius: 6px;
   box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.modal dialog:has(.section[data-id="mayura-card-modal"])::backdrop {
+	background: rgba(0, 0, 0, 0.8);
+	opacity: 1;
+	backdrop-filter: blur(2.5px);
 }
 
 .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
  padding: 0;
- overflow: visible;
+ overflow: auto;
 }
 
 /* Modal texture overlay - added via JS as img element */
@@ -235,7 +266,6 @@ body.modal-open {
 /* ===== Modal Theme: Mayura Silver ===== */
 .modal dialog.modal-mayura-silver {
   background: var(--metal-silver);
-  position: relative;
 }
 
 .modal dialog.modal-mayura-silver .modal-content {
@@ -332,7 +362,6 @@ body.modal-open {
 /* ===== Modal Theme: Mayura Blue - additional styles ===== */
 .modal dialog.modal-mayura-blue {
   background: var(--metal-blue);
-  position: relative;
 }
 
 .modal dialog.modal-mayura-blue .modal-content {
@@ -362,31 +391,34 @@ body.modal-open {
 }
 
 /*
- * Decorative corner overlays - inside dialog to be in top layer, positioned at viewport corners
- * Dialog has transform: translateX(-50%) which creates a containing block for fixed children
- * We use calc() to offset from dialog-relative to viewport-relative positioning
+ * Decorative corner overlays - inside page-background, positioned at viewport corners
+ * Sits between backdrop (::before z-index: 1) and dialog (z-index: 10)
  */
-.modal dialog .modal-decoration {
-  position: fixed;
-  width: 300px;
-  height: 300px;
+.modal .modal-page-background .modal-decoration {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: -1; /* Behind dialog content but visible in top layer */
-  object-fit: contain;
+  z-index: 3; /* Above backdrop (z-index: 1) and bg image (z-index: 2) */
 }
 
-  /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
-  .modal dialog .modal-decoration-top-right {
-    top: -300px; /* 300px = height of decoration image */
-    right: -90px;
-  }
+/* Top right decoration */
+.modal .modal-page-background .modal-decoration-top-right {
+  position: absolute;
+  top: var(--modal-offset-height);
+  right: 0;
+  width: auto;
+  height: auto;
+}
 
-  /* Bottom left decoration - offset to viewport left corner */
-  .modal dialog .modal-decoration-bottom-left {
-    bottom: -300px;
-    left: -90px;
-    transform: rotate(180deg);
-  }
+/* Bottom left decoration */
+.modal .modal-page-background .modal-decoration-bottom-left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: rotate(180deg);
+}
 
 @media (width >= 1100px) {
   .modal dialog {
@@ -394,7 +426,6 @@ body.modal-open {
   }
   
   .modal dialog .modal-content {
-    max-height: calc(100dvh - (2 * var(--modal-offset-height)) - 64px);
     padding: 40px 48px;
   }
 
@@ -402,15 +433,15 @@ body.modal-open {
   }
 
   /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
-  .modal dialog .modal-decoration-top-right {
-    top: -150px;
-    right: calc(-50vw + 460px); /* 460px = half of max dialog width (920px) */
+  .modal .modal-page-background .modal-decoration-top-right {
+    top: var(--modal-offset-height);
+    right: 0; /* 460px = half of max dialog width (920px) */
   }
 
   /* Bottom left decoration - stick to viewport bottom-left using top calc */
-  .modal dialog .modal-decoration-bottom-left {
-    top: calc(100vh - 300px - var(--modal-offset-height) - 50px); /* 300px = height of decoration image, 50px = offset from bottom of viewport */
-    left: calc(-50vw + 460px);
+  .modal .modal-page-background .modal-decoration-bottom-left {
+    bottom: 0; /* 300px = height of decoration image, 50px = offset from bottom of viewport */
+    left: 0;
     transform: rotate(180deg);
   }
 }
@@ -551,22 +582,32 @@ body.modal-open {
 
 @media (width < 768px) {
 
+  .modal dialog.modal-auto-popup p {
+    font-size: 14px;
+  }
+	
+  .modal .modal-page-background .modal-decoration-top-right {
+	bottom: 0;
+	top: unset;
+	}
+
+  .modal .modal-page-background .modal-decoration-bottom-left {
+    top: var(--modal-offset-height);
+	
+  }
+
   .modal dialog[open]:has(.section[data-id="mayura-card-modal"]) {
-    width: calc(100vw - 32px);
+    width: auto;
     max-width: 730px;
+    align-self: flex-end;
     height: auto;
-    max-height: 90vh;
+    max-height: fit-content;
     min-height: 0;
     border-radius: 25px 25px 0 0;
-    position: fixed !important;
-    inset: unset !important;
-    left: 50% !important;
-    top: unset !important;
-    bottom: 0 !important;
-    transform: translateX(-50%);
     overscroll-behavior: none;
     overflow: visible;
-    padding: 38px 26px 30px;
+    padding: 38px 26px 0 30px;
+    margin: 0;
     border: none;
     box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
     box-sizing: border-box;
@@ -584,7 +625,7 @@ body.modal-open {
 	
   .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
 	padding: 0;
-	max-height: unset;
+	max-height: 80vh;
 	}
 
   .modal .section[data-id="mayura-card-modal"] {
@@ -630,7 +671,7 @@ body.modal-open {
     width: 16px;
     height: 1.5px;
     border-radius: 2px;
-    background-color: currentcolor;
+    background-color: contrast(black, white);
   }
   
   .modal .close-button .icon.icon-close::after {
