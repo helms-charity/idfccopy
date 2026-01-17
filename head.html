@@ -1,12 +1,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<script>
-  console.log('[CLS-DEBUG] head.html inline script executing', performance.now().toFixed(2) + 'ms');
-  window.__clsDebug = { start: performance.now() };
-</script>
-<link rel="stylesheet" href="/scripts/swiperjs/swiper-bundle.min.css" onload="console.log('[CLS-DEBUG] swiper-bundle.min.css LOADED', performance.now().toFixed(2) + 'ms')"/>
-<script src="/scripts/swiperjs/swiper-bundle.min.js" onload="console.log('[CLS-DEBUG] swiper-bundle.min.js LOADED, Swiper defined:', typeof Swiper !== 'undefined', performance.now().toFixed(2) + 'ms')"></script>
+<link rel="stylesheet" href="/scripts/swiperjs/swiper-bundle.min.css"/>
+<script src="/scripts/swiperjs/swiper-bundle.min.js"></script>
 <script src="/scripts/aem.js" type="module"></script>
 <script src="/scripts/scripts.js" type="module"></script>
-<link rel="stylesheet" href="/styles/styles.css" onload="console.log('[CLS-DEBUG] styles.css LOADED', performance.now().toFixed(2) + 'ms')"/>
+<link rel="stylesheet" href="/styles/styles.css"/>
 <meta name="urn:adobe:aue:config:preview" content="main--idfc-edge--aemsites.aem.page"/>
 <meta name="urn:adobe:aue:config:disable" content="aem-dev-login" />

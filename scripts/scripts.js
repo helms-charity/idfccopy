@@ -864,12 +864,6 @@ async function loadThemeSpreadSheetConfig() {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  const debugTime = () => performance.now().toFixed(2) + 'ms';
-  // eslint-disable-next-line no-console
-  console.log('[CLS-DEBUG][scripts.js] loadEager() START', debugTime());
-  // eslint-disable-next-line no-console
-  console.log('[CLS-DEBUG][scripts.js] Swiper available at loadEager:', typeof Swiper !== 'undefined', debugTime());
-
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
   loadThemeSpreadSheetConfig();
@@ -889,20 +883,10 @@ async function loadEager(doc) {
     const categoryNavPath = getMetadata('category-nav');
     if (categoryNavPath) {
       document.body.classList.add('has-category-nav');
-      // eslint-disable-next-line no-console
-      console.log('[CLS-DEBUG][scripts.js] category-nav metadata found, added has-category-nav class', debugTime());
     }
 
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] header height:', getComputedStyle(doc.querySelector('header')).height, debugTime());
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] About to add body.appear', debugTime());
     document.body.classList.add('appear');
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] body.appear added, loading first section...', debugTime());
     await loadSection(main.querySelector('.section'), waitForFirstImage);
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] First section loaded', debugTime());
   }
 
   try {
@@ -949,19 +933,13 @@ async function loadCategoryNav(main) {
   const categoryNavWrapper = document.createElement('div');
   categoryNavWrapper.classList.add('category-nav-wrapper');
   categoryNavWrapper.setAttribute('data-nav-placeholder', 'true');
-  // eslint-disable-next-line no-console
-  console.log('[CLS-DEBUG][scripts.js] Creating category-nav-wrapper, header height BEFORE:', getComputedStyle(document.querySelector('header')).height, performance.now().toFixed(2) + 'ms');
 
   // Insert into header nav-wrapper (not main) to prevent layout shift
   if (navWrapper) {
     navWrapper.appendChild(categoryNavWrapper);
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] category-nav-wrapper appended to header, height AFTER:', getComputedStyle(document.querySelector('header')).height, performance.now().toFixed(2) + 'ms');
   } else {
     // Fallback: insert at top of main if header not found
     main.insertBefore(categoryNavWrapper, main.firstChild);
-    // eslint-disable-next-line no-console
-    console.log('[CLS-DEBUG][scripts.js] category-nav-wrapper appended to main (fallback)', performance.now().toFixed(2) + 'ms');
   }
 
   // Load CSS for the category nav
@@ -1321,8 +1299,6 @@ async function loadLazy(doc) {
 
   // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
-  // eslint-disable-next-line no-console
-  console.log('[CLS-DEBUG][scripts.js] header loaded, height:', getComputedStyle(doc.querySelector('header')).height, performance.now().toFixed(2) + 'ms');
 
   // Load breadcrumbs after header is available and insert as first element in main
   await loadBreadcrumbs(main);

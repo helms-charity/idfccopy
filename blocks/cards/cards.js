@@ -675,15 +675,6 @@ function identifySemanticCardElements(li) {
 }
 
 export default async function decorate(block) {
-  const debugTime = () => performance.now().toFixed(2) + 'ms';
-  const blockClasses = [...block.classList].join('.');
-  // eslint-disable-next-line no-console
-  console.log(`[CLS-DEBUG][cards.js] decorate() START for .${blockClasses}`, debugTime());
-  // eslint-disable-next-line no-console
-  console.log(`[CLS-DEBUG][cards.js] Swiper available at decorate start:`, typeof Swiper !== 'undefined', debugTime());
-  // eslint-disable-next-line no-console
-  console.log(`[CLS-DEBUG][cards.js] data-swipable:`, block.dataset.swipable, debugTime());
-
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
@@ -890,48 +881,29 @@ export default async function decorate(block) {
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (isSwipable) {
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][cards.js] isSwipable=true, checking Swiper availability`, debugTime());
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][cards.js] Swiper defined BEFORE loadCSS/loadScript:`, typeof Swiper !== 'undefined', debugTime());
-
     // Load Swiper library (will skip if already loaded from head.html)
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][cards.js] After loadCSS swiper`, debugTime());
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][cards.js] After loadScript swiper, Swiper defined:`, typeof Swiper !== 'undefined', debugTime());
 
     // Wait for Swiper to be available (script may need time to execute)
     const waitForSwiper = () => new Promise((resolve) => {
       if (typeof Swiper !== 'undefined') {
-        // eslint-disable-next-line no-console
-        console.log(`[CLS-DEBUG][cards.js] Swiper ALREADY available, no wait needed`, debugTime());
         resolve();
       } else {
-        // eslint-disable-next-line no-console
-        console.log(`[CLS-DEBUG][cards.js] Swiper NOT available, starting poll...`, debugTime());
         const checkInterval = setInterval(() => {
           if (typeof Swiper !== 'undefined') {
-            // eslint-disable-next-line no-console
-            console.log(`[CLS-DEBUG][cards.js] Swiper became available after poll`, debugTime());
             clearInterval(checkInterval);
             resolve();
           }
         }, 10);
         // Timeout after 2 seconds
         setTimeout(() => {
-          // eslint-disable-next-line no-console
-          console.log(`[CLS-DEBUG][cards.js] Swiper poll TIMEOUT`, debugTime());
           clearInterval(checkInterval);
           resolve();
         }, 2000);
       }
     });
     await waitForSwiper();
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][cards.js] Adding .swiper class to block`, debugTime());
 
     // Add Swiper classes
     block.classList.add('swiper');
@@ -1190,7 +1162,4 @@ export default async function decorate(block) {
     const schema = generateTestimonialSchema(block);
     injectSchema(schema);
   }
-
-  // eslint-disable-next-line no-console
-  console.log(`[CLS-DEBUG][cards.js] decorate() COMPLETE for .${blockClasses}`, debugTime());
 }

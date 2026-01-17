@@ -549,30 +549,19 @@ function buildBlock(blockName, content) {
  */
 async function loadBlock(block) {
   const status = block.dataset.blockStatus;
-  const debugTime = () => performance.now().toFixed(2) + 'ms';
   if (status !== 'loading' && status !== 'loaded') {
     block.dataset.blockStatus = 'loading';
     const { blockName } = block.dataset;
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][aem.js] loadBlock START: ${blockName}`, debugTime());
     try {
-      // eslint-disable-next-line no-console
-      console.log(`[CLS-DEBUG][aem.js] Loading CSS for ${blockName}`, debugTime());
       const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
       const decorationComplete = new Promise((resolve) => {
         (async () => {
           try {
-            // eslint-disable-next-line no-console
-            console.log(`[CLS-DEBUG][aem.js] Importing JS for ${blockName}`, debugTime());
             const mod = await import(
               `${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`
             );
             if (mod.default) {
-              // eslint-disable-next-line no-console
-              console.log(`[CLS-DEBUG][aem.js] Calling decorate() for ${blockName}`, debugTime());
               await mod.default(block);
-              // eslint-disable-next-line no-console
-              console.log(`[CLS-DEBUG][aem.js] decorate() DONE for ${blockName}`, debugTime());
             }
           } catch (error) {
             // eslint-disable-next-line no-console
@@ -586,8 +575,6 @@ async function loadBlock(block) {
       // eslint-disable-next-line no-console
       console.log(`failed to load block ${blockName}`, error);
     }
-    // eslint-disable-next-line no-console
-    console.log(`[CLS-DEBUG][aem.js] Setting blockStatus=loaded for ${blockName}`, debugTime());
     block.dataset.blockStatus = 'loaded';
   }
   return block;
