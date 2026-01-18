@@ -2,8 +2,9 @@ import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../../scripts/scripts.js';
 import { parseCategoryNavBlock, buildDropdown } from '../category-nav/category-nav.js';
 
-// media query match that indicates mobile/tablet width
+// media query matches for different viewport sizes
 const isDesktop = window.matchMedia('(min-width: 900px)');
+const isLargeDesktop = window.matchMedia('(min-width: 1200px)');
 
 // Cache for dynamically imported block modules (performance optimization)
 const blockModuleCache = new Map();
@@ -905,7 +906,43 @@ export default async function decorate(block) {
   }
 
   /**
-   * Desktop: Hover shows dropdown, click on title navigates to page
+   * Tablet (900-1200px): Hover shows underline only, click expands dropdown
+   */
+  function setupTabletNavigation(navSection) {
+    const titleLink = navSection.querySelector('.nav-title-link');
+    if (!titleLink) return;
+
+    // Click to expand dropdown (prevent navigation)
+    titleLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      // Load content if not already loaded
+      await loadNavFragmentContent(navSection, false);
+      
+      // Toggle this section
+      const isExpanded = navSection.getAttribute('aria-expanded') === 'true';
+      
+      if (isExpanded) {
+        navSection.setAttribute('aria-expanded', 'false');
+        const allInnerSections = navSection.querySelectorAll('.nav-fragment-section');
+        allInnerSections.forEach((section) => {
+          section.setAttribute('aria-expanded', 'false');
+        });
+      } else {
+        toggleAllNavSections(navSections);
+        navSection.setAttribute('aria-expanded', 'true');
+        
+        // Auto-expand first section in the dropdown
+        const firstSection = navSection.querySelector('.nav-fragment-section:first-child');
+        if (firstSection) {
+          firstSection.setAttribute('aria-expanded', 'true');
+        }
+      }
+    });
+  }
+
+  /**
+   * Desktop (1200px+): Hover shows dropdown, click on title navigates to page
    */
   function setupDesktopNavigation(navSection) {
     // Load and show dropdown on hover
@@ -1064,9 +1101,14 @@ export default async function decorate(block) {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
     if (!fragmentPath) return;
 
-    if (isDesktop.matches) {
+    if (isLargeDesktop.matches) {
+      // Desktop (1200px+): Hover to expand, click to navigate
       setupDesktopNavigation(navSection);
+    } else if (isDesktop.matches) {
+      // Tablet (900-1200px): Click to expand, hover for underline only
+      setupTabletNavigation(navSection);
     } else {
+      // Mobile (<900px): Click to expand accordion
       setupMobileNavigation(navSection);
     }
   });
