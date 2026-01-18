@@ -395,18 +395,23 @@ export async function createModal(contentNodes, options = {}) {
     // Add decoration images as DOM elements (top-right and bottom-left)
     // These go INSIDE the dialog to be in the top layer, but use fixed positioning
     if (decorationImage) {
+      const decorWrapper = document.createElement('div');
+      decorWrapper.classList.add('modal-decoration');
+
       const decorTopRight = document.createElement('img');
       decorTopRight.src = decorationImage;
       decorTopRight.alt = '';
-      decorTopRight.classList.add('modal-decoration', 'modal-decoration-top-right');
+      decorTopRight.classList.add('modal-decoration-top-right');
 
       const decorBottomLeft = document.createElement('img');
       decorBottomLeft.src = decorationImage;
       decorBottomLeft.alt = '';
-      decorBottomLeft.classList.add('modal-decoration', 'modal-decoration-bottom-left');
+      decorBottomLeft.classList.add('modal-decoration-bottom-left');
 
-      // Store decorations to append inside dialog later
-      pageBackground.decorations = [decorTopRight, decorBottomLeft];
+      decorWrapper.append(decorTopRight, decorBottomLeft);
+
+      // Store decoration wrapper to append inside dialog later
+      pageBackground.decorationWrapper = decorWrapper;
     }
   }
 
@@ -418,12 +423,11 @@ export async function createModal(contentNodes, options = {}) {
 
   block.innerHTML = '';
   if (pageBackground) {
-    block.append(pageBackground);
-    // Append decorations inside dialog (so they're in top layer and visible)
-    // They use fixed positioning with calc() to appear at viewport corners
-    if (pageBackground.decorations) {
-      pageBackground.decorations.forEach((decor) => dialog.append(decor));
+    // Append decorations to page background (between backdrop and dialog)
+    if (pageBackground.decorationWrapper) {
+      pageBackground.append(pageBackground.decorationWrapper);
     }
+    block.append(pageBackground);
   }
   block.append(dialog);
 
