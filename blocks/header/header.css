@@ -986,13 +986,17 @@ header nav .nav-sections .nav-h4-section-content p > a {
     grid-template-columns: repeat(var(--grid-size), 1fr);
   }
 
-  .section:first-child .cards .grid-cards {
+  .section#cscards {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .section#cscards .cards .grid-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 
-  .section:first-child .cards .grid-cards li {
+  .section#cscards .cards .grid-cards li {
     width: 100%;
     padding: var(--spacing-xs);
     background: var(--gray-200);
@@ -1890,13 +1894,13 @@ header nav .nav-sections .nav-h4-section-content p > a {
       align-self: start; /* Aligns to top */
     }
   
-    .section:first-child .cards .grid-cards {
+    .section#cscards .cards .grid-cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
   }
   
-    .section:first-child .cards .grid-cards li {
+    .section#cscards .cards .grid-cards li {
       display: flex;
       text-align: left;
       gap: var(--spacing-xs);
