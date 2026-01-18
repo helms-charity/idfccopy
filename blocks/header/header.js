@@ -281,13 +281,14 @@ export default async function decorate(block) {
     }
   }
 
-  // Add search bar with icon (created programmatically)
+  // Add search bar with icon and input field (created programmatically)
   if (searchP) {
     // Extract just the text content from the authored paragraph
     const searchText = searchP.textContent.trim();
-    // Create new search element with icon
+    // Create new search element with icon and input
     const searchElement = document.createElement('p');
-    searchElement.innerHTML = `<span class="icon icon-search"></span><strong>${searchText}</strong>`;
+    searchElement.id = 'search-box';
+    searchElement.innerHTML = `<span class="icon icon-search"></span><input type="text" placeholder="${searchText}" class="search-input" />`;
     navToolsWrapper.appendChild(searchElement);
   }
 
@@ -335,6 +336,7 @@ export default async function decorate(block) {
 
       // Add login icon to the last <li> (authoring contract: last item is always Login)
       if (loginLi) {
+        loginLi.id = 'login-button';
         const existingIcon = loginLi.querySelector('.icon-login_header');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
@@ -447,6 +449,184 @@ export default async function decorate(block) {
         && !clickedMobileOdometer;
       if (!isDesktop.matches && isOutsideClick) {
         closeDropdown();
+      }
+    });
+  }
+
+  // Search dropdown
+  const searchBox = navToolsWrapper.querySelector('#search-box');
+  if (searchBox) {
+    const searchDropdown = document.createElement('div');
+    searchDropdown.className = 'search-dropdown';
+    document.body.appendChild(searchDropdown);
+
+    // Create invisible bridge element to keep dropdown open when moving mouse
+    const searchBridge = document.createElement('div');
+    searchBridge.className = 'search-dropdown-bridge';
+    document.body.appendChild(searchBridge);
+
+    let searchLoaded = false;
+    let searchCloseTimeout = null;
+
+    const openSearchDropdown = async () => {
+      clearTimeout(searchCloseTimeout);
+      if (!searchLoaded) {
+        const searchFragment = await loadFragment('/fragments/search-dropdown');
+        if (searchFragment) searchDropdown.append(...searchFragment.childNodes);
+        searchLoaded = true;
+      }
+      searchDropdown.classList.add('open');
+      searchBridge.classList.add('open');
+    };
+
+    const closeSearchDropdown = () => {
+      searchDropdown.classList.remove('open');
+      searchBridge.classList.remove('open');
+    };
+
+    const scheduleSearchClose = () => {
+      clearTimeout(searchCloseTimeout);
+      searchCloseTimeout = setTimeout(closeSearchDropdown, 200);
+    };
+
+    // Click to open (on the search box container, not just the input)
+    searchBox.addEventListener('click', () => {
+      openSearchDropdown();
+    });
+
+    // Keep open when mouse enters dropdown or bridge
+    searchDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(searchCloseTimeout);
+    });
+
+    searchBridge.addEventListener('mouseenter', () => {
+      clearTimeout(searchCloseTimeout);
+    });
+
+    // Close when mouse leaves dropdown (not going to search box or bridge)
+    searchDropdown.addEventListener('mouseleave', (e) => {
+      if (!searchBox.contains(e.relatedTarget) && !searchBridge.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close when mouse leaves bridge (not going to search box or dropdown)
+    searchBridge.addEventListener('mouseleave', (e) => {
+      if (!searchBox.contains(e.relatedTarget) && !searchDropdown.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close when mouse leaves search box (not going to dropdown or bridge)
+    searchBox.addEventListener('mouseleave', (e) => {
+      if (!searchDropdown.contains(e.relatedTarget) && !searchBridge.contains(e.relatedTarget)) {
+        scheduleSearchClose();
+      }
+    });
+
+    // Close on click outside (header or below modal)
+    document.addEventListener('click', (e) => {
+      const isOutsideClick = !searchDropdown.contains(e.target)
+        && !searchBox.contains(e.target)
+        && !searchBridge.contains(e.target);
+      if (isOutsideClick && searchDropdown.classList.contains('open')) {
+        closeSearchDropdown();
+      }
+    });
+  }
+
+  // Login dropdown (reusing search dropdown pattern)
+  const loginButton = navToolsWrapper.querySelector('#login-button');
+  if (loginButton) {
+    const loginDropdown = document.createElement('div');
+    loginDropdown.className = 'login-dropdown';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'login-close-btn';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.setAttribute('aria-label', 'Close');
+    loginDropdown.appendChild(closeBtn);
+    
+    document.body.appendChild(loginDropdown);
+
+    const loginBridge = document.createElement('div');
+    loginBridge.className = 'login-dropdown-bridge';
+    document.body.appendChild(loginBridge);
+
+    let loginLoaded = false;
+    let loginCloseTimeout = null;
+
+    const openLoginDropdown = async () => {
+      clearTimeout(loginCloseTimeout);
+      if (!loginLoaded) {
+        const loginFragment = await loadFragment('/fragments/login');
+        if (loginFragment) loginDropdown.append(...loginFragment.childNodes);
+        loginLoaded = true;
+      }
+      loginDropdown.classList.add('open');
+      loginBridge.classList.add('open');
+    };
+
+    const closeLoginDropdown = () => {
+      loginDropdown.classList.remove('open');
+      loginBridge.classList.remove('open');
+    };
+
+    const scheduleLoginClose = () => {
+      clearTimeout(loginCloseTimeout);
+      loginCloseTimeout = setTimeout(closeLoginDropdown, 200);
+    };
+
+    // Desktop: hover behavior
+    loginButton.addEventListener('mouseenter', () => {
+      if (isDesktop.matches) openLoginDropdown();
+    });
+
+    loginDropdown.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    loginBridge.addEventListener('mouseenter', () => {
+      clearTimeout(loginCloseTimeout);
+    });
+
+    loginDropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginButton.contains(e.relatedTarget)
+        && !loginBridge.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    loginBridge.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginButton.contains(e.relatedTarget)
+        && !loginDropdown.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    loginButton.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !loginDropdown.contains(e.relatedTarget)
+        && !loginBridge.contains(e.relatedTarget)) {
+        scheduleLoginClose();
+      }
+    });
+
+    // Mobile: click behavior
+    loginButton.addEventListener('click', () => {
+      if (!isDesktop.matches) openLoginDropdown();
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLoginDropdown();
+    });
+
+    document.addEventListener('click', (e) => {
+      const isOutsideClick = !loginDropdown.contains(e.target)
+        && !loginButton.contains(e.target)
+        && !loginBridge.contains(e.target);
+      if (isOutsideClick && loginDropdown.classList.contains('open')) {
+        closeLoginDropdown();
       }
     });
   }

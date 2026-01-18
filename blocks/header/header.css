@@ -838,6 +838,12 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-c
   color: #353535;
 }
 
+/* Mobile: Search input in expanded state */
+header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-child .search-input {
+  flex: 1;
+  font-size: 14px;
+}
+
 /* Mobile: Show all UL items when expanded */
 header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
   display: none;
@@ -1797,6 +1803,13 @@ header nav .nav-sections .nav-h4-section-content p > a {
     white-space: nowrap;
   }
 
+  .nav-tools .default-content-wrapper>p:first-child .search-input {
+    margin-left: 8px;
+    color: #353535;
+    font-weight: 400;
+    flex: 1;
+  }
+
   .nav-tools .default-content-wrapper .icon-search {
     width: 20px;
     height: 20px;
@@ -2035,5 +2048,161 @@ header nav .nav-sections .nav-h4-section-content p > a {
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: 18px;
     margin: 0 0 10px;
+  }
+}
+
+/* Search Dropdown */
+.search-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background-color: #f6f6f6;
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: 1042px;
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+}
+
+.search-dropdown.open {
+  display: block;
+}
+
+/* Center the main content sections inside dropdown, but not nested items */
+.search-dropdown > .section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 70px;
+}
+
+/* Invisible bridge to keep dropdown open when moving mouse from search box */
+.search-dropdown-bridge {
+  position: fixed;
+  top: calc(var(--nav-height) - 20px);
+  left: 0;
+  width: 100vw;
+  height: 0;
+  z-index: 1002;
+  display: none;
+}
+
+.search-dropdown-bridge.open {
+  display: block;
+  height: 40px;
+}
+
+/* Search box input styling */
+#search-box {
+  cursor: pointer;
+}
+
+#search-box .search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: #353535;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#search-box .search-input::placeholder {
+  color: #353535;
+  font-weight: 400;
+}
+
+/* Mobile: Search input in expanded nav */
+header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
+  flex: 1;
+}
+
+@media (width >= 900px) {
+  .search-dropdown {
+    top: var(--nav-height);
+  }
+
+  #search-box .search-input {
+    min-width: 120px;
+  }
+}
+
+/* Login Dropdown */
+.login-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background: linear-gradient(180deg, #511211 0%, #6b1a19 50%, #511211 100%);
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: 1042px;
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+  color: #fff;
+}
+
+.login-dropdown.open {
+  display: block;
+}
+
+.login-dropdown > .section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 70px;
+}
+
+.login-dropdown img[src*="loginPhone.png"],
+.login-dropdown img[src*="loginPhone"] {
+  max-width: 660px !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.login-close-btn {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+
+.login-dropdown-bridge {
+  position: fixed;
+  top: calc(var(--nav-height) - 20px);
+  left: 0;
+  width: 100vw;
+  height: 0;
+  z-index: 1002;
+  display: none;
+}
+
+.login-dropdown-bridge.open {
+  display: block;
+  height: 40px;
+}
+
+#login-button {
+  cursor: pointer;
+}
+
+@media (width < 900px) {
+  .login-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
