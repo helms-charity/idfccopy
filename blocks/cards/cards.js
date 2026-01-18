@@ -738,7 +738,6 @@ export default async function decorate(block) {
   const isRelatedSearch = classList.contains('related-search');
   const isExperienceLife = classList.contains('experience-life');
   const isBlogPosts = classList.contains('blog-posts');
-  const isEarnRewards = classList.contains('earn-rewards');
   const isJoiningPerks = classList.contains('joining-perks');
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
@@ -1093,10 +1092,10 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
     }
   } else if (
-    !isTestimonial && !isImportantDocuments && !isRelatedSearch
-    && !isEarnRewards && !isJoiningPerks
+    supportsSemanticElements
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
+    // WHERE IS THIS USED? -- Charity
     const maxVisible = 3;
 
     const isMobile = () => window.innerWidth <= 768;
