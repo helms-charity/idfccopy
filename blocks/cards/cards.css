@@ -85,7 +85,7 @@
 }
 
 .cards .benefit-cards .cards-card-body p u {
-  color: #1c1c1c;
+  color: var(--text-color);
 }
 
 /* CLICKABLE CARD STYLES */
@@ -1093,25 +1093,10 @@
   margin: 0 auto;
 }
 
-.cards.blog-posts .blog-post-card .cards-card-body .button-container a,
-.cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary {
-  display: inline-flex;
-  align-items: center;
-  background: var(--dark-red-color);
-  color: var(--white);
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  font-weight: 700;
-  padding: 10px 30px;
-  border-radius: 36px;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-  margin: 24px auto 0;
-}
-
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary:hover {
   background: #7a151b;
   text-decoration: none;
+  color: var(--btn-color-white);
 }
 
 .cards.blog-posts .blog-post-card .cards-card-body .button-container .icon-arrow-right-white {
