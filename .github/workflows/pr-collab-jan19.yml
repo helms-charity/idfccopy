@@ -4,6 +4,10 @@ name: PR Collaboration Snapshot (Jan 1–19, 2026)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   pr_collab_snapshot:
     runs-on: ubuntu-latest
@@ -15,40 +19,61 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Uses GitHub Search qualifiers: is:pr + created:DATE..DATE
           Q='repo:aemsites/idfc is:pr created:2026-01-01..2026-01-19'
           curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/search/issues?q=$(echo "$Q" | sed 's/ /+/g')&per_page=100" \
             > prs.json
 
-      - name: Enrich with reviews/comments and compute metrics
+      - name: Enrich with reviews/comments and compute core PR metrics
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
           jq -r '.items[].number' prs.json > pr_numbers.txt
 
+          # CSV of per-PR metrics
           echo "pr_number,created_at,merged_at,time_to_first_review_hours,time_to_merge_hours,reviewers_count,comments_count" > metrics.csv
+          # Review events (reviewer + state + submitted_at)
+          echo -e "pr_number\treviewer\tstate\tsubmitted_at" > reviews.tsv
+          # Inline review comments (code review comments on diffs)
+          echo -e "pr_number\treviewer\tcomment_id\tcreated_at" > review_code_comments.tsv
 
           while read -r PR; do
-            # PR details (includes merged_at via pulls API)
+            ############################################
+            # Core PR details
+            ############################################
             PR_JSON=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
               "https://api.github.com/repos/aemsites/idfc/pulls/${PR}")
             CREATED=$(echo "$PR_JSON" | jq -r '.created_at')
             MERGED_AT=$(echo "$PR_JSON" | jq -r '.merged_at')
 
-            # Reviews & comments
+            ############################################
+            # Reviews (review events: APPROVED / COMMENTED / CHANGES_REQUESTED)
+            ############################################
             REVIEWS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
               "https://api.github.com/repos/aemsites/idfc/pulls/${PR}/reviews")
+
+            ############################################
+            # Issue-level discussion comments on the PR
+            ############################################
             COMMENTS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
               "https://api.github.com/repos/aemsites/idfc/issues/${PR}/comments")
 
-            # first review timestamp (if any)
+            ############################################
+            # Inline code review comments (diff comments)
+            ############################################
+            REVIEW_CODE_COMMENTS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}/comments")
+
+            # First review timestamp (if any)
             FIRST_REVIEW=$(echo "$REVIEWS" | jq -r '.[].submitted_at' | sort | head -n1)
-            # reviewers count (unique logins)
+            # Reviewers count (unique)
             REVIEWERS=$(echo "$REVIEWS" | jq -r '.[].user.login' | sort -u | wc -l)
-            # total issue-discussion comments (not code review comments)
+            # Issue-discussion comments count
             COMMENTS_COUNT=$(echo "$COMMENTS" | jq 'length')
 
-            # compute hour deltas
+            # Time delta helper
             to_hours () { python3 - << 'PY'
 import sys,datetime
 fmt="%Y-%m-%dT%H:%M:%SZ"
@@ -66,9 +91,81 @@ PY
             TTM=$( (echo "$CREATED"; echo "${MERGED_AT:-null}") | paste -sd' ' - | to_hours )
 
             echo "${PR},${CREATED},${MERGED_AT},${TFFR},${TTM},${REVIEWERS},${COMMENTS_COUNT}" >> metrics.csv
+
+            # Append review rows (for reviewer-load aggregation)
+            echo "$REVIEWS" \
+              | jq -r --arg pr "$PR" '.[] | [$pr, .user.login, .state, .submitted_at] | @tsv' \
+              >> reviews.tsv
+
+            # Append inline code review comments (for per-reviewer CRC aggregation)
+            echo "$REVIEW_CODE_COMMENTS" \
+              | jq -r --arg pr "$PR" '.[] | [$pr, .user.login, .id, .created_at] | @tsv' \
+              >> review_code_comments.tsv
           done < pr_numbers.txt
 
-      - name: Summarize stats
+      - name: Build reviewer-load table (incl. code review comments)
+        shell: bash
+        run: |
+          # Prepare header
+          echo "reviewer,prs_reviewed,total_reviews,approvals,changes_requested,comments,other,code_review_comments" > reviewer_load.csv
+
+          # If there are no reviews, still proceed to aggregate code comments
+          if [ -s reviews.tsv ]; then
+            # Aggregate review events into a temp table
+            awk -F'\t' '
+              NR>1 {
+                pr=$1; reviewer=$2; state=$3;
+                total[reviewer]++
+                if (state=="APPROVED") appr[reviewer]++
+                else if (state=="CHANGES_REQUESTED") chg[reviewer]++
+                else if (state=="COMMENTED") comm[reviewer]++
+                else other[reviewer]++
+                key=reviewer "|" pr
+                if (!(key in seen)) { seen[key]=1; uniq[reviewer]++ }
+              }
+              END {
+                for (r in total) {
+                  printf "%s,%d,%d,%d,%d,%d,%d,0\n", \
+                    r, (uniq[r]+0), (total[r]+0), (appr[r]+0), (chg[r]+0), (comm[r]+0), (other[r]+0)
+                }
+              }' reviews.tsv > reviewer_load.tmp
+          else
+            # No review events; create empty tmp
+            : > reviewer_load.tmp
+          fi
+
+          # Aggregate code-review (inline diff) comments per reviewer
+          if [ -s review_code_comments.tsv ]; then
+            awk -F'\t' 'NR>1 {c[$2]++} END {for (r in c) printf "%s,%d\n", r, c[r]}' \
+              review_code_comments.tsv > crc_counts.csv
+          else
+            : > crc_counts.csv
+          fi
+
+          # Merge: load crc counts; fill into reviewer_load.tmp rows; also add reviewers who only left code comments
+          declare -A CRC
+          while IFS=',' read -r r c; do
+            [ -n "$r" ] && CRC["$r"]="$c"
+          done < crc_counts.csv
+
+          declare -A SEEN
+          if [ -s reviewer_load.tmp ]; then
+            while IFS=',' read -r reviewer prs total appr chg comm other crc_placeholder; do
+              comments="${CRC[$reviewer]:-0}"
+              SEEN["$reviewer"]=1
+              echo "$reviewer,$prs,$total,$appr,$chg,$comm,$other,$comments" >> reviewer_load.csv
+            done < reviewer_load.tmp
+          fi
+
+          # Add reviewers who only left inline comments (no review events)
+          for r in "${!CRC[@]}"; do
+            if [ -z "${SEEN[$r]+x}" ]; then
+              echo "$r,0,0,0,0,0,0,${CRC[$r]}" >> reviewer_load.csv
+            fi
+          done
+
+      - name: Summarize stats and append reviewer-load section
+        shell: bash
         run: |
           echo "### PR Collaboration Snapshot (Jan 1–19, 2026)" > REPORT.md
           echo "" >> REPORT.md
@@ -78,13 +175,29 @@ PY
           echo "- **PRs created**: ${TOTAL}" >> REPORT.md
           echo "- **Merged**: ${MERGED}" >> REPORT.md
           echo "- **Still open**: ${OPEN}" >> REPORT.md
-          # medians
+
+          # Medians
           awk -F, 'NR>1 && $4!="" {print $4}' metrics.csv | sort -n > tffr.txt || true
           awk -F, 'NR>1 && $5!="" {print $5}' metrics.csv | sort -n > ttm.txt || true
-          MED_TFFR=$( [ -s tffr.txt ] && awk ' {a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' tffr.txt )
-          MED_TTM=$( [ -s ttm.txt ] && awk ' {a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' ttm.txt )
+          MED_TFFR=$( [ -s tffr.txt ] && awk '{a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' tffr.txt )
+          MED_TTM=$( [ -s ttm.txt ] && awk '{a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' ttm.txt )
           echo "- **Median time to first review**: ${MED_TFFR:-n/a} h" >> REPORT.md
           echo "- **Median time to merge**: ${MED_TTM:-n/a} h" >> REPORT.md
+          echo "" >> REPORT.md
+
+          # Reviewer load (Top 10 by PRs reviewed, then total reviews)
+          if [ -s reviewer_load.csv ]; then
+            echo "#### Reviewer load (Jan 1–19, 2026)" >> REPORT.md
+            echo "" >> REPORT.md
+            echo "| Reviewer | PRs reviewed | Total reviews | Approvals | Changes requested | Comments | Other | Code‑review comments |" >> REPORT.md
+            echo "|---|---:|---:|---:|---:|---:|---:|---:|" >> REPORT.md
+            tail -n +2 reviewer_load.csv \
+              | sort -t, -k2,2nr -k3,3nr \
+              | head -n 10 \
+              | awk -F, '{printf "| %s | %s | %s | %s | %s | %s | %s | %s |\n", $1,$2,$3,$4,$5,$6,$7,$8 }' \
+              >> REPORT.md
+            echo "" >> REPORT.md
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -92,4 +205,7 @@ PY
           name: pr-collab-jan1-19-2026
           path: |
             metrics.csv
+            reviews.tsv
+            review_code_comments.tsv
+            reviewer_load.csv
             REPORT.md
