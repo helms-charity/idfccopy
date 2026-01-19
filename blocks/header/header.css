@@ -37,9 +37,9 @@ header nav[aria-expanded="true"] {
   overflow-y: auto;
   min-height: 100dvh;
   align-content: start;
-  padding: 0 16px 20px;
-  max-width: 90vw;
-  width: 90vw;
+  padding: 0 16px 0;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -1091,6 +1091,252 @@ header nav .nav-sections .nav-h4-section-content p > a {
 }
 } /* end cs-dropdown */
 
+/* Search Dropdown */
+.search-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background-color: #f6f6f6;
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: 1042px;
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+}
+
+.search-dropdown.open {
+  display: block;
+
+  .columns > div {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  a.button.secondary:any-link, button.secondary {
+    font-size: var(--body-font-size-xs);
+    line-height: var(--body-font-size-s);
+    background-color: var(--gray-200);
+    border: 0;
+    font-weight: 400;
+    color: var(--gray);
+  }
+}
+
+/* Center the main content sections inside dropdown, but not nested items */
+.search-dropdown > .section {
+  max-width: 800px;
+  padding: 0 20px;
+
+  .cards.related-search li::after {
+    display: none;
+  }
+
+  .benefit-cards {
+    background: var(--gray-200);
+}
+}
+
+/* Invisible bridge to keep dropdown open when moving mouse from search box */
+.search-dropdown-bridge {
+  position: fixed;
+  top: calc(var(--nav-height) - 20px);
+  left: 0;
+  width: 100vw;
+  height: 0;
+  z-index: 1002;
+  display: none;
+}
+
+.search-dropdown-bridge.open {
+  display: block;
+  height: 40px;
+}
+
+/* Search box input styling */
+#search-box {
+  cursor: pointer;
+}
+
+#search-box .search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: inherit;
+  font-family: inherit;
+  color: #353535;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#search-box .search-input::placeholder {
+  color: #353535;
+  font-weight: 400;
+}
+
+/* Login Dropdown */
+.login-dropdown {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100vw;
+  background: linear-gradient(180deg, #511211 0%, #6b1a19 50%, #511211 100%);
+  z-index: 1001;
+  display: none;
+  overflow-y: auto;
+  max-height: 1042px;
+  transition: all 0.3s ease-out;
+  transform-origin: top;
+}
+
+.login-dropdown.open {
+  display: block;
+
+  h4 {
+    font-size: var(--body-font-size-xs);
+    line-height: 17px;
+    background: linear-gradient(93.81deg, #E9E9E9 0%, #838383 154.51%);
+    background: var(--gradient-silver);
+    background-clip: text;
+    color: transparent;
+  }
+
+  h5 {
+    display: flex;
+    align-items: center;
+    font-size: var(--body-font-size-s);
+    margin: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  span.icon {
+    background: var(--gray-200);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  p {
+    font-size: var(--body-font-size-xxs);
+    line-height: var(--body-font-size-xs);
+  }
+
+  .section {
+  max-width: 1440px;
+  margin: 50px auto 0;
+  width: 90%;
+  border-radius: 24px;
+  padding: 12px;
+
+  .block-content {
+    padding: 20px 24px;
+    border-radius: 20px;
+  }
+
+  .columns {
+    display: none;
+  }
+}
+
+.section.has-bg-images {
+  margin-top: 20px;
+  max-width: 335px;
+
+  h5 {
+    display: none;
+  }
+}
+
+.cards .grid-cards {
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-s);
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.cards .grid-cards li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    text-align: left;
+    gap: var(--spacing-xs);
+    border-bottom: 1px var(--gray-300) solid;
+    padding-bottom: var(--spacing-xs);
+
+    p {
+      color: var(--gray);
+      margin-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+}
+
+.cards .grid-cards li .cards-card-image {
+text-align: center;
+padding-top: 4px;
+
+img {
+  width: 20px;
+  height: 20px;
+}
+}
+
+.cards .grid-cards li .cards-card-body {
+margin: 0;
+}
+
+.cards .card-clickable:hover {
+  box-shadow: none;
+  transform: none;
+} 
+
+.login-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+}
+
+.login-dropdown-bridge {
+  position: fixed;
+  top: calc(var(--nav-height) - 20px);
+  left: 0;
+  width: 100vw;
+  height: 0;
+  z-index: 1002;
+  display: none;
+}
+
+.login-dropdown-bridge.open {
+  display: block;
+  height: 40px;
+}
+
+#login-button {
+  cursor: pointer;
+}
+
+/* Mobile: Search input in expanded nav */
+header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
+  flex: 1;
+}
+
 @media (width >= 900px) {
   /* Header wrapper is now a container for both nav and secondary navbar */
   header .nav-wrapper {
@@ -1931,6 +2177,90 @@ header nav .nav-sections .nav-h4-section-content p > a {
   }
 }
 
+.search-dropdown {
+  top: var(--nav-height);
+}
+
+#search-box .search-input {
+  min-width: 120px;
+}
+
+.login-dropdown.open {
+display: grid;
+grid-template-columns: 
+1fr                                          /* Left margin (flexible) */
+minmax(auto, calc(1200px - 335px - 24px))   /* Left content area */
+335px                                        /* Right content area */
+1fr;   
+grid-template-rows: auto auto;
+gap: 24px;
+
+  .section {
+    width: unset;
+    max-width: 1200px;
+
+    .columns {
+      display: unset;
+    }
+  }
+
+  .grid-2 .block-content {
+    display: unset;
+  }
+
+.login-close-btn {
+  display: none;
+}
+
+.section.cards-container {
+  grid-column: 3;
+  grid-row: 1;
+  max-width: 335px;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.section.has-bg-images {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: unset;
+  flex: 1;
+
+  h4 {
+    font-size: 28px;
+    line-height: 34px;
+    background: linear-gradient(93.81deg, #E9E9E9 0%, #838383 154.51%);
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 8px;
+  }
+
+  h5 {
+    display: unset;
+    font-size: 18px;
+    line-height: 26px;
+    color: #fafafa;
+    opacity: .5;
+    margin-bottom: 0;
+  }
+
+  h5 + p {
+    display: none;
+  }
+
+    &[data-object-position="top left"] > .bg-images img {
+        object-position: bottom left;
+    }
+
+    .columns > div > div {
+      width: 100%;
+      display: flex;
+      gap: 16px;
+    }
+
+}
+}
+}
+
 /* =================================================================
    DESKTOP STYLES (1200px+)
    ================================================================= */
@@ -2048,161 +2378,5 @@ header nav .nav-sections .nav-h4-section-content p > a {
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: 18px;
     margin: 0 0 10px;
-  }
-}
-
-/* Search Dropdown */
-.search-dropdown {
-  position: fixed;
-  top: var(--nav-height);
-  left: 0;
-  width: 100vw;
-  background-color: #f6f6f6;
-  z-index: 1001;
-  display: none;
-  overflow-y: auto;
-  max-height: 1042px;
-  transition: all 0.3s ease-out;
-  transform-origin: top;
-}
-
-.search-dropdown.open {
-  display: block;
-}
-
-/* Center the main content sections inside dropdown, but not nested items */
-.search-dropdown > .section {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 70px;
-}
-
-/* Invisible bridge to keep dropdown open when moving mouse from search box */
-.search-dropdown-bridge {
-  position: fixed;
-  top: calc(var(--nav-height) - 20px);
-  left: 0;
-  width: 100vw;
-  height: 0;
-  z-index: 1002;
-  display: none;
-}
-
-.search-dropdown-bridge.open {
-  display: block;
-  height: 40px;
-}
-
-/* Search box input styling */
-#search-box {
-  cursor: pointer;
-}
-
-#search-box .search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: inherit;
-  font-family: inherit;
-  color: #353535;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-#search-box .search-input::placeholder {
-  color: #353535;
-  font-weight: 400;
-}
-
-/* Mobile: Search input in expanded nav */
-header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
-  flex: 1;
-}
-
-@media (width >= 900px) {
-  .search-dropdown {
-    top: var(--nav-height);
-  }
-
-  #search-box .search-input {
-    min-width: 120px;
-  }
-}
-
-/* Login Dropdown */
-.login-dropdown {
-  position: fixed;
-  top: var(--nav-height);
-  left: 0;
-  width: 100vw;
-  background: linear-gradient(180deg, #511211 0%, #6b1a19 50%, #511211 100%);
-  z-index: 1001;
-  display: none;
-  overflow-y: auto;
-  max-height: 1042px;
-  transition: all 0.3s ease-out;
-  transform-origin: top;
-  color: #fff;
-}
-
-.login-dropdown.open {
-  display: block;
-}
-
-.login-dropdown > .section {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 70px;
-}
-
-.login-dropdown img[src*="loginPhone.png"],
-.login-dropdown img[src*="loginPhone"] {
-  max-width: 660px !important;
-  width: 100% !important;
-  height: auto !important;
-}
-
-.login-close-btn {
-  display: none;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 40px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-  width: 40px;
-  height: 40px;
-  z-index: 10;
-}
-
-.login-dropdown-bridge {
-  position: fixed;
-  top: calc(var(--nav-height) - 20px);
-  left: 0;
-  width: 100vw;
-  height: 0;
-  z-index: 1002;
-  display: none;
-}
-
-.login-dropdown-bridge.open {
-  display: block;
-  height: 40px;
-}
-
-#login-button {
-  cursor: pointer;
-}
-
-@media (width < 900px) {
-  .login-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
