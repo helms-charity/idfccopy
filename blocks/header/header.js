@@ -699,7 +699,7 @@ export default async function decorate(block) {
 
   // Assemble the navigation
   nav.appendChild(navBrand);
-  nav.appendChild(mobileOdometerContainer); // Add mobile odometer
+  nav.appendChild(mobileOdometerContainer);
   nav.appendChild(navSections);
   nav.appendChild(navTools);
 
