@@ -194,7 +194,6 @@ footer .footer>div .section>div {
 .footer>div>div .accordion-wrapper .accordion>div>div:first-child p,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-label p {
   font-size: 14px;
-  font-weight: 700;
   font: 14px "Inter", sans-serif;
   font-weight: 600;
   letter-spacing: 0.6px;
@@ -301,7 +300,6 @@ footer .footer>div .section>div {
   display: flex;
   text-size-adjust: auto;
   position: relative;
-  width: 100%;
   margin: 0 auto;
   flex-direction: column;
   justify-content: space-between;
@@ -335,7 +333,6 @@ footer .footer>div .section>div {
 
 .footer>div>div:nth-child(3) h3 {
   line-height: 1;
-  font-weight: 300;
   font: 24px Inter, sans-serif;
   font-weight: 300;
   margin: 0;

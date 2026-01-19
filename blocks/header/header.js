@@ -351,6 +351,11 @@ export default async function decorate(block) {
 
   navTools.appendChild(navToolsWrapper);
 
+  // Create mobile search icon (replaces CSS ::after pseudo-element)
+  const mobileSearchIcon = document.createElement('span');
+  mobileSearchIcon.classList.add('mobile-search-icon', 'icon', 'icon-search');
+  navTools.appendChild(mobileSearchIcon);
+
   // Decorate icons in nav-tools to add actual icon images
   decorateIcons(navTools);
 
@@ -387,6 +392,82 @@ export default async function decorate(block) {
   // Initialize odometer after DOM is ready
   setTimeout(startOdometerAnimation, 100);
 
+  /**
+   * Creates a dropdown with overlay functionality
+   * @param {Object} options Configuration options
+   * @returns {Object} Dropdown controls and functions
+   */
+  function createDropdown(options) {
+    const {
+      className,
+      overlayClassName,
+      fragmentPath,
+      closeDelay = 100,
+    } = options;
+
+    const dropdown = document.createElement('div');
+    dropdown.className = className;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = `${className.split(' ')[0]}-close-btn`;
+    closeBtn.innerHTML = '&times;';
+    closeBtn.setAttribute('aria-label', 'Close');
+    dropdown.appendChild(closeBtn);
+
+    const overlay = document.createElement('div');
+    overlay.className = overlayClassName;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(dropdown);
+
+    let loaded = false;
+    let closeTimeout = null;
+
+    const openDropdown = async () => {
+      clearTimeout(closeTimeout);
+      if (!loaded && fragmentPath) {
+        const dropdownFragment = await loadFragment(fragmentPath);
+        if (dropdownFragment) dropdown.append(...dropdownFragment.childNodes);
+        loaded = true;
+      }
+      // Only show overlay on mobile
+      if (!isDesktop.matches) {
+        overlay.classList.add('visible');
+      }
+      dropdown.classList.add('open');
+    };
+
+    const closeDropdown = () => {
+      overlay.classList.remove('visible');
+      dropdown.classList.remove('open');
+    };
+
+    const scheduleClose = () => {
+      clearTimeout(closeTimeout);
+      closeTimeout = setTimeout(closeDropdown, closeDelay);
+    };
+
+    // Close button handler
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeDropdown();
+    });
+
+    // Overlay click handler
+    overlay.addEventListener('click', () => {
+      closeDropdown();
+    });
+
+    return {
+      dropdown,
+      overlay,
+      openDropdown,
+      closeDropdown,
+      scheduleClose,
+      clearTimeout: () => clearTimeout(closeTimeout),
+    };
+  }
+
   // Customer service dropdown - shared reference for both desktop and mobile
   let csDropdownOpen = null;
 
@@ -394,74 +475,46 @@ export default async function decorate(block) {
   const odometerEl = navTools.querySelector('.grnt-animation-odometer');
   const odometerLi = odometerEl?.closest('li');
   if (odometerLi) {
-    const dropdown = document.createElement('div');
-    dropdown.className = 'cs-dropdown';
+    const cs = createDropdown({
+      className: 'cs-dropdown',
+      overlayClassName: 'cs-dropdown-overlay',
+      fragmentPath: '/fragments/customer-service-dropdown',
+      closeDelay: 100,
+    });
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'cs-close-btn';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.setAttribute('aria-label', 'Close');
-    dropdown.appendChild(closeBtn);
-
-    document.body.appendChild(dropdown);
-
-    let loaded = false;
-    let closeTimeout = null;
     odometerLi.style.cursor = 'pointer';
-
-    const openDropdown = async () => {
-      clearTimeout(closeTimeout);
-      if (!loaded) {
-        const csFragment = await loadFragment('/fragments/customer-service-dropdown');
-        if (csFragment) dropdown.append(...csFragment.childNodes);
-        loaded = true;
-      }
-      dropdown.classList.add('open');
-    };
-
-    const closeDropdown = () => {
-      dropdown.classList.remove('open');
-    };
-
-    const scheduleClose = () => {
-      clearTimeout(closeTimeout);
-      closeTimeout = setTimeout(closeDropdown, 100);
-    };
 
     // Desktop: hover behavior
     odometerLi.addEventListener('mouseenter', () => {
-      if (isDesktop.matches) openDropdown();
+      if (isDesktop.matches) cs.openDropdown();
     });
-    dropdown.addEventListener('mouseenter', () => {
-      clearTimeout(closeTimeout);
+    cs.dropdown.addEventListener('mouseenter', () => {
+      cs.clearTimeout();
     });
-    dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) scheduleClose();
+    cs.dropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) cs.scheduleClose();
     });
     odometerLi.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !dropdown.contains(e.relatedTarget)) scheduleClose();
+      if (isDesktop.matches && !cs.dropdown.contains(e.relatedTarget)) cs.scheduleClose();
     });
 
     // Store openDropdown function for mobile odometer use
-    csDropdownOpen = openDropdown;
+    csDropdownOpen = cs.openDropdown;
 
-    // Mobile: click behavior, close on click outside
+    // Mobile: click behavior
     odometerLi.addEventListener('click', () => {
-      if (!isDesktop.matches) openDropdown();
+      if (!isDesktop.matches) cs.openDropdown();
     });
 
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeDropdown();
-    });
-
+    // Close on click outside
     document.addEventListener('click', (e) => {
       const clickedMobileOdometer = e.target.closest('.mobile-customer-service-odometer');
-      const isOutsideClick = !dropdown.contains(e.target)
+      const isOutsideClick = !cs.dropdown.contains(e.target)
         && !odometerLi.contains(e.target)
-        && !clickedMobileOdometer;
+        && !clickedMobileOdometer
+        && !cs.overlay.contains(e.target);
       if (!isDesktop.matches && isOutsideClick) {
-        closeDropdown();
+        cs.closeDropdown();
       }
     });
   }
@@ -469,124 +522,100 @@ export default async function decorate(block) {
   // Search dropdown
   const searchBox = navToolsWrapper.querySelector('#search-box');
   if (searchBox) {
-    const searchDropdown = document.createElement('div');
-    searchDropdown.className = 'search-dropdown';
+    const search = createDropdown({
+      className: 'search-dropdown',
+      overlayClassName: 'search-dropdown-overlay',
+      fragmentPath: '/fragments/search-dropdown',
+      closeDelay: 100,
+    });
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'search-close-btn';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.setAttribute('aria-label', 'Close');
-    searchDropdown.appendChild(closeBtn);
-
-    document.body.appendChild(searchDropdown);
-
-    let searchLoaded = false;
-
-    const openSearchDropdown = async () => {
-      if (!searchLoaded) {
-        const searchFragment = await loadFragment('/fragments/search-dropdown');
-        if (searchFragment) searchDropdown.append(...searchFragment.childNodes);
-        searchLoaded = true;
-      }
-      searchDropdown.classList.add('open');
-    };
-
-    const closeSearchDropdown = () => {
-      searchDropdown.classList.remove('open');
-    };
-
-    // Click to open (on the search box container, not just the input)
+    // Click to open
     searchBox.addEventListener('click', () => {
-      openSearchDropdown();
+      search.openDropdown();
     });
 
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeSearchDropdown();
+    // Desktop: keep dropdown open while hovering
+    search.dropdown.addEventListener('mouseenter', () => {
+      search.clearTimeout();
     });
+
+    // Desktop: schedule close when mouse leaves dropdown
+    search.dropdown.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !searchBox.contains(e.relatedTarget)) {
+        search.scheduleClose();
+      }
+    });
+
+    // Desktop: schedule close when mouse leaves search box
+    searchBox.addEventListener('mouseleave', (e) => {
+      if (isDesktop.matches && !search.dropdown.contains(e.relatedTarget)) {
+        search.scheduleClose();
+      }
+    });
+
+    // Mobile search icon click handler
+    const mobileSearchIconEl = navTools.querySelector('.mobile-search-icon');
+    if (mobileSearchIconEl) {
+      mobileSearchIconEl.addEventListener('click', () => {
+        search.openDropdown();
+      });
+    }
 
     // Close on click outside
     document.addEventListener('click', (e) => {
-      const isOutsideClick = !searchDropdown.contains(e.target)
-        && !searchBox.contains(e.target);
-      if (isOutsideClick && searchDropdown.classList.contains('open')) {
-        closeSearchDropdown();
+      const isOutsideClick = !search.dropdown.contains(e.target)
+        && !searchBox.contains(e.target)
+        && !e.target.closest('.mobile-search-icon')
+        && !search.overlay.contains(e.target);
+      if (isOutsideClick && search.dropdown.classList.contains('open')) {
+        search.closeDropdown();
       }
     });
   }
 
-  // Login dropdown (reusing search dropdown pattern)
+  // Login dropdown
   const loginButton = navToolsWrapper.querySelector('#login-button');
   if (loginButton) {
-    const loginDropdown = document.createElement('div');
-    loginDropdown.className = 'login-dropdown';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'login-close-btn';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.setAttribute('aria-label', 'Close');
-    loginDropdown.appendChild(closeBtn);
-
-    document.body.appendChild(loginDropdown);
-
-    let loginLoaded = false;
-    let loginCloseTimeout = null;
-
-    const openLoginDropdown = async () => {
-      clearTimeout(loginCloseTimeout);
-      if (!loginLoaded) {
-        const loginFragment = await loadFragment('/fragments/login');
-        if (loginFragment) loginDropdown.append(...loginFragment.childNodes);
-        loginLoaded = true;
-      }
-      loginDropdown.classList.add('open');
-    };
-
-    const closeLoginDropdown = () => {
-      loginDropdown.classList.remove('open');
-    };
-
-    const scheduleLoginClose = () => {
-      clearTimeout(loginCloseTimeout);
-      loginCloseTimeout = setTimeout(closeLoginDropdown, 200);
-    };
+    const login = createDropdown({
+      className: 'login-dropdown',
+      overlayClassName: 'login-dropdown-overlay',
+      fragmentPath: '/fragments/login',
+      closeDelay: 200,
+    });
 
     // Desktop: hover behavior
     loginButton.addEventListener('mouseenter', () => {
-      if (isDesktop.matches) openLoginDropdown();
+      if (isDesktop.matches) login.openDropdown();
     });
 
-    loginDropdown.addEventListener('mouseenter', () => {
-      clearTimeout(loginCloseTimeout);
+    login.dropdown.addEventListener('mouseenter', () => {
+      login.clearTimeout();
     });
 
-    loginDropdown.addEventListener('mouseleave', (e) => {
+    login.dropdown.addEventListener('mouseleave', (e) => {
       if (isDesktop.matches && !loginButton.contains(e.relatedTarget)) {
-        scheduleLoginClose();
+        login.scheduleClose();
       }
     });
 
     loginButton.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !loginDropdown.contains(e.relatedTarget)) {
-        scheduleLoginClose();
+      if (isDesktop.matches && !login.dropdown.contains(e.relatedTarget)) {
+        login.scheduleClose();
       }
     });
 
     // Mobile: click behavior
     loginButton.addEventListener('click', () => {
-      if (!isDesktop.matches) openLoginDropdown();
+      if (!isDesktop.matches) login.openDropdown();
     });
 
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeLoginDropdown();
-    });
-
+    // Close on click outside
     document.addEventListener('click', (e) => {
-      const isOutsideClick = !loginDropdown.contains(e.target)
-        && !loginButton.contains(e.target);
-      if (isOutsideClick && loginDropdown.classList.contains('open')) {
-        closeLoginDropdown();
+      const isOutsideClick = !login.dropdown.contains(e.target)
+        && !loginButton.contains(e.target)
+        && !login.overlay.contains(e.target);
+      if (isOutsideClick && login.dropdown.classList.contains('open')) {
+        login.closeDropdown();
       }
     });
   }
