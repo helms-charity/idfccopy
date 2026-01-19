@@ -72,12 +72,6 @@ export default function decorate(block) {
   dobLabel.setAttribute('for', 'date-of-birth');
   dobLabel.innerHTML = 'Date of Birth <span class="required">*</span>';
   dobLabel.className = 'dob-label';
-
-  const dobErrorLabel = document.createElement('label');
-  dobErrorLabel.setAttribute('for', 'date-of-birth');
-  dobErrorLabel.innerHTML = 'Kindly enter a valid date';
-  dobErrorLabel.className = 'dob-error-label';
-  dobErrorLabel.style.display = 'none';
   
   const dobInput = document.createElement('input');
   dobInput.type = 'text';
@@ -96,7 +90,6 @@ export default function decorate(block) {
   
   dobGroup.appendChild(dobInput);
   dobGroup.appendChild(dobLabel);
-  dobGroup.appendChild(dobErrorLabel);
   
   // Create Mobile form group
   const mobileGroup = document.createElement('div');
@@ -181,11 +174,6 @@ function initializeFormWithElements(modal, dobInput, mobileInput, form, submitBu
 
 // Validate form field on blur with element references
 function setupFieldValidationWithElements(dobField, mobileField) {
-  
-  if (!mobileField || !dobField) {
-    console.error('setupFieldValidation: mobileField or dobField is null');
-    return;
-  }
     
   // Mobile number validation on blur
   mobileField.addEventListener('blur', function() {
@@ -220,18 +208,10 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   dobField.addEventListener('blur', function() {
     const dob = this.value.trim();
     const validation = formValidation.validateDOB(dob);
-    const dobLabel = document.querySelector('.dob-label');
-    const dobErrorLabel = document.querySelector('.dob-error-label');
-    
+
     if (!validation.valid) {
-      // Hide normal label and show error label
-      if (dobLabel) dobLabel.style.display = 'none';
-      if (dobErrorLabel) dobErrorLabel.style.display = 'block';
       showError('date-of-birth', validation.message);
     } else {
-      // Show normal label and hide error label
-      if (dobLabel) dobLabel.style.display = 'block';
-      if (dobErrorLabel) dobErrorLabel.style.display = 'none';
       clearError('date-of-birth');
     }
   });
@@ -258,7 +238,6 @@ function setupFieldValidationWithElements(dobField, mobileField) {
     const charCode = (e.which) ? e.which : e.keyCode;
     // Allow numbers (48-57) and forward slash (47)
     if (charCode !== 47 && (charCode < 48 || charCode > 57)) {
-        console.log('keypress prevented', charCode);
       e.preventDefault();
       return false;
     }
@@ -490,6 +469,7 @@ function showError(fieldId, message) {
     newErrorDiv.textContent = message;
     field.parentNode.insertBefore(newErrorDiv, field.nextSibling);
   }
+  errorDiv.nextSibling.style.display = 'none';
 }
 
 // Clear error message
@@ -502,6 +482,7 @@ function clearError(fieldId) {
   if (errorDiv && errorDiv.classList.contains('error-message')) {
     errorDiv.style.display = 'none';
   }
+  errorDiv.nextSibling.style.display = 'block';
 }
 
 // Initialize form
