@@ -1,83 +1,13 @@
 
-name: PR Collaboration Snapshot (Jan 1–19, 2026)
+name: Test Workflow
 
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: read
-
 jobs:
-  pr_collab_snapshot:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-
-      - name: Install jq
-        shell: bash
+      - name: Say hello
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Fetch PRs created in window (Jan 1–19, 2026)
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          Q="repo:aemsites/idfc is:pr created:2026-01-01..2026-01-19"
-          ENCODED=$(echo "$Q" | sed 's/ /+/g')
-
-          curl -s \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            "https://api.github.com/search/issues?q=${ENCODED}&per_page=100" \
-            > prs.json
-
-      - name: Enrich with reviews/comments and compute core PR metrics
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          jq -r '.items[].number' prs.json > pr_numbers.txt
-
-          echo "pr_number,created_at,merged_at,time_to_first_review_hours,time_to_merge_hours,reviewers_count,comments_count" > metrics.csv
-          echo -e "pr_number\treviewer\tstate\tsubmitted_at" > reviews.tsv
-          echo -e "pr_number\treviewer\tcomment_id\tcreated_at" > review_code_comments.tsv
-
-          to_hours () {
-            python3 << 'PY'
-import sys, datetime
-fmt="%Y-%m-%dT%H:%M:%SZ"
-data=sys.stdin.read().strip().split()
-if data[0]=="null" or data[1]=="null":
-    print("")
-else:
-    ta=datetime.datetime.strptime(data[0], fmt)
-    tb=datetime.datetime.strptime(data[1], fmt)
-    print(round((tb-ta).total_seconds()/3600,2))
-PY
-          }
-
-          while read -r PR; do
-            PR_JSON=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
-              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}")
-
-            CREATED=$(echo "$PR_JSON" | jq -r '.created_at')
-            MERGED_AT=$(echo "$PR_JSON" | jq -r '.merged_at')
-
-            REVIEWS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
-              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}/reviews")
-
-            COMMENTS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
-              "https://api.github.com/repos/aemsites/idfc/issues/${PR}/comments")
-
-            REVIEW_CODE_COMMENTS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
-              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}/comments")
-
-            FIRST_REVIEW=$(echo "$REVIEWS" | jq -r '.[].submitted_at' | sort | head -n 1)
-            REVIEWERS=$(echo "$REVIEWS" | jq -r '.[].user.login' | sort -u | wc -l)
-            COMMENTS_COUNT=$(echo "$COMMENTS" | jq 'length')
-
-            TFFR=$(echo "$CREATED $FIRST_REVIEW" | to_hours)
-            TTM=$(echo "$CREATED $MERGED_AT" | to_hours)
-
+          echo "Hello world!"
