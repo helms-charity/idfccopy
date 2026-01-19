@@ -24,7 +24,6 @@ const MEDIA_QUERIES = {
   desktop: window.matchMedia('(min-width: 900px)'),
 };
 
-
 /**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
@@ -762,6 +761,23 @@ function buildAutoBlocks(main) {
   }
 }
 
+function decorateLinkedPictures(main) {
+  main.querySelectorAll('p:has(> picture) + p > a').forEach((a) => {
+    const pWithLink = a.parentElement;
+    const pWithPicture = pWithLink.previousElementSibling;
+    const picture = pWithPicture.querySelector('picture');
+
+    // If link text equals the href (plain URL link), wrap the picture
+    if (a.textContent.trim() === a.href) {
+      a.textContent = '';
+      a.append(picture);
+
+      // Optional: remove empty p element
+      pWithPicture.remove();
+    }
+  });
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -776,6 +792,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
+  decorateLinkedPictures(main);
 }
 
 function addOverlayRule(ruleSet, selector, property, value) {

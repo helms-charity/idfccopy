@@ -28,6 +28,7 @@
   --red-800: #6e0a0f;
   --btn-color-red: #902a2b;
   --btn-color-white: white;
+  --gradient-translucent: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.24) 100%);
   --gradient-pearl: linear-gradient(73deg, #C7C6C6 -74.4%, #F1F1F1 23.15%);
   --gradient-upi-steps-red: linear-gradient(165deg, #ca0919 0%, #8C2034 40%, #732C53 80%, #513873 100%);
   --gradient-tabs-upi-link-red: radial-gradient(at top left, #AC2A34 0%, #661E2A 50%, #140F23 100%);
@@ -211,6 +212,10 @@ pre,
 blockquote {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
+}
+
+p.button {
+  margin: 0;
 }
 
 code,
