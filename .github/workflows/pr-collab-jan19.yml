@@ -1,0 +1,95 @@
+
+name: PR Collaboration Snapshot (Jan 1–19, 2026)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  pr_collab_snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Fetch PRs created in window (Jan 1–19, 2026)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Q='repo:aemsites/idfc is:pr created:2026-01-01..2026-01-19'
+          curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://api.github.com/search/issues?q=$(echo "$Q" | sed 's/ /+/g')&per_page=100" \
+            > prs.json
+
+      - name: Enrich with reviews/comments and compute metrics
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          jq -r '.items[].number' prs.json > pr_numbers.txt
+
+          echo "pr_number,created_at,merged_at,time_to_first_review_hours,time_to_merge_hours,reviewers_count,comments_count" > metrics.csv
+
+          while read -r PR; do
+            # PR details (includes merged_at via pulls API)
+            PR_JSON=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}")
+            CREATED=$(echo "$PR_JSON" | jq -r '.created_at')
+            MERGED_AT=$(echo "$PR_JSON" | jq -r '.merged_at')
+
+            # Reviews & comments
+            REVIEWS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/aemsites/idfc/pulls/${PR}/reviews")
+            COMMENTS=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/aemsites/idfc/issues/${PR}/comments")
+
+            # first review timestamp (if any)
+            FIRST_REVIEW=$(echo "$REVIEWS" | jq -r '.[].submitted_at' | sort | head -n1)
+            # reviewers count (unique logins)
+            REVIEWERS=$(echo "$REVIEWS" | jq -r '.[].user.login' | sort -u | wc -l)
+            # total issue-discussion comments (not code review comments)
+            COMMENTS_COUNT=$(echo "$COMMENTS" | jq 'length')
+
+            # compute hour deltas
+            to_hours () { python3 - << 'PY'
+import sys,datetime
+fmt="%Y-%m-%dT%H:%M:%SZ"
+a,b=sys.stdin.read().strip().split()
+if a=="null" or b=="null":
+    print("")
+else:
+    ta=datetime.datetime.strptime(a,fmt)
+    tb=datetime.datetime.strptime(b,fmt)
+    print(round((tb-ta).total_seconds()/3600,2))
+PY
+            }
+
+            TFFR=$( (echo "$CREATED"; echo "${FIRST_REVIEW:-null}") | paste -sd' ' - | to_hours )
+            TTM=$( (echo "$CREATED"; echo "${MERGED_AT:-null}") | paste -sd' ' - | to_hours )
+
+            echo "${PR},${CREATED},${MERGED_AT},${TFFR},${TTM},${REVIEWERS},${COMMENTS_COUNT}" >> metrics.csv
+          done < pr_numbers.txt
+
+      - name: Summarize stats
+        run: |
+          echo "### PR Collaboration Snapshot (Jan 1–19, 2026)" > REPORT.md
+          echo "" >> REPORT.md
+          TOTAL=$(tail -n +2 metrics.csv | wc -l | xargs)
+          MERGED=$(tail -n +2 metrics.csv | awk -F, 'NF{ if ($3!="") c++ } END{print c+0}')
+          OPEN=$((TOTAL-MERGED))
+          echo "- **PRs created**: ${TOTAL}" >> REPORT.md
+          echo "- **Merged**: ${MERGED}" >> REPORT.md
+          echo "- **Still open**: ${OPEN}" >> REPORT.md
+          # medians
+          awk -F, 'NR>1 && $4!="" {print $4}' metrics.csv | sort -n > tffr.txt || true
+          awk -F, 'NR>1 && $5!="" {print $5}' metrics.csv | sort -n > ttm.txt || true
+          MED_TFFR=$( [ -s tffr.txt ] && awk ' {a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' tffr.txt )
+          MED_TTM=$( [ -s ttm.txt ] && awk ' {a[NR]=$1} END{ if (NR==0) print ""; else if (NR%2){print a[(NR+1)/2]} else {print (a[NR/2]+a[NR/2+1])/2} }' ttm.txt )
+          echo "- **Median time to first review**: ${MED_TFFR:-n/a} h" >> REPORT.md
+          echo "- **Median time to merge**: ${MED_TTM:-n/a} h" >> REPORT.md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-collab-jan1-19-2026
+          path: |
+            metrics.csv
+            REPORT.md
