@@ -141,11 +141,16 @@
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
+  background-color: #000; /* Start with black to prevent white flash on dark-themed pages */
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
   line-height: 1.6;
+}
+
+/* Restore default background after page is fully loaded */
+body.page-loaded {
+  background-color: var(--background-color);
 }
 
 body.appear {
@@ -154,6 +159,7 @@ body.appear {
 
 header {
   height: var(--nav-height);
+  background-color: #fff; /* Header always white to prevent black flash on nav */
 }
 
 header .header,
@@ -552,6 +558,57 @@ main img {
 
 .center {
   text-align: center;
+}
+
+/* =================================================================
+   CLS PREVENTION: Hide cards until fully decorated
+   These rules MUST be in styles.css (not cards.css) because styles.css
+   loads before body.appear, while cards.css loads much later.
+   ================================================================= */
+
+/* 1. Hide entire card SECTIONS (not just blocks) until loaded.
+      This prevents section expansion from causing CLS.
+      Use background: #000 to prevent white flash on dark-themed pages. */
+.section.cards-container:not([data-section-status="loaded"]),
+.section.columns-container:not([data-section-status="loaded"]) {
+  visibility: hidden;
+  height: 450px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Ensure all children of hidden sections also have black background */
+.section.cards-container:not([data-section-status="loaded"]) *,
+.section.columns-container:not([data-section-status="loaded"]) * {
+  background: transparent !important;
+}
+
+/* 2. Also hide the cards blocks and wrappers as a fallback.
+      Set background to transparent to inherit parent's black background. */
+.cards:not([data-block-status="loaded"]),
+.cards-wrapper:has(.cards:not([data-block-status="loaded"])),
+.columns-wrapper,
+.cards-wrapper {
+  background: transparent;
+}
+
+.cards:not([data-block-status="loaded"]) {
+  visibility: hidden;
+}
+
+/* 3. Once section is loaded, use min-height instead of fixed height.
+      Keep black background to prevent white body showing through during transitions. */
+.section.cards-container[data-section-status="loaded"],
+.section.columns-container[data-section-status="loaded"] {
+  min-height: 450px;
+  height: auto;
+  overflow: visible;
+}
+
+/* 4. Sections with dark-scheme children should have dark backgrounds to prevent flash.
+      This catches cases where inline styles haven't applied yet. */
+.section:has(.dark-scheme) {
+  background-color: #000;
 }
 
 /* sections */
@@ -1006,6 +1063,32 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 }
 
 @media (width >=900px) {
+  /* =================================================================
+     CLS PREVENTION: Desktop-specific layout guards
+     ================================================================= */
+  
+  /* Pre-style cards as 3-column grid before decoration completes.
+     This prevents the 4-column flash and vertical stack states.
+     Uses :not() with comma syntax for modern CSS compliance. */
+  .cards:not(.swiper, [data-block-status="loaded"]) > ul,
+  .cards:not(.swiper, [data-block-status="loaded"]) > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 36px;
+    max-width: 1050px;
+    margin: 0 auto;
+  }
+
+  /* Hide overflow items that would show in 4th+ position */
+  .cards:not(.swiper, [data-block-status="loaded"]) > ul > li:nth-child(n+4),
+  .cards:not(.swiper, [data-block-status="loaded"]) > div > div:nth-child(n+4) {
+    display: none;
+  }
+
+  /* =================================================================
+     END CLS PREVENTION
+     ================================================================= */
+
   :root {
     /* body sizes */
     --body-font-size-m: 18px;
@@ -1029,18 +1112,12 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     height: var(--nav-height); /* nav = 80px */
   }
 
+  /* Reserve space for category-nav BEFORE it loads to prevent CLS.
+     The has-category-nav class is added by scripts.js based on page metadata.
+     This runs BEFORE body.appear, ensuring correct header height from the start. */
+  body.has-category-nav header,
   header:has(.category-nav-wrapper) {
-    height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px * = 144px */
-  }
-
-  /* CLS guard: reserve space for all-about cards before block CSS loads
-  .section.cards-container:has(.cards.all-about-card) {
-    min-height: 1412px;
-  }
-  */
-
-  .cards.all-about-card:not([data-block-status="loaded"]) {
-    visibility: hidden;
+    height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px = 144px */
   }
 
   
@@ -1055,7 +1132,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     background-color: rgb(232 232 232 / 90%);
     border-radius: 20px;
     box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
-    min-height: 28px;
+    min-height: 28px; /* Reserve space to prevent CLS */
     opacity: 0; /* Start hidden */
     visibility: hidden; /* Hide but reserve space until lazy-styles loads */
     transition: opacity 0.5s ease-in, visibility 0.5s; /* Smooth fade-in */

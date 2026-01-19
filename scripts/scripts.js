@@ -893,6 +893,15 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     prepareHeroForCLS(main);
+
+    // Early detection of category-nav to prevent CLS
+    // Check page metadata for category-nav path - if present, add class to body
+    // This allows CSS to set correct header height BEFORE body.appear
+    const categoryNavPath = getMetadata('category-nav');
+    if (categoryNavPath) {
+      document.body.classList.add('has-category-nav');
+    }
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -1355,6 +1364,9 @@ function loadDelayed() {
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
+  // Restore default body background after all sections are loaded
+  // This prevents white flash during initial page load on dark-themed pages
+  document.body.classList.add('page-loaded');
   loadDelayed();
 }
 
