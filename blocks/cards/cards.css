@@ -1,6 +1,9 @@
 /* stylelint-disable no-descending-specificity */
 
-/* BASE STYLING (mobile first) */
+/* =================================================================
+   BASE STYLING (mobile first)
+   Note: CLS prevention rules are in styles.css (loads earlier)
+   ================================================================= */
 .cards > ul {
   list-style: none;
   margin: 0;
@@ -16,8 +19,10 @@
   margin: 0;
 }
 
+/* Note: Do NOT set background-color here - it causes white flash on dark-themed pages.
+   Card variants that need backgrounds should set them explicitly. */
 .cards > ul > li {
-  background-color: var(--background-color);
+  background-color: transparent;
 }
 
 .cards .cards-card-body {
@@ -1264,8 +1269,7 @@
 
 .explore-other-cards .swiper-slide {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
   align-items: center;
   align-content: center;
   height: auto;
@@ -1283,7 +1287,7 @@
   width: 100%;
   border-radius: 20px;
   margin-top: -30px;
-  padding: 55px 20px 40px 20px;
+  padding: 55px 20px 40px;
   background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   z-index: -1;
 }
@@ -1335,6 +1339,7 @@
   justify-content: center;
   gap: 8px;
 }
+
 /*
 .cards.key-benefits .swiper-pagination {
   bottom: 36px;
@@ -1612,74 +1617,8 @@
   text-align: left;
 }
 
-/* Desktop adjustments for All About variant */
+/* Desktop adjustments - CLS prevention rules moved to styles.css */
 @media (width >= 900px) {
-  .section.cards-container .cards:not([data-block-status="loaded"]) {
-    visibility: hidden;
-  }
-
-  /* Reserve desktop space for swipable cards to reduce CLS 
-  .section.cards-container .cards-wrapper {
-    min-height: 520px;
-  }
-  
-
-  .section.cards-container:has(.cards.all-about-card) {
-    min-height: 1900px;
-  }
-
-  .section.cards-container:has(.cards.all-about-card) .cards-wrapper,
-  .cards.all-about-card {
-    min-height: 1810px;
-  }
-
-  .cards.all-about-card > ul {
-    min-height: 1760px;
-  }
-  */
-
-  .cards.all-about-card > ul > li {
-    min-height: 520px;
-    display: grid;
-    grid-template-rows: 240px 1fr;
-  }
-
-  .cards.all-about-card .cards-card-image {
-    min-height: 360px;
-    height: 360px;
-  }
-
-  .cards.all-about-card .cards-card-body {
-    min-height: 280px;
-  }
-/*
-  .section.cards-container:has(.cards[data-swipable="true"]) {
-    min-height: 720px;
-  }
-
-  .section.cards-container:has(.cards[data-swipable="true"]):not([data-section-status="loaded"]) {
-    max-height: 720px;
-    overflow: hidden;
-  }
-  
-  .section.cards-container:has(.cards[data-swipable="true"]) .cards-wrapper {
-    min-height: 590px;
-  }
-
-  .cards[data-swipable="true"] {
-    min-height: 590px;
-  }
-
-  .cards[data-swipable="true"] > ul {
-    min-height: 480px;
-  }
-
-  */
-
-  .cards[data-swipable="true"]:not([data-block-status="loaded"]) {
-    visibility: hidden;
-  }
-
   /* Important Documents Cards - Desktop View (900px+) */
   .cards.important-documents .grid-cards {
     grid-template-columns: repeat(4, 175px);

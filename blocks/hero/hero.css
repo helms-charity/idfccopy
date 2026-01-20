@@ -282,6 +282,7 @@
 @media (width >= 900px) {
   .hero {
     padding: 10px 60px 80px;
+    min-height: 500px; /* Prevent CLS from hero content resizing */
   }
 
   .hero-container .hero-wrapper {

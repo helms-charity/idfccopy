@@ -878,7 +878,7 @@ export default async function decorate(block) {
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (isSwipable) {
-    // Load Swiper library
+    // Load Swiper library (will skip if already loaded from head.html)
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
 
