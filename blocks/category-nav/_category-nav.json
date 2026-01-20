@@ -96,8 +96,20 @@
             {
               "name": "Gradient Silver",
               "value": "gradient-silver"
+            },
+            {
+              "name": "No Background",
+              "value": "no-background"
             }
           ]
+        },
+        {
+          "component": "reference",
+          "name": "image",
+          "label": "Nav Item Image",
+          "multi": false,
+          "description": "Optional Image for the category navigation card item.",
+          "valueType": "string"
         },
         {
           "component": "text",
