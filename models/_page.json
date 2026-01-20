@@ -81,7 +81,7 @@
           "name": "tags",
           "valueType": "string",
           "label": "Keywords/Tags",
-          "rootPath": "/content/cq:tags"
+          "rootPath": "content/cq:tags"
         },
         {
           "component": "text",
