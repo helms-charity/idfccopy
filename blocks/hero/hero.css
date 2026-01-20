@@ -79,11 +79,11 @@
 /* Button groups wrapper */
 .hero .button-groups-wrapper {
   display: flex;
-  flex-direction: row;
-  gap: 16px;
-  margin-bottom: 32px;
+  flex-direction: column;
+  margin-bottom: 40px;
   align-items: center;
   width: 90%;
+  gap: 24px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -92,16 +92,24 @@
 .hero .button-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   text-align: center;
   width: auto;
   flex: 1;
+  align-items: center;
 }
 
 .hero .button-group p {
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.3;
+  text-align: center;
+}
+
+.hero .button-group p sup {
+  font-size: 12px;
+  vertical-align: super;
+  line-height: 0;
 }
 
 /* Button container styling */
@@ -248,14 +256,22 @@
   .hero .button-group {
     width: 67%;
     text-align: left;
+    margin-bottom: 24px;
     flex: 0 0 auto;
   }
 
   .hero .button-group p {
     font-size: 14px;
     line-height: 1.4;
-    margin: 0 auto;
+    margin: 0;
+    text-align: left;
   }
+
+.hero .button-group p sup {
+  font-size: 14px;
+  vertical-align: super;
+  line-height: 0;
+}
 
   .hero .button {
     display: inline-flex;
