@@ -274,90 +274,6 @@ function buildUnifiedNavigation(categoriesData) {
 }
 
 /**
- * Build mobile navigation from all category data
- * Creates separate expandable list items for each category
- * DISABLED - Mobile navigation is now handled by fragment-based nav in header.js
- */
-// function buildMobileNavigation(categoriesData) {
-//   // Return an array of category nav items instead of a single wrapper
-//   const categoryNavItems = [];
-
-//   categoriesData.forEach((category) => {
-//     // Skip categories with no items
-//     if (!category.items || category.items.length === 0) {
-//       return;
-//     }
-
-//     // Create a nav-drop item for this category
-//     const categoryNavItem = document.createElement('li');
-//     categoryNavItem.classList.add('nav-drop', 'mobile-category-nav-item');
-//     categoryNavItem.setAttribute('data-category', category.id);
-//     categoryNavItem.setAttribute('aria-expanded', 'false');
-
-//     // Category title as the clickable header
-//     const categoryTitle = document.createElement('p');
-//     const categoryLink = document.createElement('a');
-//     categoryLink.textContent = category.title;
-//     categoryLink.href = `#${category.id}`;
-//     categoryTitle.appendChild(categoryLink);
-//     categoryNavItem.appendChild(categoryTitle);
-
-//     // Container for cards
-//     const cardsUl = document.createElement('ul');
-//     cardsUl.classList.add('mobile-category-cards-list');
-
-//     // Add all cards for this category
-//     category.items.forEach((card) => {
-//       const cardLi = document.createElement('li');
-//       cardLi.classList.add('mobile-category-card-item');
-
-//       // Clone the card to reuse the same structure
-//       const cardClone = card.cloneNode(true);
-//       cardClone.classList.add('mobile-card');
-
-//       // Add click handler to close menu when card is clicked
-//       const cardLink = cardClone.querySelector('a');
-//       if (cardLink) {
-//         cardLink.addEventListener('click', () => {
-//           const nav = document.getElementById('nav');
-//           if (nav) {
-//             nav.setAttribute('aria-expanded', 'false');
-//             document.body.style.overflowY = '';
-//           }
-//         });
-//       }
-
-//       cardLi.appendChild(cardClone);
-//       cardsUl.appendChild(cardLi);
-//     });
-
-//     categoryNavItem.appendChild(cardsUl);
-
-//     // Add click handler for expand/collapse
-//     const isDesktop = window.matchMedia('(min-width: 900px)');
-//     categoryNavItem.addEventListener('click', (e) => {
-//       // Only handle on mobile
-//       if (isDesktop.matches) return;
-
-//       // Don't toggle if clicking on a card link
-//       if (e.target.closest('.category-nav-card-link')) return;
-
-//       const subUl = categoryNavItem.querySelector('ul');
-//       if (subUl) {
-//         const { scrollHeight } = subUl;
-//         categoryNavItem.style.setProperty('--scroll-height', `${scrollHeight}px`);
-//         const expanded = categoryNavItem.getAttribute('aria-expanded') === 'true';
-//         categoryNavItem.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-//       }
-//     });
-
-//     categoryNavItems.push(categoryNavItem);
-//   });
-
-//   return categoryNavItems;
-// }
-
-/**
  * Smart positioning for dropdown menus to prevent overflow
  * Positions each dropdown to stay within viewport with padding
  * Accounts for responsive dropdown widths based on viewport size
@@ -369,7 +285,7 @@ function positionDropdowns() {
 
   // Determine dropdown width based on viewport (matches CSS media queries)
   let dropdownWidth = 860; // Default width for >= 1200px
-  if (viewportWidth >= 900 && viewportWidth < 1200) {
+  if (viewportWidth >= 990 && viewportWidth < 1200) {
     dropdownWidth = 720; // Medium screens
   }
 

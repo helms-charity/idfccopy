@@ -598,8 +598,8 @@ main img {
 
 /* 3. Once section is loaded, use min-height instead of fixed height.
       Keep black background to prevent white body showing through during transitions. */
-.section.cards-container[data-section-status="loaded"],
-.section.columns-container[data-section-status="loaded"] {
+main not:dialog.section.cards-container[data-section-status="loaded"],
+main not:dialog.section.columns-container[data-section-status="loaded"] {
   min-height: 450px;
   height: auto;
   overflow: visible;

@@ -1458,7 +1458,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   flex: 1;
 }
 
-@media (width >= 900px) {
+@media (width >= 990px) {
   /* Header wrapper is now a container for both nav and secondary navbar */
   header .nav-wrapper {
     position: fixed;
@@ -1891,7 +1891,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: var(--body-font-size-xs);
-    font-weight: 600;
+    font-weight: 400;
     margin: 0 0 8px;
     color: var(--text-color);
     line-height: 1.3;
@@ -2231,6 +2231,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     bottom: auto;
     transform-origin: top;
     display: none;
+    opacity: 0;
   }
 
   .cs-dropdown.open {
@@ -2244,6 +2245,10 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     gap: 24px;
     padding: 30px;
     border-radius: 0;
+    transition: all .5s ease-out;
+    transform: rotateX(0deg);
+    transform-origin: top;
+    opacity: 1;
 
     .cs-dropdown-close-btn {
       display: none;
@@ -2484,7 +2489,7 @@ border-radius: 0;
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover
   {
-    padding: 20px 0 30px 70px;
+    padding: 20px 0 0 70px;
   }
 
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {

@@ -599,9 +599,9 @@
 }
 
 /* Key Benefits Card Base Styling */
-.cards.key-benefits > ul > li,
-.cards.key-benefits .swiper-slide > li,
-.cards.key-benefits .benefit-cards {
+main .cards.key-benefits > ul > li,
+main .cards.key-benefits .swiper-slide > li,
+main .cards.key-benefits .benefit-cards {
   display: flex;
   flex-direction: column;
   background: var(--gradient-blue);
@@ -614,8 +614,8 @@
 }
 
 /* Ensure parent has relative positioning for absolute children */
-.cards.key-benefits .benefit-cards.swiper-slide,
-.cards.key-benefits li.benefit-cards {
+main .cards.key-benefits .benefit-cards.swiper-slide,
+main .cards.key-benefits li.benefit-cards {
   position: relative !important;
 }
 
@@ -1080,7 +1080,6 @@
 /* Blog Post Card - Title */
 .cards.blog-posts .blog-post-card .cards-card-body h3 {
   font-size: var(--body-font-size-m);
-  font-weight: 700;
   line-height: 20px;
   margin: 0 0 6px;
 }
@@ -1388,7 +1387,7 @@
   overflow: hidden;
 }
 
-.cards.joining-perks .swiper-slide {
+main .cards.joining-perks .swiper-slide {
   height: auto;
   min-height: 500px;
   display: flex;

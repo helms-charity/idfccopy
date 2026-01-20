@@ -3,7 +3,7 @@ import { loadFragment } from '../../scripts/scripts.js';
 import { parseCategoryNavBlock, buildDropdown } from '../category-nav/category-nav.js';
 
 // media query matches for different viewport sizes
-const isDesktop = window.matchMedia('(min-width: 900px)');
+const isDesktop = window.matchMedia('(min-width: 990px)');
 const isLargeDesktop = window.matchMedia('(min-width: 1200px)');
 
 // Cache for dynamically imported block modules (performance optimization)
@@ -1075,7 +1075,7 @@ export default async function decorate(block) {
   }
 
   /**
-   * Tablet (900-1200px): Hover shows underline only, click expands dropdown
+   * Tablet (990-1200px): Hover shows underline only, click expands dropdown
    */
   function setupTabletNavigation(navSection) {
     const titleLink = navSection.querySelector('.nav-title-link');
@@ -1274,10 +1274,10 @@ export default async function decorate(block) {
       // Desktop (1200px+): Hover to expand, click to navigate
       setupDesktopNavigation(navSection);
     } else if (isDesktop.matches) {
-      // Tablet (900-1200px): Click to expand, hover for underline only
+      // Tablet (990-1200px): Click to expand, hover for underline only
       setupTabletNavigation(navSection);
     } else {
-      // Mobile (<900px): Click to expand accordion
+      // Mobile (<990px): Click to expand accordion
       setupMobileNavigation(navSection);
     }
   });
