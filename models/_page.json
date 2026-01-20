@@ -4,10 +4,33 @@
       "id": "page-metadata",
       "fields": [
         {
+          "component": "tab",
+          "label": "Page meta + configs",
+          "name": "tab1"
+        },
+        {
           "component": "boolean",
           "name": "breadcrumbs",
           "label": "Show Breadcrumbs",
           "description": "Show the breadcrumbs trail above page content"
+        },
+        {
+          "component": "boolean",
+          "name": "analytics-disable",
+          "label": "Remove analytics",
+          "description": "Toggle on to remove analytics"
+        },
+        {
+          "component": "boolean",
+          "name": "vwo-disable",
+          "label": "Remove VWO",
+          "description": "Toggle on to remove Visual Web Optimizer"
+        },
+        {
+          "component": "text",
+          "name": "enableGTMScript",
+          "label": "GTM ID",
+          "description": "Enter the GTM ID to enable custom GTM on page"
         },
         {
           "component": "text",
@@ -28,6 +51,67 @@
           "name": "jcr:title",
           "valueType": "string",
           "label": "Title"
+        },
+        {
+          "component": "text",
+          "name": "h1Title",
+          "valueType": "string",
+          "label": "H1 Tag Title - hidden from page content"
+        },
+        {
+          "component": "text",
+          "name": "jcr:description",
+          "valueType": "string",
+          "label": "Page Description"
+        },
+        {
+          "component": "reference",
+          "name": "image",
+          "label": "Page image / ogImage",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "canonical",
+          "valueType": "string",
+          "label": "Canonical URL"
+        },
+        {
+          "component": "aem-tag",
+          "name": "tags",
+          "valueType": "string",
+          "label": "Keywords/Tags",
+          "rootPath": "/content/cq:tags"
+        },
+        {
+          "component": "text",
+          "name": "json-ld",
+          "valueType": "string",
+          "label": "custom JSON-LD (must be valid and minified)"
+        },
+        {
+          "component": "text",
+          "name": "date",
+          "valueType": "string",
+          "label": "Date - enter in YYYY-MM-DD format"
+        },
+        {
+          "component": "text",
+          "name": "template",
+          "valueType": "string",
+          "label": "template name - gets added to body class"
+        },
+        {
+          "component": "text",
+          "name": "theme",
+          "valueType": "string",
+          "label": "theme - gets added to body class"
+        },
+        {
+          "component": "text",
+          "name": "body-id",
+          "valueType": "string",
+          "label": "body id"
         },
         {
           "component": "aem-content",
@@ -51,6 +135,59 @@
           "label": "Modal Content",
           "description": "Load this modal content after the modal timer duration",
           "valueType": "string"
+        },
+        {
+          "component": "tab",
+          "label": "SEO + Search",
+          "name": "tab2"
+        },
+        {
+          "component": "text",
+          "name": "knowMore",
+          "valueType": "string",
+          "label": "Know More Link"
+        },
+        {
+          "component": "text",
+          "name": "applyNow",
+          "valueType": "string",
+          "label": "Apply Now Link"
+        },
+        {
+          "component": "text",
+          "name": "download",
+          "valueType": "string",
+          "label": "Download Link"
+        },
+        {
+          "component": "reference",
+          "name": "featureImage",
+          "label": "Search Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "name": "searchCategory",
+          "valueType": "string",
+          "label": "Search category (e.g. 'product')"
+        },
+        {
+          "component": "text",
+          "name": "gtmProductName",
+          "valueType": "string",
+          "label": "GTM Category (e.g. 'Credit Card')"
+        },
+        {
+          "component": "text",
+          "name": "priority",
+          "valueType": "string",
+          "label": "Search priority (e.g. 'p1')"
+        },
+        {
+          "component": "boolean",
+          "name": "recommended",
+          "label": "Is recommended search",
+          "description": "Toggle on to make this search result recommended"
         }
       ]
     }
