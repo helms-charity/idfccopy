@@ -1658,9 +1658,10 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-bottom: 1px solid #f1f1f1;
   }
 
-  /* Full-width dropdown */
+  /* Full-width dropdown - show on hover OR when aria-expanded is true */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li>ul:hover {
+  header nav .nav-sections .default-content-wrapper>ul>li>ul:hover,
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
     display: grid;
     position: fixed;
     left: 0;
@@ -1753,7 +1754,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-radius: 8px;
     min-height: 520px; /* Fill available height */
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns for primary links + first H4 */
+    grid-template-columns: 2fr 1fr; /* Two equal columns for primary links + first H4 */
     gap: 16px;
     grid-auto-flow: dense; /* Allow flexible positioning */
   }
@@ -2098,7 +2099,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* Override first-child special styles for new layout */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover,
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
     padding: 20px 0 0 20px;
     width: 100%;
     background: #fff;
@@ -2111,7 +2113,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
 
 
-  header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover p a,
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] p a {
     color: var(--dark-red-color);
     font-weight: bold;
     cursor: pointer;
@@ -2475,7 +2478,7 @@ border-radius: 0;
     background-color: #f2f2f2;
     min-height: 300px;
   }
-
+ 
   /* Nav fragment section content spans columns 2-3 on desktop */
   header nav .nav-sections .nav-fragment-section-content {
     grid-column: 2 / 4;
@@ -2487,8 +2490,8 @@ border-radius: 0;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover
-  {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover,
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
     padding: 20px 0 0 70px;
   }
 

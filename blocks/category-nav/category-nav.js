@@ -25,7 +25,7 @@ function buildCardFromRow(row) {
 
   // Extract data from cells
   // Order matches _category-nav.json model:
-  // title, link, card-bg, tag1, tag1-bg, tag2, tag2-bg, tag3, tag3-bg
+  // title, link, card-bg, tag1, tag1-bg, tag2, tag2-bg, tag3, tag3-bg, image
   const title = cells[0]?.textContent?.trim() || '';
   const link = cells[1]?.querySelector('a')?.href || cells[1]?.textContent?.trim() || '#';
   const cardBgColor = cells[2]?.textContent?.trim() || '';
@@ -35,6 +35,7 @@ function buildCardFromRow(row) {
   const tag2BgColor = cells[6]?.textContent?.trim() || '';
   const tag3 = cells[7]?.textContent?.trim() || '';
   const tag3BgColor = cells[8]?.textContent?.trim() || '';
+  const imageElement = cells[9]?.querySelector('img') || cells[9]?.querySelector('picture');
 
   // Skip rows without a title - they're likely headers or empty rows
   if (!title) {
@@ -83,9 +84,7 @@ function buildCardFromRow(row) {
     tagsContainer.style.display = 'none';
   }
 
-  cardLink.appendChild(tagsContainer);
-
-  // Card title
+  // Card title (appended first)
   const titleDiv = document.createElement('div');
   titleDiv.classList.add('category-nav-card-title');
   titleDiv.textContent = title;
@@ -95,6 +94,19 @@ function buildCardFromRow(row) {
   titleDiv.appendChild(iconSpan);
 
   cardLink.appendChild(titleDiv);
+
+  // Card image (optional, appended second)
+  if (imageElement) {
+    const imageWrapper = document.createElement('div');
+    imageWrapper.classList.add('category-nav-card-image');
+    // Clone the image/picture element to avoid moving it from the original DOM
+    imageWrapper.appendChild(imageElement.cloneNode(true));
+    cardLink.appendChild(imageWrapper);
+  }
+
+  // Tags container (appended last)
+  cardLink.appendChild(tagsContainer);
+
   card.appendChild(cardLink);
 
   return card;

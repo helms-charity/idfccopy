@@ -1127,15 +1127,15 @@ export default async function decorate(block) {
       }
     });
 
-    // Hide dropdown when mouse leaves
-    navSection.addEventListener('mouseleave', () => {
-      navSection.setAttribute('aria-expanded', 'false');
-      // Reset all inner sections
-      const allInnerSections = navSection.querySelectorAll('.nav-fragment-section');
-      allInnerSections.forEach((section) => {
-        section.setAttribute('aria-expanded', 'false');
-      });
-    });
+    // // Hide dropdown when mouse leaves
+    // navSection.addEventListener('mouseleave', () => {
+    //   navSection.setAttribute('aria-expanded', 'false');
+    //   // Reset all inner sections
+    //   const allInnerSections = navSection.querySelectorAll('.nav-fragment-section');
+    //   allInnerSections.forEach((section) => {
+    //     section.setAttribute('aria-expanded', 'false');
+    //   });
+    // });
 
     // Title link navigates normally (no preventDefault)
     // This allows desktop users to click to go to the parent page
