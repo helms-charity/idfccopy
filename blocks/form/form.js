@@ -1,7 +1,6 @@
 /**
  * Form validation and handling for DOB and Mobile Number
  * Based on IDFC First Bank validation patterns
- * There are many errors in this code, but it's a starting point for a form validation and handling.
  */
 
 // ============================================================================
@@ -10,7 +9,7 @@
 
 // Utility function for sanitizing inputs
 function sanitize(string) {
-  if (typeof (string) == "string") {
+  if (typeof (string) === 'string') {
     const map = {
       '<': '&lt;',
       '>': '&gt;',
@@ -19,9 +18,8 @@ function sanitize(string) {
     };
     const reg = /[<>"']/ig;
     return string.replace(reg, (match) => (map[match]));
-  } else {
-    return string;
   }
+  return string;
 }
 
 // ============================================================================
@@ -31,32 +29,32 @@ function sanitize(string) {
 // Validation functions
 const formValidation = {
   // Validate mobile number (10 digits)
-  validateMobile: function(mobile) {
+  validateMobile(mobile) {
     const mobilePattern = /^[6-9]\d{9}$/;
     if (!mobile || mobile.trim() === '') {
       return {
         valid: false,
-        message: 'Mobile number is required'
+        message: 'Mobile number is required',
       };
     }
     if (!mobilePattern.test(mobile)) {
       return {
         valid: false,
-        message: 'Please enter a valid 10-digit mobile number'
+        message: 'Please enter a valid 10-digit mobile number',
       };
     }
     return {
       valid: true,
-      message: ''
+      message: '',
     };
   },
 
   // Validate date of birth in DD/MM/YYYY format
-  validateDOB: function(dob) {
+  validateDOB(dob) {
     if (!dob || dob.trim() === '') {
       return {
         valid: false,
-        message: 'Date of birth is required'
+        message: 'Date of birth is required',
       };
     }
 
@@ -67,7 +65,7 @@ const formValidation = {
     if (!match) {
       return {
         valid: false,
-        message: 'Please enter date in DD/MM/YYYY format'
+        message: 'Please enter date in DD/MM/YYYY format',
       };
     }
 
@@ -79,14 +77,14 @@ const formValidation = {
     if (month < 1 || month > 12) {
       return {
         valid: false,
-        message: 'Kindly enter a valid date'
+        message: 'Kindly enter a valid date',
       };
     }
 
     if (day < 1 || day > 31) {
       return {
         valid: false,
-        message: 'Kindly enter a valid date'
+        message: 'Kindly enter a valid date',
       };
     }
 
@@ -94,10 +92,14 @@ const formValidation = {
     const dobDate = new Date(year, month - 1, day);
 
     // Check if the date is actually valid (e.g., 31/02/2020 would be invalid)
-    if (dobDate.getDate() !== day || dobDate.getMonth() !== month - 1 || dobDate.getFullYear() !== year) {
+    if (
+      dobDate.getDate() !== day
+      || dobDate.getMonth() !== month - 1
+      || dobDate.getFullYear() !== year
+    ) {
       return {
         valid: false,
-        message: 'Kindly enter a valid date'
+        message: 'Kindly enter a valid date',
       };
     }
 
@@ -108,7 +110,7 @@ const formValidation = {
     if (dobDate >= today) {
       return {
         valid: false,
-        message: 'Date of birth must be earlier than today'
+        message: 'Date of birth must be earlier than today',
       };
     }
 
@@ -122,22 +124,22 @@ const formValidation = {
     if (actualAge < 18) {
       return {
         valid: false,
-        message: 'You must be at least 18 years old'
+        message: 'You must be at least 18 years old',
       };
     }
 
     if (actualAge > 100) {
       return {
         valid: false,
-        message: 'Kindly enter a valid date'
+        message: 'Kindly enter a valid date',
       };
     }
 
     return {
       valid: true,
-      message: ''
+      message: '',
     };
-  }
+  },
 };
 
 // ============================================================================
@@ -200,11 +202,15 @@ function resetForm() {
 
   // Clear error messages
   const errorMessages = document.querySelectorAll('.error-message');
-  errorMessages.forEach(msg => msg.style.display = 'none');
+  errorMessages.forEach((msg) => {
+    msg.style.display = 'none';
+  });
 
   // Remove error class from form controls
   const formControls = document.querySelectorAll('.form-control');
-  formControls.forEach(control => control.classList.remove('error'));
+  formControls.forEach((control) => {
+    control.classList.remove('error');
+  });
 
   if (successMsg) successMsg.style.display = 'none';
   if (errorMsg) errorMsg.style.display = 'none';
@@ -230,7 +236,7 @@ function submitForm(mobile, dob) {
   const formData = {
     mobile: sanitize(mobile),
     dob: sanitize(dob),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   // TODO: Replace with actual API endpoint
@@ -240,15 +246,15 @@ function submitForm(mobile, dob) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(formData)
+    body: JSON.stringify(formData),
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error('Verification failed');
       }
       return response.json();
     })
-    .then(data => {
+    .then(() => {
       // Show success message
       if (successMsg) {
         successMsg.textContent = 'Verification successful!';
@@ -259,26 +265,23 @@ function submitForm(mobile, dob) {
       setTimeout(() => {
         const modal = document.getElementById('user-verification-modal');
         if (modal) {
-          // Close modal (Bootstrap compatible)
-          if (typeof $ !== 'undefined' && $.fn.modal) {
-            $('#user-verification-modal').modal('hide');
-          } else if (modal.classList.contains('show')) {
-            modal.classList.remove('show');
-            modal.style.display = 'none';
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) backdrop.remove();
-          }
+          // Close modal using vanilla JavaScript
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden', 'true');
+          const backdrop = document.querySelector('.modal-backdrop');
+          if (backdrop) backdrop.remove();
+          document.body.classList.remove('modal-open');
         }
         resetForm();
       }, 2000);
     })
-    .catch(error => {
+    .catch(() => {
       // Show error message
       if (errorMsg) {
         errorMsg.textContent = 'Verification failed. Please try again.';
         errorMsg.style.display = 'block';
       }
-      console.error('Form submission error:', error);
     })
     .finally(() => {
       // Re-enable submit button
@@ -314,80 +317,44 @@ function showVerificationModal() {
   const modal = document.getElementById('user-verification-modal');
   if (!modal) return;
 
-  // Show modal (Bootstrap compatible)
-  if (typeof $ !== 'undefined' && $.fn.modal) {
-    $('#user-verification-modal').modal('show');
-  } else {
-    // Fallback for native implementation
-    modal.classList.add('show');
-    modal.style.display = 'block';
-    modal.setAttribute('aria-hidden', 'false');
+  // Show modal using vanilla JavaScript
+  modal.classList.add('show');
+  modal.style.display = 'block';
+  modal.setAttribute('aria-hidden', 'false');
 
-    // Create backdrop
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop fade show';
-    document.body.appendChild(backdrop);
-    document.body.classList.add('modal-open');
+  // Create backdrop
+  const backdrop = document.createElement('div');
+  backdrop.className = 'modal-backdrop fade show';
+  document.body.appendChild(backdrop);
+  document.body.classList.add('modal-open');
 
-    // Handle close on backdrop click
-    backdrop.addEventListener('click', () => {
+  // Handle close on backdrop click
+  backdrop.addEventListener('click', () => {
+    hideVerificationModal();
+  });
+
+  // Handle close button clicks
+  const closeButtons = modal.querySelectorAll('[data-dismiss="modal"]');
+  closeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
       hideVerificationModal();
     });
+  });
 
-    // Handle close button clicks
-    const closeButtons = modal.querySelectorAll('[data-dismiss="modal"]');
-    closeButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        hideVerificationModal();
-      });
-    });
-
-    // Handle ESC key
-    const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        hideVerificationModal();
-        document.removeEventListener('keydown', escHandler);
-      }
-    };
-    document.addEventListener('keydown', escHandler);
-  }
-}
-
-// ============================================================================
-// FORM INITIALIZATION FUNCTIONS
-// ============================================================================
-
-// Initialize form modal
-function initializeFormModal() {
-  const modal = document.getElementById('user-verification-modal');
-  if (!modal) return;
-
-  // Handle modal show event (Bootstrap 3/4 compatible)
-  if (typeof $ !== 'undefined' && $.fn.modal) {
-    $('#user-verification-modal').on('show.bs.modal', function () {
-      resetForm();
-    });
-
-    $('#user-verification-modal').on('hidden.bs.modal', function () {
-      resetForm();
-    });
-  }
+  // Handle ESC key
+  const escHandler = (e) => {
+    if (e.key === 'Escape') {
+      hideVerificationModal();
+      document.removeEventListener('keydown', escHandler);
+    }
+  };
+  document.addEventListener('keydown', escHandler);
 }
 
 // Handle form submission with element references
-function handleFormSubmissionWithElements(form, dobField, mobileField, submitButton) {
-  if (!form) {
-    console.error('handleFormSubmission: form is null');
-    return;
-  }
-
-  form.addEventListener('submit', function(e) {
+function handleFormSubmissionWithElements(form, dobField, mobileField) {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    if (!mobileField || !dobField) {
-      console.error('handleFormSubmission: mobileField or dobField is null');
-      return;
-    }
 
     // Get form values
     const mobile = mobileField.value.trim();
@@ -430,16 +397,13 @@ function handleFormSubmissionWithElements(form, dobField, mobileField, submitBut
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-
-    return false;
   });
 }
 
 // Validate form field on blur with element references
 function setupFieldValidationWithElements(dobField, mobileField) {
-
   // Mobile number validation on blur
-  mobileField.addEventListener('blur', function() {
+  mobileField.addEventListener('blur', function validateMobileOnBlur() {
     const mobile = this.value.trim();
     const validation = formValidation.validateMobile(mobile);
 
@@ -451,7 +415,7 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   });
 
   // Allow only numbers in mobile field
-  mobileField.addEventListener('keypress', function(e) {
+  mobileField.addEventListener('keypress', (e) => {
     const charCode = (e.which) ? e.which : e.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       e.preventDefault();
@@ -461,14 +425,14 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   });
 
   // Limit mobile number to 10 digits
-  mobileField.addEventListener('input', function() {
+  mobileField.addEventListener('input', function limitMobileLength() {
     if (this.value.length > 10) {
       this.value = this.value.slice(0, 10);
     }
   });
 
   // DOB validation on blur
-  dobField.addEventListener('blur', function() {
+  dobField.addEventListener('blur', function validateDobOnBlur() {
     const dob = this.value.trim();
     const validation = formValidation.validateDOB(dob);
 
@@ -480,14 +444,14 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   });
 
   // Auto-format DOB input as DD/MM/YYYY
-  dobField.addEventListener('input', function(e) {
+  dobField.addEventListener('input', function formatDobInput() {
     let value = this.value.replace(/\D/g, ''); // Remove non-digits
 
     if (value.length >= 2) {
-      value = value.slice(0, 2) + '/' + value.slice(2);
+      value = `${value.slice(0, 2)}/${value.slice(2)}`;
     }
     if (value.length >= 5) {
-      value = value.slice(0, 5) + '/' + value.slice(5);
+      value = `${value.slice(0, 5)}/${value.slice(5)}`;
     }
     if (value.length > 10) {
       value = value.slice(0, 10);
@@ -497,7 +461,7 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   });
 
   // Restrict DOB input to numbers and slashes
-  dobField.addEventListener('keypress', function(e) {
+  dobField.addEventListener('keypress', (e) => {
     const charCode = (e.which) ? e.which : e.keyCode;
     // Allow numbers (48-57) and forward slash (47)
     if (charCode !== 47 && (charCode < 48 || charCode > 57)) {
@@ -508,7 +472,7 @@ function setupFieldValidationWithElements(dobField, mobileField) {
   });
 
   // Reset labels on focus
-  dobField.addEventListener('focus', function() {
+  dobField.addEventListener('focus', () => {
     const dobLabel = document.querySelector('.dob-label');
     const dobErrorLabel = document.querySelector('.dob-error-label');
     if (dobLabel) dobLabel.style.display = 'block';
@@ -518,29 +482,25 @@ function setupFieldValidationWithElements(dobField, mobileField) {
 
   // Clear error on focus
   const formControls = document.querySelectorAll('.form-control');
-  formControls.forEach(control => {
-    control.addEventListener('focus', function() {
+  formControls.forEach((control) => {
+    control.addEventListener('focus', function clearErrorOnFocus() {
       clearError(this.id);
     });
   });
 }
 
 // Initialize form with element references
-function initializeFormWithElements(modal, dobInput, mobileInput, form, submitButton) {
-
+function initializeFormWithElements(modal, dobInput, mobileInput, form) {
   // Setup field validation with direct element references
   setupFieldValidationWithElements(dobInput, mobileInput);
 
   // Handle form submission with direct element references
-  handleFormSubmissionWithElements(form, dobInput, mobileInput, submitButton);
-
-  // Initialize modal events
-  initializeFormModal();
+  handleFormSubmissionWithElements(form, dobInput, mobileInput);
 
   // Handle trigger button clicks
   const triggerButtons = document.querySelectorAll('.open-verification-modal');
-  triggerButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
+  triggerButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
       e.preventDefault();
       showVerificationModal();
     });
@@ -695,7 +655,7 @@ export default function decorate(block) {
   block.appendChild(modal);
 
   // Initialize form with element references
-  initializeFormWithElements(modal, dobInput, mobileInput, form, submitButton);
+  initializeFormWithElements(modal, dobInput, mobileInput, form);
 }
 
 // Export functions for external use
@@ -703,6 +663,5 @@ export {
   showVerificationModal,
   hideVerificationModal,
   resetForm,
-  formValidation
+  formValidation,
 };
-
