@@ -142,6 +142,11 @@ body {
   display: none;
   margin: 0;
   background-color: #000; /* Start with black to prevent white flash on dark-themed pages */
+}
+
+/* In Universal Editor, use default background immediately */
+body:has(main[data-aue-resource]) {
+  background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
@@ -568,9 +573,10 @@ main img {
 
 /* 1. Hide entire card SECTIONS (not just blocks) until loaded.
       This prevents section expansion from causing CLS.
-      Use background: #000 to prevent white flash on dark-themed pages. */
-.section.cards-container:not([data-section-status="loaded"]),
-.section.columns-container:not([data-section-status="loaded"]) {
+      Use background: #000 to prevent white flash on dark-themed pages.
+      NOTE: Scoped to main:not([data-aue-resource]) to exclude Universal Editor. */
+main:not([data-aue-resource]) .section.cards-container:not([data-section-status="loaded"]),
+main:not([data-aue-resource]) .section.columns-container:not([data-section-status="loaded"]) {
   visibility: hidden;
   height: 450px;
   overflow: hidden;
@@ -578,8 +584,8 @@ main img {
 }
 
 /* Ensure all children of hidden sections also have black background */
-.section.cards-container:not([data-section-status="loaded"]) *,
-.section.columns-container:not([data-section-status="loaded"]) * {
+main:not([data-aue-resource]) .section.cards-container:not([data-section-status="loaded"]) *,
+main:not([data-aue-resource]) .section.columns-container:not([data-section-status="loaded"]) * {
   background: transparent !important;
 }
 
@@ -592,7 +598,7 @@ main img {
   background: transparent;
 }
 
-.cards:not([data-block-status="loaded"]) {
+main:not([data-aue-resource]) .cards:not([data-block-status="loaded"]) {
   visibility: hidden;
 }
 
