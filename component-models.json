@@ -830,7 +830,7 @@
       },
       {
         "component": "reference",
-        "name": "navItemImage",
+        "name": "image",
         "label": "Nav Item Image",
         "multi": false,
         "description": "Optional Image for the category navigation card item.",
