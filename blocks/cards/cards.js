@@ -683,7 +683,9 @@ export default async function decorate(block) {
   const initialWrapperHeight = wrapper?.getBoundingClientRect().height;
   const initialSectionHeight = section?.getBoundingClientRect().height;
 
-  if (isDesktop && isAllAboutCard && section) {
+  // Skip CLS visibility hiding in Universal Editor
+  const isEditor = document.querySelector('main[data-aue-resource]');
+  if (isDesktop && isAllAboutCard && section && !isEditor) {
     section.style.minHeight = '1412px';
     if (wrapper) wrapper.style.minHeight = '1412px';
     block.style.minHeight = '1412px';
@@ -691,7 +693,8 @@ export default async function decorate(block) {
   }
 
   // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
-  if (isDesktop && initialBlockHeight > 0) {
+  // Skip in Universal Editor to avoid layout issues.
+  if (isDesktop && initialBlockHeight > 0 && !isEditor) {
     block.style.minHeight = `${initialBlockHeight}px`;
     if (wrapper && initialWrapperHeight) {
       wrapper.style.minHeight = `${initialWrapperHeight}px`;
