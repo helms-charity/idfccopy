@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Form validation and handling for DOB and Mobile Number
  * Based on IDFC First Bank validation patterns
