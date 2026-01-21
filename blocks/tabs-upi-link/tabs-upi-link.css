@@ -292,8 +292,16 @@
   box-shadow: 0 4px 12px rgb(128 28 30 / 30%);
 }
 
+.section.upi-steps-red-bg {
+  padding: 39px 8px;
+}
+
 /* Tablet and up: Button standard width (not full width), centered */
 @media (width >= 600px) {
+  .section.upi-steps-red-bg {
+  padding: 96px 0;
+  }
+
   .section:has(.tabs-upi-link) > div,
   .section.tabs-upi-link-container > div {
     max-width: 720px;

@@ -117,16 +117,16 @@
 
 /* UPI red background variant - mobile */
 .upi-steps-red-bg .steps {
-  padding: 0 15px;
+  padding: 0;
 }
 
 .upi-steps-red-bg .steps-title {
   text-shadow: unset;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
 }
 
 .upi-steps-red-bg .steps-subtitle {
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
   font-size: 14px;
   font-family: var(--body-font-family);
