@@ -1,5 +1,47 @@
 /* stylelint-disable selector-class-pattern, no-descending-specificity */
 
+/* =================================================================
+   Framework Page & Universal Editor Support: 
+   Show raw content when editing/previewing framework pages.
+   The category-nav block's raw table content should be visible
+   so content authors can edit it directly.
+   
+   Applies to:
+   - Universal Editor (main[data-aue-resource])
+   - Direct framework page viewing (body.is-framework-page)
+   ================================================================= */
+main[data-aue-resource] .category-nav.block,
+body.is-framework-page .category-nav.block {
+  display: block !important;
+  visibility: visible !important;
+  min-height: 100px;
+  padding: 16px;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+main[data-aue-resource] .category-nav.block > div,
+body.is-framework-page .category-nav.block > div {
+  display: block !important;
+  visibility: visible !important;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+main[data-aue-resource] .category-nav.block > div > div,
+body.is-framework-page .category-nav.block > div > div {
+  display: inline-block;
+  padding: 4px 8px;
+  margin: 2px;
+  background: #f5f5f5;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
 /* Category Nav Wrapper - full width gray background */
 .category-nav-wrapper {
   width: 100%;

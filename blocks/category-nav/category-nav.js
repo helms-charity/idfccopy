@@ -337,6 +337,20 @@ function isEditingFrameworkPage() {
   // The path could be /framework/* or /content/idfc-edge/framework/*
   const isFrameworkPath = window.location.pathname.includes('/framework/');
 
+  // In Universal Editor, the content is loaded via a proxy/canvas URL,
+  // so window.location.pathname doesn't reflect the actual page path.
+  // We need to check the data-aue-resource attribute on main element.
+  const mainElement = document.querySelector('main[data-aue-resource]');
+  const isInUniversalEditor = !!mainElement;
+
+  if (isInUniversalEditor) {
+    // Get the resource path from the data-aue-resource attribute
+    // Format: "urn:aemconnection:/content/idfc-edge/framework/ccnav.html/jcr:content"
+    const resourcePath = mainElement.getAttribute('data-aue-resource') || '';
+    const isUEFrameworkPath = resourcePath.includes('/framework/');
+    return isUEFrameworkPath;
+  }
+
   return isFrameworkPath;
 }
 

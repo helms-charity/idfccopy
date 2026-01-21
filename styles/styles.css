@@ -868,15 +868,36 @@ main .section.upi-steps-red-bg {
  * layout shifts. The sections are removed after processing, so they should
  * never be visible in main.
  * The !important is required to override inline styles set by JS during loading.
+ * NOTE: Exceptions:
+ *   - Universal Editor (main[data-aue-resource]) - content must be visible for editing
+ *   - Framework pages (body.is-framework-page) - content must be visible for preview/editing
  */
-.section.category-nav-container,
-.section.category-nav-section {
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.category-nav-container,
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.category-nav-section {
   display: none !important; /* important's are required for these properties to override inline styles set by JS during loading */
   visibility: hidden !important;
   height: 0 !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+/* In Universal Editor, show category-nav sections for editing */
+main[data-aue-resource] .section.category-nav-container,
+main[data-aue-resource] .section.category-nav-section {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* On framework pages, show category-nav sections for preview/editing */
+body.is-framework-page .section.category-nav-container,
+body.is-framework-page .section.category-nav-section {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  overflow: visible !important;
 }
 
 .section.banner-image .default-content-wrapper ol {
