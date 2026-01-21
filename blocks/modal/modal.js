@@ -454,9 +454,14 @@ export async function openModal(fragmentUrl, options = {}) {
   const path = fragmentUrl.startsWith('http')
     ? new URL(fragmentUrl, window.location).pathname
     : fragmentUrl;
-
+  const modalOptions = path.includes('fee-and-charges') ? {
+    modalTheme: 'modal-mayura-blue',
+    textureImage: '/credit-card/metal-credit-card/media_15a8f844f87bf985cbf4471803bc87278ff6daa36.png',
+    pageBackgroundImage: '/credit-card/metal-credit-card/media_1aa917044ef2aa165adb54e6ecc718b1cd83e80a4.png',
+    decorationImage: '/credit-card/metal-credit-card/media_13f68aa7e19d4532ae6d8a784fb5c4e140fb55d3e.svg',
+  } : options;
   const fragment = await loadFragment(path);
-  const { showModal } = await createModal(fragment.childNodes, options);
+  const { showModal } = await createModal(fragment.childNodes, modalOptions);
   showModal();
 }
 
