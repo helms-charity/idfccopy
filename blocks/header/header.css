@@ -1658,10 +1658,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-bottom: 1px solid #f1f1f1;
   }
 
-  /* Full-width dropdown - show on hover OR when aria-expanded is true */
+  /* Full-width dropdown */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li>ul:hover,
-  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
+  header nav .nav-sections .default-content-wrapper>ul>li>ul:hover {
     display: grid;
     position: fixed;
     left: 0;
@@ -2099,8 +2098,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* Override first-child special styles for new layout */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover,
-  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
     padding: 20px 0 0 20px;
     width: 100%;
     background: #fff;
@@ -2113,8 +2111,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
 
 
-  header nav .nav-sections .default-content-wrapper>ul>li:hover p a,
-  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] p a {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
     color: var(--dark-red-color);
     font-weight: bold;
     cursor: pointer;
@@ -2490,8 +2487,7 @@ border-radius: 0;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
-  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover,
-  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
+  header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
     padding: 20px 0 30px 70px;
   }
 
