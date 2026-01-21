@@ -1934,7 +1934,7 @@ main .cards.joining-perks .swiper-slide {
   background-color: var(--gray);
   border-radius: 20px;
   box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
-  padding: 24px;
+  padding: 34px 20px;
   display: flex;
   flex-direction: column;
   margin-right: 0;
@@ -1942,7 +1942,7 @@ main .cards.joining-perks .swiper-slide {
   height: auto;
   overflow: visible;
   transition: all 0.5s ease;
-  transform: scale(0.9);
+  transform: scale(0.97);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body {
@@ -1981,13 +1981,14 @@ main .cards.joining-perks .swiper-slide {
   font-size: 14px;
   font-family: var(--heading-font-family);
   text-decoration: none;
+  font-weight: 700;
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p:not(:has(.icon-inverted-commas), :has(.icon-star), :has(u)) {
   font-size: var(--body-font-size-s);
   font-family: var(--body-font-family);
-  font-weight: 500;
-  line-height: 24px;
+  font-weight: 600;
+  line-height: normal;
   margin: 0;
 }
 

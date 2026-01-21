@@ -935,12 +935,12 @@ export default async function decorate(block) {
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
+      swiperConfig.slidesPerView = 1.15; // Show more edges of cards on both sides when centered
       swiperConfig.spaceBetween = 16;
       swiperConfig.centeredSlides = true; // Keep centered to show edges on both sides
       swiperConfig.breakpoints = {
         600: {
-          slidesPerView: 1.5,
+          slidesPerView: 2.2,
           spaceBetween: 20,
           centeredSlides: true,
         },
