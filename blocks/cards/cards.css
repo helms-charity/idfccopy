@@ -748,11 +748,11 @@ main .cards.key-benefits li.benefit-cards {
 
 /* Key Benefits Swiper Pagination */
 .cards.key-benefits .swiper-pagination-bullet {
-  background: rgba(100 100 100 / 40%);
+  background: rgba(100 100 100 / 50%);
 }
 
 .cards.key-benefits .swiper-pagination-bullet-active {
-  background: #666;
+  background: #888;
 }
 
 /* Center cards when fewer than 3 slides */
@@ -1315,7 +1315,7 @@ main .cards.key-benefits li.benefit-cards {
   background: var(--light-color);
 }
 
-/* Swiper Pagination */
+/* Swiper Pagination - Uniform dots style */
 .cards .swiper-pagination {
   bottom: 20px;
   display: flex;
@@ -1324,24 +1324,20 @@ main .cards.key-benefits li.benefit-cards {
   gap: 8px;
 }
 
-/*
-.cards.key-benefits .swiper-pagination {
-  bottom: 36px;
-}
-  */
-
 .cards .swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
-  background: #aaa;
+  width: 10px;
+  height: 10px;
+  background: rgba(255 255 255 / 50%);
   opacity: 1;
   transition: all 0.3s ease;
+  border-radius: 50%;
 }
 
 .cards .swiper-pagination-bullet-active {
-  background: #aaa;
-  width: 36px;
-  border-radius: 6px;
+  background: var(--white);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
 /* === JOINING PERKS CARD VARIANT === */
@@ -1395,9 +1391,9 @@ main .cards.joining-perks .swiper-slide {
 
 .cards.joining-perks .swiper-pagination-bullet-active {
   background: var(--white);
-  width: 36px;
-  height: 12px;
-  border-radius: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
 /* Joining Perks Card Base Styling */
@@ -1505,8 +1501,8 @@ main .cards.joining-perks .swiper-slide {
 
 .cards.all-about-card .swiper-pagination-bullet-active {
   background: var(--white);
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
 }
 
@@ -1729,9 +1725,9 @@ main .cards.joining-perks .swiper-slide {
 
   .cards.all-about-card .swiper-pagination-bullet-active {
     background: var(--white);
-    width: 36px;
-    height: 12px;
-    border-radius: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
   }
 
   .cards.all-about-card > ul > li {

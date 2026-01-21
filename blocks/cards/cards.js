@@ -742,9 +742,10 @@ export default async function decorate(block) {
   const isExperienceLife = classList.contains('experience-life');
   const isBlogPosts = classList.contains('blog-posts');
   const isJoiningPerks = classList.contains('joining-perks');
+  const isRewardPoints = classList.contains('reward-points');
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
-    || classList.contains('reward-points');
+    || isRewardPoints;
   const isExploreOtherCards = classList.contains('explore-other-cards');
 
   // Build UL structure and collect LI elements in one pass
@@ -919,10 +920,12 @@ export default async function decorate(block) {
     block.appendChild(swiperPagination);
 
     // Build Swiper configuration
+    // Use authored startingCard only on desktop; mobile/tablet always start at index 0
+    const initialSlideIndex = isDesktop ? startingCard : 0;
     const swiperConfig = {
       slidesPerView: 1.2,
       spaceBetween: 16,
-      initialSlide: startingCard,
+      initialSlide: initialSlideIndex,
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
@@ -951,16 +954,13 @@ export default async function decorate(block) {
         },
       };
     } else if (isExperienceLife) {
-      // For experience-life cards: tighter spacing
+      // For experience-life cards: no centered slides
       const slideCount = ul.querySelectorAll('li').length;
-      const shouldCenter = slideCount < 3;
-      swiperConfig.centeredSlides = shouldCenter;
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
           spaceBetween: 20,
-          centeredSlides: slideCount < 2,
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
@@ -974,18 +974,21 @@ export default async function decorate(block) {
       swiperConfig.watchSlidesVisibility = true;
       swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
       swiperConfig.spaceBetween = 30;
+      swiperConfig.centeredSlides = true;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: 2,
           spaceBetween: 30,
+          centeredSlides: true,
         },
         900: {
           slidesPerView: 3,
           spaceBetween: 60,
+          centeredSlides: true,
         },
       };
     } else if (isExploreOtherCards) {
-      // For explore-other-cards: show edges on mobile, 3 cards at larger breakpoints
+      // For explore-other-cards: no centered slides
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
@@ -1001,8 +1004,8 @@ export default async function decorate(block) {
           spaceBetween: 42,
         },
       };
-    } else {
-      // For benefit cards: standard breakpoints
+    } else if (isRewardPoints) {
+      // For reward-points cards: no centered slides
       const slideCount = ul.querySelectorAll('li').length;
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
@@ -1015,11 +1018,41 @@ export default async function decorate(block) {
           spaceBetween: 36,
         },
       };
+    } else {
+      // For benefit cards: standard breakpoints
+      const slideCount = ul.querySelectorAll('li').length;
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.centeredSlides = true;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: Math.min(2, slideCount),
+          spaceBetween: 20,
+          centeredSlides: true,
+        },
+        900: {
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 36,
+          centeredSlides: true,
+        },
+      };
       // Add class for CSS centering when fewer than 3 cards
       if (slideCount === 1) {
         block.classList.add('cards-single-slide');
       } else if (slideCount === 2) {
         block.classList.add('cards-two-slides');
+      }
+    }
+
+    // For all-about-card: always center slides (like testimonials)
+    if (isAllAboutCard) {
+      swiperConfig.centeredSlides = true;
+      if (swiperConfig.breakpoints) {
+        if (swiperConfig.breakpoints[600]) {
+          swiperConfig.breakpoints[600].centeredSlides = true;
+        }
+        if (swiperConfig.breakpoints[900]) {
+          swiperConfig.breakpoints[900].centeredSlides = true;
+        }
       }
     }
 
