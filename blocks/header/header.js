@@ -716,9 +716,41 @@ export default async function decorate(block) {
     const titleP = defaultContent.querySelector('p');
     if (!titleP) return null;
 
+    // Check for Cards blocks at the section level (they're siblings of default-content)
+    // Only include cards blocks that actually have content (li elements)
+    const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
+      .filter((block) => block.querySelector('li'));
+
+    // If no Cards blocks with content, just return the category-nav block directly
+    if (cardsBlocks.length === 0) {
+      return {
+        titleText: titleP.textContent.trim(),
+        content: categoryNavBlock.cloneNode(true),
+      };
+    }
+
+    // Create a wrapper to hold both category-nav and Cards blocks
+    const sectionContent = document.createElement('div');
+    sectionContent.appendChild(categoryNavBlock.cloneNode(true));
+
+    cardsBlocks.forEach((cardsBlock) => {
+      // Wrap the cards block in a container with "Discover" heading
+      const discoverContainer = document.createElement('div');
+      discoverContainer.classList.add('nav-discover-section');
+
+      const discoverHeading = document.createElement('p');
+      discoverHeading.classList.add('nav-discover-heading');
+      discoverHeading.textContent = 'Discover';
+
+      discoverContainer.appendChild(discoverHeading);
+      discoverContainer.appendChild(cardsBlock.cloneNode(true));
+
+      sectionContent.appendChild(discoverContainer);
+    });
+
     return {
       titleText: titleP.textContent.trim(),
-      content: categoryNavBlock.cloneNode(true),
+      content: sectionContent,
     };
   }
 
@@ -733,7 +765,9 @@ export default async function decorate(block) {
     if (children.length === 0) return null;
 
     // Check for Cards blocks at the section level (they're siblings of default-content)
-    const cardsBlocks = section.querySelectorAll('.cards.block');
+    // Only include cards blocks that actually have content (li elements)
+    const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
+      .filter((block) => block.querySelector('li'));
 
     const titleElement = children.find((child) => child.tagName === 'H3');
     if (!titleElement) return null;
