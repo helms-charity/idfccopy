@@ -7,6 +7,10 @@
   position: relative;
 }
 
+.table-wrapper{
+  padding: 0 16px;
+}
+
 .table-background-image {
   position: absolute;
   top: 0;
