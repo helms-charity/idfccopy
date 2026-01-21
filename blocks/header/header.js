@@ -1011,9 +1011,16 @@ export default async function decorate(block) {
    */
   async function loadNavFragmentContent(navSection, isMobile = false) {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
-    if (!fragmentPath || navSection.getAttribute('data-fragment-loaded') === 'true') {
+    // Check if already loaded OR currently loading (prevents race conditions)
+    if (!fragmentPath
+      || navSection.getAttribute('data-fragment-loaded') === 'true'
+      || navSection.getAttribute('data-fragment-loading') === 'true'
+      || navSection.querySelector('.nav-fragment-content')) {
       return true;
     }
+
+    // Mark as loading to prevent duplicate calls
+    navSection.setAttribute('data-fragment-loading', 'true');
 
     try {
       const fragmentContent = await loadFragment(fragmentPath);
@@ -1057,6 +1064,7 @@ export default async function decorate(block) {
       if (ul.children.length > 0) {
         navSection.appendChild(ul);
         navSection.setAttribute('data-fragment-loaded', 'true');
+        navSection.removeAttribute('data-fragment-loading');
         navSection.classList.add('nav-drop');
 
         // Note: Fragment content icons are already decorated by loadFragment()
@@ -1101,9 +1109,11 @@ export default async function decorate(block) {
         return true;
       }
 
+      navSection.removeAttribute('data-fragment-loading');
       return false;
     } catch (error) {
       // Silently fail - fragment loading is optional
+      navSection.removeAttribute('data-fragment-loading');
       return false;
     }
   }

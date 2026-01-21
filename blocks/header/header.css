@@ -1748,7 +1748,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Desktop: Wrapper div inside section content - use CSS Grid for 2-column sub-layout */
   header nav .nav-sections .nav-fragment-section-content > li > div {
     position: relative;
-    padding: 16px 32px;
+    padding: 0;
     padding-right: 270px; /* Tablet: 250px card + 20px gap */
     background: var(--gray-200);
     border-radius: 8px;
@@ -2475,7 +2475,7 @@ border-radius: 0;
     content: '';
     grid-column: 3;
     grid-row: 1 / span 100;
-    background-color: #f2f2f2;
+    background-color: none;
     min-height: 300px;
   }
  
