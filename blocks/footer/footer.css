@@ -243,7 +243,6 @@ footer .footer>div .section>div {
 
 .footer>div>div:nth-child(2)>div>ul {
   display: flex;
-  flex-wrap: wrap;
 }
 
 .footer>div>div:nth-child(2)>div>ul>li {
@@ -282,8 +281,16 @@ footer .footer>div .section>div {
   letter-spacing: 0.5px;
 }
 
+.footer>div>div:nth-child(2)>div>ul>li:nth-child(2) p {
+  text-align: center;
+}
+
 .footer>div>div:nth-child(2)>div>ul>li>ul {
   display: flex;
+}
+
+.footer>div>div:nth-child(2)>div>ul>li:nth-child(2) ul {
+  justify-content: space-around;
 }
 
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:nth-child(2) {
@@ -547,6 +554,14 @@ footer .footer>div .section>div {
     flex: 0 0 100%;
     max-width: 100%;
     padding: 0;
+  }
+
+  .footer>div>div:nth-child(2)>div>ul>li:nth-child(2) p {
+    text-align: left;
+  }
+
+  .footer>div>div:nth-child(2)>div>ul>li:nth-child(2) ul {
+    justify-content: left;
   }
 
   .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li {
