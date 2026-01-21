@@ -27,6 +27,8 @@
   --red-800: #6e0a0f;
   --btn-color-red: #902a2b;
   --btn-color-white: white;
+  --gray-btn-light: #d9d9d9;
+  --gray-btn-dark: #4b4b4b;
   --gradient-translucent: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.24) 100%);
   --gradient-pearl: linear-gradient(73deg, #C7C6C6 -74.4%, #F1F1F1 23.15%);
   --gradient-upi-steps-red: linear-gradient(165deg, #ca0919 0%, #8C2034 40%, #732C53 80%, #513873 100%);
@@ -1284,6 +1286,22 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 
   .section.columns-container .columns-wrapper{
     padding-right: 0;
+  }
+}
+
+@media (width >= 990px) {
+  /* Gray button styling for odometer on desktop */
+  .nav-tools .default-content-wrapper>ul>li:first-child {
+    background-color: var(--gray-btn-dark);
+    color: #fff;
+    border-color: var(--gray-btn-dark);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .nav-tools .default-content-wrapper>ul>li:first-child:hover {
+    background-color: var(--gray-btn-light);
+    color: #000;
+    border-color: var(--gray-btn-light);
   }
 }
 
