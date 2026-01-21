@@ -1011,7 +1011,7 @@ export default async function decorate(block) {
           spaceBetween: 20,
         },
         900: {
-          slidesPerView: Math.min(3, slideCount),
+          slidesPerView: 3,
           spaceBetween: 36,
         },
       };

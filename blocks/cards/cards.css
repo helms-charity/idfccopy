@@ -1626,6 +1626,8 @@ main .cards.joining-perks .swiper-slide {
     padding: 40px 0;
   }
 
+  
+
   /* Shared width constraint for content alignment */
   .cards.earn-rewards .grid-cards,
   .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type,
@@ -1841,6 +1843,11 @@ main .cards.joining-perks .swiper-slide {
 
   .cards.reward-points .benefit-cards .cards-card-image {
     padding: 64px 28px 20px;
+  }
+
+  /* Center the 2 reward points cards on desktop */
+  .cards.reward-points .swiper-wrapper {
+    justify-content: center;
   }
 
   .cards.reward-points .benefit-cards .cards-card-body {
