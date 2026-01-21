@@ -364,7 +364,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-dropdown {
   position: static;
   border-radius: 0;
   box-shadow: none;
-  background: #fff;
+  background: none;
   border: none;
   min-width: auto;
   max-width: none;
@@ -2492,7 +2492,7 @@ border-radius: 0;
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover,
   header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true']>ul {
-    padding: 20px 0 0 70px;
+    padding: 20px 0 30px 70px;
   }
 
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
