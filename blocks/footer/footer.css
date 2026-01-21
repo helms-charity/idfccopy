@@ -514,7 +514,7 @@ footer .footer>div .section>div {
     flex-direction: column;
   }
 
-  .footer .section.accordion-container:first-child > .default-content > h6 {
+  .footer .section.accordion-container:first-child > .default-content > h5 {
     color: #D23643;
     font-size: 20px;
     font-weight: 400;
@@ -522,7 +522,7 @@ footer .footer>div .section>div {
     letter-spacing: 2px;
   }
 
-  .footer .section.accordion-container:first-child > .default-content > h5 {
+  .footer .section.accordion-container:first-child > .default-content > h6 {
     color: #D23643;
     font-size: 50px;
     font-style: normal;
