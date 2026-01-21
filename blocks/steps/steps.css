@@ -34,7 +34,8 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 40px;
-  max-width: 80%;
+
+  /* max-width: 80%; */
   list-style: none;
   padding: 0;
   margin: 0;
@@ -120,6 +121,11 @@
   padding: 0;
 }
 
+/* Override inherited padding from parent wrapper */
+.upi-steps-red-bg .steps-wrapper {
+  padding: 10px;
+}
+
 .upi-steps-red-bg .steps-title {
   text-shadow: unset;
   margin: 0 0 18px;
@@ -147,7 +153,9 @@
 }
 
 .upi-steps-red-bg .steps-item-body p {
-  width: 60%;
+  /* width: 60%; */
+  font-weight: 500;
+  line-height: normal;
 }
 
 .upi-steps-red-bg .grid-steps{
