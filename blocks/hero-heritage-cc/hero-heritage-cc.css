@@ -593,6 +593,28 @@
    When editing in Universal Editor, disable animations and show
    all content in a structured, editable layout.
    ================================================================= */
+
+/* DEBUG: Bright red border to confirm UE styles are loading */
+main[data-aue-resource] .hero-heritage-cc {
+  outline: 5px solid red !important;
+}
+
+main[data-aue-resource] .hero-heritage-cc::before {
+  content: 'DEBUG: UE styles ARE loading' !important;
+  display: block !important;
+  position: fixed !important;
+  top: 100px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: red !important;
+  color: white !important;
+  padding: 10px 20px !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  z-index: 99999 !important;
+  border-radius: 8px !important;
+}
+
 main[data-aue-resource] .hero-heritage-cc-container {
   min-height: auto;
   height: auto;
