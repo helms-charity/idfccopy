@@ -756,8 +756,10 @@ main[data-aue-resource] .hero-heritage-cc-header-cta > div {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 16px;
   width: 100%;
+  padding-right: 100px;
 }
 
 /* Logo wrapper in UE - side by side layout */
