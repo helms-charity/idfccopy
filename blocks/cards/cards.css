@@ -230,6 +230,10 @@
   position: relative;
 }
 
+.cards.earn-rewards li:hover picture {
+  animation: bounce1 0.5s infinite alternate;
+}
+
 .cards.earn-rewards .grid-cards > li::before {
   content: '';
   position: absolute;
