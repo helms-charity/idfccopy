@@ -601,7 +601,7 @@ main[data-aue-resource] .hero-heritage-cc {
 
 main[data-aue-resource] .hero-heritage-cc::before {
   content: 'ANIMATED BLOCK EDITING OVERVIEW' !important;
-  display: block !important;
+  display: none !important; /* Hidden for now, kept for potential future use */
   position: absolute !important;
   top: 0 !important;
   left: 50% !important;
@@ -694,7 +694,18 @@ main[data-aue-resource] .hero-heritage-cc > div::before {
 }
 
 main[data-aue-resource] .hero-heritage-cc-header-cta::before {
-  content: 'Header CTA Section';
+  content: 'HEADER CTA SECTION';
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: #3a3a3a;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  margin-bottom: 12px;
 }
 
 main[data-aue-resource] .hero-heritage-cc-intro::before {
