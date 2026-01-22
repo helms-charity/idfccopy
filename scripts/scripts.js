@@ -902,6 +902,11 @@ async function loadEager(doc) {
       document.body.classList.add('has-category-nav');
     }
 
+    // Mark framework pages so CSS can show raw content for editing/preview
+    if (isEditingFrameworkPage()) {
+      document.body.classList.add('is-framework-page');
+    }
+
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
