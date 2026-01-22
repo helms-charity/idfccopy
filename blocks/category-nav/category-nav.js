@@ -194,37 +194,33 @@ export function parseCategoryNavBlock(block) {
  * @param {HTMLElement} nextButton - Next button
  */
 function initializeCardNavigation(container, prevButton, nextButton) {
-  const cardsPerPage = 3;
   const totalItems = parseInt(container.getAttribute('data-total-items'), 10);
-  const totalPages = Math.ceil(totalItems / cardsPerPage);
-  let currentPage = 0;
+  const visibleCards = 3;
+  const maxScroll = totalItems - visibleCards; // Maximum number of cards we can scroll
+  let currentCardIndex = 0; // Current card position (not page)
 
   const updateNavigation = () => {
-    // Update container position
-    const cards = container.querySelectorAll('.category-nav-card');
-    const startIndex = currentPage * cardsPerPage;
+    // Calculate translate distance based on card index
+    // Each card moves by approximately 33.33% (100% / 3 visible cards)
+    const cardWidth = 100 / visibleCards; // Percentage width per card slot
+    const translateX = -(currentCardIndex * cardWidth);
 
-    cards.forEach((card, index) => {
-      if (index >= startIndex && index < startIndex + cardsPerPage) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
-    });
+    // Apply smooth transform
+    container.style.transform = `translateX(${translateX}%)`;
 
     // Update button states
-    prevButton.disabled = currentPage === 0;
-    nextButton.disabled = currentPage >= totalPages - 1;
+    prevButton.disabled = currentCardIndex === 0;
+    nextButton.disabled = currentCardIndex >= maxScroll;
 
-    // Update current page attribute
-    container.setAttribute('data-current-page', currentPage);
+    // Update current position attribute
+    container.setAttribute('data-current-index', currentCardIndex);
   };
 
   prevButton.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (currentPage > 0) {
-      currentPage -= 1;
+    if (currentCardIndex > 0) {
+      currentCardIndex -= 1; // Move one card at a time
       updateNavigation();
     }
   });
@@ -232,11 +228,133 @@ function initializeCardNavigation(container, prevButton, nextButton) {
   nextButton.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (currentPage < totalPages - 1) {
-      currentPage += 1;
+    if (currentCardIndex < maxScroll) {
+      currentCardIndex += 1; // Move one card at a time
       updateNavigation();
     }
   });
+
+  // Add touch and drag support with momentum
+  let startX = 0;
+  let currentX = 0;
+  let isDragging = false;
+  let initialTransform = 0;
+  let startTime = 0;
+
+  const startDrag = (clientX) => {
+    startX = clientX;
+    currentX = clientX;
+    isDragging = true;
+    startTime = Date.now();
+    const cardWidth = 100 / visibleCards;
+    initialTransform = -(currentCardIndex * cardWidth);
+    // Disable transition during drag for immediate feedback
+    container.style.transition = 'none';
+  };
+
+  const duringDrag = (clientX) => {
+    if (!isDragging) return;
+    currentX = clientX;
+    const diffX = currentX - startX;
+    const containerWidth = container.offsetWidth;
+    const percentMoved = (diffX / containerWidth) * 100;
+    // Apply live transform during drag
+    const newTransform = initialTransform + percentMoved;
+
+    // Limit transform to valid range
+    const cardWidth = 100 / visibleCards;
+    const minTransform = -(maxScroll * cardWidth);
+    const maxTransform = 0;
+    const clampedTransform = Math.max(minTransform, Math.min(maxTransform, newTransform));
+
+    container.style.transform = `translateX(${clampedTransform}%)`;
+  };
+
+  const endDrag = (endX) => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    // Re-enable smooth transition
+    container.style.transition = 'transform 0.4s ease-out';
+
+    const diffX = startX - endX;
+    const endTime = Date.now();
+    const timeDiff = endTime - startTime;
+    const containerWidth = container.offsetWidth;
+    const cardWidth = containerWidth / visibleCards;
+
+    // Calculate velocity (pixels per millisecond)
+    const velocity = Math.abs(diffX) / timeDiff;
+
+    // Determine movement based on velocity and distance
+    let cardsMoved = 0;
+
+    // Fast swipe (momentum): velocity > 0.5 pixels/ms
+    if (velocity > 0.5 && timeDiff < 300) {
+      // Quick flick - move at least 1 card in the direction of swipe
+      cardsMoved = diffX > 0 ? 1 : -1;
+      // For very fast swipes, move more cards
+      if (velocity > 1.5) {
+        cardsMoved = diffX > 0 ? 2 : -2;
+      }
+    } else {
+      // Slow drag - use distance with lower threshold (25% of card width)
+      const threshold = cardWidth * 0.25;
+      if (Math.abs(diffX) > threshold) {
+        // Move based on distance, but with lower threshold
+        cardsMoved = diffX > 0 ? Math.ceil(diffX / cardWidth) : Math.floor(diffX / cardWidth);
+      }
+    }
+
+    // Update card index based on movement
+    let newIndex = currentCardIndex + cardsMoved;
+
+    // Clamp to valid range
+    newIndex = Math.max(0, Math.min(maxScroll, newIndex));
+
+    // Update position
+    currentCardIndex = newIndex;
+    updateNavigation();
+  };
+
+  // Touch events for mobile
+  container.addEventListener('touchstart', (e) => {
+    startDrag(e.touches[0].clientX);
+  }, { passive: true });
+
+  container.addEventListener('touchmove', (e) => {
+    duringDrag(e.touches[0].clientX);
+  }, { passive: true });
+
+  container.addEventListener('touchend', (e) => {
+    endDrag(e.changedTouches[0].clientX);
+  });
+
+  // Mouse events for desktop drag
+  container.addEventListener('mousedown', (e) => {
+    e.preventDefault(); // Prevent text selection
+    startDrag(e.clientX);
+    container.style.cursor = 'grabbing';
+  });
+
+  container.addEventListener('mousemove', (e) => {
+    duringDrag(e.clientX);
+  });
+
+  container.addEventListener('mouseup', (e) => {
+    endDrag(e.clientX);
+    container.style.cursor = 'grab';
+  });
+
+  container.addEventListener('mouseleave', () => {
+    if (isDragging) {
+      endDrag(currentX);
+      container.style.cursor = 'grab';
+    }
+  });
+
+  // Set initial cursor style
+  container.style.cursor = 'grab';
 
   // Initial update
   updateNavigation();
@@ -365,8 +483,12 @@ function buildUnifiedNavigation(categoriesData) {
   const tabPane = document.createElement('div');
   tabPane.classList.add('tab-pane', 'top-second-nav-js', 'active', 'category-nav-tab-pane');
 
-  const navList = document.createElement('ul');
-  navList.classList.add('top-nav-left', 'category-nav-list');
+  // Create TWO separate lists - left for regular menu items, right for bell/utility items
+  const navListLeft = document.createElement('ul');
+  navListLeft.classList.add('top-nav-left', 'category-nav-list', 'category-nav-list-left');
+
+  const navListRight = document.createElement('ul');
+  navListRight.classList.add('category-nav-list', 'category-nav-list-right');
 
   categoriesData.forEach((category) => {
     const li = document.createElement('li');
@@ -430,10 +552,18 @@ function buildUnifiedNavigation(categoriesData) {
       li.appendChild(dropdown);
     }
 
-    navList.appendChild(li);
+    // Append to appropriate list: cards/bell go right, regular items go left
+    if (category.isFromCardsBlock || category.id === 'bell' || category.id === 'bell-outline') {
+      navListRight.appendChild(li);
+    } else {
+      navListLeft.appendChild(li);
+    }
   });
 
-  tabPane.appendChild(navList);
+  // Append both lists to the tab pane
+  tabPane.appendChild(navListLeft);
+  tabPane.appendChild(navListRight);
+
   tabsPane.appendChild(tabPane);
   topNav.appendChild(tabsPane);
 
@@ -537,12 +667,17 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
     cardWrapper.appendChild(imageWrapper);
   }
 
-  // Add title below image
+  // Create a body container to wrap title, description, divider, and buttons
+  // This container will have the red background and padding
+  const bodyContainer = document.createElement('div');
+  bodyContainer.classList.add('category-nav-bulletin-card-body');
+
+  // Add title
   if (title) {
     const titleDiv = document.createElement('div');
     titleDiv.classList.add('category-nav-bulletin-card-title');
     titleDiv.textContent = title;
-    cardWrapper.appendChild(titleDiv);
+    bodyContainer.appendChild(titleDiv);
   }
 
   // Process paragraphs according to the new logic
@@ -572,13 +707,13 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
       // Convert "---" to horizontal divider
       const divider = document.createElement('hr');
       divider.classList.add('category-nav-bulletin-card-divider');
-      cardWrapper.appendChild(divider);
+      bodyContainer.appendChild(divider);
     } else if (text) {
       // Display as description text
       const textLine = document.createElement('div');
       textLine.classList.add('category-nav-bulletin-card-description');
       textLine.textContent = text;
-      cardWrapper.appendChild(textLine);
+      bodyContainer.appendChild(textLine);
     }
   });
 
@@ -600,9 +735,12 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
     });
 
     if (buttonsRow.children.length > 0) {
-      cardWrapper.appendChild(buttonsRow);
+      bodyContainer.appendChild(buttonsRow);
     }
   }
+
+  // Append the body container to the card wrapper
+  cardWrapper.appendChild(bodyContainer);
 
   card.appendChild(cardWrapper);
   return card;
@@ -635,11 +773,28 @@ function parseSectionWithCardsBlock(section) {
     const firstElement = textElementsOutsideBlocks[0];
     const icon = firstElement.querySelector('span.icon');
     if (icon) {
-      // Clone the icon to use in navigation
-      iconElement = icon.cloneNode(true);
       // Get the icon name from classes like "icon-bell"
       const iconClass = Array.from(icon.classList).find((c) => c.startsWith('icon-'));
-      categoryName = iconClass ? iconClass.substring(5) : 'icon';
+      let iconName = iconClass ? iconClass.substring(5) : 'icon';
+
+      // For Cards blocks, always use bell-outline icon instead of regular bell
+      if (iconName === 'bell') {
+        iconName = 'bell-outline';
+      }
+
+      // Create a new icon element with the correct icon name
+      iconElement = document.createElement('span');
+      iconElement.classList.add('icon', `icon-${iconName}`);
+
+      // Create the img element directly
+      const iconImg = document.createElement('img');
+      iconImg.setAttribute('data-icon-name', iconName);
+      iconImg.src = `/icons/${iconName}.svg`;
+      iconImg.alt = iconName;
+      iconImg.loading = 'lazy';
+      iconElement.appendChild(iconImg);
+
+      categoryName = iconName;
     } else {
       categoryName = firstElement.textContent.trim();
     }
