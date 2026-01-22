@@ -596,19 +596,20 @@
 
 /* UE editing mode indicator */
 main[data-aue-resource] .hero-heritage-cc::before {
-  content: 'Editing Block Overview' !important;
+  content: 'EDITING BLOCK OVERVIEW' !important;
   display: block !important;
   position: fixed !important;
-  top: 200px !important;
+  top: 250px !important;
   right: 100px !important;
   background: #3a3a3a !important;
   color: #fff !important;
   padding: 8px 16px !important;
-  font-size: 12px !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
   z-index: 99999 !important;
   border-radius: 6px !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
   box-shadow: 0 2px 8px rgb(0 0 0 / 30%) !important;
 }
 
@@ -617,7 +618,6 @@ main[data-aue-resource] .hero-heritage-cc-container {
   height: auto;
   contain: none;
   overflow: visible;
-  margin-top: 50px;
 }
 
 main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
