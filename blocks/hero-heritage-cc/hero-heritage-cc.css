@@ -600,7 +600,7 @@ main[data-aue-resource] .hero-heritage-cc {
 }
 
 main[data-aue-resource] .hero-heritage-cc::before {
-  content: 'EDITING BLOCK OVERVIEW' !important;
+  content: 'ANIMATED BLOCK EDITING OVERVIEW' !important;
   display: block !important;
   position: absolute !important;
   top: 0 !important;

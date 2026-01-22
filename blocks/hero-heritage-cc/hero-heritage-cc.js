@@ -67,36 +67,9 @@ function normalizeCssColorValue(value) {
 }
 
 export default function decorate(block) {
-  // DEBUG: Universal Editor detection
+  // Check if we're in Universal Editor
   const mainElement = document.querySelector('main');
   const hasAueResource = mainElement?.hasAttribute('data-aue-resource');
-  const aueResourceValue = mainElement?.getAttribute('data-aue-resource');
-  const sectionContainer = block.closest('.section');
-  const sectionClasses = sectionContainer?.classList?.toString();
-
-  /* eslint-disable no-console */
-  console.group('🎨 hero-heritage-cc DEBUG');
-  console.log('Block element:', block);
-  console.log('Block classes:', block.classList.toString());
-  console.log('Main element:', mainElement);
-  console.log('Has data-aue-resource:', hasAueResource);
-  console.log('data-aue-resource value:', aueResourceValue);
-  console.log('Section container:', sectionContainer);
-  console.log('Section classes:', sectionClasses);
-  console.log('window.hlx:', window.hlx);
-  console.log('Is in UE iframe:', window.self !== window.top);
-
-  // Check if UE CSS selector would match
-  const wouldMatchUeSelector = !!document.querySelector('main[data-aue-resource] .hero-heritage-cc');
-  console.log('Would match "main[data-aue-resource] .hero-heritage-cc":', wouldMatchUeSelector);
-
-  // Check computed styles to see if UE overrides are applying
-  const computedStyle = window.getComputedStyle(block);
-  console.log('Computed animation:', computedStyle.animation);
-  console.log('Computed visibility:', computedStyle.visibility);
-  console.log('Computed min-height:', computedStyle.minHeight);
-  console.groupEnd();
-  /* eslint-enable no-console */
 
   // Set modal theme for any modal links within this block (e.g., fees link)
   // These match the styling used by the cards/key-benefits modals on Mayura pages
