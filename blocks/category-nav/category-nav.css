@@ -139,6 +139,37 @@ body.is-framework-page .category-nav.block > div > div {
   display: block !important;
 }
 
+/* Special positioning for bulletin cards dropdown - double class for higher specificity */
+.category-nav-item-cards.category-nav-item-cards .category-nav-dropdown {
+  /* Position dropdown completely to the LEFT of the bell icon */
+  position: absolute;
+  left: auto !important; /* Important: Override default left: 0 */
+  right: 100% !important; /* Important: Override default left positioning */
+  margin-right: -55px;
+  top: calc(100% + 24px);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  width: 984px !important; /* Important: Override base 860px width */
+  min-width: 984px !important; /* Important: Override base min-width */
+  max-width: 984px !important; /* Important: Override base max-width */
+  overflow: visible;
+}
+
+/* Triangle attached to the BELL ICON when dropdown is open */
+.category-nav-item-cards.is-open::before {
+  content: '';
+  position: absolute;
+  bottom: -24px; /* Extended further down to connect with dropdown */
+  left: 50%;
+  transform: translateX(-50%); /* Center below bell icon */
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #fff;
+  z-index: 1003;
+}
+
 /* Dropdown Header */
 .category-nav-dropdown-header {
   padding: 16px 24px 6px;
@@ -153,6 +184,13 @@ body.is-framework-page .category-nav.block > div > div {
   font-size: 12px;
   font-weight: 600;
   color: #333;
+}
+
+/* Specific styling for bulletin cards dropdown title */
+.category-nav-item-cards .category-nav-eyebrow-title {
+  font-size: 32px;
+  color: rgb(58 58 58);
+  font-weight: 700;
 }
 
 /* Explore link - right side of header */
@@ -239,7 +277,7 @@ body.is-framework-page .category-nav.block > div > div {
 .category-nav-cards-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 30px;
   padding: 10px 24px 20px;
 }
 
@@ -448,96 +486,96 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
   background: linear-gradient(135deg, #fafafa 0%, #e8e8e8 100%);
 }
 
-/* Cards from Cards block in dropdown */
-.category-nav-card-from-cards-block {
+/* Bulletin Cards from Cards block in dropdown */
+.category-nav-bulletin-card {
   background: white;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.category-nav-card-wrapper {
+.category-nav-bulletin-card-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f5; /* Light gray background for the whole card */
 }
 
-.category-nav-card-from-cards-block .cards-card-image {
+.category-nav-bulletin-card-image {
   /* Ensure images fit properly in dropdown */
   width: 100%;
-  border-radius: 8px 8px 0 0;
   overflow: hidden;
   margin-bottom: 0;
+  border-radius: 0; /* No rounded corners at bottom where text starts */
+  background: #f5f5f5; /* Light gray background behind images */
 }
 
-.category-nav-card-from-cards-block .cards-card-image img,
-.category-nav-card-from-cards-block .cards-card-image picture {
+.category-nav-bulletin-card-image .cards-card-image,
+.category-nav-bulletin-card-image img,
+.category-nav-bulletin-card-image picture {
   width: 100%;
   height: auto;
   display: block;
 }
 
-.category-nav-card-from-cards-block .cards-card-image picture img {
+.category-nav-bulletin-card-image picture img {
   object-fit: cover;
 }
 
-/* Card title below image */
-.category-nav-card-from-cards-block .category-nav-card-title {
-  padding: 16px 16px 8px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+/* Card title - white text on red background */
+.category-nav-bulletin-card-title {
+  padding: 24px 24px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
   line-height: 1.3;
+  background: var(--dark-red-color, #922); /* Red background for text area */
 }
 
-/* Description text (first paragraph) */
-.category-nav-card-description {
-  padding: 0 16px 8px;
-  font-size: 14px;
+/* Description text - white text on red background */
+.category-nav-bulletin-card-description {
+  padding: 0 24px 16px;
+  font-size: 16px;
   line-height: 1.5;
-  color: #666;
+  color: #fff;
+  background: var(--dark-red-color, #922); /* Red background for text area */
 }
 
-/* Horizontal divider (--- becomes hr) */
-.category-nav-card-divider {
-  margin: 8px 16px;
+/* Horizontal divider - white line */
+.category-nav-bulletin-card-divider {
+  margin: 0 24px;
   border: none;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #fff;
   height: 0;
+  background: var(--dark-red-color, #922); /* Red background */
 }
 
-/* Buttons row at the bottom */
-.category-nav-card-buttons {
+/* Links row at the bottom - simple text links */
+.category-nav-bulletin-card-buttons {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px 16px;
-  background: #f8f8f8;
-  margin-top: auto;
+  gap: 24px;
+  padding: 16px 24px 24px;
+  background: var(--dark-red-color, #922); /* Red background for text area */
 }
 
-.category-nav-card-button {
-  flex: 1;
-  padding: 10px 16px;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 500;
-  color: white;
-  background: var(--dark-red-color);
-  border-radius: 4px;
+.category-nav-bulletin-card-button {
+  font-size: 16px;
+  font-weight: 700; /* Bold font */
+  color: #fff !important; /* Always white, never blue */
   text-decoration: none;
-  transition: all 0.2s ease;
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
-.category-nav-card-button:hover {
-  background: #a00;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-}
-
-.category-nav-card-button:active {
-  transform: translateY(0);
+/* Keep links white on hover - no color change */
+.category-nav-bulletin-card-button:hover {
+  color: #fff !important; /* Always white on hover */
+  text-decoration: none;
 }
 
 /* Carousel Navigation */

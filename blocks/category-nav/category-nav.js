@@ -499,11 +499,11 @@ function positionDropdowns() {
  */
 function convertCardsBlockCardToDropdownCard(cardLi) {
   const card = document.createElement('div');
-  card.classList.add('category-nav-card', 'category-nav-card-from-cards-block');
+  card.classList.add('category-nav-card', 'category-nav-bulletin-card');
 
   // Main card wrapper (not a link anymore, since we have multiple links inside)
   const cardWrapper = document.createElement('div');
-  cardWrapper.classList.add('category-nav-card-wrapper');
+  cardWrapper.classList.add('category-nav-bulletin-card-wrapper');
 
   // Extract content from card body
   const cardBody = cardLi.querySelector('.cards-card-body');
@@ -532,7 +532,7 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
   const cardImage = cardLi.querySelector('.cards-card-image');
   if (cardImage) {
     const imageWrapper = document.createElement('div');
-    imageWrapper.classList.add('category-nav-card-image');
+    imageWrapper.classList.add('category-nav-bulletin-card-image');
     imageWrapper.appendChild(cardImage.cloneNode(true));
     cardWrapper.appendChild(imageWrapper);
   }
@@ -540,7 +540,7 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
   // Add title below image
   if (title) {
     const titleDiv = document.createElement('div');
-    titleDiv.classList.add('category-nav-card-title');
+    titleDiv.classList.add('category-nav-bulletin-card-title');
     titleDiv.textContent = title;
     cardWrapper.appendChild(titleDiv);
   }
@@ -571,12 +571,12 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
     if (text === '---') {
       // Convert "---" to horizontal divider
       const divider = document.createElement('hr');
-      divider.classList.add('category-nav-card-divider');
+      divider.classList.add('category-nav-bulletin-card-divider');
       cardWrapper.appendChild(divider);
     } else if (text) {
       // Display as description text
       const textLine = document.createElement('div');
-      textLine.classList.add('category-nav-card-description');
+      textLine.classList.add('category-nav-bulletin-card-description');
       textLine.textContent = text;
       cardWrapper.appendChild(textLine);
     }
@@ -585,13 +585,13 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
   // Display button links in a row at the bottom
   if (buttonParagraphs.length > 0) {
     const buttonsRow = document.createElement('div');
-    buttonsRow.classList.add('category-nav-card-buttons');
+    buttonsRow.classList.add('category-nav-bulletin-card-buttons');
 
     buttonParagraphs.forEach((p) => {
       const link = p.querySelector('a[href]');
       if (link) {
         const button = document.createElement('a');
-        button.classList.add('category-nav-card-button');
+        button.classList.add('category-nav-bulletin-card-button');
         button.href = link.href;
         button.textContent = link.textContent.trim();
         button.setAttribute('data-gtm-desk-l3cards-click', '');
