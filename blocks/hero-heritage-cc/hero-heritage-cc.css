@@ -594,19 +594,24 @@
    all content in a structured, editable layout.
    ================================================================= */
 
-/* UE editing mode indicator */
+/* UE editing mode indicator - tab label style at top of block */
+main[data-aue-resource] .hero-heritage-cc {
+  position: relative;
+}
+
 main[data-aue-resource] .hero-heritage-cc::before {
   content: 'EDITING BLOCK OVERVIEW' !important;
   display: block !important;
-  position: fixed !important;
-  top: 250px !important;
-  right: 100px !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
   background: #3a3a3a !important;
   color: #fff !important;
   padding: 8px 16px !important;
   font-size: 11px !important;
   font-weight: 600 !important;
-  z-index: 99999 !important;
+  z-index: 10 !important;
   border-radius: 6px !important;
   letter-spacing: 1px !important;
   text-transform: uppercase !important;
