@@ -514,6 +514,10 @@ footer .footer>div .section>div {
     padding: 0;
   }
 
+  .footer .section.accordion-container:first-child .accordion.block {
+    margin-bottom: 0;
+  }
+
   .footer>div>div:nth-child(3) {
     padding: 0;
     order: 2;
@@ -540,7 +544,7 @@ footer .footer>div .section>div {
   }
 
   footer .footer>div .section:nth-child(4) {
-    padding: 50px 0;
+    padding: 50px 0 110px 0;
     order: 4;
   }
 
@@ -548,6 +552,10 @@ footer .footer>div .section>div {
     align-items: center;
     flex-direction: column;
     text-align: center;
+  }
+
+  .footer .section:nth-child(3) {
+    margin: 0;
   }
 
   .footer>div>div:nth-child(2)>div>ul>li {
