@@ -769,20 +769,36 @@ export default async function decorate(block) {
     const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
       .filter((cardsBlock) => cardsBlock.querySelector('li'));
 
+    // Helper function: Create view-all wrapper with title and optional "View All" button
+    const createViewAllWrapper = (titleElement) => {
+      const titleText = titleElement.textContent.trim();
+      const link = titleElement.querySelector('a');
+
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('nav-view-all-wrapper');
+
+      const titleSpan = document.createElement('span');
+      titleSpan.classList.add('nav-view-all-section-title');
+      titleSpan.textContent = titleText;
+      wrapper.appendChild(titleSpan);
+
+      // Add "View All" button only if link exists
+      if (link) {
+        const viewAllBtn = document.createElement('a');
+        viewAllBtn.href = link.href;
+        viewAllBtn.classList.add('nav-view-all-btn');
+        viewAllBtn.innerHTML = 'View All <span class="icon icon-arrow-right-alt"></span>';
+        wrapper.appendChild(viewAllBtn);
+        decorateIcons(viewAllBtn);
+      }
+
+      return wrapper;
+    };
+
     const titleElement = children.find((child) => child.tagName === 'H3');
     if (!titleElement) return null;
 
-    const titleText = titleElement.textContent;
-
-    // Extract "View All" link from H3 if it exists
-    let viewAllLink = null;
-    const h3Link = titleElement.querySelector('a');
-    if (h3Link) {
-      viewAllLink = {
-        text: 'View All',
-        url: h3Link.href,
-      };
-    }
+    const titleText = titleElement.textContent.trim();
 
     // Create wrapper for non-title children
     const sectionContent = document.createElement('div');
@@ -791,26 +807,8 @@ export default async function decorate(block) {
     const primaryLinksWrapper = document.createElement('div');
     primaryLinksWrapper.classList.add('nav-primary-links');
 
-    // Always add section title at the top, with optional "View All" button
-    const viewAllWrapper = document.createElement('div');
-    viewAllWrapper.classList.add('nav-view-all-wrapper');
-
-    const sectionTitle = document.createElement('span');
-    sectionTitle.classList.add('nav-view-all-section-title');
-    sectionTitle.textContent = titleText;
-    viewAllWrapper.appendChild(sectionTitle);
-
-    // Add "View All" button only if link exists
-    if (viewAllLink) {
-      const viewAllBtn = document.createElement('a');
-      viewAllBtn.href = viewAllLink.url;
-      viewAllBtn.classList.add('nav-view-all-btn');
-      viewAllBtn.innerHTML = `${viewAllLink.text} <span class="icon icon-arrow-right-alt"></span>`;
-      viewAllWrapper.appendChild(viewAllBtn);
-      // Decorate the icon we just created (it wasn't in the fragment)
-      decorateIcons(viewAllBtn);
-    }
-
+    // Add section title with optional "View All" button
+    const viewAllWrapper = createViewAllWrapper(titleElement);
     primaryLinksWrapper.appendChild(viewAllWrapper);
 
     // Process children and handle H4 subsections
@@ -843,9 +841,10 @@ export default async function decorate(block) {
           firstH4Found = true;
         }
 
+        // Create H4 title with optional "View All" button using same helper
         const h4Title = document.createElement('p');
         h4Title.classList.add('nav-h4-section-title');
-        h4Title.textContent = child.textContent.trim();
+        h4Title.appendChild(createViewAllWrapper(child));
         currentH4Section.appendChild(h4Title);
 
         currentH4Content = document.createElement('ul');
