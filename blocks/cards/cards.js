@@ -831,6 +831,8 @@ export default async function decorate(block) {
         cardLink.href = linkUrl;
         cardLink.title = linkTitle;
         cardLink.className = 'important-documents-card-link';
+        cardLink.target = '_blank';
+        cardLink.rel = 'noopener noreferrer';
 
         // Move elements directly instead of cloning (performance optimization)
         if (imageDiv) {

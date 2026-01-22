@@ -1247,7 +1247,7 @@ async function loadBreadcrumbs(main) {
       for (let i = 0; i < sections.length; i += 1) {
         const section = sections[i];
         if (!section.classList.contains('category-nav-container')
-            && !section.classList.contains('category-nav-section')) {
+          && !section.classList.contains('category-nav-section')) {
           targetSection = section;
           break;
         }
