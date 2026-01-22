@@ -83,6 +83,21 @@ color: var(--dark-red-color);
   line-height: 1.5;
 }
 
+.mayura .sticky-cta.block {
+  background: rgba(239, 239, 239, 0.6)
+}
+
+.mayura .sticky-cta-subtitle-content {
+  color: rgb(26, 26, 26);
+  padding-top: 10px;
+  font-size: 14px;
+}
+
+.mayura .sticky-cta-container .sticky-cta-content a.button {
+  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  border: none;
+}
+
   @media (width <= 900px) {
     .mayura .section[data-id="get-in-touch"] .cards.related-search .benefit-cards {
       flex-direction: column;
@@ -97,7 +112,7 @@ color: var(--dark-red-color);
     }
   }
 
-  @media (width >= 990px) {
+  @media (width >= 768px) {
     .mayura .sticky-cta-container {
       display: none;
     }
