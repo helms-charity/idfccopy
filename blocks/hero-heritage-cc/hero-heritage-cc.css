@@ -617,12 +617,22 @@ main[data-aue-resource] .hero-heritage-cc-container {
   height: auto;
   contain: none;
   overflow: visible;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
   height: auto;
   min-height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Move breadcrumbs above the block in UE mode */
+main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
+  position: static;
+  transform: none;
+  order: -1;
+  margin-bottom: 16px;
 }
 
 main[data-aue-resource] .hero-heritage-cc {
