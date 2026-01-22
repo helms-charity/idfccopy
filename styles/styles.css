@@ -1316,3 +1316,13 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     grid-template-columns: repeat(var(--grid-size), 1fr);
   }
 }
+
+@keyframes bounce1 {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-15px);
+  }
+}
