@@ -15,6 +15,9 @@ import { decorateSections, decorateMain, loadFragment } from './scripts.js';
 window.hlx = window.hlx || {};
 window.hlx.isEditor = true;
 
+// Load editor-specific styles (UE-only CSS for better performance on live pages)
+loadCSS(`${window.hlx.codeBasePath || ''}/styles/editor-styles.css`);
+
 /**
  * Check if we're editing a framework page (should skip nav building)
  * @returns {boolean} true if we should skip navigation building
