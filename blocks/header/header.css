@@ -406,14 +406,14 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-card {
   width: 100%;
 }
 
-/* View All button */
+/* View All button - mobile/tablet styles */
 header nav .nav-sections .nav-view-all-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 20px 12px 32px;
   margin: 0;
-  font-size: 15px;
+  font-size: var(--body-font-size-xxs);
   font-weight: 600;
   color: var(--dark-red-color);
   text-decoration: none;
@@ -650,7 +650,7 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-content .category
 header nav .nav-sections.tab-view-active .nav-view-all-btn {
   padding-left: 40px;
   border-bottom: none;
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-xxs);
 }
 
 header nav .nav-sections.tab-view-active .nav-view-all-btn:hover {
@@ -1819,15 +1819,20 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     padding: 0;
   }
 
-  /* Desktop: Discover heading */
+  /* Desktop: Discover heading - always bold since it's not interactive */
   header nav .nav-sections .nav-discover-heading {
     font-size: var(--body-font-size-s);
     font-weight: 700;
     color: var(--text-color);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0 0 16px;
     text-align: left;
+  }
+
+  /* Override general paragraph rules to keep Discover heading bold (no hover effect) */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-discover-heading,
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-discover-heading:hover {
+    font-weight: 700 !important;
   }
 
   /* Desktop: Cards block in Discover section */
@@ -1988,9 +1993,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background-color: transparent;
   }
 
-  /* Content items: Links default state */
+  /* Content items: Links default state (exclude View All buttons which have their own styling) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content div:not(.cards-card-body) > p.button-container a,
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container) a {
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container) a:not(.nav-view-all-btn) {
     color: var(--dark-red-link-color);
     text-decoration: none;
     font-size: var(--body-font-size-xs);
@@ -2006,9 +2011,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     overflow-wrap: break-word;
   }
 
-  /* Content items: Links hover state */
+  /* Content items: Links hover state (exclude H4 titles and View All buttons to keep them static) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container):hover a {
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
     font-weight: 700;
   }
 
@@ -2037,14 +2042,16 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     min-height: 0;
     height: auto;
     border-bottom: none;
+    font-size: var(--body-font-size-xxs);
     font-weight: 600;
     line-height: 1.3;
     color: var(--dark-red-link-color);
     background-color: transparent;
   }
 
+  /* Keep static weight on hover (no change) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-btn:hover {
-    font-weight: 700;
+    font-weight: 600;
   }
 
   /* Desktop: Change arrow icon to chevron-right-red for view-all buttons */
@@ -2087,6 +2094,12 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     padding: 10px 16px;
     background-color: var(--gray-200);
     margin-bottom: 4px;
+  }
+
+  /* H4 section title with view-all wrapper - remove duplicate padding */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-title .nav-view-all-wrapper {
+    padding: 0;
+    margin: 0;
   }
 
   /* H4 section content */
@@ -2269,10 +2282,10 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     }
 
     #download.grid-2 {
-     display: block;
-     text-align: center;
-  }
-  
+  display: block;
+  text-align: center;
+}
+
     .section {
       max-width: 1300px;
     }
@@ -2408,7 +2421,7 @@ border-radius: 0;
   .search-dropdown {
     top: var(--nav-height);
     bottom: auto;
-    transform-origin: top;
+  transform-origin: top;
     display: none;
   }
 
@@ -2560,9 +2573,9 @@ border-radius: 0;
 
     .section#openaccount {
       max-width: 400px;
-    }
+  }
 
-    .cards.related-search .grid-cards {
+  .cards.related-search .grid-cards {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-xs);
   }
@@ -2605,5 +2618,5 @@ border-radius: 0;
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: 18px;
     margin: 0 0 10px;
-  }
+}
 }
