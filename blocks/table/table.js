@@ -155,14 +155,22 @@ export default async function decorate(block) {
   }
 
   const table = document.createElement('table');
-  const thead = block.id === 'fees-and-charges' ? null : document.createElement('thead');
+  const noHeaderVariants = ['fees-and-charges', 'reward-points'];
+  const thead = noHeaderVariants.includes(block.id) ? null : document.createElement('thead');
   const tbody = document.createElement('tbody');
 
   if (tableRowMaxWidth) {
     table.style.maxWidth = tableRowMaxWidth;
   }
 
-  const dataRows = rows.slice(metadataCount);
+  // Filter out empty rows (rows where all cells have no content)
+  const dataRows = rows.slice(metadataCount).filter((row) => {
+    if (!row.children?.length) return false;
+    const cells = Array.from(row.children);
+    return cells.some((cell) => cell.textContent?.trim() || cell.querySelector('img, picture'));
+  });
+
+  let headerRowProcessed = false;
   dataRows.forEach((row, i) => {
     if (!row.children?.length) return;
 
@@ -171,7 +179,7 @@ export default async function decorate(block) {
 
     const isFirstRow = i === 0;
     const isLastRow = i === dataRows.length - 1;
-    const isHeaderRow = isFirstRow && thead;
+    const isHeaderRow = isFirstRow && thead && !headerRowProcessed;
     const cells = Array.from(row.children);
     const firstCell = cells[0];
     const secondCell = cells[1];
@@ -192,7 +200,12 @@ export default async function decorate(block) {
       });
     }
 
-    (isHeaderRow ? thead : tbody).append(tr);
+    if (isHeaderRow) {
+      thead.append(tr);
+      headerRowProcessed = true;
+    } else {
+      tbody.append(tr);
+    }
   });
 
   block.textContent = '';
