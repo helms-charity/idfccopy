@@ -753,8 +753,10 @@ main[data-aue-resource] .hero-heritage-cc-header-cta {
 
 main[data-aue-resource] .hero-heritage-cc-header-cta > div {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
   width: 100%;
 }
 
