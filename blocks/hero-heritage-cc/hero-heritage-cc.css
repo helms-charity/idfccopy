@@ -698,7 +698,53 @@ main[data-aue-resource] .hero-heritage-cc-header-cta::before {
 }
 
 main[data-aue-resource] .hero-heritage-cc-intro::before {
-  content: 'Intro Section (Animated overlay)';
+  content: 'INTRO SECTION (ANIMATED OVERLAY)';
+  position: relative;
+  width: auto;
+  height: auto;
+  background: #3a3a3a;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  z-index: 10;
+  animation: none;
+  display: inline-block;
+  margin: 8px auto;
+}
+
+/* Gradient color preview in UE */
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::before {
+  content: 'Gradient Color:';
+  font-size: 10px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 24px;
+  background: var(--hero-heritage-cc-intro-gradient);
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
 main[data-aue-resource] .hero-heritage-cc-banner::before {
@@ -753,8 +799,7 @@ main[data-aue-resource] .hero-heritage-cc-header-cta {
 
 main[data-aue-resource] .hero-heritage-cc-header-cta > div {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 16px;

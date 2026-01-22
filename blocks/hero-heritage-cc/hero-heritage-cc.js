@@ -325,7 +325,13 @@ export default function decorate(block) {
           // Store the value as a data attribute and CSS custom property
           block.dataset.gradientColor = normalizedValue;
           block.style.setProperty('--hero-heritage-cc-intro-gradient', normalizedValue);
-          p.remove(); // Remove the raw text element from DOM
+
+          // In UE mode, keep visible for editing; on live pages, remove
+          if (hasAueResource) {
+            p.classList.add('hero-heritage-cc-intro-gradient-preview');
+          } else {
+            p.remove();
+          }
         }
       });
 
