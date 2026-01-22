@@ -600,8 +600,7 @@ main[data-aue-resource] .hero-heritage-cc::before {
   display: block !important;
   position: fixed !important;
   top: 200px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  right: 100px !important;
   background: #3a3a3a !important;
   color: #fff !important;
   padding: 8px 16px !important;
@@ -618,6 +617,7 @@ main[data-aue-resource] .hero-heritage-cc-container {
   height: auto;
   contain: none;
   overflow: visible;
+  margin-top: 100px;
 }
 
 main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
@@ -847,7 +847,7 @@ main[data-aue-resource] .hero-heritage-cc p {
   margin: 4px 0;
 }
 
-/* CTA buttons in UE - visible with labels */
+/* CTA buttons in UE - reset to default button styling */
 main[data-aue-resource] .hero-heritage-cc-banner-cta-group {
   flex-flow: row wrap;
   gap: 12px;
@@ -855,14 +855,17 @@ main[data-aue-resource] .hero-heritage-cc-banner-cta-group {
 }
 
 main[data-aue-resource] .hero-heritage-cc-banner-cta a.button {
-  padding: 8px 16px;
-  font-size: 12px;
-  background: #333;
-  color: #fff;
-  border-radius: 4px;
-  text-decoration: none;
+  color: unset;
+  font-size: unset;
+  font-weight: unset;
+  line-height: unset;
+  text-decoration-line: unset;
 }
 
 main[data-aue-resource] .hero-heritage-cc-banner-cta a.button.primary {
-  background: #c33;
+  background: unset;
+  padding: unset;
+  font-size: unset;
+  border: unset;
+  text-decoration: unset;
 }
