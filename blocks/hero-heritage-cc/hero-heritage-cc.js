@@ -213,40 +213,51 @@ export default function decorate(block) {
       // Get all pictures in intro (order follows model field order)
       const pictures = introContent.querySelectorAll('picture');
 
-      // First picture is the background image - apply to section container
+      // First picture is the background image
       if (pictures[0]) {
         const bgPicture = pictures[0];
         const bgPictureWrapper = bgPicture.closest('p');
         const bgImg = bgPicture.querySelector('img');
 
-        // Get WebP source for better compression (prefer mobile size for LCP)
-        const webpSource = bgPicture.querySelector('source[type="image/webp"]');
-        const bgUrl = webpSource?.srcset?.split(',')[0]?.trim()?.split(' ')[0]
-          || bgImg?.src;
+        // Check if we're in Universal Editor
+        const isInUE = !!document.querySelector('main[data-aue-resource]');
 
-        if (bgUrl) {
-          // Find the section container and set background image
-          const sectionContainer = block.closest('.section');
-          if (sectionContainer) {
-            sectionContainer.style.backgroundImage = `url(${bgUrl})`;
-            sectionContainer.style.backgroundSize = 'cover';
-            sectionContainer.style.backgroundRepeat = 'repeat';
-            sectionContainer.style.backgroundPosition = 'center center';
-            sectionContainer.style.backgroundAttachment = 'fixed';
-
-            // Add preload link for LCP optimization with WebP
-            const preloadLink = document.createElement('link');
-            preloadLink.rel = 'preload';
-            preloadLink.as = 'image';
-            preloadLink.href = bgUrl;
-            preloadLink.fetchPriority = 'high';
-            if (webpSource) preloadLink.type = 'image/webp';
-            document.head.appendChild(preloadLink);
+        if (isInUE) {
+          // In UE: Show as a clickable thumbnail for easy content authoring
+          bgPicture.classList.add('hero-heritage-cc-intro-bg-preview');
+          if (bgPictureWrapper) {
+            bgPictureWrapper.classList.add('hero-heritage-cc-intro-bg-preview-wrapper');
           }
+        } else {
+          // On live pages: Apply as section background and remove from DOM
+          const webpSource = bgPicture.querySelector('source[type="image/webp"]');
+          const bgUrl = webpSource?.srcset?.split(',')[0]?.trim()?.split(' ')[0]
+            || bgImg?.src;
+
+          if (bgUrl) {
+            const sectionContainer = block.closest('.section');
+            if (sectionContainer) {
+              sectionContainer.style.backgroundImage = `url(${bgUrl})`;
+              sectionContainer.style.backgroundSize = 'cover';
+              sectionContainer.style.backgroundRepeat = 'repeat';
+              sectionContainer.style.backgroundPosition = 'center center';
+              sectionContainer.style.backgroundAttachment = 'fixed';
+
+              // Add preload link for LCP optimization with WebP
+              const preloadLink = document.createElement('link');
+              preloadLink.rel = 'preload';
+              preloadLink.as = 'image';
+              preloadLink.href = bgUrl;
+              preloadLink.fetchPriority = 'high';
+              if (webpSource) preloadLink.type = 'image/webp';
+              document.head.appendChild(preloadLink);
+            }
+          }
+
+          // Remove from DOM on live pages
+          bgPicture.remove();
+          if (bgPictureWrapper) bgPictureWrapper.remove();
         }
-        // Remove the picture element and its wrapper from DOM
-        bgPicture.remove();
-        if (bgPictureWrapper) bgPictureWrapper.remove();
       }
 
       // Second picture is decoration image top-right
