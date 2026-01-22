@@ -625,6 +625,11 @@ main[data-aue-resource] .hero-heritage-cc-container {
   overflow: visible;
 }
 
+/* Decoration image (top right) - raise above header CTA in UE */
+main[data-aue-resource] .hero-heritage-cc-container::before {
+  z-index: 20;
+}
+
 main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
   height: auto;
   min-height: auto;
