@@ -96,3 +96,9 @@ color: var(--dark-red-color);
       }
     }
   }
+
+  @media (width >= 990px) {
+    .mayura .sticky-cta-container {
+      display: none;
+    }
+  }
