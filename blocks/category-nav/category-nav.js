@@ -188,6 +188,61 @@ export function parseCategoryNavBlock(block) {
 }
 
 /**
+ * Initialize card navigation functionality
+ * @param {HTMLElement} container - The cards container
+ * @param {HTMLElement} prevButton - Previous button
+ * @param {HTMLElement} nextButton - Next button
+ */
+function initializeCardNavigation(container, prevButton, nextButton) {
+  const cardsPerPage = 3;
+  const totalItems = parseInt(container.getAttribute('data-total-items'), 10);
+  const totalPages = Math.ceil(totalItems / cardsPerPage);
+  let currentPage = 0;
+
+  const updateNavigation = () => {
+    // Update container position
+    const cards = container.querySelectorAll('.category-nav-card');
+    const startIndex = currentPage * cardsPerPage;
+
+    cards.forEach((card, index) => {
+      if (index >= startIndex && index < startIndex + cardsPerPage) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Update button states
+    prevButton.disabled = currentPage === 0;
+    nextButton.disabled = currentPage >= totalPages - 1;
+
+    // Update current page attribute
+    container.setAttribute('data-current-page', currentPage);
+  };
+
+  prevButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentPage > 0) {
+      currentPage -= 1;
+      updateNavigation();
+    }
+  });
+
+  nextButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentPage < totalPages - 1) {
+      currentPage += 1;
+      updateNavigation();
+    }
+  });
+
+  // Initial update
+  updateNavigation();
+}
+
+/**
  * Build dropdown content
  */
 export function buildDropdown(categoryData) {
@@ -218,17 +273,82 @@ export function buildDropdown(categoryData) {
     hdBx.appendChild(linkElement);
   }
 
+  // Add close button for cards block items
+  if (categoryData.isFromCardsBlock) {
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('category-nav-close-button');
+    closeButton.setAttribute('aria-label', 'Close');
+    closeButton.innerHTML = '×'; // Using × symbol
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Find the parent nav item and remove is-open class
+      const navItem = dropdown.closest('.category-nav-item-cards');
+      if (navItem) {
+        navItem.classList.remove('is-open');
+      }
+    });
+    hdBx.appendChild(closeButton);
+  }
+
   dropdown.appendChild(hdBx);
 
-  // Build card list
-  const menuCardList = document.createElement('div');
-  menuCardList.classList.add('category-nav-cards-container');
+  // Create carousel wrapper if we have cards from Cards block
+  const hasCardsFromBlock = categoryData.isFromCardsBlock && categoryData.items.length > 0;
 
-  categoryData.items.forEach((card) => {
-    menuCardList.appendChild(card);
-  });
+  if (hasCardsFromBlock) {
+    // Create carousel wrapper
+    const carouselWrapper = document.createElement('div');
+    carouselWrapper.classList.add('category-nav-carousel-wrapper');
 
-  dropdown.appendChild(menuCardList);
+    // Build card list
+    const menuCardList = document.createElement('div');
+    menuCardList.classList.add('category-nav-cards-container', 'category-nav-cards-carousel');
+    menuCardList.setAttribute('data-current-page', '0');
+    menuCardList.setAttribute('data-total-items', categoryData.items.length);
+
+    categoryData.items.forEach((card) => {
+      menuCardList.appendChild(card);
+    });
+
+    carouselWrapper.appendChild(menuCardList);
+
+    // Always add navigation arrows for Cards block items
+    const navigationWrapper = document.createElement('div');
+    navigationWrapper.classList.add('category-nav-navigation');
+
+    const prevButton = document.createElement('button');
+    prevButton.classList.add('category-nav-nav-button', 'category-nav-nav-prev');
+    prevButton.setAttribute('aria-label', 'Previous cards');
+    prevButton.innerHTML = '<span class="nav-arrow">‹</span>';
+    prevButton.disabled = true; // Start disabled
+
+    const nextButton = document.createElement('button');
+    nextButton.classList.add('category-nav-nav-button', 'category-nav-nav-next');
+    nextButton.setAttribute('aria-label', 'Next cards');
+    nextButton.innerHTML = '<span class="nav-arrow">›</span>';
+
+    navigationWrapper.appendChild(prevButton);
+    navigationWrapper.appendChild(nextButton);
+
+    carouselWrapper.appendChild(navigationWrapper);
+
+    // Initialize navigation (will handle disabled states based on content)
+    initializeCardNavigation(menuCardList, prevButton, nextButton);
+
+    dropdown.appendChild(carouselWrapper);
+  } else {
+    // Build card list (traditional approach for category-nav blocks)
+    const menuCardList = document.createElement('div');
+    menuCardList.classList.add('category-nav-cards-container');
+
+    categoryData.items.forEach((card) => {
+      menuCardList.appendChild(card);
+    });
+
+    dropdown.appendChild(menuCardList);
+  }
+
   return dropdown;
 }
 
@@ -254,19 +374,54 @@ function buildUnifiedNavigation(categoriesData) {
     li.setAttribute('data-header-gtm', category.title);
     li.setAttribute('data-category', category.id);
 
+    // Mark cards block items differently for click behavior
+    if (category.isFromCardsBlock) {
+      li.classList.add('category-nav-item-cards');
+      li.setAttribute('data-click-to-open', 'true');
+    }
+
     const link = document.createElement('a');
     link.classList.add('category-nav-link');
-    link.textContent = category.title;
+
+    // If category has an icon, use it; otherwise use text
+    if (category.iconElement) {
+      link.appendChild(category.iconElement);
+    } else {
+      link.textContent = category.title;
+    }
+
     link.href = `#${category.id}`;
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.getElementById(category.id);
-      if (target) {
-        const yOffset = -200;
-        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
-    });
+
+    // Different click behavior for cards block items vs regular items
+    if (category.isFromCardsBlock) {
+      // For cards block: toggle dropdown on click
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Close all other open dropdowns
+        document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
+          if (openItem !== li) {
+            openItem.classList.remove('is-open');
+          }
+        });
+
+        // Toggle this dropdown
+        li.classList.toggle('is-open');
+      });
+    } else {
+      // For regular items: scroll to section
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById(category.id);
+        if (target) {
+          const yOffset = -200;
+          const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    }
+
     li.appendChild(link);
 
     // Build dropdown
@@ -281,6 +436,16 @@ function buildUnifiedNavigation(categoriesData) {
   tabPane.appendChild(navList);
   tabsPane.appendChild(tabPane);
   topNav.appendChild(tabsPane);
+
+  // Add click-outside listener to close cards block dropdowns
+  document.addEventListener('click', (e) => {
+    const clickedInsideCardsNav = e.target.closest('.category-nav-item-cards');
+    if (!clickedInsideCardsNav) {
+      document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
+        openItem.classList.remove('is-open');
+      });
+    }
+  });
 
   return topNav;
 }
@@ -325,6 +490,193 @@ function positionDropdowns() {
       dropdown.style.left = '0';
     }
   });
+}
+
+/**
+ * Convert a cards block card (li element) to category-nav dropdown card format
+ * @param {HTMLElement} cardLi - The card li element from cards block
+ * @returns {HTMLElement} Converted card element for dropdown
+ */
+function convertCardsBlockCardToDropdownCard(cardLi) {
+  const card = document.createElement('div');
+  card.classList.add('category-nav-card', 'category-nav-card-from-cards-block');
+
+  // Main card wrapper (not a link anymore, since we have multiple links inside)
+  const cardWrapper = document.createElement('div');
+  cardWrapper.classList.add('category-nav-card-wrapper');
+
+  // Extract content from card body
+  const cardBody = cardLi.querySelector('.cards-card-body');
+  let title = '';
+  const paragraphElements = [];
+
+  if (cardBody) {
+    // Check for heading first
+    const heading = cardBody.querySelector('h1, h2, h3, h4, h5, h6');
+    const paragraphs = Array.from(cardBody.querySelectorAll('p'));
+
+    if (heading) {
+      // If there's a heading, use it as title
+      title = heading.textContent.trim();
+      // All paragraphs are kept for processing
+      paragraphElements.push(...paragraphs);
+    } else if (paragraphs.length > 0) {
+      // No heading, so first paragraph is the title
+      title = paragraphs[0].textContent.trim();
+      // Remaining paragraphs are kept for processing (skip the first one)
+      paragraphElements.push(...paragraphs.slice(1));
+    }
+  }
+
+  // Extract and add image first
+  const cardImage = cardLi.querySelector('.cards-card-image');
+  if (cardImage) {
+    const imageWrapper = document.createElement('div');
+    imageWrapper.classList.add('category-nav-card-image');
+    imageWrapper.appendChild(cardImage.cloneNode(true));
+    cardWrapper.appendChild(imageWrapper);
+  }
+
+  // Add title below image
+  if (title) {
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('category-nav-card-title');
+    titleDiv.textContent = title;
+    cardWrapper.appendChild(titleDiv);
+  }
+
+  // Process paragraphs according to the new logic
+  // Separate paragraphs into description text and button links
+  const descriptionParagraphs = [];
+  const buttonParagraphs = [];
+
+  paragraphElements.forEach((p) => {
+    const link = p.querySelector('a[href]');
+    const text = p.textContent.trim();
+    const isJustLink = link && text === link.textContent.trim();
+
+    if (isJustLink) {
+      // This paragraph is just a link, should be a button
+      buttonParagraphs.push(p);
+    } else if (text) {
+      // This paragraph has text content (not just a link)
+      descriptionParagraphs.push(p);
+    }
+  });
+
+  // Display description paragraphs
+  descriptionParagraphs.forEach((p) => {
+    const text = p.textContent.trim();
+
+    if (text === '---') {
+      // Convert "---" to horizontal divider
+      const divider = document.createElement('hr');
+      divider.classList.add('category-nav-card-divider');
+      cardWrapper.appendChild(divider);
+    } else if (text) {
+      // Display as description text
+      const textLine = document.createElement('div');
+      textLine.classList.add('category-nav-card-description');
+      textLine.textContent = text;
+      cardWrapper.appendChild(textLine);
+    }
+  });
+
+  // Display button links in a row at the bottom
+  if (buttonParagraphs.length > 0) {
+    const buttonsRow = document.createElement('div');
+    buttonsRow.classList.add('category-nav-card-buttons');
+
+    buttonParagraphs.forEach((p) => {
+      const link = p.querySelector('a[href]');
+      if (link) {
+        const button = document.createElement('a');
+        button.classList.add('category-nav-card-button');
+        button.href = link.href;
+        button.textContent = link.textContent.trim();
+        button.setAttribute('data-gtm-desk-l3cards-click', '');
+        buttonsRow.appendChild(button);
+      }
+    });
+
+    if (buttonsRow.children.length > 0) {
+      cardWrapper.appendChild(buttonsRow);
+    }
+  }
+
+  card.appendChild(cardWrapper);
+  return card;
+}
+
+/**
+ * Parse a section with a Cards block to extract category data
+ * @param {HTMLElement} section - The section element containing Cards block
+ * @returns {Object} Category data object
+ */
+function parseSectionWithCardsBlock(section) {
+  // Get text elements outside of blocks
+  const allTextElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+  const textElementsOutsideBlocks = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const el of allTextElements || []) {
+    const isInsideBlock = el.closest('.block');
+    if (!isInsideBlock) {
+      textElementsOutsideBlocks.push(el);
+    }
+  }
+
+  let categoryName = 'Category';
+  let iconElement = null;
+  let dropdownTitle = '';
+
+  // First text element: icon or category name
+  if (textElementsOutsideBlocks.length > 0) {
+    const firstElement = textElementsOutsideBlocks[0];
+    const icon = firstElement.querySelector('span.icon');
+    if (icon) {
+      // Clone the icon to use in navigation
+      iconElement = icon.cloneNode(true);
+      // Get the icon name from classes like "icon-bell"
+      const iconClass = Array.from(icon.classList).find((c) => c.startsWith('icon-'));
+      categoryName = iconClass ? iconClass.substring(5) : 'icon';
+    } else {
+      categoryName = firstElement.textContent.trim();
+    }
+  }
+
+  // Second text element: dropdown container title (eyebrow title)
+  if (textElementsOutsideBlocks.length > 1) {
+    dropdownTitle = textElementsOutsideBlocks[1].textContent.trim();
+  }
+
+  // Find the cards block in this section
+  const cardsBlock = section.querySelector('.cards.block');
+  if (!cardsBlock) {
+    return null;
+  }
+
+  // Get all card items from the cards block
+  const cardItems = cardsBlock.querySelectorAll('li');
+  const items = [];
+
+  cardItems.forEach((cardLi) => {
+    const convertedCard = convertCardsBlockCardToDropdownCard(cardLi);
+    if (convertedCard) {
+      items.push(convertedCard);
+    }
+  });
+
+  return {
+    title: categoryName,
+    id: categoryName.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, ''),
+    eyebrowTitle: dropdownTitle, // This will be the container title
+    linkText: '',
+    linkUrl: '',
+    items,
+    isFromCardsBlock: true, // Flag to identify this type
+    iconElement, // Store the icon element if found
+  };
 }
 
 /**
@@ -379,13 +731,48 @@ export default function decorate(block) {
   // Find ALL category-nav blocks on the page
   const allCategoryNavBlocks = document.querySelectorAll('.category-nav.block');
 
-  if (allCategoryNavBlocks.length === 0) {
+  // Also find sections with Cards blocks (not category-nav blocks)
+  const allSections = document.querySelectorAll('.section');
+  const sectionsWithCards = [];
+
+  allSections.forEach((section) => {
+    // Check if section has a cards block but NOT a category-nav block
+    const hasCardsBlock = section.querySelector('.cards.block');
+    const hasCategoryNav = section.querySelector('.category-nav.block');
+
+    if (hasCardsBlock && !hasCategoryNav) {
+      // Check if this section has text content or an icon (the category name/icon)
+      const textElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+      let hasTextOrIcon = false;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const el of textElements) {
+        const isInsideBlock = el.closest('.block');
+        if (!isInsideBlock) {
+          // Check for either text content or an icon
+          const hasIcon = el.querySelector('span.icon');
+          if (el.textContent.trim() || hasIcon) {
+            hasTextOrIcon = true;
+            break;
+          }
+        }
+      }
+
+      if (hasTextOrIcon) {
+        sectionsWithCards.push(section);
+      }
+    }
+  });
+
+  if (allCategoryNavBlocks.length === 0 && sectionsWithCards.length === 0) {
     block.style.display = 'none';
     return;
   }
 
-  // Parse data from all blocks and add section IDs
+  // Parse data from all blocks and sections, and add section IDs
   const categoriesData = [];
+
+  // First, process traditional category-nav blocks
   allCategoryNavBlocks.forEach((navBlock) => {
     const categoryData = parseCategoryNavBlock(navBlock);
     if (categoryData.items.length > 0) {
@@ -394,6 +781,20 @@ export default function decorate(block) {
       // Add ID to the section for anchor navigation
       const section = navBlock.closest('.section');
       if (section && !section.id) {
+        section.id = categoryData.id;
+        section.setAttribute('data-category-id', categoryData.id);
+      }
+    }
+  });
+
+  // Then, process sections with Cards blocks
+  sectionsWithCards.forEach((section) => {
+    const categoryData = parseSectionWithCardsBlock(section);
+    if (categoryData && categoryData.items.length > 0) {
+      categoriesData.push(categoryData);
+
+      // Add ID to the section for anchor navigation
+      if (!section.id) {
         section.id = categoryData.id;
         section.setAttribute('data-category-id', categoryData.id);
       }
@@ -471,6 +872,11 @@ export default function decorate(block) {
         section.style.display = 'none';
       }
     }
+  });
+
+  // Also hide sections with Cards blocks that are now in the nav
+  sectionsWithCards.forEach((section) => {
+    section.style.display = 'none';
   });
 
   // Position dropdowns intelligently after a short delay to ensure DOM is fully rendered
