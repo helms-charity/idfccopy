@@ -71,10 +71,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .tab-pane.active {
-  display: flex; /* Changed from block to flex for left-right layout */
-  justify-content: space-between; /* Left items on left, right items on right */
-  align-items: center;
-  width: 100%;
+  display: block;
 }
 
 /* Navigation list items */
@@ -89,16 +86,12 @@ body.is-framework-page .category-nav.block > div > div {
   box-sizing: border-box;
 }
 
-.category-nav-left > li,
-.category-nav-list-left > li,
-.category-nav-list-right > li {
+.category-nav-left > li {
   position: relative;
   padding: 14px 0;
 }
 
-.category-nav-left > li > a,
-.category-nav-list-left > li > a,
-.category-nav-list-right > li > a {
+.category-nav-left > li > a {
   color: #333;
   font-size: 13px;
   font-weight: 400;
@@ -109,10 +102,34 @@ body.is-framework-page .category-nav.block > div > div {
   transition: color 0.2s ease;
 }
 
-.category-nav-left > li > a:hover,
-.category-nav-list-left > li > a:hover,
-.category-nav-list-right > li > a:hover {
+.category-nav-left > li > a:hover {
   color: var(--dark-red-color);
+}
+
+/* Push bulletin cards notification to the right */
+.category-nav-bulletin-notification {
+  margin-left: auto;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-width: 60px; /* Give it a width so there's a proper center point */
+}
+
+/* Center the link content within the bell notification item */
+.category-nav-bulletin-notification > a.category-nav-link {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  padding: 14px 0 !important; /* Remove left/right padding, keep top/bottom */
+}
+
+/* Center the icon itself within the bell notification - remove margin */
+.category-nav-bulletin-notification .icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 !important; /* Remove any margin that pushes it to the left */
 }
 
 /* Dropdown Styles */
@@ -283,32 +300,33 @@ body.is-framework-page .category-nav.block > div > div {
   transform: rotate(-45deg) translateX(2px);
 }
 
-/* Cards Container - Carousel Layout */
+/* Cards Container - Default grid layout for regular dropdowns */
 .category-nav-cards-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
+  padding: 10px 24px 20px;
+}
+
+/* Bulletin Cards - Swiper Integration (only for carousel variant) */
+.category-nav-item-cards .category-nav-cards-carousel {
+  display: block;
+  width: 100%;
   padding: 10px 24px;
-  user-select: none; /* Prevent text selection during drag */
-  touch-action: pan-y; /* Allow vertical scrolling but enable horizontal swipe */
-  cursor: grab; /* Show grab cursor */
-  transition: transform 0.4s ease-out; /* Smooth sliding animation */
-  width: 100%; /* Full width for proper transform calculation */
 }
 
-.category-nav-cards-container:active {
-  cursor: grabbing; /* Show grabbing cursor when dragging */
+.category-nav-item-cards .category-nav-cards-carousel.swiper {
+  overflow: visible;
 }
 
-/* Cards in carousel - fixed width to show 3 at a time */
-.category-nav-cards-carousel .category-nav-card {
-  flex: 0 0 calc((100% - 60px) / 3); /* 3 cards with 30px gap between them */
-  min-width: 0;
+.category-nav-item-cards .category-nav-cards-carousel .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
 }
 
-/* Make images draggable (don't interfere with drag) */
-.category-nav-cards-container img {
-  pointer-events: none; /* Allow drag events to pass through images */
-  user-select: none;
+.category-nav-item-cards .category-nav-cards-carousel .swiper-slide {
+  height: auto;
+  display: flex;
 }
 
 /* Category Nav Cards */
@@ -650,7 +668,8 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
   transform: scale(1.05);
 }
 
-.category-nav-nav-button:disabled {
+.category-nav-nav-button:disabled,
+.category-nav-nav-button.swiper-button-disabled {
   background: #f5f5f5; /* Same light background */
   color: #d99; /* Light red/pink arrows when disabled - mix of red and gray */
   cursor: not-allowed;

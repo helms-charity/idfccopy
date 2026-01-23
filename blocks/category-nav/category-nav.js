@@ -2,6 +2,8 @@
  * Category Navigation - Collects all category-nav blocks and builds unified navigation
  */
 
+import { loadCSS, loadScript } from '../../scripts/aem.js';
+
 // Track if we've already built the unified nav
 let unifiedNavBuilt = false;
 
@@ -188,176 +190,95 @@ export function parseCategoryNavBlock(block) {
 }
 
 /**
- * Initialize card navigation functionality
- * @param {HTMLElement} container - The cards container
+ * Initialize Swiper for card navigation
+ * @param {HTMLElement} carouselWrapper - The carousel wrapper element
  * @param {HTMLElement} prevButton - Previous button
  * @param {HTMLElement} nextButton - Next button
+ * @returns {Promise<void>}
  */
-function initializeCardNavigation(container, prevButton, nextButton) {
-  const totalItems = parseInt(container.getAttribute('data-total-items'), 10);
-  const visibleCards = 3;
-  const maxScroll = totalItems - visibleCards; // Maximum number of cards we can scroll
-  let currentCardIndex = 0; // Current card position (not page)
+async function initializeSwiperNavigation(carouselWrapper, prevButton, nextButton) {
+  // Load Swiper library if not already loaded
+  await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
+  await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
 
-  const updateNavigation = () => {
-    // Calculate translate distance based on card index
-    // Each card moves by approximately 33.33% (100% / 3 visible cards)
-    const cardWidth = 100 / visibleCards; // Percentage width per card slot
-    const translateX = -(currentCardIndex * cardWidth);
-
-    // Apply smooth transform
-    container.style.transform = `translateX(${translateX}%)`;
-
-    // Update button states
-    prevButton.disabled = currentCardIndex === 0;
-    nextButton.disabled = currentCardIndex >= maxScroll;
-
-    // Update current position attribute
-    container.setAttribute('data-current-index', currentCardIndex);
-  };
-
-  prevButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (currentCardIndex > 0) {
-      currentCardIndex -= 1; // Move one card at a time
-      updateNavigation();
-    }
-  });
-
-  nextButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (currentCardIndex < maxScroll) {
-      currentCardIndex += 1; // Move one card at a time
-      updateNavigation();
-    }
-  });
-
-  // Add touch and drag support with momentum
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-  let initialTransform = 0;
-  let startTime = 0;
-
-  const startDrag = (clientX) => {
-    startX = clientX;
-    currentX = clientX;
-    isDragging = true;
-    startTime = Date.now();
-    const cardWidth = 100 / visibleCards;
-    initialTransform = -(currentCardIndex * cardWidth);
-    // Disable transition during drag for immediate feedback
-    container.style.transition = 'none';
-  };
-
-  const duringDrag = (clientX) => {
-    if (!isDragging) return;
-    currentX = clientX;
-    const diffX = currentX - startX;
-    const containerWidth = container.offsetWidth;
-    const percentMoved = (diffX / containerWidth) * 100;
-    // Apply live transform during drag
-    const newTransform = initialTransform + percentMoved;
-
-    // Limit transform to valid range
-    const cardWidth = 100 / visibleCards;
-    const minTransform = -(maxScroll * cardWidth);
-    const maxTransform = 0;
-    const clampedTransform = Math.max(minTransform, Math.min(maxTransform, newTransform));
-
-    container.style.transform = `translateX(${clampedTransform}%)`;
-  };
-
-  const endDrag = (endX) => {
-    if (!isDragging) return;
-    isDragging = false;
-
-    // Re-enable smooth transition
-    container.style.transition = 'transform 0.4s ease-out';
-
-    const diffX = startX - endX;
-    const endTime = Date.now();
-    const timeDiff = endTime - startTime;
-    const containerWidth = container.offsetWidth;
-    const cardWidth = containerWidth / visibleCards;
-
-    // Calculate velocity (pixels per millisecond)
-    const velocity = Math.abs(diffX) / timeDiff;
-
-    // Determine movement based on velocity and distance
-    let cardsMoved = 0;
-
-    // Fast swipe (momentum): velocity > 0.5 pixels/ms
-    if (velocity > 0.5 && timeDiff < 300) {
-      // Quick flick - move at least 1 card in the direction of swipe
-      cardsMoved = diffX > 0 ? 1 : -1;
-      // For very fast swipes, move more cards
-      if (velocity > 1.5) {
-        cardsMoved = diffX > 0 ? 2 : -2;
-      }
+  // Wait for Swiper to be available
+  const waitForSwiper = () => new Promise((resolve) => {
+    if (typeof Swiper !== 'undefined') {
+      resolve();
     } else {
-      // Slow drag - use distance with lower threshold (25% of card width)
-      const threshold = cardWidth * 0.25;
-      if (Math.abs(diffX) > threshold) {
-        // Move based on distance, but with lower threshold
-        cardsMoved = diffX > 0 ? Math.ceil(diffX / cardWidth) : Math.floor(diffX / cardWidth);
-      }
+      const checkInterval = setInterval(() => {
+        if (typeof Swiper !== 'undefined') {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 10);
+      // Timeout after 2 seconds
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve();
+      }, 2000);
     }
+  });
+  await waitForSwiper();
 
-    // Update card index based on movement
-    let newIndex = currentCardIndex + cardsMoved;
+  if (typeof Swiper === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.warn('Swiper library not available');
+    return;
+  }
 
-    // Clamp to valid range
-    newIndex = Math.max(0, Math.min(maxScroll, newIndex));
+  // Get the container that should become the swiper
+  const container = carouselWrapper.querySelector('.category-nav-cards-container');
+  if (!container) return;
 
-    // Update position
-    currentCardIndex = newIndex;
-    updateNavigation();
+  // Add Swiper classes to the container
+  container.classList.add('swiper');
+
+  // Find all cards and wrap them
+  const cards = Array.from(container.children);
+  
+  // Create swiper-wrapper
+  const swiperWrapper = document.createElement('div');
+  swiperWrapper.classList.add('swiper-wrapper');
+  
+  // Move all cards into swiper-wrapper and add swiper-slide class
+  cards.forEach((card) => {
+    card.classList.add('swiper-slide');
+    swiperWrapper.appendChild(card);
+  });
+  
+  container.appendChild(swiperWrapper);
+
+  // Configure Swiper
+  const swiperConfig = {
+    slidesPerView: 3,
+    spaceBetween: 30,
+    navigation: {
+      nextEl: nextButton,
+      prevEl: prevButton,
+    },
+    breakpoints: {
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 25,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      },
+    },
   };
 
-  // Touch events for mobile
-  container.addEventListener('touchstart', (e) => {
-    startDrag(e.touches[0].clientX);
-  }, { passive: true });
+  // Initialize Swiper
+  // eslint-disable-next-line no-undef
+  const swiper = new Swiper(container, swiperConfig);
 
-  container.addEventListener('touchmove', (e) => {
-    duringDrag(e.touches[0].clientX);
-  }, { passive: true });
-
-  container.addEventListener('touchend', (e) => {
-    endDrag(e.changedTouches[0].clientX);
-  });
-
-  // Mouse events for desktop drag
-  container.addEventListener('mousedown', (e) => {
-    e.preventDefault(); // Prevent text selection
-    startDrag(e.clientX);
-    container.style.cursor = 'grabbing';
-  });
-
-  container.addEventListener('mousemove', (e) => {
-    duringDrag(e.clientX);
-  });
-
-  container.addEventListener('mouseup', (e) => {
-    endDrag(e.clientX);
-    container.style.cursor = 'grab';
-  });
-
-  container.addEventListener('mouseleave', () => {
-    if (isDragging) {
-      endDrag(currentX);
-      container.style.cursor = 'grab';
-    }
-  });
-
-  // Set initial cursor style
-  container.style.cursor = 'grab';
-
-  // Initial update
-  updateNavigation();
+  // Store swiper instance for potential future use
+  carouselWrapper.swiperInstance = swiper;
 }
 
 /**
@@ -451,8 +372,8 @@ export function buildDropdown(categoryData) {
 
     carouselWrapper.appendChild(navigationWrapper);
 
-    // Initialize navigation (will handle disabled states based on content)
-    initializeCardNavigation(menuCardList, prevButton, nextButton);
+    // Initialize Swiper navigation
+    initializeSwiperNavigation(carouselWrapper, prevButton, nextButton);
 
     dropdown.appendChild(carouselWrapper);
   } else {
@@ -483,12 +404,9 @@ function buildUnifiedNavigation(categoriesData) {
   const tabPane = document.createElement('div');
   tabPane.classList.add('tab-pane', 'top-second-nav-js', 'active', 'category-nav-tab-pane');
 
-  // Create TWO separate lists - left for regular menu items, right for bell/utility items
-  const navListLeft = document.createElement('ul');
-  navListLeft.classList.add('top-nav-left', 'category-nav-list', 'category-nav-list-left');
-
-  const navListRight = document.createElement('ul');
-  navListRight.classList.add('category-nav-list', 'category-nav-list-right');
+  // Create single navigation list
+  const navList = document.createElement('ul');
+  navList.classList.add('top-nav-left', 'category-nav-list');
 
   categoriesData.forEach((category) => {
     const li = document.createElement('li');
@@ -498,7 +416,7 @@ function buildUnifiedNavigation(categoriesData) {
 
     // Mark cards block items differently for click behavior
     if (category.isFromCardsBlock) {
-      li.classList.add('category-nav-item-cards');
+      li.classList.add('category-nav-item-cards', 'category-nav-bulletin-notification');
       li.setAttribute('data-click-to-open', 'true');
     }
 
@@ -552,17 +470,12 @@ function buildUnifiedNavigation(categoriesData) {
       li.appendChild(dropdown);
     }
 
-    // Append to appropriate list: cards/bell go right, regular items go left
-    if (category.isFromCardsBlock || category.id === 'bell' || category.id === 'bell-outline') {
-      navListRight.appendChild(li);
-    } else {
-      navListLeft.appendChild(li);
-    }
+    // Append to single list
+    navList.appendChild(li);
   });
 
-  // Append both lists to the tab pane
-  tabPane.appendChild(navListLeft);
-  tabPane.appendChild(navListRight);
+  // Append list to the tab pane
+  tabPane.appendChild(navList);
 
   tabsPane.appendChild(tabPane);
   topNav.appendChild(tabsPane);
