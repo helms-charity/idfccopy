@@ -23,14 +23,14 @@
         {
           "component": "richtext",
           "valueType": "string",
-          "name": "ctaText_desktop",
+          "name": "ctaText",
           "label": "CTA Text",
           "value": ""
         },
         {
           "component": "richtext",
           "valueType": "string",
-          "name": "ctaText_mobile",
+          "name": "ctaTextMobile",
           "label": "CTA Text (Mobile)",
           "value": ""
         },
