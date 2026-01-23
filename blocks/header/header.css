@@ -448,6 +448,15 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-title {
   background-color: #f9f9f9;
 }
 
+/* Mobile: Show H4 title text but hide View All button */
+header nav .nav-sections .nav-fragment-section-content .nav-h4-section-title .nav-view-all-section-title {
+  display: inline; /* Override global display: none */
+}
+
+header nav .nav-sections .nav-fragment-section-content .nav-h4-section-title .nav-view-all-btn {
+  display: none; /* Hide View All button on mobile */
+}
+
 header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content {
   list-style: none;
   padding: 0;
@@ -658,7 +667,7 @@ header nav .nav-sections.tab-view-active .nav-view-all-btn:hover {
 }
 
 header nav .nav-sections.tab-view-active .nav-h4-section-title {
-  background-color: transparent;
+  background-color: #f2f2f2;
   font-size: var(--body-font-size-s);
   font-weight: 500;
   padding-left: 20px;
@@ -1645,7 +1654,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-fragment-section-content {
     display: none;
-    grid-column: 2; /* Column 2 only */
+    grid-column: 2 / 4; /* Span columns 2-3 */
     grid-row: 1 / span 100;
     padding: 16px 32px;
     overflow-y: auto;
@@ -1695,16 +1704,16 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background: transparent;
   }
 
-  /* 2-column grid layout - tablet sizing (discover is absolutely positioned) */
+  /* 3-column grid layout - unified approach from tablet onwards */
   header nav .nav-sections .nav-fragment-content {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: minmax(180px, 220px) minmax(auto, 1fr) minmax(200px, 240px);
     grid-auto-rows: auto;
     gap: 0;
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 32px 270px 32px 40px; /* Reserve space for absolutely positioned discover card on right */
+    padding: 32px 40px;
     min-height: 400px;
     background-color: #fff;
     position: relative;
@@ -1740,64 +1749,80 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background: var(--gray-200);
     box-shadow: none;
     border-radius: 0;
-    max-height: 520px;
-    overflow-y: auto;
-    padding-right: 30px;
+    height: 520px; /* Fixed default height */
+    max-height: calc(100vh - 150px); /* Constrain on smaller viewports */
+    overflow: visible; /* Parent doesn't scroll, only children */
   }
 
   /* Desktop: Wrapper div inside section content - apply background and padding here */
   header nav .nav-sections .nav-fragment-section-content > li {
-
     padding: 0;
     margin: 0;
   }
 
-  /* Desktop: Wrapper div inside section content - use CSS Grid for 2-column sub-layout */
+  /* Desktop: Wrapper div - position relative for discover card absolute positioning */
   header nav .nav-sections .nav-fragment-section-content > li > div {
-    position: relative;
     padding: 0;
-    padding-right: 270px; /* Tablet: 250px card + 20px gap */
+    padding-right: 236px; /* Reserve space for discover card: 220px width + 16px gap */
     background: var(--gray-200);
     border-radius: 8px;
-    min-height: 520px; /* Fill available height */
+    height: 520px; /* Fixed default height - matches parent */
+    max-height: calc(100vh - 150px); /* Constrain on smaller viewports */
+    overflow-y: auto; /* Scroll the entire content area */
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Two equal columns for primary links + first H4 */
+    grid-template-columns: 1fr 1fr; /* Equal columns */
     gap: 16px;
-    grid-auto-flow: dense; /* Allow flexible positioning */
+    position: relative;
   }
 
-  /* Primary links (nav-view-all + top-level buttons) in left column */
+  /* Primary links in first column */
   header nav .nav-sections .nav-fragment-section-content .nav-primary-links {
-    grid-column: 1; /* Left column */
+    grid-column: 1;
     display: flex;
     flex-direction: column;
   }
 
-  /* Ensure view-all wrapper inside primary links maintains styling */
   header nav .nav-sections .nav-fragment-section-content .nav-primary-links .nav-view-all-wrapper {
     margin-bottom: 8px;
   }
 
-  /* First H4 section in right column */
+  /* First H4 section in second column */
   header nav .nav-sections .nav-fragment-section-content .nav-h4-section.first-h4 {
-    grid-column: 2; /* Right column */
-    grid-row: 1; /* Align with first row */
+    grid-column: 2;
+    grid-row: 1;
   }
 
-  /* Subsequent H4 sections span full width below */
+  /* Subsequent H4 sections span both columns */
   header nav .nav-sections .nav-fragment-section-content .nav-h4-section:not(.first-h4) {
-    grid-column: 1 / -1; /* Span both columns */
+    grid-column: 1 / -1;
   }
 
-  /* Desktop: Discover section positioned absolutely on the right */
-  header nav .nav-sections .nav-fragment-section-content > li > div > .nav-discover-section {
+  /* Custom scrollbar for content wrapper */
+  header nav .nav-sections .nav-fragment-section-content > li > div::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content > li > div::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content > li > div::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
+  header nav .nav-sections .nav-fragment-section-content > li > div::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  /* Discover section - absolutely positioned on right, no scroll restrictions */
+  header nav .nav-sections .nav-fragment-section-content .nav-discover-section {
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px;
-    max-height: 568px; /* 600px container - 32px padding */
-    overflow: hidden;
-    grid-column: auto; /* Don't participate in grid */
+    width: 220px;
+    max-height: none;
+    overflow: visible;
   }
 
   /* Desktop: Ensure section content sits above background */
@@ -1954,7 +1979,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     color: var(--btn-color-white);
   }
 
-  /* Desktop: Column 3 background - hide for tablet (2-column grid) */
+  /* Outer grid background column - not needed with unified grid approach */
   header nav .nav-sections .nav-fragment-content::after {
     display: none;
   }
@@ -2024,7 +2049,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-section-title {
     display: inline; /* Override mobile display: none */
-    font-size: var(--body-font-size-s);
+    font-size: var(--body-font-size-xs);
     font-weight: 600;
     color: var(--text-color);
     letter-spacing: 0.5px;
@@ -2072,6 +2097,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section {
     margin: 16px 0 8px;
     background: var(--gray-200);
+    display: flex;
+    flex-direction: column;
   }
 
   /* First H4 section - align with top, no top margin */
@@ -2096,12 +2123,18 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     margin: 0;
   }
 
-  /* H4 section content */
+  /* Desktop: Show View All button for H4 sections */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-title .nav-view-all-btn {
+    display: inline-flex; /* Override mobile display: none */
+  }
+
+  /* H4 section content - simple vertical list */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content {
     background: var(--gray-200);
     box-shadow: none;
     border-radius: 0;
     display: block;
+    width: 100%;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content > li {
@@ -2125,6 +2158,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background: #fff;
     box-shadow: 2px 2px 24px rgb(120 120 120 / 8%);
     z-index: 2;
+
     /* height: 518px; */
     max-height: 100%;
     overflow-y: auto;
@@ -2467,10 +2501,10 @@ border-radius: 0;
 }
 
 /* =================================================================
-   DESKTOP STYLES (1200px+)
+   DESKTOP STYLES (1300px+)
    ================================================================= */
-@media (width >= 1200px) {
-  /* Nav spacing - more generous on desktop */
+@media (width >= 1300px) {
+  /* Nav spacing - generous on desktop */
   header nav {
     gap: 16px;
     padding: 12px 70px;
@@ -2481,58 +2515,54 @@ border-radius: 0;
     max-width: 100%;
   }
 
-  /* Dropdown grid - 3-column layout for desktop */
+  /* Dropdown grid - optimal sizing for desktop */
   header nav .nav-sections .nav-fragment-content {
-    grid-template-columns: 250px 1fr 350px;
-    padding: 32px 60px; /* Reset to normal padding for 3-column layout */
+    grid-template-columns: minmax(240px, 270px) minmax(auto, 1fr) minmax(280px, 320px);
+    padding: 32px 70px;
   }
 
-  /* Restore column 3 background for desktop */
-  header nav .nav-sections .nav-fragment-content::after {
-    display: block;
-    content: '';
-    grid-column: 3;
-    grid-row: 1 / span 100;
-    background-color: none;
-    min-height: 300px;
-  }
- 
-  /* Nav fragment section content spans columns 2-3 on desktop */
-  header nav .nav-sections .nav-fragment-section-content {
-    grid-column: 2 / 4;
-  }
-
-  /* Inner wrapper - more padding-right for larger discover card */
-  header nav .nav-sections .nav-fragment-section-content > li > div {
-    padding-right: 352px; /* 320px card + 32px gap */
-  }
-
+  /* Dropdown positioning */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
-    padding: 20px 0 30px 70px;
+    padding: 20px 0 0 70px;
   }
 
-  header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
-    padding-right: 70px;
+  /* Inner grid - scale up for desktop */
+  header nav .nav-sections .nav-fragment-section-content > li > div {
+    padding-right: calc(clamp(320px, calc(200px + 8vw), 420px) + 16px); /* Fluid discover width + gap */
   }
 
-  /* Discover section - larger on desktop */
-  header nav .nav-sections .nav-fragment-section-content > li > div > .nav-discover-section {
-    width: 320px;
+  /* Discover section - fluid width that scales gradually with viewport */
+  header nav .nav-sections .nav-fragment-section-content .nav-discover-section {
+    width: clamp(320px, calc(200px + 8vw), 420px); /* Scales from 320px to 420px max */
+    padding-right: 30px;
   }
 
   /* Discover card image - larger on desktop */
   header nav .nav-sections .nav-discover-section .cards-card-image {
-    max-height: 130px;
+    max-height: 140px;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image img {
-    height: 130px;
+    height: 140px;
+  }
+
+  /* Discover card image - full aspect ratio for blog posts */
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .blog-post-card .cards-card-image {
+    aspect-ratio: 16/9;
+    max-height: unset;
+  }
+
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .blog-post-card .cards-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   /* Discover card heading - larger on desktop */
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
-    font-size: var(--body-font-size-s);
+    font-size: 17px;
+    margin: 0 0 10px;
   }
 
   /* Discover card body - more padding on desktop */
@@ -2559,58 +2589,19 @@ border-radius: 0;
     flex-shrink: 0;
   }
 
+  /* Search dropdown adjustments */
   .search-dropdown.open {
-
     > .section {
       max-width: unset;
     }
 
     .section#openaccount {
       max-width: 400px;
-  }
+    }
 
-  .cards.related-search .grid-cards {
+    .cards.related-search .grid-cards {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-xs);
+    }
   }
- }
-}
-
-/* =================================================================
-   EXTRA LARGE DESKTOP STYLES (1400px+)
-   ================================================================= */
-@media (width >= 1400px) {
-  /* Dropdown grid - full generous layout on extra large screens */
-  header nav .nav-sections .nav-fragment-content {
-    grid-template-columns: 300px 1fr 450px;
-    padding: 32px 70px;
-  }
-
-  /* Inner wrapper - full padding-right for largest discover card */
-  header nav .nav-sections .nav-fragment-section-content > li > div {
-    padding-right: 412px; /* 380px card + 32px gap */
-  }
-
-  /* Discover section - full size on extra large screens */
-  header nav .nav-sections .nav-fragment-section-content > li > div > .nav-discover-section {
-    width: 450px;
-  }
-
-  /* Discover card image - full size on extra large screens */
-  header nav .nav-sections .nav-discover-section .cards.blog-posts .blog-post-card .cards-card-image {
-    aspect-ratio: 16/9;
-    max-height: unset;
-  }
-
-  header nav .nav-sections .nav-discover-section .cards.blog-posts .blog-post-card .cards-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Discover card heading - full size on extra large screens */
-  header nav .nav-sections .nav-discover-section .cards-card-body h3 {
-    font-size: 18px;
-    margin: 0 0 10px;
-}
 }
