@@ -1,34 +1,7 @@
-// Open PDF links and my.idfcfirst links in a new tab
-function processLink(a) {
-  if (a.href && (a.href.includes('.pdf') || a.href.includes('my.idfcfirst'))) {
-    a.target = '_blank';
-  }
-}
+// eslint-disable-next-line import/no-cycle
+import { processLinks } from './scripts.js';
 
-// Process all existing links
-document.querySelectorAll('a').forEach(processLink);
-
-// Watch for dynamically added links (e.g., header navigation fragments)
-const linkObserver = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((node) => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        // If the added node is a link, process it
-        if (node.tagName === 'A') {
-          processLink(node);
-        }
-        // If the added node contains links, process them all
-        node.querySelectorAll?.('a').forEach(processLink);
-      }
-    });
-  });
-});
-
-// Observe the entire document for added nodes
-linkObserver.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
+processLinks();
 
 const scriptCode = document.createElement('script');
 scriptCode.innerHTML = `

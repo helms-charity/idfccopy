@@ -25,6 +25,24 @@ const MEDIA_QUERIES = {
 };
 
 /**
+ * Open PDF links and my.idfcfirst links in a new tab
+ * @param {Element} a the anchor element to process
+ */
+export function processLink(a) {
+  if (a.href && (a.href.includes('.pdf') || a.href.includes('my.idfcfirst'))) {
+    a.target = '_blank';
+  }
+}
+
+/**
+ * Process all links in a container (defaults to entire document)
+ * @param {Element} container the container element to search for links
+ */
+export function processLinks(container = document) {
+  container.querySelectorAll('a').forEach(processLink);
+}
+
+/**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
  * @param {Element} to the element to copy attributes to
@@ -139,7 +157,7 @@ export async function loadFragment(path) {
       // eslint-disable-next-line
       decorateMain(main);
       await loadSections(main);
-
+      processLinks(main);
       return main;
     }
   }
