@@ -345,6 +345,13 @@ header nav .nav-sections .nav-fragment-section-content p:not(.button-container, 
   background-color: #f9f9f9;
 }
 
+/* H4 section content items */
+header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
   color: #353535;
   text-decoration: none;
@@ -483,17 +490,8 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   overflow-wrap: break-word;
 }
 
+/* H4 section button links - lighter weight */
 header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
-  display: inline;
-  background: transparent;
-  line-height: 1.3;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
   font-weight: 400;
 }
 
@@ -689,12 +687,6 @@ header nav .nav-sections.tab-view-active .nav-h4-section-content > li {
 }
 
 /* Tab view: Ensure H4 content has same indentation as other content */
-header nav .nav-sections.tab-view-active .nav-h4-section-content p {
-  padding-left: 40px;
-  padding-right: 20px;
-}
-
-/* Tab view overrides: simpler padding and styling */
 header nav .nav-sections.tab-view-active .nav-fragment-section-content p.button-container {
   padding-left: 40px;
   padding-right: 20px;
@@ -723,6 +715,13 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.bu
 
 header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.button-container):hover {
   background-color: transparent;
+}
+
+header nav .nav-sections.tab-view-active .nav-h4-section-content p {
+  padding-left: 40px;
+  padding-right: 20px;
+  border-bottom: none;
+  font-weight: 400;
 }
 
 /* tools */
