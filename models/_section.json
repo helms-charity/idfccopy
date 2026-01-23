@@ -49,6 +49,14 @@
               "value": "dark-scheme"
             },
             {
+              "name": "Hide in mobile",
+              "value": "hide-mobile"
+            },
+            {
+              "name": "Hide in desktop",
+              "value": "hide-desktop"
+            },
+            {
               "name": "UPI steps red background",
               "value": "upi-steps-red-bg"
             }
@@ -305,6 +313,7 @@
         "table",
         "tabs",
         "category-nav",
+        "cta-sticky",
         "sticky-cta",
         "anchor-nav",
         "steps",
