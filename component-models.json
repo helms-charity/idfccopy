@@ -319,6 +319,14 @@
             "value": "dark-scheme"
           },
           {
+            "name": "Hide in mobile",
+            "value": "hide-mobile"
+          },
+          {
+            "name": "Hide in desktop",
+            "value": "hide-desktop"
+          },
+          {
             "name": "UPI steps red background",
             "value": "upi-steps-red-bg"
           }
@@ -1195,6 +1203,31 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "cta-sticky",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "CTA Text",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "ctaTextMobile",
+        "label": "CTA Text (Mobile)",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaId",
+        "label": "CTA ID"
       }
     ]
   },
