@@ -111,6 +111,7 @@
   --spacing-m: 36px;
   --spacing-s: 24px;
   --spacing-xs: 12px;
+  --spacing-xxs: 8px;
 }
 
 /* fallback fonts */
@@ -320,6 +321,7 @@ button.primary {
   background-color: var(--btn-color-red);
   color: var(--btn-color-white);
   border-color: transparent;
+  transition: background-color 0.2s ease;
 }
 
 a.button.primary:hover,
