@@ -5,21 +5,15 @@ and outer background value (such asrgb(0 0 0 / 50%) */
 .section.cta-sticky-container {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
   width: 100%;
   backdrop-filter: blur(3.5px);
   z-index: 3;
-  font-family: var(--body-font-family);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
 }
 
 .cta-sticky {
-margin: var(--spacing-xs) 0;
 display: flex;
 position: relative;
 
@@ -51,6 +45,17 @@ p.button-container a.button.primary:any-link {
     background-color: var(--btn-color-red);
   }
 }
+
+div:empty {
+  margin: 0;
+}
+}
+
+.cta-sticky-mobile-content {
+
+  > div {
+  margin: var(--spacing-xs) 0;
+  }
 }
 
 .cta-sticky-desktop-content {
@@ -78,5 +83,9 @@ p.button-container a.button.primary:any-link {
 
   .cta-sticky-desktop-content {
     display: block;
+
+    > div {
+      margin: var(--spacing-xs) 0;
+    }
   }
 }
