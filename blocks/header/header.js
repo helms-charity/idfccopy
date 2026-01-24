@@ -177,7 +177,7 @@ export default async function decorate(block) {
   }
 
   // Build nav-brand
-  navBrand.innerHTML = `<a href="https://www.idfcfirstbank.com" aria-label="IDFC FIRST Bank Home">
+  navBrand.innerHTML = `<a href="https://www.idfcfirst.bank.in/personal-banking" aria-label="IDFC FIRST Bank Home">
     <img src="${logoImgSrc}" alt="${logoImgAlt}">
   </a>`;
 
