@@ -1099,7 +1099,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   /* Pre-style cards as 3-column grid before decoration completes.
      This prevents the 4-column flash and vertical stack states.
      Uses :not() with comma syntax for modern CSS compliance. */
-  .cards:not(.swiper, [data-block-status="loaded"]) > ul,
+  .cards:not(.swiper, [data-block-status="loaded"]) > .grid-cards,
   .cards:not(.swiper, [data-block-status="loaded"]) > div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1109,7 +1109,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   /* Hide overflow items that would show in 4th+ position */
-  .cards:not(.swiper, [data-block-status="loaded"]) > ul > li:nth-child(n+4),
+  .cards:not(.swiper, [data-block-status="loaded"]) > .grid-cards > .cards-card:nth-child(n+4),
   .cards:not(.swiper, [data-block-status="loaded"]) > div > div:nth-child(n+4) {
     display: none;
   }
