@@ -20,8 +20,4 @@ export default function decorate(block) {
     }
     children[2].remove();
   }
-
-  // const positionDiv = document.createElement('div');
-  // positionDiv.classList.add('position-absolute');
-  // block.prepend(positionDiv);
 }
