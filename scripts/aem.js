@@ -411,7 +411,7 @@ function decorateButtons(element) {
     // if (a.href !== a.textContent) {
     // adding lines 413-415 as a quick sanity check
     const shouldSkip = a.href === a.textContent && a.textContent.trim().length > 0
-    && !a.closest('.button-container') && !a.classList.contains('button');
+      && !a.closest('.button-container') && !a.classList.contains('button');
     if (!shouldSkip) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
