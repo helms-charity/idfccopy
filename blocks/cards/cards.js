@@ -496,8 +496,8 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
       cardLink.click();
     };
 
-    li.addEventListener('click', handleClick);
-    li.addEventListener('keydown', (e) => {
+    cardItem.addEventListener('click', handleClick);
+    cardItem.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         cardLink.click();
