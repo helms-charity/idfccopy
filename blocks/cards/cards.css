@@ -1569,7 +1569,7 @@ main .cards.joining-perks .swiper-slide {
   height: auto;
   overflow: visible;
   transition: all 0.5s ease;
-  transform: scale(0.97);
+  transform: scale(0.9);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body {
