@@ -780,8 +780,10 @@
 }
 
 .cards.experience-life > .grid-cards > .cards-card,
+.cards.experience-life > .swiper-wrapper > .cards-card,
 .cards.experience-life .benefit-cards,
 .cards.reward-points > .grid-cards > .cards-card,
+.cards.reward-points > .swiper-wrapper > .cards-card,
 .cards.reward-points .benefit-cards {
   display: flex;
   flex-direction: column;
@@ -794,6 +796,7 @@
 }
 
 .cards.experience-life > .grid-cards > .cards-card,
+.cards.experience-life > .swiper-wrapper > .cards-card,
 .cards.experience-life .benefit-cards {
   padding-top: 220px;
 }
@@ -1419,6 +1422,7 @@
 
 /* Joining Perks Card Base Styling */
 .cards.joining-perks > .grid-cards > .cards-card,
+.cards.joining-perks > .swiper-wrapper > .cards-card,
 .cards.joining-perks .benefit-cards {
   flex-direction: column;
   align-items: stretch;
@@ -1439,6 +1443,7 @@
 
 /* Shadow mask overlay at card bottom */
 .cards.joining-perks > .grid-cards > .cards-card::after,
+.cards.joining-perks > .swiper-wrapper > .cards-card::after,
 .cards.joining-perks .benefit-cards::after {
   content: '';
   position: absolute;
