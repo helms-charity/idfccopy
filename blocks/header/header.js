@@ -148,7 +148,7 @@ export default async function decorate(block) {
 
   // Extract logo from fragment (if exists) or use default
   // Authoring contract: Logo should be in a section with data-id="logo"
-  let logoImgSrc = './media_104481e8050954141720a87a3e4a576a65e2e8774.png';
+  let logoImgSrc = '/icons/idfc-logo-nav.svg';
   let logoImgAlt = 'IDFC FIRST Bank';
 
   const logoSection = fragment.querySelector('.section[data-id="logo"]');
