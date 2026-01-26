@@ -9,7 +9,7 @@
 }
 .overview-rte .overview-rte-para,.overview-rte .overview-rte-hiddenPara  {
     color: var(--text-color);
-    font-size: 14px;
+    font-size: var(--body-font-size-s);
     font-weight: 400;
     line-height: 24px;
     letter-spacing: -0.5px;
@@ -19,7 +19,7 @@
 }
 .overview-rte .overview-rte-readMore {
   margin-top: 1rem;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   font-weight: 600;
   color: #54565B;
   cursor: pointer;
