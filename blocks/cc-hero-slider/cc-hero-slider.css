@@ -96,7 +96,7 @@ main>div.section > .cc-hero-slider-wrapper {
 .cc-hero-slider-item .cc-hero-slider-content h3 {
   color: var(--white);
   font-size: var(--body-font-size-l);
-  margin: 0 0 24px;
+  margin: 0 0 var(--spacing-s);
   text-shadow: 0 1px 3px rgba(0 0 0 / 30%);
   text-align: center;
 }
@@ -134,7 +134,7 @@ main>div.section > .cc-hero-slider-wrapper {
   display: inline-flex;
   align-items: center;
   line-height: 1;
-  margin-left: 8px;
+  margin-left: var(--spacing-xxs);
 }
 
 .cc-hero-slider-content a .icon-arrow-right-white img {
@@ -234,7 +234,7 @@ main>div.section > .cc-hero-slider-wrapper {
 
   .cc-hero-slider-content {
     max-width: 550px;
-    padding: 80px 100px 80px 60px;
+    padding: 80px 100px 80px var(--spacing-xl);
     margin-right: 8%;
   }
 

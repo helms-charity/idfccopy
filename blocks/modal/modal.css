@@ -48,7 +48,7 @@ body.modal-open {
 .modal dialog.modal-auto-popup h6 {
   font-size: var(--body-font-size-xs);
   font-weight: 400;
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
 }
 
 .modal dialog.modal-auto-popup p {
@@ -124,7 +124,7 @@ body.modal-open {
   padding: 0;
   border: none;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
+  box-shadow: 0 var(--spacing-xxs) 32px rgb(0 0 0 / 25%);
   z-index: 10; /* Above page-background and decorations */
 }
 
@@ -135,7 +135,7 @@ body.modal-open {
   overscroll-behavior: none;
   width: 100%;
   height: fit-content;
-  padding: 32px 24px;
+  padding: 32px var(--spacing-s);
   position: relative;
   z-index: 2; /* Above decoration images */
 }
@@ -157,7 +157,7 @@ body.modal-open {
 .modal dialog h5,
 .modal dialog h6 {
   font-weight: 600;
-  margin: 16px 0 8px;
+  margin: 16px 0 var(--spacing-xxs);
 }
 
 /* Modal CTA - positioned top-right, above close button */
@@ -167,7 +167,7 @@ body.modal-open {
   right: 0;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-s);
   z-index: 10;
 }
 
@@ -296,7 +296,7 @@ body.modal-open {
 /* Paragraph styles for Mayura Silver */
 .modal dialog.modal-mayura-silver p {
   color: var(--text-color);
-  margin: 0 0 12px;
+  margin: 0 0 var(--spacing-xs);
 }
 
 /* Link styles for Mayura themes - base styles first */
@@ -325,7 +325,7 @@ body.modal-open {
 .modal dialog.modal-mayura-silver .button-container a.button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   color: var(--modal-silver-text);
   border: none;
   border-bottom: 1px solid #2e3e79;
@@ -343,7 +343,7 @@ body.modal-open {
 .modal dialog.modal-mayura-blue .button-container a.button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   color: var(--modal-blue-text);
   border: none;
   border-bottom: 1px solid var(--modal-blue-text);
@@ -390,7 +390,7 @@ body.modal-open {
 /* Paragraph styles for Mayura Blue */
 .modal dialog.modal-mayura-blue p {
   color: var(--white);
-  margin: 0 0 12px;
+  margin: 0 0 var(--spacing-xs);
 }
 
 .modal dialog.modal-mayura-blue td p {
@@ -433,7 +433,7 @@ body.modal-open {
   }
   
   .modal dialog .modal-content {
-    padding: 40px 48px;
+    padding: 40px var(--spacing-l);
   }
 
   .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
@@ -512,7 +512,7 @@ body.modal-open {
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  gap: var(--spacing-s);
   align-items: center;
   font-size: var(--body-font-size-xs);
 }
@@ -520,7 +520,7 @@ body.modal-open {
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div > div {
   display: grid;
   grid-template-columns: 52px auto;
-  gap: 12px;
+  gap: var(--spacing-xs);
   align-items: center;
 }
 
@@ -543,7 +543,7 @@ body.modal-open {
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div {
-  margin-top: 22px; 
+  margin-top: var(--spacing-s); 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
@@ -553,7 +553,7 @@ body.modal-open {
   background: #e6e6e6;
   border-radius: 4px;
   text-align: center;
-  padding: 12px 25px;
+  padding: var(--spacing-xs) var(--spacing-s);
   height: 72px;
 }
 
@@ -621,7 +621,7 @@ body.modal-open {
   }
 
   .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div h3 {
-    font-size:12px;
+    font-size:var(--spacing-xs);
   }
 
   .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div {
@@ -718,7 +718,7 @@ body.modal-open {
   .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(2) > div > div {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-xxs);
     text-align: center;
     justify-content: start;
   }

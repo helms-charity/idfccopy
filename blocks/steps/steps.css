@@ -22,7 +22,7 @@
   max-width: 80%;
   list-style: none;
   padding: 0;
-  margin: 48px 0 0;
+  margin: var(--spacing-l) 0 0;
   position: relative;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .upi-steps-red-bg .grid-steps {
-  gap: 24px;
+  gap: var(--spacing-s);
   max-width: 100%;
 }
 
@@ -187,7 +187,7 @@
       #e7e7e7 0,
       #e7e7e7 4px,
       transparent 4px,
-      transparent 8px
+      transparent var(--spacing-xxs)
     );
   }
 
@@ -272,7 +272,7 @@
 
   .steps .steps-subtitle {
     font-size: var(--body-font-size-l);
-    margin: 0 0 72px;
+    margin: 0 0 var(--spacing-xxl);
   }
 
   .steps .grid-steps {
@@ -287,7 +287,7 @@
   .steps .grid-steps > li:not(:last-child)::after {
     top: 65px;
     left: calc(50% + 50px);
-    width: calc(100% - 70px);
+    width: calc(100% - var(--spacing-xxl));
   }
 
   .steps .steps-item-image {

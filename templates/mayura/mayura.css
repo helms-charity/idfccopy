@@ -78,7 +78,7 @@ color: var(--dark-red-color);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);
-  padding: 8px 20px;
+  padding: var(--spacing-xxs) 20px;
   border-radius: 40px;
   text-decoration: none;
   font-weight: 700;

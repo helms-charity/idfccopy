@@ -9,7 +9,7 @@
 
   .top-nav-container .top-nav .btn-box .btn-white {
     border: solid 1px var(--dark-red-color);
-    padding: 8px 15px;
+    padding: var(--spacing-xxs) 15px;
     margin-left: 15px;
     font-size: var(--body-font-size-s);
     font-weight: 500;
@@ -37,7 +37,7 @@
 
 .top-nav-container .top-nav .btn-box .btn-white {
   border: solid 1px var(--dark-red-color);
-  padding: 8px 15px;
+  padding: var(--spacing-xxs) 15px;
   margin-left: 15px;
   font-size: var(--body-font-size-s);
   font-weight: 500;
@@ -158,7 +158,7 @@
     border-bottom: 0;
     background: #f3f3f3;
     border-top: 1px solid hsla(0, 0%, 85%, .5);
-    padding: 22px 15px 15px;
+    padding: var(--spacing-s) 15px 15px;
     color: #54565b
   }
 
@@ -190,12 +190,12 @@
   }
 
   .mob-menu .mob-smenu .flist {
-    padding-top: 25px;
+    padding-top: var(--spacing-s);
     display: none
   }
 
   .mob-menu .mob-smenu .flist li {
-    padding: 0 25px 20px
+    padding: 0 var(--spacing-s) 20px
   }
 
   .mob-menu .mob-smenu .flist li.viewAll a {
@@ -313,11 +313,11 @@
 }
 
 .top-nav-right .right-nav>li {
-  margin-right: 24px
+  margin-right: var(--spacing-s)
 }
 
 .top-nav .icon-search {
-    font-size: 24px
+    font-size: 24px;
 }
 
 .top-nav .myCornerm img {
@@ -344,7 +344,7 @@
 
   .top-nav-left>li {
     font-size: 14px;
-    margin: 0 8px
+    margin: 0 var(--spacing-xxs)
   }
 
   .top-nav {
@@ -356,7 +356,7 @@
   }
 
   .top-nav-left>li>a {
-    padding: 16px 8px
+    padding: 16px var(--spacing-xxs)
   }
 
   .top-nav-left>li {
@@ -376,7 +376,7 @@ margin: 3px 5px
 .gradientCard a {
 padding: 7px 10px;
 min-height: 60px;
-font-size: 12px
+font-size: var(--spacing-xs)
 }
 
 .top-nav .top-nav-left .dropdown-content.menu-cardList-cnt {
@@ -435,7 +435,7 @@ font-size: 12px
 .hd-bx {
   display: -ms-flexbox;
   display: flex;
-  margin-right: 24px;
+  margin-right: var(--spacing-s);
   -ms-flex-pack: justify;
   justify-content: space-between;
   -ms-flex-align: baseline;
@@ -514,7 +514,7 @@ header.sticky .menu {
   opacity: 1;
   left: 0;
   width: 84px;
-  padding: 25px 20px 25px 40px
+  padding: var(--spacing-s) 20px var(--spacing-s) 40px
 }
 
 header.sticky .top-nav-left {
@@ -570,7 +570,7 @@ header.sticky .login a {
 .top-nav .menu {
   position: relative;
   left: -20px;
-  padding: 25px 0;
+  padding: var(--spacing-s) 0;
   width: 0;
   opacity: 0;
   transition: all .3s linear
@@ -682,11 +682,11 @@ header.sticky .login a {
 
 .top-nav-left>li .dfm .icon-more {
   font-size: 20px;
-  margin-right: 8px
+  margin-right: var(--spacing-xxs)
 }
 
 .top-nav-left>li .icon {
-  margin-right: 8px;
+  margin-right: var(--spacing-xxs);
   display: inline-block
 }
 
@@ -722,7 +722,7 @@ header.sticky .login a {
 .gradientCard {
   border-radius: 8px;
   min-width: 31%;
-  margin: 0 8px;
+  margin: 0 var(--spacing-xxs);
   margin-bottom: 15px
 }
 
@@ -858,7 +858,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 .top-nav .menu {
     position: relative;
     left: -20px;
-    padding: 25px 0;
+    padding: var(--spacing-s) 0;
     width: 0;
     opacity: 0;
     transition: all .3s linear
@@ -979,11 +979,11 @@ header.d-lg-none .top-nav-right ul li:last-child {
 
 .top-nav-left>li .dfm .icon-more {
     font-size: 20px;
-    margin-right: 8px
+    margin-right: var(--spacing-xxs)
 }
 
 .top-nav-left>li .icon {
-    margin-right: 8px;
+    margin-right: var(--spacing-xxs);
     display: inline-block
 }
 
@@ -1013,7 +1013,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .top-nav .dropdown-content li {
-    margin-bottom: 12px
+    margin-bottom: var(--spacing-xs)
 }
 
 .top-nav .dropdown-content li:last-child {
@@ -1036,7 +1036,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 .gradientCard {
     border-radius: 8px;
     min-width: 31%;
-    margin: 0 8px;
+    margin: 0 var(--spacing-xxs);
     margin-bottom: 15px
 }
 

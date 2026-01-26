@@ -125,7 +125,7 @@
 }
 
 .table.block#reward-points table td {
-  padding: 10px 12px;
+  padding: 10px var(--spacing-xs);
   border: 1px solid var(--white);
   color: var(--white);
 }
@@ -163,7 +163,7 @@
   }
 
   .table.block#reward-points table td {
-    padding: 12px 14px;
+    padding: var(--spacing-xs) 14px;
   }
 }
 
