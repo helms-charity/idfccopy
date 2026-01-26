@@ -484,7 +484,7 @@
   padding: 0 16px;
   margin-bottom: var(--spacing-s);
   background: var(--white);
-  border-radius: var(--spacing-xs);
+  border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0 0 0 / 8%);
   width: 100%;
   gap: 16px;
@@ -551,7 +551,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238B1B2D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: var(--spacing-s) var(--spacing-s);
+  background-size: 24px 24px;
 }
 
 /* === KEY BENEFITS CARD VARIANT === */
