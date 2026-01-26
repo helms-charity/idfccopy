@@ -20,8 +20,8 @@ export default async function decorate(block) {
 
   // Hide decorative headings from screen readers to resolve contrast audit
   // Future suggestion: Replace with proper color contrast fix in CSS
-  const missionHeading = block.querySelector('h5[id^="on-a-mission"]');
-  const customerHeading = block.querySelector('h6[id^="customer-friendly"]');
+  const missionHeading = block.querySelector('.default-content h5:first-of-type');
+  const customerHeading = block.querySelector('.default-content h6:first-of-type');
   if (missionHeading) missionHeading.setAttribute('aria-hidden', 'true');
   if (customerHeading) customerHeading.setAttribute('aria-hidden', 'true');
 
