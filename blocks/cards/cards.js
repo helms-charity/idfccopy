@@ -927,6 +927,8 @@ export default async function decorate(block) {
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
+        dynamicBullets: false,
+        type: 'bullets',
       },
     };
 
