@@ -89,11 +89,11 @@
 .hero .button-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   text-align: center;
   width: auto;
   flex: 1;
   align-items: center;
+  margin: 16px;
 }
 
 .hero .button-group p {
