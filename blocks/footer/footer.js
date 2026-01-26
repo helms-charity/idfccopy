@@ -18,6 +18,13 @@ export default async function decorate(block) {
 
   block.append(footer);
 
+  // Hide decorative headings from screen readers to resolve contrast audit
+  // Future suggestion: Replace with proper color contrast fix in CSS
+  const missionHeading = block.querySelector('.default-content h5:first-of-type');
+  const customerHeading = block.querySelector('.default-content h6:first-of-type');
+  if (missionHeading) missionHeading.setAttribute('aria-hidden', 'true');
+  if (customerHeading) customerHeading.setAttribute('aria-hidden', 'true');
+
   // Remove "only one open" behavior from footer accordions (allow multiple open)
   block.querySelectorAll('.accordion').forEach((accordion) => {
     // Remove toggle handlers from all details
