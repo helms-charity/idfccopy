@@ -247,6 +247,11 @@ body.modal-open {
  overflow: auto;
 }
 
+.modal dialog.modal-auto-popup #mayura-card-modal p,
+.modal dialog.modal-auto-popup #mayura-card-modal h6 {
+  font-size: var(--body-font-size-xxs);
+}
+
 /* Modal texture overlay - added via JS as img element */
 .modal dialog .modal-texture {
   position: absolute;
@@ -488,6 +493,7 @@ body.modal-open {
 
 .modal .section[data-id="mayura-card-modal"] > div > div:first-child > div h2 {
   text-align: left;
+  font-size: var(--body-font-size-m);
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:first-child > div a {
