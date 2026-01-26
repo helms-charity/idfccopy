@@ -657,6 +657,8 @@
 /* Key Benefits Divider Image */
 .cards.key-benefits .benefit-cards .cards-card-divider,
 .cards.experience-life .benefit-cards .cards-card-divider,
+.cards.reward-points > .grid-cards > .cards-card .cards-card-divider,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-divider,
 .cards.reward-points .benefit-cards .cards-card-divider {
   position: relative;
   z-index: 2;
@@ -860,6 +862,8 @@
 }
 
 /* Reward Points - Same blue as Key Benefits */
+.cards.reward-points > .grid-cards > .cards-card,
+.cards.reward-points > .swiper-wrapper > .cards-card,
 .cards.reward-points .benefit-cards {
   background: var(--gradient-blue);
 }
@@ -867,6 +871,8 @@
 /* Ensure parent has relative positioning for absolute children */
 .cards.experience-life .benefit-cards.swiper-slide,
 .cards.experience-life .cards-card.benefit-cards,
+.cards.reward-points > .grid-cards > .cards-card,
+.cards.reward-points > .swiper-wrapper > .cards-card,
 .cards.reward-points .benefit-cards.swiper-slide,
 .cards.reward-points .cards-card.benefit-cards {
   position: relative !important;
@@ -874,6 +880,8 @@
 
 /* Authored background texture overlay for experience-life and reward-points */
 .cards.experience-life .benefit-cards .cards-card-bg-texture,
+.cards.reward-points > .grid-cards > .cards-card .cards-card-bg-texture,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-bg-texture,
 .cards.reward-points .benefit-cards .cards-card-bg-texture {
   position: absolute !important;
   inset: 0;
@@ -884,6 +892,8 @@
 }
 
 .cards.experience-life .benefit-cards .cards-card-bg-texture img,
+.cards.reward-points > .grid-cards > .cards-card .cards-card-bg-texture img,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-bg-texture img,
 .cards.reward-points .benefit-cards .cards-card-bg-texture img {
   width: 100%;
   height: 100%;
@@ -892,6 +902,8 @@
 }
 
 /* Card image/icon styling (reward-points only - experience-life uses background image) */
+.cards.reward-points > .grid-cards > .cards-card .cards-card-image,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-image,
 .cards.reward-points .benefit-cards .cards-card-image {
   display: flex;
   align-items: flex-start;
@@ -901,6 +913,8 @@
   z-index: 2;
 }
 
+.cards.reward-points > .grid-cards > .cards-card .cards-card-image img,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-image img,
 .cards.reward-points .benefit-cards .cards-card-image img {
   max-width: 80px;
   max-height: 80px;
@@ -909,6 +923,8 @@
 }
 
 /* Card body styling (reward-points only - experience-life has custom positioning) */
+.cards.reward-points > .grid-cards > .cards-card .cards-card-body,
+.cards.reward-points > .swiper-wrapper > .cards-card .cards-card-body,
 .cards.reward-points .benefit-cards .cards-card-body {
   position: relative;
   z-index: 2;
