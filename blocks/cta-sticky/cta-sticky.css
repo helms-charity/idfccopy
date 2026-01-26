@@ -1,1 +1,91 @@
-/* Sticky CTA Block Styles - Mobile First */
+/* set initial section configs in authoring, such as 
+style = center, dark-scheme, etc
+and outer background value (such asrgb(0 0 0 / 50%) */
+
+.section.cta-sticky-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  backdrop-filter: blur(3.5px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cta-sticky {
+display: flex;
+position: relative;
+
+p {
+  font-size: var(--body-font-size-xxs);
+  color: #fff;
+  text-shadow: 0 0 20px rgb(0 0 0 / 25%);
+}
+
+p + p {
+  margin-top: 0;
+}
+
+p.button-container a.button.primary:any-link {
+  background-color: var(--red-color);
+  border-color: var(--red-color);
+  color: var(--btn-color-white);
+  font-size: var(--body-font-size-xs);
+  box-shadow: 0 0 20px 0 rgb(0 0 0 / 25%);
+  margin: 0;
+  min-width: 234px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxs);
+
+  &:hover {
+    border-color: var(--btn-color-red);
+    background-color: var(--btn-color-red);
+  }
+}
+
+div:empty {
+  margin: 0;
+}
+}
+
+.cta-sticky-mobile-content {
+
+  > div {
+  margin: var(--spacing-xs) 0;
+  }
+}
+
+.cta-sticky-desktop-content {
+  display: none;
+}
+
+/* Desktop Styles */
+@media (width >= 990px) {
+
+  .cta-sticky {
+
+    p {
+      font-size: var(--body-font-size-xs);
+    }
+
+    p.button-container a.button.primary:any-link {
+      font-size: var(--body-font-size-s);
+      padding: var(--spacing-xs);
+    }
+  }
+
+  .cta-sticky-mobile-content {
+    display: none;
+  }
+
+  .cta-sticky-desktop-content {
+    display: block;
+
+    > div {
+      margin: var(--spacing-xs) 0;
+    }
+  }
+}

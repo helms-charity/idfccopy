@@ -1214,14 +1214,16 @@
         "valueType": "string",
         "name": "ctaText",
         "label": "CTA Text",
-        "value": ""
+        "value": "",
+        "description": "Only visible on desktop"
       },
       {
         "component": "richtext",
         "valueType": "string",
         "name": "ctaTextMobile",
         "label": "CTA Text (Mobile)",
-        "value": ""
+        "value": "",
+        "description": "Only visible on mobile"
       },
       {
         "component": "text",
