@@ -3,30 +3,15 @@
 /* ===== BASE STYLES (MOBILE < 600px) ===== */
 .steps {
   background: unset;
-  padding: 40px 15px;
   margin: 0;
 }
 
 .steps .steps-title {
-  color: #fff;
-  font-size: 32px;
-  font-weight: 600;
   text-align: center;
-  margin: 0 0 30px;
-  line-height: normal;
-  text-shadow: 0 2px 4px rgba(0 0 0 / 50%);
-  -webkit-font-smoothing: antialiased;
 }
 
 .steps .steps-subtitle {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
   text-align: center;
-  margin: 0 0 30px;
-  line-height: normal;
-  text-shadow: 0 2px 4px rgba(0 0 0 / 50%);
-  -webkit-font-smoothing: antialiased;
 }
 
 .steps .grid-steps {
@@ -37,7 +22,7 @@
   max-width: 80%;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 48px 0 0;
   position: relative;
 }
 
@@ -103,16 +88,11 @@
 /* Text content */
 .steps .steps-item-body {
   flex: 1;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.4;
   margin: 0;
 }
 
 .steps .steps-item-body p {
   margin: 0;
-  color: #fff;
 }
 
 /* UPI red background variant - mobile */
@@ -132,8 +112,8 @@
 .upi-steps-red-bg .steps-subtitle {
   width: 100%;
   margin: 0 auto;
-  font-size: 14px;
-  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  
   font-weight: 600;
   font-style: normal;
   text-align: center;
@@ -143,8 +123,8 @@
 }
 
 .upi-steps-red-bg .steps-item-body {
-  font-size: 18px;
-  font-family: var(--heading-font-family);
+  font-size: var(--body-font-size-l);
+  
   font-weight: 600;
   font-style: normal;
   line-height: 1.2;
@@ -167,12 +147,12 @@
   }
 
   .steps .steps-title {
-    font-size: 26px;
+    font-size: var(--heading-font-size-s);
     margin: 0 0 40px;
   }
 
   .steps .steps-subtitle {
-    font-size: 20px;
+    font-size: var(--body-font-size-xl);
     margin: 0 0 40px;
   }
 
@@ -214,7 +194,6 @@
   .steps .steps-item-image {
     width: 90px;
     height: 90px;
-    margin: 0 auto 24px;
     flex-shrink: 1;
   }
 
@@ -225,7 +204,7 @@
 
   .steps .steps-item-body {
     flex: 0;
-    font-size: 14px;
+    font-size: var(--body-font-size-s);
   }
 
   /* UPI red background variant - tablet */
@@ -239,8 +218,8 @@
   .upi-steps-red-bg .steps-subtitle {
     width: 50%;
     margin: 0 auto;
-    font-size: 14px;
-    font-family: var(--body-font-family);
+    font-size: var(--body-font-size-s);
+    
     font-weight: 600;
     font-style: normal;
     text-align: center;
@@ -255,8 +234,8 @@
   }
 
   .upi-steps-red-bg .steps-item-body {
-    font-size: 18px;
-    font-family: var(--heading-font-family);
+    font-size: var(--body-font-size-m);
+    
     font-weight: 600;
     font-style: normal;
     line-height: 1.2;
@@ -288,12 +267,11 @@
   }
 
   .steps .steps-title {
-    font-size: 42px;
-    margin: 0 0 72px;
+    font-size: var(--heading-font-size-xl);
   }
 
   .steps .steps-subtitle {
-    font-size: 20px;
+    font-size: var(--body-font-size-l);
     margin: 0 0 72px;
   }
 
@@ -323,7 +301,7 @@
   }
 
   .steps .steps-item-body {
-    font-size: 16px;
+    font-size: var(--body-font-size-s);
   }
 
   /* UPI red background variant - desktop */
@@ -346,9 +324,9 @@
   }
 
   .upi-steps-red-bg .steps-item-body {
-    font-size: 18px;
+    font-size: var(--body-font-size-m);
     width: 70%;
-    font-family: var(--heading-font-family);
+    
     font-weight: 600;
     font-style: normal;
     line-height: 1.2;

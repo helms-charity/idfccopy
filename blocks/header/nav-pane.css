@@ -1,17 +1,17 @@
 @media (max-width:767px) {
   .hdr {
-    font-size: 24px;
+    font-size: var(--heading-font-size-xs);
   }
 
   .hdb {
-    font-size: 24px;
+    font-size: var(--heading-font-size-xs);
   }
 
   .top-nav-container .top-nav .btn-box .btn-white {
     border: solid 1px var(--dark-red-color);
     padding: 8px 15px;
     margin-left: 15px;
-    font-size: 14px;
+    font-size: var(--body-font-size-s);
     font-weight: 500;
     background-color: var(--dark-red-color);
     color: #fff;
@@ -39,7 +39,7 @@
   border: solid 1px var(--dark-red-color);
   padding: 8px 15px;
   margin-left: 15px;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   font-weight: 500;
   background-color: var(--dark-red-color);
   color: #fff
@@ -660,7 +660,7 @@ header.sticky .login a {
 
 .top-nav-left>li>a .icon-Down {
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--body-font-size-xs);
   margin-left: 5px
 }
 
@@ -700,7 +700,7 @@ header.sticky .login a {
 }
 
 .menu-cardList-cnt .hd-bx h4 {
-  font-size: 10px;
+  font-size: var(--body-font-size-xxs);
   text-transform: uppercase;
   color: rgba(37, 36, 59, .5);
   letter-spacing: 1.5px
@@ -958,7 +958,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 
 .top-nav-left>li>a .icon-Down {
     font-weight: 700;
-    font-size: 13px;
+    font-size: var(--body-font-size-xs);
     margin-left: 5px
 }
 

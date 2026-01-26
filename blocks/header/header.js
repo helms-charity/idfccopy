@@ -177,7 +177,7 @@ export default async function decorate(block) {
   }
 
   // Build nav-brand
-  navBrand.innerHTML = `<a href="https://www.idfcfirstbank.com" aria-label="IDFC FIRST Bank Home">
+  navBrand.innerHTML = `<a href="https://www.idfcfirst.bank.in/personal-banking" aria-label="IDFC FIRST Bank Home">
     <img src="${logoImgSrc}" alt="${logoImgAlt}">
   </a>`;
 
@@ -529,6 +529,253 @@ export default async function decorate(block) {
       closeDelay: 100,
     });
 
+    const searchInput = searchBox.querySelector('.search-input');
+    let searchTimeout = null;
+    let defaultDropdownContent = null;
+
+    // Store the default dropdown content (Most Searched, Top Products, Accounts)
+    const storeDefaultContent = () => {
+      if (!defaultDropdownContent && search.dropdown.querySelector('.default-content')) {
+        defaultDropdownContent = search.dropdown.querySelector('.default-content').cloneNode(true);
+      }
+    };
+
+    // Restore default dropdown content
+    const restoreDefaultContent = () => {
+      // Remove search results
+      const searchResults = search.dropdown.querySelector('.search-results');
+      if (searchResults) {
+        searchResults.remove();
+      }
+
+      // Show the first section again
+      const firstSection = search.dropdown.querySelector('.section');
+      if (firstSection && firstSection.style.display === 'none') {
+        firstSection.style.display = '';
+      }
+    };
+
+    // Get fallback suggestions based on query
+    const getFallbackSuggestions = (query) => {
+      const allSuggestions = [
+        // Popular Products & Services
+        { title: 'Personal Loan', url: '/personal-banking/loans/personal-loan', type: 'Loan' },
+        { title: 'Savings Account', url: '/personal-banking/accounts/savings-account', type: 'Account' },
+        { title: 'Fixed Deposit', url: '/personal-banking/deposits/fixed-deposit', type: 'Deposit' },
+        { title: 'Home Loan', url: '/personal-banking/loans/home-loan', type: 'Loan' },
+        { title: 'FASTag', url: '/personal-banking/fastag', type: 'Service' },
+        { title: 'Mutual Funds', url: '/wealth-management/mutual-funds', type: 'Investment' },
+        { title: 'Current Account', url: '/business-banking/current-account', type: 'Account' },
+        { title: 'Business Loan', url: '/business-banking/loans/business-loan', type: 'Loan' },
+        { title: 'NRI Account', url: '/nri-banking/nri-savings-account', type: 'Account' },
+
+        // Premium Metal Credit Cards
+        { title: 'Gaj Credit Card', url: '/credit-card/metal-credit-card/gaj', type: 'Premium Metal' },
+        { title: 'Ashva Credit Card', url: '/credit-card/metal-credit-card/ashva', type: 'Premium Metal' },
+        { title: 'Mayura Credit Card', url: '/credit-card/metal-credit-card/mayura', type: 'Premium Metal' },
+        { title: 'FIRST Private Credit Card', url: '/credit-card/FIRSTPrivateCreditCard', type: 'Premium Metal' },
+
+        // Travel Credit Cards
+        { title: 'Diamond Reserve Credit Card', url: '/credit-card/diamond-reserve-credit-card', type: 'Travel' },
+        { title: 'IndiGo Credit Card', url: '/credit-card/indigo-credit-card', type: 'Travel' },
+        { title: 'Club Vistara Credit Card', url: '/credit-card/vistara-credit-card', type: 'Travel' },
+        { title: 'FIRST WOW! Black Credit Card', url: '/credit-card/wow-black-credit-card', type: 'Travel' },
+
+        // Lifetime Free Credit Cards
+        { title: 'FIRST Classic Credit Card', url: '/credit-card/classic', type: 'Lifetime Free' },
+        { title: 'FIRST Millennia Credit Card', url: '/credit-card/millennia', type: 'Lifetime Free' },
+        { title: 'FIRST Select Credit Card', url: '/credit-card/select', type: 'Lifetime Free' },
+        { title: 'FIRST Wealth Credit Card', url: '/credit-card/wealth', type: 'Lifetime Free' },
+        { title: 'FIRST WOW! Credit Card', url: '/credit-card/wow', type: 'Lifetime Free' },
+        { title: 'LIC Classic Credit Card', url: '/credit-card/lic-classic-credit-card', type: 'Lifetime Free' },
+        { title: 'LIC Select Credit Card', url: '/credit-card/lic-credit-card', type: 'Lifetime Free' },
+
+        // UPI Credit Cards
+        { title: 'Hello Cashback Credit Card', url: '/credit-card/hello-cashback-credit-card', type: 'UPI Card' },
+        { title: 'FIRST Power Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
+        { title: 'FIRST Power+ Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
+        { title: 'FIRST EA₹N Credit Card', url: '/credit-card/secured-rupay-credit-card', type: 'UPI Card' },
+        { title: 'FIRST Digital RuPay Credit Card', url: '/credit-card/rupay-credit-card', type: 'UPI Card' },
+
+        // Special Features
+        { title: 'FIRST SWYP EMI Credit Card', url: '/credit-card/swyp-emi-credit-card', type: 'EMI Card' },
+        { title: 'CreditPro Balance Transfer', url: '/credit-card/credit-card-balance-transfer', type: 'Balance Transfer' },
+
+        // Business Credit Cards
+        { title: 'Business Credit Card', url: '/credit-card/business-credit-card-sme', type: 'Business' },
+        { title: 'Corporate Credit Card', url: '/credit-card/corporate-credit-card', type: 'Business' },
+        { title: 'Purchase Credit Card', url: '/credit-card/purchase-credit-card', type: 'Business' },
+
+        // Credit Card Services
+        { title: 'Credit Card Referral Program', url: '/credit-card/credit-card-referral-program', type: 'Service' },
+        { title: 'Add-on Credit Card', url: '/credit-card/add-on-credit-card', type: 'Service' },
+        { title: 'Personalised Credit Card', url: '/credit-card/image-card/apply', type: 'Service' },
+        { title: 'Credit Card', url: '/credit-card', type: 'Product' },
+      ];
+
+      const lowerQuery = query.toLowerCase();
+      return allSuggestions
+        .filter((item) => item.title.toLowerCase().includes(lowerQuery))
+        .slice(0, 10); // Increased to 10 results given the larger dataset
+    };
+
+    // Display search results
+    const displaySearchResults = (results, query, container) => {
+      const loadingEl = container.querySelector('.search-results-loading');
+      if (loadingEl) {
+        loadingEl.remove();
+      }
+
+      if (results.length === 0) {
+        container.innerHTML += `
+          <div class="search-results-empty">
+            <p>No results found for "${query}"</p>
+            <p>Try searching for something else or press Enter to see all results</p>
+          </div>
+        `;
+        return;
+      }
+
+      const resultsList = document.createElement('ul');
+      resultsList.classList.add('search-results-list');
+
+      results.forEach((result) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="${result.url}">
+            <span class="search-result-title">${result.title}</span>
+            ${result.type ? `<span class="search-result-type">${result.type}</span>` : ''}
+          </a>
+        `;
+        resultsList.appendChild(li);
+      });
+
+      container.appendChild(resultsList);
+
+      // Add "View all results" link
+      const viewAllLink = document.createElement('div');
+      viewAllLink.classList.add('search-results-footer');
+      viewAllLink.innerHTML = `
+        <a href="https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}" class="view-all-results">
+          View all results for "${query}" <span class="icon icon-arrow-right-alt"></span>
+        </a>
+      `;
+      container.appendChild(viewAllLink);
+      decorateIcons(viewAllLink);
+    };
+
+    // Fetch search results
+    const fetchSearchResults = async (query, container) => {
+      try {
+        // Try to fetch from the search page API
+        // Note: The actual API endpoint may vary - this is a best guess based on the site structure
+        const response = await fetch(`https://www.idfcfirst.bank.in/bin/idfcfirstbank/search?q=${encodeURIComponent(query)}&limit=10`);
+
+        let results = [];
+
+        if (response.ok) {
+          const data = await response.json();
+          results = data.results || [];
+        }
+
+        // If no results from API, show fallback suggestions
+        if (results.length === 0) {
+          results = getFallbackSuggestions(query);
+        }
+
+        displaySearchResults(results, query, container);
+      } catch (error) {
+        // If API fails, show fallback suggestions
+        const results = getFallbackSuggestions(query);
+        displaySearchResults(results, query, container);
+      }
+    };
+
+    // Create search results container
+    const createSearchResults = (query) => {
+      // Remove existing results
+      const existingResults = search.dropdown.querySelector('.search-results');
+      if (existingResults) {
+        existingResults.remove();
+      }
+
+      // Find the first section (Most Searched)
+      const firstSection = search.dropdown.querySelector('.section');
+      if (!firstSection) return;
+
+      // Hide the first section
+      firstSection.style.display = 'none';
+
+      // Create results container
+      const resultsContainer = document.createElement('div');
+      resultsContainer.classList.add('search-results');
+      resultsContainer.classList.add('section'); // Add section class so it fits in the layout
+      resultsContainer.setAttribute('data-search-results', 'true'); // Add marker for CSS
+
+      // Create loading state
+      resultsContainer.innerHTML = `
+        <div class="search-results-header">
+          <h3>Search results for "${query}"</h3>
+        </div>
+        <div class="search-results-loading">
+          <p>Searching...</p>
+        </div>
+      `;
+
+      // Insert the search results in place of the first section
+      firstSection.parentNode.insertBefore(resultsContainer, firstSection);
+
+      // Fetch search results (with fallback to client-side suggestions)
+      setTimeout(() => {
+        fetchSearchResults(query, resultsContainer);
+      }, 300);
+    };
+
+    // Handle search input
+    if (searchInput) {
+      // Handle input changes (real-time search)
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+
+        // Clear existing timeout
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+
+        if (query.length === 0) {
+          // Restore default content if search is empty
+          restoreDefaultContent();
+          return;
+        }
+
+        if (query.length >= 2) {
+          // Debounce search by 300ms
+          searchTimeout = setTimeout(() => {
+            createSearchResults(query);
+          }, 300);
+        }
+      });
+
+      // Handle Enter key to redirect to full search page
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const query = e.target.value.trim();
+          if (query) {
+            window.location.href = `https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+
+      // Focus search input when dropdown opens
+      const originalOpenDropdown = search.openDropdown;
+      search.openDropdown = async () => {
+        await originalOpenDropdown();
+        storeDefaultContent();
+        searchInput.focus();
+      };
+    }
+
     // Click to open
     searchBox.addEventListener('click', () => {
       search.openDropdown();
@@ -569,6 +816,11 @@ export default async function decorate(block) {
         && !search.overlay.contains(e.target);
       if (isOutsideClick && search.dropdown.classList.contains('open')) {
         search.closeDropdown();
+        // Restore default content when closing
+        if (searchInput) {
+          searchInput.value = '';
+          restoreDefaultContent();
+        }
       }
     });
   }

@@ -24,7 +24,7 @@
   background-color: rgb(0 0 0 / 50%);
   backdrop-filter: blur(3.5px);
   z-index: 3;
-  font-family: var(--body-font-family);
+  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,9 +55,9 @@
   color: var(--background-color);
   text-decoration: none;
   border-radius: 32px;
-  font-family: var(--heading-font-family);
+  
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   text-align: center;
   white-space: nowrap;
   transition: background-color 0.2s ease;
@@ -92,7 +92,7 @@
   font-size: 11px;
   color: #fff;
   text-shadow: 0 0 20px rgb(0 0 0 / 25%);
-  font-family: var(--body-font-family);
+  
   font-weight: 500;
   line-height: 1.4;
   padding-bottom: 6px;
@@ -115,7 +115,7 @@
   }
 
   .sticky-cta-subtitle-content {
-    font-size: 12px;
+    font-size: var(--body-font-size-xs);
     padding-bottom: 10px;
   }
 }
@@ -134,12 +134,12 @@
 
   .sticky-cta-link,
   .sticky-cta-content a.button {
-    font-size: 16px;
+    font-size: var(--body-font-size-s);
     padding: 16px 28px;
   }
 
   .sticky-cta-subtitle-content {
-    font-size: 14px;
+    font-size: var(--body-font-size-xs);
     max-width: 900px;
     padding-bottom: 10px;
   }
