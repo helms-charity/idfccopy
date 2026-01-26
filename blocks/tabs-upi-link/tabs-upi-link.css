@@ -90,7 +90,7 @@
   flex: 1 1 0;
   margin: 0;
   border: none;
-  border-radius: var(--spacing-xs);
+  border-radius: 12px;
   padding: 16px 4px;
   background-color: transparent;
   color: rgb(255 255 255 / 40%);

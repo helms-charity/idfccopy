@@ -187,7 +187,7 @@
       #e7e7e7 0,
       #e7e7e7 4px,
       transparent 4px,
-      transparent var(--spacing-xxs)
+      transparent 8px
     );
   }
 
