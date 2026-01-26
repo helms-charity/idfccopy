@@ -765,10 +765,26 @@
   padding: 15px;
 }
 
+.cards.cards-single-slide .swiper-wrapper {
+  justify-content: center;
+}
+
+.cards.cards-single-slide .swiper-slide {
+  margin-right: 0 !important;
+}
+
 .cards.cards-two-slides {
   /* max-width: calc(66% + 40px); */
   margin-left: auto;
   margin-right: auto;
+}
+
+.cards.cards-two-slides .swiper-wrapper {
+  justify-content: center;
+}
+
+.cards.cards-two-slides .swiper-slide:last-child {
+  margin-right: 0 !important;
 }
 
 /* === EXPERIENCE LIFE & REWARD POINTS VARIANTS === */
@@ -794,6 +810,7 @@
   position: relative;
   min-height: 380px;
   width: 100%;
+  max-width: 326px;
   box-shadow: 0 8px 12px rgba(0 0 0 / 30%);
 }
 
@@ -1367,17 +1384,19 @@
   */
 
 .cards .swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
-  background: #aaa;
+  width: 10px;
+  height: 10px;
+  background: rgba(255 255 255 / 50%);
   opacity: 1;
   transition: all 0.3s ease;
+  border-radius: 50%;
 }
 
 .cards .swiper-pagination-bullet-active {
-  background: #aaa;
-  width: 36px;
-  border-radius: 6px;
+  background: var(--white);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
 /* === JOINING PERKS CARD VARIANT === */
@@ -1431,9 +1450,9 @@
 
 .cards.joining-perks .swiper-pagination-bullet-active {
   background: var(--white);
-  width: 36px;
-  height: 12px;
-  border-radius: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }
 
 /* Joining Perks Card Base Styling */
@@ -1452,6 +1471,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  max-width: 326px;
   height: auto;
   min-height: 380px;
   box-shadow: none;
@@ -1543,8 +1563,8 @@
 
 .cards.all-about-card .swiper-pagination-bullet-active {
   background: var(--white);
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
 }
 
@@ -1770,9 +1790,9 @@
 
   .cards.all-about-card .swiper-pagination-bullet-active {
     background: var(--white);
-    width: 36px;
-    height: 12px;
-    border-radius: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
   }
 
   .cards.all-about-card > .grid-cards > .cards-card,

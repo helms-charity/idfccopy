@@ -919,11 +919,15 @@ export default async function decorate(block) {
     swiperPagination.className = 'swiper-pagination';
     block.appendChild(swiperPagination);
 
+    // Count total slides
+    const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
+
     // Build Swiper configuration
     const swiperConfig = {
       slidesPerView: 1.2,
       spaceBetween: 16,
       initialSlide: startingCard,
+      centeredSlides: true, // Will be overridden by breakpoints if all cards fit
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
@@ -955,21 +959,25 @@ export default async function decorate(block) {
       };
     } else if (isExperienceLife) {
       // For experience-life cards: tighter spacing
-      const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
-      const shouldCenter = slideCount < 3;
-      swiperConfig.centeredSlides = shouldCenter;
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
           spaceBetween: 20,
-          centeredSlides: slideCount < 2,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
           spaceBetween: 36,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
         },
       };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
     } else if (isJoiningPerks) {
       // For joining perks cards: show edges on both sides on mobile, 3 cards at larger breakpoints
       swiperConfig.loop = false;
@@ -981,12 +989,20 @@ export default async function decorate(block) {
         600: {
           slidesPerView: 2,
           spaceBetween: 30,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
         },
         900: {
           slidesPerView: 3,
           spaceBetween: 60,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
         },
       };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
     } else if (isExploreOtherCards) {
       // For explore-other-cards: show edges on mobile, 3 cards at larger breakpoints
       swiperConfig.loop = false;
@@ -998,24 +1014,33 @@ export default async function decorate(block) {
         600: {
           slidesPerView: 2,
           spaceBetween: 20,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
         },
         900: {
           slidesPerView: 3,
           spaceBetween: 42,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
         },
       };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
     } else {
       // For benefit cards: standard breakpoints
-      const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
           spaceBetween: 20,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
           spaceBetween: 36,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
         },
       };
       // Add class for CSS centering when fewer than 3 cards
