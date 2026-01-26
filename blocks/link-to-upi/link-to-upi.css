@@ -2,9 +2,7 @@
 
 /* ===== MOBILE BASE STYLES ===== */
 .link-to-upi {
-  background: #000;
-  margin: 0;
-  color: #fff;
+  margin: 0 0 var(--spacing-m);
 }
 
 .link-to-upi .link-to-upi-container {
@@ -13,44 +11,40 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 0 15px 10px;
 }
 
 .link-to-upi .link-to-upi-title {
-  color: #fff;
-  font-size: 32px;
+  font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
-  font-family: var(--heading-font-family);
+  
   order: 1;
 }
 
 .link-to-upi .link-to-upi-text {
-  color: #fff;
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   font-weight: 400;
   line-height: 1.5;
   order: 3;
 }
 
 .link-to-upi .link-to-upi-text p {
-  color: #fff;
   margin: 0 0 24px;
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   line-height: 1.6;
   font-weight: 400;
 }
 
 .link-to-upi .link-to-upi-text > p:first-child {
-  font-size: 18px;
+  font-size: var(--body-font-size-l);
   font-weight: 700;
   margin-bottom: 12px;
   color: rgba(247 247 247 / 80%);
 }
 
 .link-to-upi .link-to-upi-text > p:last-of-type {
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
   font-weight: 400;
   margin: 0;
   color: rgba(247 247 247 / 80%);
@@ -58,14 +52,9 @@
   line-height: 1.3;
 }
 
-.link-to-upi .link-to-upi-text strong {
-  font-weight: 700;
-  font-family: var(--body-font-family);
-}
-
 .link-to-upi .link-to-upi-text a u {
   color: #fff;
-  font-family: var(--heading-font-family);
+  
   text-decoration: underline;
 }
 
@@ -91,6 +80,10 @@
   counter-increment: step-counter;
   padding: 20px 0;
   border-bottom: 1px solid rgb(255 255 255 / 20%);
+
+  > strong {
+    font-weight: 500;
+  }
 }
 
 .link-to-upi .link-to-upi-text ol li:last-child {
@@ -108,19 +101,10 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 22px;
+  font-size: var(--heading-font-size-xs);
   font-weight: 700;
-  font-family: var(--heading-font-family);
+  
   flex-shrink: 0;
-}
-
-.link-to-upi .link-to-upi-text ol li strong {
-  color: #fff;
-  font-family: var(--body-font-family);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  display: block;
 }
 
 .link-to-upi .link-to-upi-image {
@@ -148,7 +132,7 @@
   }
 
   .link-to-upi .link-to-upi-title {
-    font-size: 36px;
+    font-size: var(--heading-font-size-l);
     font-weight: 700;
     line-height: 1.2;
     order: 1;
@@ -156,7 +140,7 @@
   }
 
   .link-to-upi .link-to-upi-text {
-    font-size: 22px;
+    font-size: var(--heading-font-size-xs);
     order: 3;
     flex: 1 1 40%;
     min-width: 500px;
@@ -164,11 +148,11 @@
   }
 
   .link-to-upi .link-to-upi-text p {
-    font-size: 22px;
+    font-size: var(--body-font-size-xl);
   }
 
   .link-to-upi .link-to-upi-text > p:first-child {
-    font-size: 20px;
+    font-size: var(--body-font-size-l);
     font-weight: 400;
     margin-bottom: 24px;
   }
@@ -186,12 +170,12 @@
     width: 60px;
     height: 60px;
     min-width: 60px;
-    font-size: 24px;
+    font-size: var(--heading-font-size-xs);
   }
 
   .link-to-upi .link-to-upi-text ol li strong {
-    font-size: 22px;
-    font-family: var(--body-font-family);
+    font-size: var(--body-font-size-xl);
+    
     font-weight: 700;
     line-height: normal;
   }
@@ -201,9 +185,9 @@
   }
 
   .link-to-upi .link-to-upi-text > p:last-of-type strong{
-    font-size: 13px;
+    font-size: var(--body-font-size-xs);
     margin-top: 24px;
-    font-family: var(--body-font-family);
+    
     font-weight: 500;
     text-align: left;
   }

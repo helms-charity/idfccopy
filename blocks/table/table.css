@@ -7,10 +7,6 @@
   position: relative;
 }
 
-.modal-content .block-content.table-wrapper{
-  padding: 0 16px;
-}
-
 .table-background-image {
   position: absolute;
   top: 0;
@@ -33,14 +29,13 @@
 .table.block table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--body-font-size-xs);
   position: relative;
   z-index: 1;
 }
 
 .table.block table th,
 .table.block table td {
-  padding: 1.5em 0.5em;
+  padding: var(--spacing-s);
   text-align: left;
 }
 
@@ -79,7 +74,6 @@
   max-width: 100%;
   word-wrap: break-word;
   color: var(--white);
-  padding: 16px 27px;
   position: relative;
 }
 
@@ -90,16 +84,16 @@
 }
 
 .table.block#fees-and-charges table tbody tr:first-child td {
-  padding-top: 27px;
+  padding-top: var(--spacing-s);
 }
 
 .table.block#fees-and-charges table tbody tr:last-child td {
-  padding-bottom: 27px;
+  padding-bottom: var(--spacing-s);
 }
 
 .table.block#fees-and-charges table th sup,
 .table.block#fees-and-charges table td sup {
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
 }
 
 .table.block#fees-and-charges table tbody tr:not(:last-child) {
@@ -110,8 +104,8 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 27px;
-  right: 27px;
+  left: var(--spacing-s);
+  right: var(--spacing-s);
   height: 1px;
   background-color: var(--white);
 }
