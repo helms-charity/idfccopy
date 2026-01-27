@@ -5,7 +5,7 @@
     font-weight: 600;
     line-height: 30px;
     letter-spacing: -0.6px;
-    margin-bottom: 12px;
+    margin-bottom: var(--spacing-xs);
 }
 .overview-rte .overview-rte-para,.overview-rte .overview-rte-hiddenPara  {
     color: var(--text-color);

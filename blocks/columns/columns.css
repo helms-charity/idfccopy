@@ -23,7 +23,7 @@
   .columns > div {
     align-items: center;
     flex-direction: unset;
-    gap: 24px;
+    gap: var(--spacing-s);
   }
 
   .columns > div > div {
@@ -70,7 +70,7 @@
   background: var(--background-color);
   width: 100%;
   height: 60px;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .columns.block.feature-cards div div p{
@@ -92,7 +92,7 @@
   
   /* top: 56%; */
   top: 83%;
-  margin-right: 24px;
+  margin-right: var(--spacing-s);
   margin-top: 0;
 }
 }

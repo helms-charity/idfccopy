@@ -1,6 +1,6 @@
 /* set initial section configs in authoring, such as 
 style = center, dark-scheme, etc
-and outer background value (such asrgb(0 0 0 / 50%) */
+and outer background value (such as rgb(0 0 0 / 60%) */
 
 .section.cta-sticky-container {
   position: fixed;
@@ -23,6 +23,11 @@ p {
   text-shadow: 0 0 20px rgb(0 0 0 / 25%);
 }
 
+h6 {
+  font-size: var(--body-font-size-s);
+  font-weight: 400;
+}
+
 p + p {
   margin-top: 0;
 }
@@ -41,8 +46,8 @@ p.button-container a.button.primary:any-link {
   padding: var(--spacing-xxs);
 
   &:hover {
-    border-color: var(--btn-color-red);
-    background-color: var(--btn-color-red);
+    border-color: var(--red-color);
+    background-color: var(--red-color);
   }
 }
 

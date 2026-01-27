@@ -3,10 +3,10 @@
 /* Section container - fixed height to prevent CLS */
 .hero-heritage-cc-container {
   position: relative;
-  min-height: calc(100vh - 60px);
-  min-height: calc(100dvh - 60px);
-  height: calc(100vh - 60px);
-  height: calc(100dvh - 60px);
+  min-height: calc(100vh - var(--spacing-xl));
+  min-height: calc(100dvh - var(--spacing-xl));
+  height: calc(100vh - var(--spacing-xl));
+  height: calc(100dvh - var(--spacing-xl));
   contain: strict;
   overflow: hidden;
 }
@@ -188,7 +188,7 @@
 
 .hero-heritage-cc-intro > div {
   position: relative;
-  padding-top: 70px;
+  padding-top: var(--spacing-xxl);
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -270,7 +270,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 70px);
+  height: calc(100% - var(--spacing-xxl));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -317,7 +317,7 @@
   height: auto;
   animation: none;
   flex-direction: column;
-  padding: 24px;
+  padding: var(--spacing-s);
   overflow-y: auto;
 }
 
@@ -418,7 +418,7 @@
 .hero-heritage-cc-banner-cta-group {
   display: flex;
   flex-flow: column nowrap;
-  gap: 12px;
+  gap: var(--spacing-xs);
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -450,7 +450,7 @@
 .hero-heritage-cc-banner-cta a.button.primary:any-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
 }
 
 .hero-heritage-cc h1 {
@@ -471,7 +471,7 @@
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-s);
 }
 
 .hero-heritage-cc-intro-text-top, 
@@ -515,7 +515,7 @@
   align-items: center;
   width: 18px;
   height: 18px;
-  margin-left: 12px;
+  margin-left: var(--spacing-xs);
   padding-bottom: 4px;
   vertical-align: middle;
 }
@@ -574,7 +574,7 @@
   .hero-heritage-cc .hero-heritage-cc-banner-cta-group {
     margin-top: 40px;
   }
-  
+
   .hero-heritage-cc-header-cta .hero-heritage-cc-header-cta-fees-link {
     font-size: var(--body-font-size-s);
   }

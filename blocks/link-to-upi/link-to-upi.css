@@ -30,7 +30,7 @@
 }
 
 .link-to-upi .link-to-upi-text p {
-  margin: 0 0 24px;
+  margin: 0 0 var(--spacing-s);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
   font-weight: 400;
@@ -39,7 +39,7 @@
 .link-to-upi .link-to-upi-text > p:first-child {
   font-size: var(--body-font-size-l);
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-xs);
   color: rgba(247 247 247 / 80%);
 }
 
@@ -127,7 +127,7 @@
   .link-to-upi .link-to-upi-container {
     flex-flow: row wrap;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-xs);
     max-width: 1300px;
   }
 
@@ -154,7 +154,7 @@
   .link-to-upi .link-to-upi-text > p:first-child {
     font-size: var(--body-font-size-l);
     font-weight: 400;
-    margin-bottom: 24px;
+    margin-bottom: var(--spacing-s);
   }
 
   .link-to-upi .link-to-upi-text > ol {
@@ -186,7 +186,7 @@
 
   .link-to-upi .link-to-upi-text > p:last-of-type strong{
     font-size: var(--body-font-size-xs);
-    margin-top: 24px;
+    margin-top: var(--spacing-s);
     
     font-weight: 500;
     text-align: left;

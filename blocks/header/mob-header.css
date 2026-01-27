@@ -35,7 +35,7 @@
     border-style: solid;
     border-color: rgb(53, 53, 53);
     border-image: initial;
-    padding: 8px 15px;
+    padding: var(--spacing-xxs) 15px;
     border-radius: 25px;
     white-space: nowrap;
     max-width: 151px;
@@ -202,7 +202,7 @@
 
   .nav-sections .default-content-wrapper>ul:first-child>li:first-child>ul li a {
     background: transparent;
-    padding: 9px 12px !important;
+    padding: 9px var(--spacing-xs) !important;
     color: white;
   }
 
@@ -257,7 +257,7 @@
   .nav-sections .gradientCard {
     background: linear-gradient(268deg, #FAF5E9 1.27%, #FFF5F3 59.2%);
     background-image: linear-gradient(268deg, rgb(250, 245, 233) 1.27%, rgb(255, 245, 243) 59.2%);
-    padding: 8px 5px 10px;
+    padding: var(--spacing-xxs) 5px 10px;
     display: flex;
     -ms-flex-pack: justify;
     justify-content: space-between;
@@ -325,7 +325,7 @@
     display: inline-block;
     width: 9px;
     height: 9px;
-    margin-left: 8px;
+    margin-left: var(--spacing-xxs);
     vertical-align: middle;
     border: solid #fff;
     border-width: 0 2px 2px 0;
@@ -365,7 +365,7 @@
     display: inline-block;
     width: 9px;
     height: 9px;
-    margin-left: 8px;
+    margin-left: var(--spacing-xxs);
     vertical-align: middle;
     border: solid var(--dark-red-color);
     border-width: 0 2px 2px 0;
@@ -399,19 +399,19 @@
 
   #nav>div.section.nav-tools>div>ul>li:nth-child(2) {
     min-width: 97px;
-    padding: 8px 16px;
+    padding: var(--spacing-xxs) 16px;
     font-weight: 500;
     height: 36px;
     font-size: var(--body-font-size-s);
     color: #fff !important;
     background-color: #902a2c;
     border-radius: 25px;
-    margin-left: 12px !important;
+    margin-left: var(--spacing-xs) !important;
     display: flex;
   }
 
   #nav>div.section.nav-tools>div>ul>li:nth-child(2) .icon-login_header {
-    margin-right: 8px;
+    margin-right: var(--spacing-xxs);
   }
 
   header #nav .nav-hamburger button {
@@ -429,7 +429,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: var(--spacing-xxs);
 }
 
 .nav-sections .icon-close {
