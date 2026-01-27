@@ -1083,8 +1083,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   text-align: left;
   
   img {
-    width: 58px;
-    height: 58px;
+    width: 42px;
+    height: 42px;
   }
 }
 
@@ -2459,6 +2459,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       grid-column: 2;
       grid-row: 3;
       border-bottom: 0;
+
+      .cards .grid-cards li .cards-card-image img {
+        width: 58px;
+        height: 58px;
+      }
     }
   
     .section#download {
