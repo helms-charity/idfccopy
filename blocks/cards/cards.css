@@ -66,7 +66,7 @@
 
 .cards .benefit-cards .cards-card-body {
   flex: 1;
-  margin-top: 12px;
+  margin-top: var(--spacing-xs);
 }
 
 .cards .benefit-cards .cards-card-body h3 {
@@ -76,7 +76,7 @@
   font-weight: 600;
   line-height: normal;
   letter-spacing: -0.3px;
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
 }
 
 .cards .benefit-cards .cards-card-body p {
@@ -139,8 +139,8 @@
 /* VIEW ALL / LESS BUTTON */
 .cards .view-toggle {
   display: block;
-  margin: 24px auto 0;
-  padding: 12px 24px;
+  margin: var(--spacing-s) auto 0;
+  padding: var(--spacing-xs) var(--spacing-s);
   background-color: transparent;
   color: #B31B1B;
   font-size: var(--body-font-size-s);
@@ -177,7 +177,7 @@
 /* === EARN REWARDS CARD VARIANT === */
 .section:has(.cards.earn-rewards) {
   background-color: #000;
-  padding: 40px 24px;
+  padding: 40px var(--spacing-s);
 }
 
 .section:has(.cards.earn-rewards) .cards-wrapper,
@@ -200,7 +200,7 @@
   font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-xxs);
 }
 
 .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h3 {
@@ -304,7 +304,7 @@
 /* IMPORTANT DOCUMENTS CARD CONTAINER STYLING */
 
 .cards.important-documents {
-  margin: 24px 0;
+  margin: var(--spacing-s) 0;
 }
 
 /* Hide View All button for important-documents */
@@ -459,7 +459,7 @@
 
 /* === RELATED SEARCH CARD VARIANT === 
 .section:has(.cards.related-search) {
-  padding: 40px 16px 60px;
+  padding: 40px 16px var(--spacing-xl);
 }
   */
 
@@ -467,11 +467,11 @@
   color: #54565b;
   font-size: var(--body-font-size-xl);
   font-weight: 600;
-  margin: 0 0 24px;
+  margin: 0 0 var(--spacing-s);
 }
 
 .section:has(.cards.related-search) .cards-wrapper {
-  padding: 0 12px;
+  padding: 0 var(--spacing-xs);
 }
 
 /* Hide View All button for related-search */
@@ -578,7 +578,7 @@
 
 /* === KEY BENEFITS CARD VARIANT === */
 .section:has(.cards.key-benefits) {
-  padding: 40px 0 60px;
+  padding: 40px 0 var(--spacing-xl);
 }
 
 .section:has(.cards.key-benefits) .default-content-wrapper h2 {
@@ -644,7 +644,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 32px 24px 12px;
+  padding: 32px var(--spacing-s) var(--spacing-xs);
   position: relative;
   z-index: 2;
 }
@@ -682,7 +682,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  padding: 0 24px 24px;
+  padding: 0 var(--spacing-s) var(--spacing-s);
   margin: 0;
   flex: 1;
 }
@@ -693,7 +693,7 @@
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.3;
-  margin: 0 0 12px;
+  margin: 0 0 var(--spacing-xs);
   background: conic-gradient(from 142deg at 50% 35.29%, #999 0deg, #EFEFEF 48.6deg, #CACACA 104.4deg, #EFEFEF 163.8deg, #CACACA 230.4deg, #999 288deg, #EFEFEF 320.4deg);
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -712,7 +712,7 @@
   font-size: var(--body-font-size-s);
   font-weight: 400;
   line-height: 1.5;
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
 }
 
 /* Links within key-benefits cards */
@@ -852,14 +852,14 @@
 .cards.reward-points .benefit-cards .cards-card-tag {
   position: relative;
   z-index: 3;
-  padding: 0 24px;
+  padding: 0 var(--spacing-s);
   top: 20px;
 }
 
 .cards.experience-life .benefit-cards .cards-card-tag p,
 .cards.reward-points .benefit-cards .cards-card-tag p {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 4px var(--spacing-xxs);
   border: 1px solid rgba(255 255 255 / 60%);
   border-radius: 4px;
   color: #2E3E79;
@@ -876,8 +876,8 @@
   z-index: 3;
   display: flex;
   flex-direction: column;
-  padding: 0 24px 24px;
-  margin-top: 12px;
+  padding: 0 var(--spacing-s) var(--spacing-s);
+  margin-top: var(--spacing-xs);
   flex: 1;
 }
 
@@ -928,7 +928,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 24px 24px 16px;
+  padding: var(--spacing-s) var(--spacing-s) 16px;
   position: relative;
   z-index: 2;
 }
@@ -950,7 +950,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  padding: 0 24px 24px;
+  padding: 0 var(--spacing-s) var(--spacing-s);
   margin: 0;
   flex: 1;
 }
@@ -961,7 +961,7 @@
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.3;
-  margin: 0 0 12px;
+  margin: 0 0 var(--spacing-xs);
   background: var(--gradient-silver);
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -972,7 +972,7 @@
   color: rgba(255 255 255 / 80%);
   font-size: var(--body-font-size-s);
   line-height: 1.5;
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
 }
 
 .cards.experience-life .benefit-cards .cards-card-body h3 a,
@@ -1042,7 +1042,7 @@
 .section:has(.cards.blog-posts) h1 + p {
   color: #000;
   font-size: var(--body-font-size-m);
-  margin: 0 auto 24px;
+  margin: 0 auto var(--spacing-s);
   text-align: center;
   font-weight: 500;
   line-height: 1.5;
@@ -1152,7 +1152,7 @@
   border-radius: 36px;
   text-decoration: none;
   transition: background-color 0.2s ease;
-  margin: 24px auto 0;
+  margin: var(--spacing-s) auto 0;
 }
 
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary:hover {
@@ -1207,7 +1207,7 @@
 
   .cards.important-documents .cards-card,
   .cards.important-documents .important-documents-card {
-    padding: 20px 12px;
+    padding: 20px var(--spacing-xs);
     gap: 6px;
   }
 
@@ -1424,17 +1424,17 @@
 .section:has(.cards.joining-perks) h2 {
   font-size: var(--heading-font-size-l);
   margin-bottom: 4px;
-  padding: 0 8px;
+  padding: 0 var(--spacing-xxs);
 }
 
 .section:has(.cards.joining-perks) h3 {
   font-size: var(--body-font-size-m);
   font-weight: 400;
-  margin: 0 8px 10px;
+  margin: 0 var(--spacing-xxs) 10px;
 }
 
 .section:has(.cards.joining-perks) {
-  padding: 48px 0 32px;
+  padding: var(--spacing-l) 0 32px;
 }
 
 .cards.joining-perks.swiper {
@@ -1650,7 +1650,7 @@
 }
 
 .cards.all-about-card .cards-card-body {
-  padding: 50px 24px 24px;
+  padding: 50px var(--spacing-s) var(--spacing-s);
   margin: 0;
   flex: 1;
   display: flex;
@@ -1685,7 +1685,7 @@
   .cards.important-documents .important-documents-card {
     width: 175px;
     height: 175px;
-    padding: 24px 26px;
+    padding: var(--spacing-s) 26px;
   }
 
   /* Earn Rewards Cards - Desktop View (900px+) */
@@ -1769,17 +1769,17 @@
   
   .section:has(.cards.joining-perks) h2 {
     font-size: var(--heading-font-size-xl);
-    margin-bottom: 12px;
+    margin-bottom: var(--spacing-xs);
   }
   
   .section:has(.cards.joining-perks) h3 {
     font-size: var(--heading-font-size-xs);
     font-weight: 400;
-    margin: 0 8px 32px;
+    margin: 0 var(--spacing-xxs) 32px;
   }
   
   .section:has(.cards.joining-perks) {
-    padding: 72px 0 18px;
+    padding: var(--spacing-xxl) 0 18px;
   }
 
   .cards.joining-perks .cards-card-body h3,
@@ -1853,7 +1853,7 @@
   }
 
   .cards.all-about-card .cards-card-body {
-    padding: 60px 32px 70px;
+    padding: var(--spacing-xl) 32px 70px;
     min-height: 140px;
     margin-top: -40px;
   }
@@ -1945,7 +1945,7 @@
 
   .cards.experience-life .benefit-cards .cards-card-body {
     padding: 0 28px 28px;
-    margin-top: 12px;
+    margin-top: var(--spacing-xs);
   }
 
   .cards.experience-life .benefit-cards .cards-card-body h3 {
@@ -2032,7 +2032,7 @@
   background-color: var(--gray);
   border-radius: 20px;
   box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
-  padding: 24px;
+  padding: var(--spacing-s);
   display: flex;
   flex-direction: column;
   margin-right: 0;
@@ -2065,12 +2065,12 @@
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 {
   font-size: var(--body-font-size-m);
   font-weight: 500;
-  margin: 36px 0 11px;
+  margin: var(--spacing-m) 0 11px;
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 + p {
   font-size: var(--body-font-size-s);
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p u {
@@ -2097,7 +2097,7 @@
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p:has(.icon-star) {
   display: flex;
-  margin: 0 0 12px;
+  margin: 0 0 var(--spacing-xs);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .icon-star,

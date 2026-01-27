@@ -298,7 +298,7 @@ header nav .nav-sections .nav-fragment-section-content>li {
 
 /* Content items in nav-sections */
 header nav .nav-sections .nav-fragment-section-content p.button-container {
-  padding: 12px 20px 12px 32px;
+  padding: var(--spacing-xs) 20px var(--spacing-xs) 32px;
   margin: 0;
   border-bottom: 1px solid #f0f0f0;
   min-height: 0; /* Override line 66 */
@@ -327,7 +327,7 @@ header nav .nav-sections .nav-fragment-section-content p.button-container a {
 
 /* Non-button content items */
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title) {
-  padding: 12px 20px 12px 32px;
+  padding: var(--spacing-xs) 20px var(--spacing-xs) 32px;
   margin: 0;
   border-bottom: 1px solid #f0f0f0;
   min-height: 0; /* Override line 66 */
@@ -355,7 +355,7 @@ header nav .nav-sections .nav-fragment-section-content p:not(.button-container) 
   text-decoration: none;
   font-size: var(--body-font-size-xs);
   line-height: 1.3;
-  margin-left: 8px;
+  margin-left: var(--spacing-xxs);
 }
 
 /* Category-nav blocks inside mobile navigation */
@@ -416,7 +416,7 @@ header nav .nav-sections .nav-view-all-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px 12px 32px;
+  padding: var(--spacing-xs) 20px var(--spacing-xs) 32px;
   margin: 0;
   font-size: var(--body-font-size-xs);
   font-weight: 600;
@@ -505,7 +505,7 @@ header nav .nav-sections.tab-view-active .default-content-wrapper > ul {
 header nav .nav-sections .nav-tab-bar {
   display: flex;
   gap: 0;
-  padding: 0 8px;
+  padding: 0 var(--spacing-xxs);
   margin: 0;
   border-bottom: 1px solid #e0e0e0;
   overflow-x: auto;
@@ -519,7 +519,7 @@ header nav .nav-sections .nav-tab-bar {
 
 header nav .nav-sections .nav-tab {
   flex: 0 0 auto;
-  padding: 12px 16px;
+  padding: var(--spacing-xs) 16px;
   background: none;
   border: none;
   border-bottom: 3px solid transparent;
@@ -557,7 +557,7 @@ header nav .nav-sections .explore-section-link {
 }
 
 header nav .nav-sections .explore-section-link .arrow {
-  margin-left: 8px;
+  margin-left: var(--spacing-xxs);
   font-size: 18px;
 }
 
@@ -760,7 +760,7 @@ header nav .nav-tools .default-content-wrapper > ul > li:last-child {
   background-color: #902a2c;
   border: 1px solid #902a2c;
   border-radius: 50px;
-  padding: 8px 12px;
+  padding: var(--spacing-xxs) var(--spacing-xs);
   font-size: var(--body-font-size-xs);
   font-weight: 400;
   line-height: 16px;
@@ -877,7 +877,7 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper {
   font-size: var(--body-font-size-s);
   font-weight: 400;
   color: var(--text-color);
-  padding: 8px 16px;
+  padding: var(--spacing-xxs) 16px;
   border: 1px solid var(--text-color);
   border-radius: 50px;
   white-space: nowrap;
@@ -926,7 +926,7 @@ header nav .nav-sections .icon-privilage-img2a,
 header nav .nav-sections .icon-privilage-img3a {
   width: 51px;
   height: 34px;
-  margin-right: 12px;
+  margin-right: var(--spacing-xs);
   vertical-align: middle;
 }
 
@@ -997,7 +997,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .cs-dropdown.open {
   visibility: visible;
-  padding: 40px 8px 8px;
+  padding: 40px var(--spacing-xxs) var(--spacing-xxs);
   transform: translateY(0);
   display: grid;
 
@@ -1025,7 +1025,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#cscards .cards .benefit-cards {
     width: 100%;
     box-shadow: none;
-    padding: 12px;
+    padding: var(--spacing-xs);
     background: var(--gray-200);
     border-radius: 8px;
     border: none;
@@ -1078,7 +1078,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body h6 .icon {
-    margin-left: 8px;
+    margin-left: var(--spacing-xxs);
     flex-shrink: 0;
   }
 
@@ -1130,7 +1130,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 {
     font-size: var(--body-font-size-m);
     font-weight: 700;
-    margin: 0 0 8px;
+    margin: 0 0 var(--spacing-xxs);
   }
 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
@@ -1154,7 +1154,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     line-height: 18px;
     background: var(--gradient-light-red);
     background-clip: text;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-xxs);
     color: transparent;
   }
 
@@ -1300,7 +1300,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 
   li .cards-card-body {
-    padding: 12px 0 12px 8px;
+    padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-xxs);
   }
  }
 } /* end search-dropdown.open */
@@ -1315,7 +1315,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 }
 
 .search-dropdown .search-results-header {
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-xs);
   padding: 16px;
 }
 
@@ -1345,7 +1345,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 .search-dropdown .search-results-empty p {
   font-size: var(--body-font-size-xs);
   color: var(--gray);
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-xxs);
   line-height: 1.4;
 }
 
@@ -1401,15 +1401,15 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   font-size: var(--body-font-size-xxs);
   color: var(--dark-red-color);
   background: var(--gray-200);
-  padding: 4px 8px;
+  padding: 4px var(--spacing-xxs);
   border-radius: 12px;
-  margin-left: 12px;
+  margin-left: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-footer {
   padding: 16px;
   border-top: 1px solid #f0f0f0;
-  margin-top: 8px;
+  margin-top: var(--spacing-xxs);
 }
 
 .search-dropdown .search-results-footer .view-all-results {
@@ -1539,7 +1539,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   padding: 12px;
 
   .block-content {
-    padding: 20px 24px;
+    padding: 20px var(--spacing-s);
     border-radius: 20px;
   }
 
@@ -1672,7 +1672,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     max-width: unset;
     width: 100%;
     margin: 0 auto;
-    padding: 12px 30px;
+    padding: var(--spacing-xs) 30px;
     height: auto;
     min-height: auto;
     overflow-y: visible;
@@ -1807,7 +1807,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     font-weight: 400;
     border: none;
     border-bottom: 3px solid transparent;
-    padding: 8px 4px;
+    padding: var(--spacing-xxs) 4px;
     transition: border-bottom-color 0.2s ease;
   }
 
@@ -1898,7 +1898,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Section title in column 1 */
   header nav .nav-sections .default-content-wrapper>ul>li p.nav-fragment-section-title {
     grid-column: 1;
-    padding: 12px 20px;
+    padding: var(--spacing-xs) 20px;
     font-size: var(--body-font-size-xs);
     font-weight: 400;
     color: var(--dark-red-link-color);
@@ -1959,7 +1959,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   header nav .nav-sections .nav-fragment-section-content .nav-primary-links .nav-view-all-wrapper {
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-xxs);
   }
 
   /* First H4 section in second column */
@@ -2099,14 +2099,14 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-body {
-    padding: 12px;
+    padding: var(--spacing-xs);
     background: var(--background-color);
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: var(--body-font-size-xs);
     font-weight: 400;
-    margin: 0 0 8px;
+    margin: 0 0 var(--spacing-xxs);
     color: var(--text-color);
     line-height: 1.3;
     text-align: left;
@@ -2119,7 +2119,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Discover card: Body text */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-discover-section .cards-card-body p:not(.button-container) {
     font-size: var(--body-font-size-xs);
-    margin: 0 0 12px;
+    margin: 0 0 var(--spacing-xs);
     padding: 0;
     color: #666;
     line-height: 1.4;
@@ -2137,7 +2137,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-discover-section .cards-card-body .button {
     display: inline-block;
-    padding: 8px 20px;
+    padding: var(--spacing-xxs) 20px;
     background-color: transparent;
     color: var(--dark-red-link-color);
     border: 1px solid var(--dark-red-link-color);
@@ -2220,7 +2220,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     align-items: center;
     gap: 16px;
     padding: 10px 16px;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-xxs);
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li .nav-view-all-section-title {
@@ -2271,7 +2271,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* H4 section container */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section {
-    margin: 16px 0 8px;
+    margin: 16px 0 var(--spacing-xxs);
     background: var(--gray-200);
     display: flex;
     flex-direction: column;
@@ -2367,7 +2367,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-radius: 20px;
     border: 1px solid #353535;
     background: #fff;
-    padding: 8px 12px;
+    padding: var(--spacing-xxs) var(--spacing-xs);
     color: #3a3a3a;
     font-size: var(--body-font-size-xs);
     font-weight: 400;
@@ -2382,7 +2382,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .nav-tools .default-content-wrapper>p:first-child>strong {
-    margin-left: 8px;
+    margin-left: var(--spacing-xxs);
     color: #353535;
     font-weight: 400;
     overflow: hidden;
@@ -2391,7 +2391,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .nav-tools .default-content-wrapper>p:first-child .search-input {
-    margin-left: 8px;
+    margin-left: var(--spacing-xxs);
     color: #353535;
     font-weight: 400;
     flex: 1;
@@ -2420,7 +2420,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .nav-tools .default-content-wrapper>ul>li {
-    padding: 8px 16px;
+    padding: var(--spacing-xxs) 16px;
     font-weight: 400;
     font-size: var(--body-font-size-xs);
     line-height: 20px;
@@ -2520,7 +2520,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   .section#cscards .cards .benefit-cards {
     width: 100%;
     box-shadow: none;
-    padding: 12px;
+    padding: var(--spacing-xs);
     background: var(--gray-200);
     border-radius: 8px;
     border: none;
@@ -2674,7 +2674,7 @@ border-radius: 0;
     background: linear-gradient(93.81deg, #E9E9E9 0%, #838383 154.51%);
     background-clip: text;
     color: transparent;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-xxs);
   }
 
   h5 {
@@ -2779,7 +2779,7 @@ border-radius: 0;
   /* Nav spacing - generous on desktop */
   header nav {
     gap: 16px;
-    padding: 12px 70px;
+    padding: var(--spacing-xs) 70px;
   }
 
   /* Nav sections - allow natural growth within parent container */
@@ -2849,14 +2849,14 @@ border-radius: 0;
 
   /* Nav title link padding - more generous on desktop */
   header nav .nav-sections .default-content-wrapper>ul>li p a {
-    padding: 8px 12px;
+    padding: var(--spacing-xxs) var(--spacing-xs);
   }
 
   /* Search bar - wider and flexible on desktop */
   .nav-tools .default-content-wrapper>p:first-child {
     min-width: 200px;
     max-width: none;
-    padding: 8px 16px;
+    padding: var(--spacing-xxs) 16px;
     flex-grow: 1;
     flex-shrink: 0;
   }
