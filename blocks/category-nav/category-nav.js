@@ -236,17 +236,17 @@ async function initializeSwiperNavigation(carouselWrapper, prevButton, nextButto
 
   // Find all cards and wrap them
   const cards = Array.from(container.children);
-  
+
   // Create swiper-wrapper
   const swiperWrapper = document.createElement('div');
   swiperWrapper.classList.add('swiper-wrapper');
-  
+
   // Move all cards into swiper-wrapper and add swiper-slide class
   cards.forEach((card) => {
     card.classList.add('swiper-slide');
     swiperWrapper.appendChild(card);
   });
-  
+
   container.appendChild(swiperWrapper);
 
   // Configure Swiper
