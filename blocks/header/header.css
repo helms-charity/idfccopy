@@ -23,7 +23,6 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  
   gap: var(--spacing-xxs);
 }
 
@@ -1118,6 +1117,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#helpcenter .cards .benefit-cards .cards-card-image {
     width: 58px;
     height: 58px;
+  }
 
   .section#helpcenter .cards .benefit-cards .cards-card-image img {
     width: 58px;
@@ -1132,17 +1132,6 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     font-weight: 700;
     margin: 0 0 var(--spacing-xxs);
   }
-  
-.section#download h5 {
-  font-style: normal;
-  font-weight: 800;
-  font-size: var(--body-font-size-s);
-  line-height: 18px;
-  background: var(--gradient-light-red);
-  background-clip: text;
-  margin-bottom: var(--spacing-xxs);
-  color: transparent;
-}
 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
     width: 24px;
