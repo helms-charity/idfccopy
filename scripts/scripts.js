@@ -17,11 +17,11 @@ import {
   toCamelCase,
 } from './aem.js';
 
-// Cached media query results for performance
+// Cached media query results for Section performance
 const MEDIA_QUERIES = {
   mobile: window.matchMedia('(max-width: 599px)'),
-  tablet: window.matchMedia('(min-width: 600px) and (max-width: 899px)'),
-  desktop: window.matchMedia('(min-width: 900px)'),
+  tablet: window.matchMedia('(min-width: 600px) and (max-width: 989px)'),
+  desktop: window.matchMedia('(min-width: 990px)'),
 };
 
 /**
