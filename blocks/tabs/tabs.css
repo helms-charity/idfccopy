@@ -1,6 +1,6 @@
 .tabs .tabs-list {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-xs);
   max-width: 100%;
   overflow-x: auto;
 }
@@ -8,7 +8,7 @@
 .tabs .tabs-tab {
   border: 1px solid #2E3E79;
   border-radius: 10px;
-  padding: 8px 16px;
+  padding: var(--spacing-xxs) 16px;
   line-height: 1.4;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -45,7 +45,7 @@
 
 .tabs .tabs-panel {
   border: none;
-  padding: 24px 0;
+  padding: var(--spacing-s) 0;
   overflow: hidden; /* Needed for swiper cards inside tabs */
 }
 

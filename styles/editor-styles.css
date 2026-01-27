@@ -88,7 +88,7 @@ main[data-aue-resource] .hero-heritage-cc::after {
 main[data-aue-resource] .hero-heritage-cc > div {
   position: relative;
   margin-bottom: 16px;
-  padding: 12px;
+  padding: var(--spacing-xs);
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -115,12 +115,12 @@ main[data-aue-resource] .hero-heritage-cc-header-cta::before {
   text-align: center;
   background: #3a3a3a;
   color: #fff;
-  padding: 6px 12px;
+  padding: 6px var(--spacing-xs);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.5px;
   border-radius: 4px;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-xs);
 }
 
 main[data-aue-resource] .hero-heritage-cc-intro::before {
@@ -130,7 +130,7 @@ main[data-aue-resource] .hero-heritage-cc-intro::before {
   height: auto;
   background: #3a3a3a;
   color: #fff;
-  padding: 6px 12px;
+  padding: 6px var(--spacing-xs);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -145,8 +145,8 @@ main[data-aue-resource] .hero-heritage-cc-intro::before {
 main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview {
   display: flex !important;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: var(--spacing-xs);
+  padding: 8px var(--spacing-xs);
   background: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -223,7 +223,7 @@ main[data-aue-resource] .hero-heritage-cc-header-cta {
   min-height: auto;
   background: #fff;
   backdrop-filter: none;
-  padding: 12px 16px;
+  padding: var(--spacing-xs) 16px;
   border-radius: 6px;
   border: 1px solid #e0e0e0;
 }
@@ -350,7 +350,7 @@ main[data-aue-resource] .hero-heritage-cc p {
 /* CTA buttons in UE - reset to default button styling */
 main[data-aue-resource] .hero-heritage-cc-banner-cta-group {
   flex-flow: row wrap;
-  gap: 12px;
+  gap: var(--spacing-xs);
   margin-top: 16px;
 }
 

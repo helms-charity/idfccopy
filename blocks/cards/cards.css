@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   margin-bottom: 0;
   width: 100%;
   border-radius: 8px;
@@ -495,7 +495,7 @@
   min-height: 56px;
   padding: 10px 16px;
   margin-bottom: 0;
-  background: #eee !important;
+  background: var(--gray-200);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0 0 0 / 8%);
   width: 100%;
@@ -1144,12 +1144,13 @@
 .cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary {
   display: inline-flex;
   align-items: center;
-  background: var(--dark-red-color);
-  color: var(--white);
+  background: var(--btn-color-red);
+  color: var(--btn-color-white);
   font-size: var(--body-font-size-s);
   font-weight: 700;
   padding: 10px 30px;
   border-radius: 36px;
+  border-color: transparent;
   text-decoration: none;
   transition: background-color 0.2s ease;
   margin: var(--spacing-s) auto 0;
@@ -1379,7 +1380,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
 }
 
 /*
@@ -1663,6 +1664,104 @@
 
 .cards.all-about-card .cards-card-body p {
   color: rgb(255 255 255 / 90%);
+}
+
+/* Testimonial cards with Swiper - override general Swiper styles */
+.cards.testimonial-card.swiper .swiper-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: visible;
+  gap: 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cards.testimonial-card.swiper .swiper-slide {
+  flex: 0 0 auto;
+  background-color: var(--gray);
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
+  padding: 34px 20px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 0;
+  box-sizing: border-box;
+  height: auto;
+  overflow: visible;
+  transition: all 0.5s ease;
+  transform: scale(0.9);
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body {
+  margin: 0;
+}
+
+.cards.testimonial-card.swiper .swiper-slide-active {
+  background-color: var(--purple-color);
+  transform: scale(1);
+  z-index: 10;
+  box-shadow: 0 8px 16px 4px rgb(37 36 59 / 25%);
+  transition: all 0.5s ease;
+}
+
+/* Testimonial card text styling for Swiper slides */
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body h5,
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body h6,
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p {
+  color: var(--white);
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 {
+  font-size: var(--body-font-size-l);
+  
+  font-weight: 500;
+  margin: 36px 0 11px;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 + p {
+  font-size: var(--body-font-size-s);
+  margin: 0 0 var(--spacing-xxs);
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p u {
+  font-size: var(--body-font-size-s);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p:not(:has(.icon-inverted-commas), :has(.icon-star), :has(u)) {
+  font-size: var(--body-font-size-m);
+  
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p:has(.icon-inverted-commas) {
+  margin: 0 0 16px;
+  line-height: 0;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .icon-inverted-commas img {
+  width: 20px;
+  height: 16.75px;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p:has(.icon-star) {
+  display: flex;
+  margin: 0 0 var(--spacing-xs);
+}
+
+.cards.testimonial-card.swiper .swiper-slide .icon-star,
+.cards.testimonial-card.swiper .swiper-slide .icon-star-white,
+.cards.testimonial-card.swiper .swiper-slide .icon-star-yellow {
+  display: inline-block;
+  width: auto;
+  height: 12px;
+  padding-right: 4px;
+}
+
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body h6 {
   font-size: var(--body-font-size-xs);
   line-height: 1.5;
   text-align: left;
@@ -1853,7 +1952,7 @@
   }
 
   .cards.all-about-card .cards-card-body {
-    padding: var(--spacing-xl) 32px 70px;
+    padding: var(--spacing-xl) 32px var(--spacing-xxl);
     min-height: 140px;
     margin-top: -40px;
   }

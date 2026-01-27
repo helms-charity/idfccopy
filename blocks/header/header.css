@@ -23,7 +23,8 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  gap: 8px;
+  
+  gap: var(--spacing-xxs);
 }
 
 header nav[aria-expanded="true"] {
@@ -284,7 +285,7 @@ header nav .nav-sections .nav-fragment-section-content {
   transition: max-height 0.3s ease-in-out;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 0 12px 1px rgb(0 0 0 / 4%);
+  box-shadow: 0 0 var(--spacing-xs) 1px rgb(0 0 0 / 4%);
 }
 
 header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
@@ -384,7 +385,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-dropdown-he
   padding: 16px 20px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--spacing-xs);
 }
 
 header nav .nav-sections .nav-fragment-section-content .category-nav-eyebrow-title {
@@ -403,7 +404,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-cards-conta
   display: flex !important;
   flex-direction: column;
   grid-template-columns: unset;
-  gap: 12px;
+  gap: var(--spacing-xs);
   padding: 0 20px 16px;
 }
 
@@ -415,7 +416,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-card {
 header nav .nav-sections .nav-view-all-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   padding: var(--spacing-xs) 20px var(--spacing-xs) 32px;
   margin: 0;
   font-size: var(--body-font-size-xs);
@@ -642,7 +643,7 @@ header nav .nav-sections.tab-view-active .nav-fragment-section-content .category
   display: flex !important;
   flex-direction: column;
   grid-template-columns: unset;
-  gap: 12px;
+  gap: var(--spacing-xs);
   padding: 0 20px 16px;
 }
 
@@ -722,7 +723,7 @@ header nav .nav-tools {
   grid-area: tools;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-xs);
   justify-self: end;
 }
 
@@ -730,7 +731,7 @@ header nav .nav-tools {
 header nav .nav-tools .default-content-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-xs);
 }
 
 /* Mobile: Hide search bar text (first paragraph) */
@@ -742,7 +743,7 @@ header nav .nav-tools .default-content-wrapper > p:first-child {
 header nav .nav-tools .default-content-wrapper > ul {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-xs);
   padding: 0;
   margin: 0;
   list-style: none;
@@ -812,7 +813,7 @@ header nav[aria-expanded='true'] .nav-tools {
   background-color: #fff;
   border-top: 1px solid #e0e0e0;
   padding: 16px;
-  gap: 12px;
+  gap: var(--spacing-xs);
 }
 
 /* Mobile: Hide search icon when expanded */
@@ -828,7 +829,7 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-c
   border-radius: 50px;
   padding: 10px 16px;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   font-size: var(--body-font-size-s);
   color: var(--text-color);
 }
@@ -1019,7 +1020,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#cscards .cards .grid-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: var(--spacing-xxs);
   }
 
   .section#cscards .cards .benefit-cards {
@@ -1117,7 +1118,6 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#helpcenter .cards .benefit-cards .cards-card-image {
     width: 58px;
     height: 58px;
-  }
 
   .section#helpcenter .cards .benefit-cards .cards-card-image img {
     width: 58px;
@@ -1132,6 +1132,17 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     font-weight: 700;
     margin: 0 0 var(--spacing-xxs);
   }
+  
+.section#download h5 {
+  font-style: normal;
+  font-weight: 800;
+  font-size: var(--body-font-size-s);
+  line-height: 18px;
+  background: var(--gradient-light-red);
+  background-clip: text;
+  margin-bottom: var(--spacing-xxs);
+  color: transparent;
+}
 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
     width: 24px;
@@ -1217,7 +1228,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   border-radius: 25px 25px 0 0;
 
   > .section {
-    max-width: 430px;
+    max-width: unset;
     padding: var(--spacing-xs);
   }
 
@@ -1268,7 +1279,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
   .cards.related-search .grid-cards {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: var(--spacing-xxs);
 
     li {
      background: var(--gray-200);
@@ -1415,7 +1426,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 .search-dropdown .search-results-footer .view-all-results {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
   font-size: var(--body-font-size-xs);
   font-weight: 600;
   color: var(--dark-red-link-color);
@@ -1536,7 +1547,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   margin: 50px auto 0;
   width: 90%;
   border-radius: 24px;
-  padding: 12px;
+  padding: var(--spacing-xs);
 
   .block-content {
     padding: 20px var(--spacing-s);
@@ -1643,6 +1654,17 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   flex: 1;
 }
 
+@media (width >= 600px) {
+.search-dropdown.open > .section {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .cards.related-search .grid-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+}
+
 @media (width >= 990px) {
   /* Gray button styling for odometer on desktop */
   .nav-tools .default-content-wrapper>ul>li:first-child {
@@ -1668,7 +1690,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-xs);
     max-width: unset;
     width: 100%;
     margin: 0 auto;
@@ -1776,7 +1798,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections ul {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-xxs);
     margin: 0;
     align-items: center;
     width: 100%;
@@ -2354,7 +2376,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   .nav-tools .default-content-wrapper {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-xs);
     align-items: center;
     margin: 0 auto;
     width: 100%;
@@ -2412,7 +2434,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   .nav-tools .default-content-wrapper>ul {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-xs);
     padding: 0;
     margin: 0;
     list-style: none;
@@ -2441,7 +2463,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-color: #902a2c;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-xxs);
   }
 
   .nav-tools .default-content-wrapper .icon-login_header {
@@ -2469,11 +2491,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     display: grid;
     grid-template-columns: 
     1fr                                          /* Left margin (flexible) */
-    minmax(auto, calc(1200px - 260px - 24px))   /* Left content area */
+    minmax(auto, calc(1200px - 260px - var(--spacing-s)))   /* Left content area */
     260px                                        /* Right content area */
     1fr;   
     grid-template-rows: auto auto;
-    gap: 24px;
+    gap: var(--spacing-s);
     padding: 30px;
     border-radius: 0;
     transition: all .5s ease-out;
@@ -2503,6 +2525,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       grid-column: 2;
       grid-row: 3;
       border-bottom: 0;
+
+      .cards .grid-cards li .cards-card-image img {
+        width: 58px;
+        height: 58px;
+      }
     }
   
     .section#download {
@@ -2511,10 +2538,10 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       align-self: start; /* Aligns to top */
     }
   
-  .section#cscards .cards .grid-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    .section#cscards .cards .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-s);
   }
 
   .section#cscards .cards .benefit-cards {
@@ -2631,11 +2658,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 display: grid;
 grid-template-columns: 
 1fr                                          /* Left margin (flexible) */
-minmax(auto, calc(1200px - 400px - 24px))   /* Left content area */
+minmax(auto, calc(1200px - 400px - var(--spacing-s)))   /* Left content area */
 400px                                        /* Right content area */
 1fr;   
 grid-template-rows: auto auto;
-gap: 24px;
+gap: var(--spacing-s);
 border-radius: 0;
 
   .section {
@@ -2713,12 +2740,16 @@ border-radius: 0;
   display: grid;
   grid-template-columns: 
   1fr                                          /* Left margin (flexible) */
-  minmax(auto, calc(1200px - 300px - 24px))   /* Left content area */
+  minmax(auto, calc(1200px - 300px - var(--spacing-s)))   /* Left content area */
   300px                                        /* Right content area (33% of 1200px) */
   1fr;
 grid-template-rows: auto auto auto;
 padding: 30px;
 border-radius: 0;
+
+  > .section {
+    max-width: unset;
+  }
 
   .search-dropdown-close-btn {
     display: none;
@@ -2779,7 +2810,7 @@ border-radius: 0;
   /* Nav spacing - generous on desktop */
   header nav {
     gap: 16px;
-    padding: var(--spacing-xs) 70px;
+    padding: var(--spacing-xs) var(--spacing-xxl);
   }
 
   /* Nav sections - allow natural growth within parent container */
@@ -2790,13 +2821,13 @@ border-radius: 0;
   /* Dropdown grid - optimal sizing for desktop */
   header nav .nav-sections .nav-fragment-content {
     grid-template-columns: minmax(240px, 270px) minmax(auto, 1fr) minmax(280px, 320px);
-    padding: 32px 70px;
+    padding: 32px var(--spacing-xxl);
   }
 
   /* Dropdown positioning */
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul,
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
-    padding: 20px 0 0 70px;
+    padding: 20px 0 0 var(--spacing-xxl);
   }
 
   /* Inner grid - scale up for desktop */
@@ -2890,7 +2921,7 @@ border-radius: 0;
   /* Dropdown grid - full generous layout on extra large screens */
   header nav .nav-sections .nav-fragment-content {
     grid-template-columns: 300px 1fr 450px;
-    padding: 32px 70px;
+    padding: 32px var(--spacing-xxl);
   }
 
   /* Inner wrapper - full padding-right for largest discover card */

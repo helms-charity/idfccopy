@@ -193,7 +193,7 @@ footer .footer>div .section>div {
 
 .footer>div>div .accordion-wrapper .accordion>div>div:nth-child(2) ul li,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li {
-  margin-top: 12px;
+  margin-top: var(--spacing-xs);
   list-style: none;
   line-height: 1;
 }
@@ -257,7 +257,7 @@ footer .footer>div .section>div {
 }
 
 .footer>div>div:nth-child(3) {
-  padding: 50px 15px 24px 15px;
+  padding: 50px 15px var(--spacing-s) 15px;
 }
 
 .footer>div>div:nth-child(3) .block-content.accordion-wrapper > .accordion.block {

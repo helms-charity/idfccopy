@@ -117,7 +117,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: absolute;
   top: 100%;
   left: 0;
-  border-radius: 0 8px 8px;
+  border-radius: 0 var(--spacing-xxs) var(--spacing-xxs);
   box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
   background: #fff;
   border: 1px solid #e0e0e0;
@@ -196,7 +196,7 @@ body.is-framework-page .category-nav.block > div > div {
 .category-nav-cards-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: var(--spacing-xs);
   padding: 10px var(--spacing-s) 20px;
 }
 
