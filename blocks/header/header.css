@@ -353,7 +353,7 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
   color: #353535;
   text-decoration: none;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-s);
   line-height: 1.3;
   margin-left: 8px;
 }
@@ -2128,7 +2128,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     min-height: 0;
     height: auto;
     border-bottom: none;
-    font-size: 15px;
+    font-size: var(--body-font-size-xs);
     font-weight: 400;
     line-height: 1.3;
     display: block;
@@ -2165,7 +2165,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Content items: Links hover state (exclude H4 titles and View All buttons to keep them static) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
-    font-weight: 700;
+    /* Removed font-weight: 700 - links should not bold on hover */
   }
 
   /* =================================================================
@@ -2272,6 +2272,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content > li {
     display: block;
     width: 100%;
+  }
+
+  /* H4 section button-container links - override mobile size for desktop */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content p.button-container a {
+    font-size: var(--body-font-size-xs);
   }
 
   /* Desktop: Remove transparent hover backgrounds from tab-view-active styles */
