@@ -1591,43 +1591,6 @@
     ]
   },
   {
-    "id": "sticky-cta",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLink",
-        "label": "CTA Link",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLinkText",
-        "label": "CTA Button Text"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaId",
-        "label": "CTA ID"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaMobiletext",
-        "label": "CTA Mobile Button Text"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "ctaSubtitle",
-        "label": "CTA Subtitle",
-        "value": ""
-      }
-    ]
-  },
-  {
     "id": "table",
     "fields": [
       {

@@ -87,6 +87,15 @@
     ]
   },
   {
+    "id": "get-app-banner",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "columns"
+    ]
+  },
+  {
     "id": "library-metadata",
     "components": []
   },
