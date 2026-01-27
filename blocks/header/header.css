@@ -1002,7 +1002,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .cs-dropdown.open {
   visibility: visible;
-  padding: 40px var(--spacing-xxs) var(--spacing-xxs);
+  padding: 40px var(--spacing-s) var(--spacing-xs);
   transform: translateY(0);
   display: grid;
 
