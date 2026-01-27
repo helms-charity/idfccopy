@@ -3,10 +3,10 @@
 /* Section container - fixed height to prevent CLS */
 .hero-heritage-cc-container {
   position: relative;
-  min-height: calc(100vh - 60px);
-  min-height: calc(100dvh - 60px);
-  height: calc(100vh - 60px);
-  height: calc(100dvh - 60px);
+  min-height: calc(100vh - var(--spacing-xl));
+  min-height: calc(100dvh - var(--spacing-xl));
+  height: calc(100vh - var(--spacing-xl));
+  height: calc(100dvh - var(--spacing-xl));
   contain: strict;
   overflow: hidden;
 }
@@ -100,7 +100,7 @@
 .hero-heritage-cc-header-cta a.button.primary {
   background: var(--dark-red-color);
   padding: 14px 40px;
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   font-weight: 700;
   border: none;
   color: #fff;
@@ -112,7 +112,7 @@
   gap: 6px;
   color: var(--text-color);
   text-decoration: none;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   white-space: nowrap;
   min-height: 16px;
 }
@@ -120,7 +120,7 @@
 .hero-heritage-cc-header-cta .hero-heritage-cc-header-cta-fees-link {
   color: rgb(136 128 122);
   text-decoration: underline;
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   margin-left: 20px;
   font-weight: 700;
   line-height: normal;
@@ -188,7 +188,7 @@
 
 .hero-heritage-cc-intro > div {
   position: relative;
-  padding-top: 70px;
+  padding-top: var(--spacing-xxl);
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -270,7 +270,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 70px);
+  height: calc(100% - var(--spacing-xxl));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -317,7 +317,7 @@
   height: auto;
   animation: none;
   flex-direction: column;
-  padding: 24px;
+  padding: var(--spacing-s);
   overflow-y: auto;
 }
 
@@ -418,7 +418,7 @@
 .hero-heritage-cc-banner-cta-group {
   display: flex;
   flex-flow: column nowrap;
-  gap: 12px;
+  gap: var(--spacing-xs);
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -426,12 +426,9 @@
 
 .hero-heritage-cc-banner-cta a.button {
   color: #000;
-  font-size: 20px;
+  font-size: var(--body-font-size-m);
   font-weight: 500;
-  line-height: 36px;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-text-decoration-line: underline;
-  text-decoration-line: underline;
+  text-decoration: underline;
 }
 
 .hero-heritage-cc-banner-cta {
@@ -441,7 +438,7 @@
 .hero-heritage-cc-banner-cta a.button.primary {
   background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   padding: 11px 20px;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   border: none;
   text-decoration: none;
 
@@ -453,16 +450,17 @@
 .hero-heritage-cc-banner-cta a.button.primary:any-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xxs);
 }
 
-.hero-heritage-cc h1,
+.hero-heritage-cc h1 {
+  color: var(--text-color-hero-heritage-cc);
+  font-size: var(--body-font-size-l);
+}
+
 .hero-heritage-cc h2 {
   color: var(--text-color-hero-heritage-cc);
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 1.1;
-  margin: 10px 0 0;
+  font-size: var(--heading-font-size-xs);
 }
 
 .hero-heritage-cc h3,
@@ -470,10 +468,10 @@
 .hero-heritage-cc h5,
 .hero-heritage-cc h6 {
   color: var(--text-color-hero-heritage-cc);
-  font-size: 22px;
+  font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-s);
 }
 
 .hero-heritage-cc-intro-text-top, 
@@ -487,7 +485,7 @@
 
 .hero-heritage-cc .hero-heritage-cc-intro-text-top h2,
 .hero-heritage-cc .hero-heritage-cc-intro-credit-card-name h2 {
-  font-size: 34px;
+  font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.1;
   margin: 0;
@@ -495,17 +493,13 @@
 
 .hero-heritage-cc p {
   color: var(--text-color-hero-heritage-cc);
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   line-height: 1.4;
   margin: 0;
 }
 
 .hero-heritage-cc p.hero-heritage-cc-banner-image {
   margin: 10px 0 0;
-}
-
-.hero-heritage-cc .hero-heritage-cc-banner-cta-group {
-  margin-top: 40px;
 }
 
 .hero-heritage-cc .hero-heritage-cc-banner {
@@ -521,7 +515,7 @@
   align-items: center;
   width: 18px;
   height: 18px;
-  margin-left: 12px;
+  margin-left: var(--spacing-xs);
   padding-bottom: 4px;
   vertical-align: middle;
 }
@@ -544,6 +538,7 @@
 .hero-heritage-cc-header-cta-fees-link .icon-arrow-right-white img {
   width: 24px;
   height: 24px;
+  opacity: 0.6;
 }
 
 /* Tablet: 600px and up */
@@ -560,15 +555,41 @@
   }
 
   .hero-heritage-cc p {
-    font-size: 16px;
+    font-size: var(--body-font-size-m);
   }
 }
 
 /* Desktop: 900px and up */
 @media (width >= 900px) {
-  .hero-heritage-cc-header-cta {
-    padding: 0 60px;
+
+  .hero-heritage-cc h1 {
+    font-size: var(--heading-font-size-m);
+    margin: var(--spacing-xs) 0;
   }
+
+  .hero-heritage-cc h2 {
+    font-size: var(--heading-font-size-m);
+  }
+
+  .hero-heritage-cc .hero-heritage-cc-banner-cta-group {
+    margin-top: 40px;
+  }
+
+  .hero-heritage-cc-header-cta .hero-heritage-cc-header-cta-fees-link {
+    font-size: var(--body-font-size-s);
+  }
+
+  .hero-heritage-cc-banner-cta a.button {
+    font-size: var(--body-font-size-l);
+  }
+
+  .hero-heritage-cc-header-cta a.button.primary {
+    font-size: var(--body-font-size-s);
+}
+
+.hero-heritage-cc-banner-cta a.button.primary {
+  font-size: var(--body-font-size-xs);
+}
 
   .hero-heritage-cc-container {
     min-height: calc(100vh - 120px);
@@ -586,355 +607,4 @@
   .hero-heritage-cc-container::after {
     display: block;
   }
-}
-
-/* =================================================================
-   Universal Editor Support:
-   When editing in Universal Editor, disable animations and show
-   all content in a structured, editable layout.
-   ================================================================= */
-
-/* UE editing mode indicator - tab label style at top of block */
-main[data-aue-resource] .hero-heritage-cc {
-  position: relative;
-}
-
-main[data-aue-resource] .hero-heritage-cc::before {
-  content: 'ANIMATED BLOCK EDITING OVERVIEW' !important;
-  display: block !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  background: #3a3a3a !important;
-  color: #fff !important;
-  padding: 8px 16px !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  z-index: 10 !important;
-  border-radius: 6px !important;
-  letter-spacing: 1px !important;
-  text-transform: uppercase !important;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%) !important;
-}
-
-main[data-aue-resource] .hero-heritage-cc-container {
-  min-height: auto;
-  height: auto;
-  contain: none;
-  overflow: visible;
-}
-
-/* Decoration image (top right) - raise above header CTA in UE */
-main[data-aue-resource] .hero-heritage-cc-container::before {
-  z-index: 20;
-}
-
-main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
-  height: auto;
-  min-height: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Move breadcrumbs above the block in UE mode */
-main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
-  position: static;
-  transform: none;
-  order: -1;
-  margin-bottom: 16px;
-}
-
-main[data-aue-resource] .hero-heritage-cc {
-  min-height: auto;
-  height: auto;
-  overflow: visible;
-  padding: 16px;
-  background: #f5f5f5;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-}
-
-/* Make block visible immediately in UE - override loaded check */
-main[data-aue-resource] .hero-heritage-cc:not([data-block-status="loaded"]) {
-  visibility: visible;
-}
-
-/* Disable all animations in UE */
-main[data-aue-resource] .hero-heritage-cc,
-main[data-aue-resource] .hero-heritage-cc *,
-main[data-aue-resource] .hero-heritage-cc::before,
-main[data-aue-resource] .hero-heritage-cc::after {
-  animation: none !important;
-  transition: none !important;
-}
-
-/* Section headers for UE clarity */
-main[data-aue-resource] .hero-heritage-cc > div {
-  position: relative;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-}
-
-main[data-aue-resource] .hero-heritage-cc > div::before {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #666;
-  margin-bottom: 8px;
-  padding: 4px 8px;
-  background: #eee;
-  border-radius: 3px;
-  width: fit-content;
-}
-
-main[data-aue-resource] .hero-heritage-cc-header-cta::before {
-  content: 'Header CTA Section';
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro::before {
-  content: 'INTRO SECTION (ANIMATED OVERLAY)';
-  position: relative;
-  width: auto;
-  height: auto;
-  background: #3a3a3a;
-  color: #fff;
-  padding: 6px 12px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border-radius: 4px;
-  z-index: 10;
-  animation: none;
-  display: inline-block;
-  margin: 8px auto;
-}
-
-/* Gradient color preview in UE */
-main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview {
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin: 8px 0;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::before {
-  content: 'Gradient Color:';
-  font-size: 10px;
-  color: #666;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::after {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 24px;
-  background: var(--hero-heritage-cc-intro-gradient);
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  flex-shrink: 0;
-}
-
-main[data-aue-resource] .hero-heritage-cc-banner::before {
-  content: 'Banner Section (Main content)';
-}
-
-/* Override absolute positioning in UE - make sections flow normally */
-main[data-aue-resource] .hero-heritage-cc-intro,
-main[data-aue-resource] .hero-heritage-cc-banner {
-  position: relative;
-  top: auto;
-  left: auto;
-  width: 100%;
-  height: auto;
-  opacity: 1 !important;
-  visibility: visible !important;
-  z-index: auto;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro > div,
-main[data-aue-resource] .hero-heritage-cc-banner > div,
-main[data-aue-resource] .hero-heritage-cc .hero-heritage-cc-intro > div,
-main[data-aue-resource] .hero-heritage-cc .hero-heritage-cc-banner > div {
-  position: relative;
-  top: auto;
-  left: auto;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  opacity: 1 !important;
-  visibility: visible !important;
-  padding: 0;
-}
-
-/* Hide the gradient overlay pseudo-element in UE */
-main[data-aue-resource] .hero-heritage-cc-intro::after {
-  display: none !important;
-}
-
-/* Show header CTA in UE regardless of viewport */
-main[data-aue-resource] .hero-heritage-cc-header-cta {
-  display: flex;
-  position: relative;
-  height: auto;
-  min-height: auto;
-  background: #fff;
-  backdrop-filter: none;
-  padding: 12px 16px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-}
-
-main[data-aue-resource] .hero-heritage-cc-header-cta > div {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-  width: 100%;
-  padding-right: 100px;
-}
-
-/* Logo wrapper in UE - side by side layout */
-main[data-aue-resource] .hero-heritage-cc-intro-logo-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  min-height: auto;
-  align-items: center;
-}
-
-/* Show the intro background image as a thumbnail in UE */
-main[data-aue-resource] .hero-heritage-cc-intro-bg-preview-wrapper {
-  display: block !important;
-  position: relative;
-  flex: 0 0 auto;
-  order: -1;
-  margin-right: 8px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-bg-preview-wrapper::before {
-  content: 'Intro Background';
-  display: block;
-  font-size: 9px;
-  color: #888;
-  margin-bottom: 4px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-bg-preview {
-  max-width: 100px !important;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-bg-preview img {
-  max-width: 100px !important;
-  height: auto !important;
-  border-radius: 4px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-logo-hindi,
-main[data-aue-resource] .hero-heritage-cc-intro-logo-english {
-  position: relative;
-  clip-path: none !important;
-  flex: 1;
-  padding: 8px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-logo-hindi::before,
-main[data-aue-resource] .hero-heritage-cc-intro-logo-english::before {
-  content: 'Hindi Logo';
-  display: block;
-  font-size: 9px;
-  color: #888;
-  margin-bottom: 4px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-intro-logo-english::before {
-  content: 'English Logo';
-}
-
-/* Thumbnail images in UE */
-main[data-aue-resource] .hero-heritage-cc picture {
-  max-width: 200px;
-  margin: 8px auto;
-}
-
-main[data-aue-resource] .hero-heritage-cc img {
-  max-width: 100%;
-  max-height: 150px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fff;
-}
-
-/* Banner image specific - slightly larger preview */
-main[data-aue-resource] .hero-heritage-cc-banner-image picture {
-  max-width: 300px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-banner-image img {
-  max-height: 200px;
-}
-
-/* Text styling in UE */
-main[data-aue-resource] .hero-heritage-cc h1,
-main[data-aue-resource] .hero-heritage-cc h2,
-main[data-aue-resource] .hero-heritage-cc h3,
-main[data-aue-resource] .hero-heritage-cc h4 {
-  color: #333;
-  font-size: 18px;
-  margin: 8px 0;
-  background: none;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  -webkit-text-fill-color: unset;
-}
-
-main[data-aue-resource] .hero-heritage-cc p {
-  color: #555;
-  font-size: 13px;
-  margin: 4px 0;
-}
-
-/* CTA buttons in UE - reset to default button styling */
-main[data-aue-resource] .hero-heritage-cc-banner-cta-group {
-  flex-flow: row wrap;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-main[data-aue-resource] .hero-heritage-cc-banner-cta a.button {
-  color: unset;
-  font-size: unset;
-  font-weight: unset;
-  line-height: unset;
-  text-decoration-line: unset;
-}
-
-main[data-aue-resource] .hero-heritage-cc-banner-cta a.button.primary {
-  background: unset;
-  padding: unset;
-  font-size: unset;
-  border: unset;
-  text-decoration: unset;
 }

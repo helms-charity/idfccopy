@@ -1,7 +1,6 @@
 .mayura .cards-container h2,
 .mayura .tabs-container h2 {
     text-align: center;
-    font-size: 42px; /* happy medium between 40 and 46 */
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -9,7 +8,6 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: rgba(0, 0, 0, 0);
-    margin-bottom: 35px;
 }
 
 .mayura .cards-container .dark-scheme h2,
@@ -24,12 +22,13 @@
  margin: 0;
 }
 
-.mayura .banner-heading h2 {
+.mayura .banner-container .banner-heading h2 {
   background: #fbf8f2;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(0, 0, 0, 0);
   text-align: left;
+  font-size: var(--heading-font-size-xl);
 }
 
 .mayura .table-container .button-container:first-child {
@@ -39,6 +38,10 @@
 
 .mayura .cards.related-search .benefit-cards .cards-card-body h3 a:hover {
 color: var(--dark-red-color);
+}
+
+.mayura .section[data-id="get-in-touch"] h3 {
+  font-size: var(--heading-font-size-s); 
 }
 
 .mayura .section[data-id="get-in-touch"] .cards.related-search {
@@ -75,12 +78,34 @@ color: var(--dark-red-color);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);
-  padding: 8px 20px;
+  padding: var(--spacing-xxs) 20px;
   border-radius: 40px;
   text-decoration: none;
   font-weight: 700;
-  font-size: 16px;
+  font-size: var(--body-font-size-m);
   line-height: 1.5;
+}
+
+.mayura .sticky-cta.block {
+  background: rgba(239, 239, 239, 0.6)
+}
+
+.mayura .sticky-cta-subtitle-content {
+  color: rgb(26, 26, 26);
+  padding-top: 10px;
+  font-size: var(--body-font-size-s);
+}
+
+.mayura .sticky-cta-container .sticky-cta-content a.button,
+.mayura .cta-sticky-container .cta-sticky.block a.button {
+  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  border: none;
+}
+
+@media (width >= 768px) {
+  .mayura .sticky-cta-container {
+    display: none;
+  }
 }
 
   @media (width <= 900px) {
@@ -90,9 +115,17 @@ color: var(--dark-red-color);
       justify-content: center;
       text-align: center;
       padding-right:0;
+      height: unset;
+      margin-top: var(--spacing-s);
 
       .cards-card-body {
         padding-right: 0;
       }
     }
+
+.mayura .cards-container h2,
+.mayura .tabs-container h2 {
+    text-align: center;
+    font-size: var(--heading-font-size-l);
+  }
   }

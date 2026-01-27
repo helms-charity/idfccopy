@@ -24,13 +24,13 @@
   background-color: rgb(0 0 0 / 50%);
   backdrop-filter: blur(3.5px);
   z-index: 3;
-  font-family: var(--body-font-family);
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 30px 20px 20px;
-  gap: 12px;
+  gap: var(--spacing-xs);
   text-align: center;
 }
 
@@ -55,9 +55,9 @@
   color: var(--background-color);
   text-decoration: none;
   border-radius: 32px;
-  font-family: var(--heading-font-family);
+  
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
   text-align: center;
   white-space: nowrap;
   transition: background-color 0.2s ease;
@@ -92,7 +92,7 @@
   font-size: 11px;
   color: #fff;
   text-shadow: 0 0 20px rgb(0 0 0 / 25%);
-  font-family: var(--body-font-family);
+  
   font-weight: 500;
   line-height: 1.4;
   padding-bottom: 6px;
@@ -106,7 +106,7 @@
   }
 
   .sticky-cta-content {
-    padding-top: 8px;
+    padding-top: var(--spacing-xxs);
   }
 
   .sticky-cta-link,
@@ -115,7 +115,7 @@
   }
 
   .sticky-cta-subtitle-content {
-    font-size: 12px;
+    font-size: var(--body-font-size-xs);
     padding-bottom: 10px;
   }
 }
@@ -123,23 +123,23 @@
 /* Desktop Styles */
 @media (width >= 901px) {
   .sticky-cta.block {
-    padding: 25px 40px;
+    padding: var(--spacing-s) 40px;
     gap: 20px;
     height: 120px;
   }
 
   .sticky-cta-content {
-    padding-top: 24px;
+    padding-top: var(--spacing-s);
   }
 
   .sticky-cta-link,
   .sticky-cta-content a.button {
-    font-size: 16px;
-    padding: 16px 28px;
+    font-size: var(--body-font-size-s);
+    padding: 16px 2var(--spacing-xxs);
   }
 
   .sticky-cta-subtitle-content {
-    font-size: 14px;
+    font-size: var(--body-font-size-xs);
     max-width: 900px;
     padding-bottom: 10px;
   }

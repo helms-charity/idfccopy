@@ -73,6 +73,10 @@
     padding: 0;
     display: flex;
     align-items: center;
+
+    a {
+      font-weight: 300;
+    }
   }
 
   .anchor-nav-link.button {
@@ -82,7 +86,7 @@
     border-radius: 0;
     background: none;
     color: var(--text-color);
-    font-size: 14px;
+    font-size: var(--body-font-size-xs);
     font-weight: 400;
     line-height: 1;
     text-decoration: none;
@@ -117,7 +121,7 @@
 
   .anchor-nav-link.button:hover,
   .anchor-nav-link.button:focus {
-    font-weight: 700;
+    font-weight: 500;
   }
 
   .anchor-nav-link.button:hover::after,

@@ -1,0 +1,371 @@
+/* =================================================================
+   Universal Editor Support Styles
+   These styles only load when editing in Universal Editor.
+   This keeps performance scores optimal for regular visitors.
+   ================================================================= */
+
+/* =================================================================
+   Hero Heritage CC Block - UE Editing Layout
+   Disables animations and shows all content in structured, editable layout.
+   ================================================================= */
+
+/* UE editing mode indicator - tab label style at top of block */
+main[data-aue-resource] .hero-heritage-cc {
+  position: relative;
+}
+
+main[data-aue-resource] .hero-heritage-cc::before {
+  content: 'ANIMATED BLOCK EDITING OVERVIEW' !important;
+  display: none !important; /* Hidden for now, kept for potential future use */
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: #3a3a3a !important;
+  color: #fff !important;
+  padding: 8px 16px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  z-index: 10 !important;
+  border-radius: 6px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%) !important;
+}
+
+main[data-aue-resource] .hero-heritage-cc-container {
+  min-height: auto;
+  height: auto;
+  contain: none;
+  overflow: visible;
+}
+
+/* Decoration image (top right) - raise above header CTA in UE */
+main[data-aue-resource] .hero-heritage-cc-container::before {
+  z-index: 20;
+}
+
+main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper {
+  height: auto;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Move breadcrumbs above the block in UE mode */
+main[data-aue-resource] .hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
+  position: static;
+  transform: none;
+  order: -1;
+  margin-bottom: 16px;
+}
+
+main[data-aue-resource] .hero-heritage-cc {
+  min-height: auto;
+  height: auto;
+  overflow: visible;
+  padding: 16px;
+  background: #f5f5f5;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+}
+
+/* Make block visible immediately in UE - override loaded check */
+main[data-aue-resource] .hero-heritage-cc:not([data-block-status="loaded"]) {
+  visibility: visible;
+}
+
+/* Disable all animations in UE */
+main[data-aue-resource] .hero-heritage-cc,
+main[data-aue-resource] .hero-heritage-cc *,
+main[data-aue-resource] .hero-heritage-cc::before,
+main[data-aue-resource] .hero-heritage-cc::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Section headers for UE clarity */
+main[data-aue-resource] .hero-heritage-cc > div {
+  position: relative;
+  margin-bottom: 16px;
+  padding: var(--spacing-xs);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+main[data-aue-resource] .hero-heritage-cc > div::before {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background: #eee;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+main[data-aue-resource] .hero-heritage-cc-header-cta::before {
+  content: 'HEADER CTA SECTION';
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: #3a3a3a;
+  color: #fff;
+  padding: 6px var(--spacing-xs);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  margin-bottom: var(--spacing-xs);
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro::before {
+  content: 'INTRO SECTION (ANIMATED OVERLAY)';
+  position: relative;
+  width: auto;
+  height: auto;
+  background: #3a3a3a;
+  color: #fff;
+  padding: 6px var(--spacing-xs);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  z-index: 10;
+  animation: none;
+  display: inline-block;
+  margin: 8px auto;
+}
+
+/* Gradient color preview in UE */
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview {
+  display: flex !important;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 8px var(--spacing-xs);
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::before {
+  content: 'Gradient Color:';
+  font-size: 10px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-gradient-preview::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 24px;
+  background: var(--hero-heritage-cc-intro-gradient);
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+main[data-aue-resource] .hero-heritage-cc-banner::before {
+  content: 'Banner Section (Main content)';
+}
+
+/* Override absolute positioning in UE - make sections flow normally */
+main[data-aue-resource] .hero-heritage-cc-header-cta,
+main[data-aue-resource] .hero-heritage-cc-intro,
+main[data-aue-resource] .hero-heritage-cc-banner {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  height: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main[data-aue-resource] .hero-heritage-cc-header-cta > div,
+main[data-aue-resource] .hero-heritage-cc-intro > div,
+main[data-aue-resource] .hero-heritage-cc-banner > div,
+main[data-aue-resource] .hero-heritage-cc .hero-heritage-cc-intro > div,
+main[data-aue-resource] .hero-heritage-cc .hero-heritage-cc-banner > div {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  opacity: 1 !important;
+  visibility: visible !important;
+  padding: 0;
+}
+
+/* Hide the gradient overlay pseudo-element in UE */
+main[data-aue-resource] .hero-heritage-cc-intro::after {
+  display: none !important;
+}
+
+/* Show header CTA in UE regardless of viewport */
+main[data-aue-resource] .hero-heritage-cc-header-cta {
+  display: flex;
+  position: relative;
+  height: auto;
+  min-height: auto;
+  background: #fff;
+  backdrop-filter: none;
+  padding: var(--spacing-xs) 16px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+main[data-aue-resource] .hero-heritage-cc-header-cta > div {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  width: 100%;
+  padding-right: 100px;
+}
+
+/* Logo wrapper in UE - side by side layout */
+main[data-aue-resource] .hero-heritage-cc-intro-logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  min-height: auto;
+  align-items: center;
+}
+
+/* Show the intro background image as a thumbnail in UE */
+main[data-aue-resource] .hero-heritage-cc-intro-bg-preview-wrapper {
+  display: block !important;
+  position: relative;
+  flex: 0 0 auto;
+  order: -1;
+  margin-right: 8px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-bg-preview-wrapper::before {
+  content: 'Intro Background';
+  display: block;
+  font-size: 9px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-bg-preview {
+  max-width: 100px !important;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-bg-preview img {
+  max-width: 100px !important;
+  height: auto !important;
+  border-radius: 4px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-logo-hindi,
+main[data-aue-resource] .hero-heritage-cc-intro-logo-english {
+  position: relative;
+  clip-path: none !important;
+  flex: 1;
+  padding: 8px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-logo-hindi::before,
+main[data-aue-resource] .hero-heritage-cc-intro-logo-english::before {
+  content: 'Hindi Logo';
+  display: block;
+  font-size: 9px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-intro-logo-english::before {
+  content: 'English Logo';
+}
+
+/* Thumbnail images in UE */
+main[data-aue-resource] .hero-heritage-cc picture {
+  max-width: 200px;
+  margin: 8px auto;
+}
+
+main[data-aue-resource] .hero-heritage-cc img {
+  max-width: 100%;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Banner image specific - slightly larger preview */
+main[data-aue-resource] .hero-heritage-cc-banner-image picture {
+  max-width: 300px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-banner-image img {
+  max-height: 200px;
+}
+
+/* Text styling in UE */
+main[data-aue-resource] .hero-heritage-cc h1,
+main[data-aue-resource] .hero-heritage-cc h2,
+main[data-aue-resource] .hero-heritage-cc h3,
+main[data-aue-resource] .hero-heritage-cc h4 {
+  color: #333;
+  font-size: 18px;
+  margin: 8px 0;
+  background: none;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+}
+
+main[data-aue-resource] .hero-heritage-cc p {
+  color: #555;
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+/* CTA buttons in UE - reset to default button styling */
+main[data-aue-resource] .hero-heritage-cc-banner-cta-group {
+  flex-flow: row wrap;
+  gap: var(--spacing-xs);
+  margin-top: 16px;
+}
+
+main[data-aue-resource] .hero-heritage-cc-banner-cta a.button {
+  color: unset;
+  font-size: unset;
+  font-weight: unset;
+  line-height: unset;
+  text-decoration-line: unset;
+}
+
+main[data-aue-resource] .hero-heritage-cc-banner-cta a.button.primary {
+  background: unset;
+  padding: unset;
+  font-size: unset;
+  border: unset;
+  text-decoration: unset;
+}
