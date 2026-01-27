@@ -1162,7 +1162,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   border-radius: 25px 25px 0 0;
 
   > .section {
-    max-width: 430px;
+    max-width: unset;
     padding: var(--spacing-xs);
   }
 
@@ -1586,6 +1586,17 @@ margin: 0;
 /* Mobile: Search input in expanded nav */
 header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   flex: 1;
+}
+
+@media (width >= 600px) {
+.search-dropdown.open > .section {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .cards.related-search .grid-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 }
 
 @media (width >= 990px) {
@@ -2584,6 +2595,10 @@ border-radius: 0;
 grid-template-rows: auto auto auto;
 padding: 30px;
 border-radius: 0;
+
+  > .section {
+    max-width: unset;
+  }
 
   .search-dropdown-close-btn {
     display: none;
