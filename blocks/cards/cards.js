@@ -746,7 +746,9 @@ export default async function decorate(block) {
   const isExploreOtherCards = classList.contains('explore-other-cards');
 
   // Build container structure and collect card elements in one pass
+  // Use div structure for all cards (unified approach, simpler and more maintainable)
   const cardsContainer = document.createElement('div');
+  cardsContainer.classList.add('grid-cards');
   const rows = [...block.children];
 
   rows.forEach((row) => {
