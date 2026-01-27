@@ -9,7 +9,7 @@
   font-weight: 600;
   line-height: 30px;
   letter-spacing: -0.6px;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .overview .overview-para,

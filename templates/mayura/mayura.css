@@ -78,7 +78,7 @@ color: var(--dark-red-color);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);
-  padding: 8px 20px;
+  padding: var(--spacing-xxs) 20px;
   border-radius: 40px;
   text-decoration: none;
   font-weight: 700;
@@ -96,7 +96,8 @@ color: var(--dark-red-color);
   font-size: var(--body-font-size-s);
 }
 
-.mayura .sticky-cta-container .sticky-cta-content a.button {
+.mayura .sticky-cta-container .sticky-cta-content a.button,
+.mayura .cta-sticky-container .cta-sticky.block a.button {
   background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   border: none;
 }
