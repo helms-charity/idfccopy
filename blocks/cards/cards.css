@@ -1093,7 +1093,7 @@
 .cards.blog-posts .blog-post-card .cards-card-image {
   width: 100%;
   margin: 0 0 16px;
-  border-radius: 20px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1101,16 +1101,21 @@
   width: 100%;
   height: 194px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
-/* Blog Post Card - Body */
+/* Blog Post Card - Body (outer wrapper - no padding) */
 .cards.blog-posts .blog-post-card .cards-card-body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
   margin: 0;
+  padding: 0;
+}
+
+/* Blog Post Card - Inner body (text content - with padding) */
+.cards.blog-posts .blog-post-card .cards-card-body > .cards-card-body {
   padding: 20px 15px;
 }
 
@@ -1386,14 +1391,13 @@
 .cards .swiper-pagination-bullet {
   width: 10px;
   height: 10px;
-  background: rgba(255 255 255 / 50%);
+  background: rgba(0 0 0 / 50%);
   opacity: 1;
   transition: all 0.3s ease;
   border-radius: 50%;
 }
 
 .cards .swiper-pagination-bullet-active {
-  background: var(--white);
   width: 14px;
   height: 14px;
   border-radius: 50%;

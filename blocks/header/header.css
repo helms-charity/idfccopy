@@ -23,7 +23,6 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  
   gap: 8px;
 }
 
@@ -348,6 +347,7 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-weight: 400;
 }
 
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
@@ -486,11 +486,6 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-}
-
-/* H4 section button links - lighter weight */
-header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
-  font-weight: 400;
 }
 
 /* Mobile: Tab View Mode */

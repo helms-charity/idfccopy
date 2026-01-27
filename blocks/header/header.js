@@ -969,9 +969,9 @@ export default async function decorate(block) {
     if (!titleP) return null;
 
     // Check for Cards blocks at the section level (they're siblings of default-content)
-    // Only include cards blocks that actually have content (li elements)
+    // Only include cards blocks that actually have content (cards-card elements)
     const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
-      .filter((cardsBlock) => cardsBlock.querySelector('li'));
+      .filter((cardsBlock) => cardsBlock.querySelector('.cards-card'));
 
     // If no Cards blocks with content, just return the category-nav block directly
     if (cardsBlocks.length === 0) {
@@ -1017,9 +1017,9 @@ export default async function decorate(block) {
     if (children.length === 0) return null;
 
     // Check for Cards blocks at the section level (they're siblings of default-content)
-    // Only include cards blocks that actually have content (li elements)
+    // Only include cards blocks that actually have content (cards-card elements)
     const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
-      .filter((cardsBlock) => cardsBlock.querySelector('li'));
+      .filter((cardsBlock) => cardsBlock.querySelector('.cards-card'));
 
     // Helper function: Create view-all wrapper with title and optional "View All" button
     const createViewAllWrapper = (titleElement) => {

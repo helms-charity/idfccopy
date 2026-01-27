@@ -924,11 +924,16 @@ export default async function decorate(block) {
     // Count total slides
     const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
 
+    // For mobile view (< 600px), always start at first card
+    // For larger views, use authored startingCard value
+    const isMobileView = window.innerWidth < 600;
+    const initialSlideIndex = isMobileView ? 0 : startingCard;
+
     // Build Swiper configuration
     const swiperConfig = {
       slidesPerView: 1.2,
       spaceBetween: 16,
-      initialSlide: startingCard,
+      initialSlide: initialSlideIndex,
       centeredSlides: true, // Will be overridden by breakpoints if all cards fit
       pagination: {
         el: '.swiper-pagination',
