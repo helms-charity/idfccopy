@@ -23,7 +23,6 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  
   gap: var(--spacing-xxs);
 }
 
@@ -348,6 +347,7 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-weight: 400;
 }
 
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
@@ -488,10 +488,6 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   overflow-wrap: break-word;
 }
 
-/* H4 section button links - lighter weight */
-header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
-  font-weight: 400;
-}
 
 /* Mobile: Tab View Mode */
 header nav .nav-sections.tab-view-active {
@@ -2160,12 +2156,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
-  }
-
-  /* Content items: Links hover state (exclude H4 titles and View All buttons to keep them static) */
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
-    /* Removed font-weight: 700 - links should not bold on hover */
   }
 
   /* =================================================================
