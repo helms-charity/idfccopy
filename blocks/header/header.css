@@ -2136,7 +2136,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Content items: Hover state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
-    font-weight: 700;
     background-color: transparent;
   }
 
@@ -2156,6 +2155,24 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+  }
+
+  /* Override global button weight for nav-primary-links - make them lighter by default */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container a.button {
+    font-weight: 400;
+  }
+
+  /* Content items: Links hover state - Subtle weight increase and color change */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
+    font-weight: 500;
+    color: #bd3e46;
+  }
+
+  /* Override global button weight for nav-primary-links on hover */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container:hover a.button {
+    font-weight: 500;
+    color: #bd3e46;
   }
 
   /* =================================================================
