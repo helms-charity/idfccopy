@@ -110,9 +110,9 @@
   .anchor-nav-link.button::after {
     content: '';
     position: absolute;
-    left: 0;
+    left: 14px;
     bottom: -9px;
-    width: 100%;
+    width: 80%;
     height: 2.5px;
     background-color: var(--dark-red-color);
     transform: scaleX(0);
