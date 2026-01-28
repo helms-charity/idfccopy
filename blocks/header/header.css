@@ -23,7 +23,6 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  
   gap: var(--spacing-xxs);
 }
 
@@ -348,12 +347,13 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-weight: 400;
 }
 
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
   color: #353535;
   text-decoration: none;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-s);
   line-height: 1.3;
   margin-left: 8px;
 }
@@ -488,10 +488,6 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   overflow-wrap: break-word;
 }
 
-/* H4 section button links - lighter weight */
-header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
-  font-weight: 400;
-}
 
 /* Mobile: Tab View Mode */
 header nav .nav-sections.tab-view-active {
@@ -1717,7 +1713,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-drop {
     position: relative;
-    cursor: pointer;
   }
 
   header nav .nav-sections .nav-drop:hover>p>a {
@@ -1745,6 +1740,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     color: #353535;
     border: none;
     width: auto;
+    cursor: auto;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li p {
@@ -1780,7 +1776,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-fragment-section {
     grid-column: 1;
     border: none;
-    cursor: pointer;
     display: contents;
   }
 
@@ -1861,6 +1856,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background-color: #fff;
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
+    cursor: pointer;
   }
 
   header nav .nav-sections .nav-fragment-section:hover .nav-fragment-section-title {
@@ -1905,6 +1901,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     grid-template-columns: 1fr 1fr; /* Equal columns */
     gap: 16px;
     position: relative;
+    cursor: auto;
   }
 
   /* Primary links in first column */
@@ -2128,19 +2125,19 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     min-height: 0;
     height: auto;
     border-bottom: none;
-    font-size: 15px;
+    font-size: var(--body-font-size-xs);
     font-weight: 400;
     line-height: 1.3;
     display: block;
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    cursor: auto;
   }
 
   /* Content items: Hover state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
-    font-weight: 700;
     background-color: transparent;
   }
 
@@ -2160,12 +2157,26 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
-  /* Content items: Links hover state (exclude H4 titles and View All buttons to keep them static) */
+  /* Override global button weight for nav-primary-links - make them lighter by default */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container a.button {
+    font-weight: 400;
+  }
+
+  /* Content items: Links hover state - Subtle weight increase and color change */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
-    font-weight: 700;
+    font-weight: 500;
+    color: #bd3e46;
+    cursor: pointer;
+  }
+
+  /* Override global button weight for nav-primary-links on hover */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container:hover a.button {
+    font-weight: 500;
+    color: #bd3e46;
   }
 
   /* =================================================================
@@ -2274,6 +2285,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     width: 100%;
   }
 
+  /* H4 section button-container links - override mobile size for desktop */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content p.button-container a {
+    font-size: var(--body-font-size-xs);
+  }
+
   /* Desktop: Remove transparent hover backgrounds from tab-view-active styles */
   header nav .nav-sections.tab-view-active .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.button-container):hover,
@@ -2301,7 +2317,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
     color: var(--dark-red-color);
     font-weight: bold;
-    cursor: pointer;
   }
 
   .header nav .nav-sections .default-content-wrapper>ul>li>ul>li:hover a {
@@ -2386,9 +2401,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-radius: 50px;
     background: transparent;
     white-space: nowrap;
-    cursor: pointer;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .nav-tools .default-content-wrapper>ul>li:last-child {
