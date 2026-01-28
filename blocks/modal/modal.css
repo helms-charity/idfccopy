@@ -587,7 +587,6 @@ body.modal-open {
 }
 
 @media (width < 768px) {
-
   .modal dialog.modal-auto-popup p {
     font-size: var(--body-font-size-xxs);
   }
@@ -610,6 +609,7 @@ body.modal-open {
     max-height: fit-content;
     min-height: 0;
     border-radius: 25px 25px 0 0;
+    overscroll-behavior: none;
     overflow: visible;
     padding: 38px 26px 30px;
     margin: 0;
