@@ -1013,13 +1013,13 @@ export default async function decorate(block) {
       } else if (slideCount === 2) {
         block.classList.add('cards-two-slides');
       }
-    } else if (isExploreOtherCards) {
+    } else if (isExploreOtherCards || isBlogPosts) {
       // For explore-other-cards: show edges on mobile, 3 cards at larger breakpoints
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
-      swiperConfig.spaceBetween = 16;
+      swiperConfig.slidesPerView = 1; // Don't show edges of adjacent cards on mobile
+      swiperConfig.spaceBetween = 25;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: 2,
