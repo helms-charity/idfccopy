@@ -2,7 +2,7 @@
  * Calculate total height of fixed elements (header + category nav)
  */
 function getFixedElementsHeight(headerHeight) {
-  let totalHeight = headerHeight - 10;
+  let totalHeight = headerHeight - 6;
   const categoryNavWrapper = document.querySelector('.category-nav-wrapper');
   if (categoryNavWrapper?.offsetHeight > 0) {
     totalHeight += categoryNavWrapper.offsetHeight;
