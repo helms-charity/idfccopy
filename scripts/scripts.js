@@ -986,7 +986,7 @@ function decorateGetAppBanner(container) {
  */
 async function loadGetAppBannerFragment() {
   // Skip loading fragments when viewing framework pages
-  if (isEditingFrameworkPage()) {
+  if (isEditingFrameworkPage() || MEDIA_QUERIES.desktop.matches) {
     return;
   }
 
@@ -996,7 +996,6 @@ async function loadGetAppBannerFragment() {
   }
 
   try {
-    // Load the fragment content
     const fragment = await loadFragment('/fragments/getappbanner');
 
     if (!fragment) {
@@ -1004,8 +1003,6 @@ async function loadGetAppBannerFragment() {
       console.error('[Get App Banner] Failed to load fragment from: /fragments/getappbanner');
       return;
     }
-
-    // Get the get app banner div from the fragment
     const getAppBanner = fragment.querySelector('#grnt-app-mob');
 
     if (!getAppBanner) {
@@ -1013,11 +1010,7 @@ async function loadGetAppBannerFragment() {
       console.error('[Get App Banner] No #grnt-app-mob found in fragment');
       return;
     }
-
-    // Append the banner to the header
     header.appendChild(getAppBanner);
-
-    // Decorate the banner after it's been added to the DOM
     decorateGetAppBanner(header);
   } catch (error) {
     // eslint-disable-next-line no-console

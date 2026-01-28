@@ -1269,10 +1269,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
      header:has(.category-nav-wrapper) {
        height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px = 144px */
      }
-
-     .section#grnt-app-mob {
-      display: none;
-     }
   }
 
 @media (width >= 1200px) {
