@@ -32,8 +32,7 @@
       "cc-hero-slider",
       "library-metadata",
       "banner",
-      "overview",
-      "get-app-banner"
+      "overview"
     ]
   },
   {
@@ -85,15 +84,6 @@
       "image",
       "button",
       "title"
-    ]
-  },
-  {
-    "id": "get-app-banner",
-    "components": [
-      "text",
-      "image",
-      "button",
-      "columns"
     ]
   },
   {
