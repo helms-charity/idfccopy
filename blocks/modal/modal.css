@@ -610,9 +610,8 @@ body.modal-open {
     max-height: fit-content;
     min-height: 0;
     border-radius: 25px 25px 0 0;
-    overscroll-behavior: none;
     overflow: visible;
-    padding: 38px 26px 0 30px;
+    padding: 38px 26px 30px;
     margin: 0;
     border: none;
     box-shadow: 0 8px 32px rgb(0 0 0 / 25%);
