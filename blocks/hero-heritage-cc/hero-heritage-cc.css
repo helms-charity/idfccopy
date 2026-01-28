@@ -561,7 +561,6 @@
 
 /* Desktop: 900px and up */
 @media (width >= 900px) {
-
   .hero-heritage-cc h1 {
     font-size: var(--heading-font-size-m);
     margin: var(--spacing-xs) 0;
