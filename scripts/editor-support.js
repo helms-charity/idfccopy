@@ -122,7 +122,7 @@ async function applyChanges(event) {
   if (!content) return false;
 
   // load dompurify
-  await loadScript(`${window.hlx.codeBasePath}/scripts/purify.min.js`);
+  await loadScript(`${window.hlx.codeBasePath}/scripts/dompurify.min.js`);
 
   const sanitizedContent = window.DOMPurify.sanitize(content, { USE_PROFILES: { html: true } });
   const parsedUpdate = new DOMParser().parseFromString(sanitizedContent, 'text/html');
