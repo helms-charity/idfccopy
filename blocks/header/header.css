@@ -1025,14 +1025,15 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   .section#cscards .cards .benefit-cards {
     width: 100%;
     box-shadow: none;
-    padding: var(--spacing-xs);
+    padding: 12px;
     background: var(--gray-200);
     border-radius: 8px;
     border: none;
-    gap: 12px;
+    gap: 0;
     min-height: auto;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
   }
 
   .section#cscards .cards .benefit-cards:hover {
@@ -1042,8 +1043,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
   .section#cscards .cards .benefit-cards .cards-card-image {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     margin: 0;
     display: flex;
@@ -1052,10 +1053,10 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 
   .section#cscards .cards .benefit-cards .cards-card-image img {
-    width: 20px;
-    height: 20px;
-    max-width: 20px;
-    max-height: 20px;
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
     object-fit: contain;
   }
 
@@ -1063,28 +1064,30 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     flex: 1;
     margin: 0;
     padding: 0;
+    width: 100%;
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body h5,
   .section#cscards .cards .benefit-cards .cards-card-body h6 {
-    font-size: var(--body-font-size-xs);
+    font-size: var(--body-font-size-xxs);
     font-weight: 700;
-    line-height: 1.3;
-    margin: 0 0 2px;
+    line-height: 1.2;
+    margin: 0 0 4px;
     color: var(--text-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 4px;
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body h6 .icon {
-    margin-left: var(--spacing-xxs);
+    margin-left: 0;
     flex-shrink: 0;
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body h6 .icon img {
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body p {
@@ -1092,6 +1095,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     line-height: 1.3;
     color: var(--gray-700);
     margin: 0;
+    text-align: center;
   }
 
   .section#cscards .cards .card-clickable:hover {
@@ -1099,15 +1103,19 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     transform: none;
   }
 
-  .section#cscards .cards .cards-modal-content {
+  .section#cscards .cards .cards-modal-content,
+  .section#helpcenter .cards .cards-modal-content {
     display: none;
   }
 
   .section#helpcenter .cards .benefit-cards {
     padding: 16px;
-    background: var(--gray-200);
+    padding-left: 0; /* Align with desktop */
+    background: transparent; /* No background on mobile/desktop */
     border: none;
     gap: 12px;
+    box-shadow: none; /* No box-shadow */
+    border-radius: 0; /* No rounded corners */
   }
 
   .section#helpcenter .cards .benefit-cards:hover {
@@ -1135,7 +1143,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
     width: 24px;
-    height: 24px;
+    height: 10px;
   }
 
   .section#helpcenter .cards .benefit-cards .cards-card-body p {
@@ -1270,7 +1278,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-xxs);
 
-    li {
+    .benefit-cards {
      background: var(--gray-200);
      box-shadow: none;
      transform: none;
@@ -1290,16 +1298,16 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
      }
     }
 
-    li::after {
+    .benefit-cards::after {
       display: none;
     }
 
-   li .cards-card-image {
+   .benefit-cards .cards-card-image {
       height: 40px;
       width: 40px;
   }
 
-  li .cards-card-body {
+  .benefit-cards .cards-card-body {
     padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-xxs);
   }
  }
@@ -1557,6 +1565,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 }
 
+/* Login dropdown cards - compact list layout */
 .cards .grid-cards {
   gap: var(--spacing-xs);
   padding-top: var(--spacing-s);
@@ -1564,13 +1573,21 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   grid-template-columns: 1fr;
 }
 
-.cards .grid-cards li {
+.cards .grid-cards .benefit-cards {
     display: grid;
     grid-template-columns: 20px 1fr;
     text-align: left;
     gap: var(--spacing-xs);
     border-bottom: 1px var(--gray-300) solid;
+    padding: 0;
     padding-bottom: var(--spacing-xs);
+    width: 100%; /* Override global 50% width from cards.css */
+
+    /* Remove default benefit-cards styling */
+    box-shadow: none;
+    border-radius: 0;
+    background: transparent;
+    margin-bottom: 0;
 
     p {
       color: var(--gray);
@@ -1582,24 +1599,24 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     }
 }
 
-.cards .grid-cards li .cards-card-image {
-text-align: center;
-padding-top: 4px;
+.cards .grid-cards .benefit-cards .cards-card-image {
+  text-align: center;
+  padding-top: 4px;
 
-img {
-  width: 20px;
-  height: 20px;
-}
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
-.cards .grid-cards li .cards-card-body {
-margin: 0;
+.cards .grid-cards .benefit-cards .cards-card-body {
+  margin: 0;
 }
 
 .cards .card-clickable:hover {
   box-shadow: none;
   transform: none;
-} 
+}
 
 .login-dropdown-close-btn {
   position: absolute;
@@ -1616,7 +1633,7 @@ margin: 0;
   height: 20px;
   z-index: 10;
 }
-}
+} /* end .login-dropdown.open */
 
 .cs-dropdown-close-btn, .search-dropdown-close-btn {
   position: absolute;
@@ -2064,29 +2081,34 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   /* Gray padding on top/left/right only */
-  header nav .nav-sections .nav-discover-section .cards.block li.cards-card-body.blog-post-card {
+
+  /* Updated for div structure: .cards-card.blog-post-card > .cards-card-body (outer wrapper) */
+  header nav .nav-sections .nav-discover-section .cards.block .cards-card.blog-post-card > .cards-card-body {
     padding: 16px 16px 0; /* No bottom padding */
     background: var(--gray-200);
     border-radius: 16px;
   }
 
   /* White card container - image and text connect seamlessly */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image,
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-image,
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-body {
     background: var(--background-color);
     margin: 0; /* No gap between divs */
   }
 
   /* Image at top with top rounded corners only */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-image {
     border-radius: 12px 12px 0 0;
+    padding: 0; /* Remove any padding from image */
+    margin: 0; /* Override cards.css margin */
   }
 
   /* Text body with bottom rounded corners and shadow */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-body {
     border-radius: 0 0 12px 12px;
     margin-bottom: 16px; /* Creates gray space at bottom */
     box-shadow: 0 4px 12px rgba(0 0 0 / 15%);
+    padding-top: 16px;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image {
@@ -2094,12 +2116,16 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     overflow: hidden;
     max-height: 110px;
     border-radius: 12px 12px 0 0; /* Only round top corners */
+    margin: 0; /* Ensure no margin */
+    padding: 0; /* Ensure no padding */
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image picture {
     display: block;
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image img {
@@ -2107,6 +2133,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     height: 110px;
     display: block;
     object-fit: cover;
+    margin: 0;
+    padding: 0;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-body {
@@ -2117,7 +2145,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: var(--body-font-size-xs);
     font-weight: 400;
-    margin: 0 0 var(--spacing-xxs);
+    margin: var(--spacing-xs) 0 var(--spacing-xxs); /* Add top margin for spacing from image */
     color: var(--text-color);
     line-height: 1.3;
     text-align: left;
@@ -2146,7 +2174,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     text-align: left;
   }
 
-  header nav .nav-sections .nav-discover-section .cards-card-body .button {
+  /* Button styling for discover blog-post cards - white with red border */
+  header nav .nav-sections .nav-discover-section .cards-card-body .button,
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .button {
     display: inline-block;
     padding: var(--spacing-xxs) 20px;
     background-color: transparent;
@@ -2161,7 +2191,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     margin: 0;
   }
 
-  header nav .nav-sections .nav-discover-section .cards-card-body .button:hover {
+  header nav .nav-sections .nav-discover-section .cards-card-body .button:hover,
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .button:hover {
     background-color: var(--dark-red-link-color);
     color: var(--btn-color-white);
   }
@@ -2515,7 +2546,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       grid-row: 3;
       border-bottom: 0;
 
-      .cards .grid-cards li .cards-card-image img {
+      .cards .grid-cards .benefit-cards .cards-card-image img {
         width: 58px;
         height: 58px;
       }
@@ -2586,8 +2617,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body h6 .icon img {
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
   }
 
   .section#cscards .cards .benefit-cards .cards-card-body p {
@@ -2600,6 +2631,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   .section#helpcenter .cards .benefit-cards {
     padding: 16px;
+    padding-left: 0;
     background: unset;
     border: none;
     gap: 12px;
@@ -2617,8 +2649,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 10px;
   }
 
   .section#helpcenter .cards .benefit-cards .cards-card-body p {
@@ -2786,7 +2818,7 @@ border-radius: 0;
     flex: unset;
   }
 
-  .cards.related-search .grid-cards li h6 {
+  .cards.related-search .grid-cards .benefit-cards h6 {
     font-size: var(--body-font-size-xs);
   }
 }

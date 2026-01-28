@@ -745,6 +745,9 @@ export default async function decorate(block) {
     || classList.contains('reward-points');
   const isExploreOtherCards = classList.contains('explore-other-cards');
 
+  // Check if this cards block is within the #cscards section (customer service dropdown)
+  const isInCsCards = block.closest('#cscards') !== null;
+
   // Build container structure and collect card elements in one pass
   // Use div structure for all cards (unified approach, simpler and more maintainable)
   const cardsContainer = document.createElement('div');
@@ -1131,7 +1134,7 @@ export default async function decorate(block) {
     }
   } else if (
     !isTestimonial && !isImportantDocuments && !isRelatedSearch
-    && !isEarnRewards && !isJoiningPerks
+    && !isEarnRewards && !isJoiningPerks && !isInCsCards
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
     const maxVisible = 3;
