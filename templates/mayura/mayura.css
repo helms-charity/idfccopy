@@ -66,7 +66,7 @@ color: var(--dark-red-color);
 }
 }
 
-.mayura .cards.important-documents li, .cards.important-documents .important-documents-card {
+.mayura .cards.important-documents .important-documents-card {
   background: var(--gradient-earn-rewards);
   box-shadow: none;
   border: 1px var(--text-color) solid;
