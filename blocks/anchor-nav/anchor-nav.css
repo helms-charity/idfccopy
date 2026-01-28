@@ -8,12 +8,12 @@
   display: none;
 }
 
-@media (width >= 900px) {
+@media (width >= 990px) {
   .anchor-nav-wrapper {
     display: block;
     position: relative;
     z-index: 1;
-    margin: 0;
+    margin: 0;  
   }
 
   .anchor-nav-wrapper::before {
