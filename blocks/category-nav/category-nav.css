@@ -48,7 +48,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   background: #f7f7f7;
   border-top: 1px solid #e5e5e5;
-  min-height: 64px;
+  min-height: 50px;
 }
 
 /* Top of page navigation (Category Nav) - Third row */
@@ -64,6 +64,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   margin: 0 auto;
   box-sizing: border-box;
+  margin-left: 80px;
 }
 
 .tab-pane {
@@ -152,8 +153,7 @@ body.is-framework-page .category-nav.block > div > div {
 /* Explore link - right side of header */
 .category-nav-explore-link {
   color: var(--dark-red-color);
-  font-size: 12px;
-  
+  font-size: 12px;  
   text-decoration: none;
   font-weight: 500;
   display: flex;
@@ -273,7 +273,6 @@ body.is-framework-page .category-nav.block > div > div {
   justify-content: space-between;
   align-items: center;
   color: #333;
-  
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
