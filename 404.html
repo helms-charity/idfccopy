@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Page not found</title>
+  <title>Error | IDFC FIRST Bank</title>
   <script type="text/javascript">
     window.isErrorPage = true;
     window.errorCode = '404';
@@ -11,39 +11,70 @@
   <meta property="og:title" content="Page not found">
   <script src="/scripts/scripts.js" type="module" crossorigin="use-credentials"></script>
   <script type="module">
-    window.addEventListener('load', () => {
-      if (document.referrer) {
-        const { origin, pathname } = new URL(document.referrer);
-        if (origin === window.location.origin) {
-          const backBtn = document.createElement('a');
-          backBtn.classList.add('button', 'error-button-back');
-          backBtn.href = pathname;
-          backBtn.textContent = 'Go back';
-          backBtn.title = 'Go back';
-          const btnContainer = document.querySelector('.button-container');
-          btnContainer.append(backBtn);
-        }
-      }
-    });
-  </script>
-  <script type="module">
     import { sampleRUM } from '/scripts/aem.js';
     sampleRUM('404', { source: document.referrer });
   </script>
   <link rel="stylesheet" href="/styles/styles.css">
   <style>
     main.error {
-      min-height: calc(100vh - var(--nav-height));
       display: flex;
       align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
     }
 
-    main.error .error-number {
+    main.error .section {
+      padding: 0;
+    }
+
+    main.error .error-image {
       width: 100%;
+      margin: 0 auto 16px;
     }
 
-    main.error .error-number text {
-      font-family: monospace;
+    main.error .error-image img {
+      max-width: 75%;
+      height: auto;
+    }
+
+    main.error .error-title {
+      font-size: 48px;
+      font-weight: 600;
+      color: #25243B;
+      margin: 0;
+      letter-spacing: -2px;
+      line-height: 64px;
+    }
+
+    main.error .error-description {
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: #54565B;
+      margin: 20px 0 30px;
+      line-height: normal;
+    }
+
+    main.error .error-description a {
+      color: #c41e3a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    main.error .error-description a:hover {
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      main.error .error-title {
+        font-size: 24px;
+        letter-spacing: -1px;
+        line-height: 1.42;
+      }
+
+      main.error .error-description {
+        font-size: 14px;
+      }
     }
   </style>
   <link rel="stylesheet" href="/styles/lazy-styles.css">
@@ -53,12 +84,13 @@
   <header></header>
   <main class="error">
     <div class="section">
-      <svg viewBox="1 0 38 18" class="error-number">
-        <text x="0" y="17">404</text>
-      </svg>
-      <h2 class="error-message">Page Not Found</h2>
-      <p class="button-container">
-        <a href="/" class="button secondary error-button-home">Go home</a>
+      <div class="error-image">
+        <img src="/icons/error-404.svg" alt="Page not found">
+      </div>
+      <h1 class="error-title">AW-SNAP!</h1>
+      <h1 class="error-title">TECHNOLOGY CAN BE DIFFICULT SOMETIMES.</h1>
+      <p class="error-description">
+        Please try again after some time or visit our <a href="/">Home Page</a> for further details.
       </p>
     </div>
   </main>
