@@ -88,6 +88,10 @@ export default function decorate(block) {
         e.preventDefault();
         const target = document.getElementById(href.substring(1));
         if (target) {
+          // Swapna: Move active class to clicked link for red underline
+          block.querySelectorAll('.anchor-nav-link:not(.primary, .secondary)').forEach((l) => l.classList.remove('active'));
+          link.classList.add('active');
+
           const yOffset = -(headerHeight + 60);
           const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
@@ -95,6 +99,12 @@ export default function decorate(block) {
       }
     });
   });
+
+  // Swapna: Set first anchor link as active by default on page load
+  const firstAnchorLink = block.querySelector('.anchor-nav-link:not(.primary, .secondary)');
+  if (firstAnchorLink) {
+    firstAnchorLink.classList.add('active');
+  }
 
   // Setup sticky behavior
   const wrapper = block.closest('.anchor-nav-wrapper');

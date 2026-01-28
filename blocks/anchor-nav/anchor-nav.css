@@ -76,6 +76,7 @@
 
     a {
       font-weight: 300;
+      overflow: visible;
     }
   }
 
@@ -109,10 +110,10 @@
   .anchor-nav-link.button::after {
     content: '';
     position: absolute;
-    left: 0;
-    bottom: -14px;
-    width: 100%;
-    height: 3px;
+    left: 14px;
+    bottom: -9px;
+    width: 80%;
+    height: 2.5px;
     background-color: var(--dark-red-color);
     transform: scaleX(0);
     transform-origin: center;
@@ -124,9 +125,16 @@
     font-weight: 500;
   }
 
+  /* Swapna: Added .active state for default selected link and clicked links */
   .anchor-nav-link.button:hover::after,
-  .anchor-nav-link.button:focus::after {
+  .anchor-nav-link.button:focus::after,
+  .anchor-nav-link.button.active::after {
     transform: scaleX(1);
+  }
+
+  /* Swapna: Active state font weight for clicked/default selected link */
+  .anchor-nav-link.button.active {
+    font-weight: 500;
   }
 
   .anchor-nav-link.button.primary,
