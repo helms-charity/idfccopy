@@ -48,7 +48,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   background: #f7f7f7;
   border-top: 1px solid #e5e5e5;
-  min-height: 64px;
+  min-height: 52px;
 }
 
 /* Top of page navigation (Category Nav) - Third row */
@@ -64,6 +64,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   margin: 0 auto;
   box-sizing: border-box;
+  margin-left: 80px;
 }
 
 .tab-pane {

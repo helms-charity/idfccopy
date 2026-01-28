@@ -10,7 +10,6 @@ header .nav-wrapper {
   z-index: 2;
   position: fixed;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  top: 0;
   left: 0;
 }
 
