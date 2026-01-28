@@ -59,10 +59,10 @@
 .hero-heritage-cc-container .hero-heritage-cc-wrapper .breadcrumbs {
   position: absolute;
   top: 35px;
-  left: 16px;
   z-index: 20;
   transform: translateY(-50%);
   margin: 0;
+  right: calc(50% + 6%);
 }
 
 .hero-heritage-cc {
