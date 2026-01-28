@@ -981,5 +981,7 @@ body.modal-open {
     justify-self: center;
   }
   
-
+  .modal .modal-page-background > img:first-child {
+    top: var(--nav-height);
+  }
 }
