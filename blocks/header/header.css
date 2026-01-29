@@ -1178,6 +1178,44 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 } /* end cs-dropdown */
 
+/* Mobile Search Input in Dropdown */
+.mobile-search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-xs);
+  margin: 0 var(--spacing-xs) var(--spacing-xs);
+  background: white;
+  border-radius: 25px;
+  border: 1px solid #e0e0e0;
+  width: calc(100% - 32px);
+}
+
+.mobile-search-input-wrapper .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.mobile-search-input-wrapper .mobile-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--body-font-size-s);
+  font-family: inherit;
+  color: #353535;
+  width: 100%;
+  padding: 8px 0;
+  margin: 0;
+  max-width: calc(100% - 32px);
+}
+
+.mobile-search-input-wrapper .mobile-search-input::placeholder {
+  color: #353535;
+  font-weight: 400;
+}
+
 /* Search Dropdown */
 .search-dropdown {
   position: fixed;
@@ -1224,8 +1262,9 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   border-radius: 25px 25px 0 0;
 
   > .section {
-    max-width: unset;
-    padding: var(--spacing-xs);
+        max-width: calc(100% - 32px);
+        padding: var(--spacing-xs);
+        margin: 12px;
   }
 
   .columns > div {
@@ -1318,12 +1357,13 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   background: var(--white);
   border-radius: 20px;
   border: 1px var(--gray) solid;
-  width: 100%;
+  width: calc(100% - 32px);
+  margin: 0 var(--spacing-xs);
 }
 
 .search-dropdown .search-results-header {
   margin-bottom: var(--spacing-xs);
-  padding: 16px;
+  padding: 12px;
 }
 
 .search-dropdown .search-results-header h3 {
@@ -1335,7 +1375,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-loading {
   text-align: left;
-  padding: 16px;
+  padding: 12px;
 }
 
 .search-dropdown .search-results-loading p {
@@ -1346,7 +1386,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-empty {
   text-align: left;
-  padding: 16px;
+  padding: 12px;
 }
 
 .search-dropdown .search-results-empty p {
@@ -2769,6 +2809,11 @@ border-radius: 0;
    }
   }
 
+  /* Hide mobile search input on desktop */
+  .mobile-search-input-wrapper {
+    display: none;
+  }
+
   .search-dropdown {
     top: var(--nav-height);
     bottom: auto;
@@ -2807,6 +2852,7 @@ border-radius: 0;
   .section.columns-container {
     grid-column: 2;
     grid-row: 2;
+    width: 598px; /* match sections below for centered grid layout to work correctly*/
   }
 
   /* All cards-container sections except openaccount - will be overridden below */
@@ -2946,11 +2992,6 @@ border-radius: 0;
       grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-xs);
     }
-  }
-
-  /* Desktop search results - let them sit naturally in place of first section */
-  .search-dropdown.open .search-results {
-    /* Placeholder for future styling - No special grid positioning needed - it replaces the first section */
   }
   }
 
