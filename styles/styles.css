@@ -107,7 +107,7 @@
 
   /* nav height */
   --nav-height: 80px;
-  --category-nav-height: 64px;
+  --category-nav-height: 52px;
 
   /* grid */
   --grid-container-width: 1160px;
@@ -770,6 +770,56 @@ main>.section:first-of-type {
       --section-container-width: var(--grid-container-width);
     }
 }
+
+&#grnt-app-mob {
+  z-index: 4;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid var(--gray-300);
+
+  .columns > div {
+    background-color: var(--white);
+    flex-direction: row;
+      flex: 1;
+
+      > div {
+        order: unset;
+        align-content: center;
+      }
+
+      .columns-img-col img {
+        width: auto;
+        height: 60px;
+      }
+      
+      a.button:has(span.icon-icon-plus) {
+        padding: var(--spacing-xs);
+      }
+
+      a.button.primary {
+        font-weight: 300;
+        font-size: var(--body-font-size-s);
+        padding: var(--spacing-xs) var(--spacing-s);
+      }
+  }
+
+  .icon-icon-plus {
+
+    img {
+      filter: invert(100%);
+      transform: rotate(45deg);
+      padding: 4px;
+      border: 1px solid var(--gray-300);
+      border-radius: 50%;
+    }
+  }
+}
+}
+
+.d-none {
+  display: none;
 }
 
 .has-bg-images {
@@ -979,7 +1029,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   /* Pre-style cards as 3-column grid before decoration completes.
      This prevents the 4-column flash and vertical stack states.
      Uses :not() with comma syntax for modern CSS compliance. */
-  .cards:not(.swiper, [data-block-status="loaded"]) > ul,
+  .cards:not(.swiper, [data-block-status="loaded"]) > .grid-cards,
   .cards:not(.swiper, [data-block-status="loaded"]) > div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -989,7 +1039,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   /* Hide overflow items that would show in 4th+ position */
-  .cards:not(.swiper, [data-block-status="loaded"]) > ul > li:nth-child(n+4),
+  .cards:not(.swiper, [data-block-status="loaded"]) > .grid-cards > .cards-card:nth-child(n+4),
   .cards:not(.swiper, [data-block-status="loaded"]) > div > div:nth-child(n+4) {
     display: none;
   }
@@ -1028,13 +1078,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     height: var(--nav-height); /* nav = 80px */
   }
 
-  /* Reserve space for category-nav BEFORE it loads to prevent CLS.
-     The has-category-nav class is added by scripts.js based on page metadata.
-     This runs BEFORE body.appear, ensuring correct header height from the start. */
-  body.has-category-nav header,
-  header:has(.category-nav-wrapper) {
-    height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px = 144px */
-  }
+
 
   
   main .breadcrumbs {
@@ -1216,6 +1260,16 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     padding-right: 0;
   }
 }
+
+@media (width >= 990px) {
+    /* Reserve space for category-nav BEFORE it loads to prevent CLS.
+     The has-category-nav class is added by scripts.js based on page metadata.
+     This runs BEFORE body.appear, ensuring correct header height from the start. */
+     body.has-category-nav header,
+     header:has(.category-nav-wrapper) {
+       height: calc(var(--category-nav-height) + var(--nav-height)); /* nav + category-nav = 80px + 64px = 144px */
+     }
+  }
 
 @media (width >= 1200px) {
   .section.grid .block-content {

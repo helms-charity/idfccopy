@@ -10,7 +10,6 @@ header .nav-wrapper {
   z-index: 2;
   position: fixed;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  top: 0;
   left: 0;
 }
 
@@ -23,7 +22,6 @@ header nav {
   align-items: center;
   margin: 0 16px;
   height: var(--nav-height);
-  
   gap: var(--spacing-xxs);
 }
 
@@ -348,14 +346,15 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-weight: 400;
 }
 
 header nav .nav-sections .nav-fragment-section-content p:not(.button-container) a {
   color: #353535;
   text-decoration: none;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-s);
   line-height: 1.3;
-  margin-left: 8px;
+  margin-left: var(--spacing-xxs);
 }
 
 /* Category-nav blocks inside mobile navigation */
@@ -486,11 +485,6 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-}
-
-/* H4 section button links - lighter weight */
-header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content p.button-container a {
-  font-weight: 400;
 }
 
 /* Mobile: Tab View Mode */
@@ -777,7 +771,7 @@ header nav .nav-tools .default-content-wrapper > ul > li:last-child {
 }
 
 /* Mobile: Login icon */
-header nav .nav-tools .icon-login_header {
+header nav .nav-tools .icon-login-lock {
   width: 14px;
   height: 14px;
   display: inline-flex;
@@ -785,7 +779,7 @@ header nav .nav-tools .icon-login_header {
   justify-content: center;
 }
 
-header nav .nav-tools .icon-login_header img {
+header nav .nav-tools .icon-login-lock img {
   width: 14px;
   height: 14px;
   filter: brightness(0) invert(1);
@@ -1027,94 +1021,200 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     gap: var(--spacing-xxs);
   }
 
-  .section#cscards .cards .grid-cards li {
+  .section#cscards .cards .benefit-cards {
     width: 100%;
-    padding: var(--spacing-xs);
+    box-shadow: none;
+    padding: 12px;
     background: var(--gray-200);
-    border-radius: var(--spacing-xs);
+    border-radius: 8px;
+    border: none;
+    gap: 0;
+    min-height: auto;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
-  .cards .grid-cards li .cards-card-image {
-  text-align: center;
-  padding-top: 4px;
-  
-  img {
-    width: 20px;
-    height: 20px;
+  .section#cscards .cards .benefit-cards:hover {
+    background: #e0e0e0;
+    box-shadow: none;
   }
-}
 
-.cards .grid-cards li .cards-card-body {
-  margin: 0;
-
-  h5 {
-    display: inline-flex;
-    font-size: var(--body-font-size-s);
+  .section#cscards .cards .benefit-cards .cards-card-image {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
     margin: 0;
-  }
-
-  h6 {
-    font-size: var(--body-font-size-xxs);
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-image img {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    object-fit: contain;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-body {
+    flex: 1;
     margin: 0;
+    padding: 0;
+    width: 100%;
   }
 
-  p {
+  .section#cscards .cards .benefit-cards .cards-card-body h5,
+  .section#cscards .cards .benefit-cards .cards-card-body h6 {
     font-size: var(--body-font-size-xxs);
-    line-height: var(--body-font-size-xs);
-    color: var(--gray);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 4px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
-}
 
-.cards .card-clickable:hover {
-  box-shadow: none;
-  transform: none;
-}
+  .section#cscards .cards .benefit-cards .cards-card-body h6 .icon {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
 
-.section#helpcenter .cards .grid-cards li {
-  display: flex;
-  gap: var(--spacing-xs);
-  background: transparent;
-}
+  .section#cscards .cards .benefit-cards .cards-card-body h6 .icon img {
+    width: 24px;
+    height: 24px;
+  }
 
-.section#helpcenter .cards .grid-cards li .cards-card-image {
-  text-align: left;
-  
-  img {
+  .section#cscards .cards .benefit-cards .cards-card-body p {
+    font-size: var(--body-font-size-xxs);
+    line-height: 1.3;
+    color: var(--gray-700);
+    margin: 0;
+    text-align: center;
+  }
+
+  .section#cscards .cards .card-clickable:hover {
+    box-shadow: 0 2px 8px rgba(0 0 0 / 8%);
+    transform: none;
+  }
+
+  .section#cscards .cards .cards-modal-content,
+  .section#helpcenter .cards .cards-modal-content {
+    display: none;
+  }
+
+  .section#helpcenter .cards .benefit-cards {
+    padding: 16px;
+    padding-left: 0; /* Align with desktop */
+    background: transparent; /* No background on mobile/desktop */
+    border: none;
+    gap: 12px;
+    box-shadow: none; /* No box-shadow */
+    border-radius: 0; /* No rounded corners */
+  }
+
+  .section#helpcenter .cards .benefit-cards:hover {
+    background: #e0e0e0;
+  }
+
+  .section#helpcenter .cards .benefit-cards .cards-card-image {
     width: 58px;
     height: 58px;
   }
-}
 
-.section#download {
-  margin-top: var(--spacing-xs);
-}
+  .section#helpcenter .cards .benefit-cards .cards-card-image img {
+    width: 58px;
+    height: 58px;
+    max-width: 58px;
+    max-height: 58px;
+    object-fit: contain;
+  }
 
-.section#download h5 {
-  font-style: normal;
-  font-weight: 800;
-  font-size: var(--body-font-size-s);
-  line-height: 18px;
-  background: var(--gradient-light-red);
-  background-clip: text;
-  margin-bottom: var(--spacing-xxs);
-  color: transparent;
-}
+  .section#helpcenter .cards .benefit-cards .cards-card-body h5 {
+    font-size: var(--body-font-size-m);
+    font-weight: 700;
+    margin: 0 0 var(--spacing-xxs);
+  }
 
-.section#download p {
-  color: var(--red-800);
-  font-size: var(--body-font-size-xxs);
-  line-height: var(--body-font-size-xs);
-  margin: var(--spacing-xs) 0 0;
-}
+  .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
+    width: 24px;
+    height: 10px;
+  }
 
-.section#download .default-content {
-  margin-top: var(--spacing-xs);
-  margin-left: var(--spacing-xs);
-}
+  .section#helpcenter .cards .benefit-cards .cards-card-body p {
+    font-size: var(--body-font-size-xs);
+    color: var(--gray-700);
+  }
+
+  .section#download {
+    margin-top: var(--spacing-xs);
+  }
+
+  .section#download h5 {
+    font-style: normal;
+    font-weight: 800;
+    font-size: var(--body-font-size-s);
+    line-height: 18px;
+    background: var(--gradient-light-red);
+    background-clip: text;
+    margin-bottom: var(--spacing-xxs);
+    color: transparent;
+  }
+
+  .section#download p {
+    color: var(--red-800);
+    font-size: var(--body-font-size-xxs);
+    line-height: var(--body-font-size-xs);
+    margin: var(--spacing-xs) 0 0;
+  }
+
+  .section#download .default-content {
+    margin-top: var(--spacing-xs);
+    margin-left: var(--spacing-xs);
+  }
 } /* end cs-dropdown */
+
+/* Mobile Search Input in Dropdown */
+.mobile-search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-xs) var(--spacing-xs);
+  margin: 0 var(--spacing-xs) var(--spacing-xs);
+  background: white;
+  border-radius: 25px;
+  border: 1px solid #e0e0e0;
+  width: calc(100% - 32px);
+}
+
+.mobile-search-input-wrapper .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.mobile-search-input-wrapper .mobile-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--body-font-size-s);
+  font-family: inherit;
+  color: #353535;
+  width: 100%;
+  padding: var(--spacing-xxs) 0;
+  margin: 0;
+  max-width: calc(100% - 32px);
+}
+
+.mobile-search-input-wrapper .mobile-search-input::placeholder {
+  color: #353535;
+  font-weight: 400;
+}
 
 /* Search Dropdown */
 .search-dropdown {
@@ -1162,8 +1262,9 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   border-radius: 25px 25px 0 0;
 
   > .section {
-    max-width: 430px;
-    padding: var(--spacing-xs);
+        max-width: calc(100% - 32px);
+        padding: var(--spacing-xs);
+        margin: 12px;
   }
 
   .columns > div {
@@ -1215,7 +1316,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-xxs);
 
-    li {
+    .benefit-cards {
      background: var(--gray-200);
      box-shadow: none;
      transform: none;
@@ -1235,16 +1336,16 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
      }
     }
 
-    li::after {
+    .benefit-cards::after {
       display: none;
     }
 
-   li .cards-card-image {
+   .benefit-cards .cards-card-image {
       height: 40px;
       width: 40px;
   }
 
-  li .cards-card-body {
+  .benefit-cards .cards-card-body {
     padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-xxs);
   }
  }
@@ -1256,12 +1357,13 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   background: var(--white);
   border-radius: 20px;
   border: 1px var(--gray) solid;
-  width: 100%;
+  width: calc(100% - 32px);
+  margin: 0 var(--spacing-xs);
 }
 
 .search-dropdown .search-results-header {
   margin-bottom: var(--spacing-xs);
-  padding: 16px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-header h3 {
@@ -1273,7 +1375,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-loading {
   text-align: left;
-  padding: 16px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-loading p {
@@ -1284,7 +1386,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-empty {
   text-align: left;
-  padding: 16px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-empty p {
@@ -1488,7 +1590,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     border-radius: 20px;
   }
 
-  .columns {
+  /* Hide columns with images in has-bg-images section, but show login heading columns */
+  &.has-bg-images .columns {
     display: none;
   }
 }
@@ -1502,6 +1605,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 }
 
+/* Login dropdown cards - compact list layout */
 .cards .grid-cards {
   gap: var(--spacing-xs);
   padding-top: var(--spacing-s);
@@ -1509,13 +1613,21 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   grid-template-columns: 1fr;
 }
 
-.cards .grid-cards li {
+.cards .grid-cards .benefit-cards {
     display: grid;
     grid-template-columns: 20px 1fr;
     text-align: left;
     gap: var(--spacing-xs);
     border-bottom: 1px var(--gray-300) solid;
+    padding: 0;
     padding-bottom: var(--spacing-xs);
+    width: 100%; /* Override global 50% width from cards.css */
+
+    /* Remove default benefit-cards styling */
+    box-shadow: none;
+    border-radius: 0;
+    background: transparent;
+    margin-bottom: 0;
 
     p {
       color: var(--gray);
@@ -1527,24 +1639,24 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     }
 }
 
-.cards .grid-cards li .cards-card-image {
-text-align: center;
-padding-top: 4px;
+.cards .grid-cards .benefit-cards .cards-card-image {
+  text-align: center;
+  padding-top: 4px;
 
-img {
-  width: 20px;
-  height: 20px;
-}
+  img {
+    width: 20px;
+    height: 20px;
+  }
 }
 
-.cards .grid-cards li .cards-card-body {
-margin: 0;
+.cards .grid-cards .benefit-cards .cards-card-body {
+  margin: 0;
 }
 
 .cards .card-clickable:hover {
   box-shadow: none;
   transform: none;
-} 
+}
 
 .login-dropdown-close-btn {
   position: absolute;
@@ -1561,7 +1673,7 @@ margin: 0;
   height: 20px;
   z-index: 10;
 }
-}
+} /* end .login-dropdown.open */
 
 .cs-dropdown-close-btn, .search-dropdown-close-btn {
   position: absolute;
@@ -1586,6 +1698,17 @@ margin: 0;
 /* Mobile: Search input in expanded nav */
 header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   flex: 1;
+}
+
+@media (width >= 600px) {
+.search-dropdown.open > .section {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .cards.related-search .grid-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 }
 
 @media (width >= 990px) {
@@ -1706,7 +1829,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-drop {
     position: relative;
-    cursor: pointer;
   }
 
   header nav .nav-sections .nav-drop:hover>p>a {
@@ -1734,6 +1856,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     color: #353535;
     border: none;
     width: auto;
+    cursor: auto;
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li p {
@@ -1769,7 +1892,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-fragment-section {
     grid-column: 1;
     border: none;
-    cursor: pointer;
     display: contents;
   }
 
@@ -1850,6 +1972,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     background-color: #fff;
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
+    cursor: pointer;
   }
 
   header nav .nav-sections .nav-fragment-section:hover .nav-fragment-section-title {
@@ -1894,6 +2017,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     grid-template-columns: 1fr 1fr; /* Equal columns */
     gap: 16px;
     position: relative;
+    cursor: auto;
   }
 
   /* Primary links in first column */
@@ -1998,29 +2122,34 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   /* Gray padding on top/left/right only */
-  header nav .nav-sections .nav-discover-section .cards.block li.cards-card-body.blog-post-card {
+
+  /* Updated for div structure: .cards-card.blog-post-card > .cards-card-body (outer wrapper) */
+  header nav .nav-sections .nav-discover-section .cards.block .cards-card.blog-post-card > .cards-card-body {
     padding: 16px 16px 0; /* No bottom padding */
     background: var(--gray-200);
     border-radius: 16px;
   }
 
   /* White card container - image and text connect seamlessly */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image,
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-image,
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-body {
     background: var(--background-color);
     margin: 0; /* No gap between divs */
   }
 
   /* Image at top with top rounded corners only */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-image {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-image {
     border-radius: 12px 12px 0 0;
+    padding: 0; /* Remove any padding from image */
+    margin: 0; /* Override cards.css margin */
   }
 
   /* Text body with bottom rounded corners and shadow */
-  header nav .nav-sections .nav-discover-section li.cards-card-body.blog-post-card > .cards-card-body {
+  header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-body {
     border-radius: 0 0 12px 12px;
     margin-bottom: 16px; /* Creates gray space at bottom */
     box-shadow: 0 4px 12px rgba(0 0 0 / 15%);
+    padding-top: 16px;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image {
@@ -2028,12 +2157,16 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     overflow: hidden;
     max-height: 110px;
     border-radius: 12px 12px 0 0; /* Only round top corners */
+    margin: 0; /* Ensure no margin */
+    padding: 0; /* Ensure no padding */
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image picture {
     display: block;
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-image img {
@@ -2041,6 +2174,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     height: 110px;
     display: block;
     object-fit: cover;
+    margin: 0;
+    padding: 0;
   }
 
   header nav .nav-sections .nav-discover-section .cards-card-body {
@@ -2051,7 +2186,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-discover-section .cards-card-body h3 {
     font-size: var(--body-font-size-xs);
     font-weight: 400;
-    margin: 0 0 var(--spacing-xxs);
+    margin: var(--spacing-xs) 0 var(--spacing-xxs); /* Add top margin for spacing from image */
     color: var(--text-color);
     line-height: 1.3;
     text-align: left;
@@ -2080,7 +2215,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     text-align: left;
   }
 
-  header nav .nav-sections .nav-discover-section .cards-card-body .button {
+  /* Button styling for discover blog-post cards - white with red border */
+  header nav .nav-sections .nav-discover-section .cards-card-body .button,
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .button {
     display: inline-block;
     padding: var(--spacing-xxs) 20px;
     background-color: transparent;
@@ -2095,7 +2232,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     margin: 0;
   }
 
-  header nav .nav-sections .nav-discover-section .cards-card-body .button:hover {
+  header nav .nav-sections .nav-discover-section .cards-card-body .button:hover,
+  header nav .nav-sections .nav-discover-section .cards.blog-posts .button:hover {
     background-color: var(--dark-red-link-color);
     color: var(--btn-color-white);
   }
@@ -2117,19 +2255,19 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     min-height: 0;
     height: auto;
     border-bottom: none;
-    font-size: 15px;
+    font-size: var(--body-font-size-xs);
     font-weight: 400;
     line-height: 1.3;
     display: block;
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    cursor: auto;
   }
 
   /* Content items: Hover state */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover {
-    font-weight: 700;
     background-color: transparent;
   }
 
@@ -2149,12 +2287,26 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
-  /* Content items: Links hover state (exclude H4 titles and View All buttons to keep them static) */
+  /* Override global button weight for nav-primary-links - make them lighter by default */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container a.button {
+    font-weight: 400;
+  }
+
+  /* Content items: Links hover state - Subtle weight increase and color change */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p.button-container:hover a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container, .nav-h4-section-title):hover a:not(.nav-view-all-btn) {
-    font-weight: 700;
+    font-weight: 500;
+    color: #bd3e46;
+    cursor: pointer;
+  }
+
+  /* Override global button weight for nav-primary-links on hover */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container:hover a.button {
+    font-weight: 500;
+    color: #bd3e46;
   }
 
   /* =================================================================
@@ -2263,6 +2415,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     width: 100%;
   }
 
+  /* H4 section button-container links - override mobile size for desktop */
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content p.button-container a {
+    font-size: var(--body-font-size-xs);
+  }
+
   /* Desktop: Remove transparent hover backgrounds from tab-view-active styles */
   header nav .nav-sections.tab-view-active .nav-fragment-section-content p.button-container:hover,
   header nav .nav-sections.tab-view-active .nav-fragment-section-content p:not(.button-container):hover,
@@ -2290,7 +2447,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
     color: var(--dark-red-color);
     font-weight: bold;
-    cursor: pointer;
   }
 
   .header nav .nav-sections .default-content-wrapper>ul>li>ul>li:hover a {
@@ -2375,9 +2531,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     border-radius: 50px;
     background: transparent;
     white-space: nowrap;
-    cursor: pointer;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
 
   .nav-tools .default-content-wrapper>ul>li:last-child {
@@ -2389,7 +2545,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     gap: var(--spacing-xxs);
   }
 
-  .nav-tools .default-content-wrapper .icon-login_header {
+  .nav-tools .default-content-wrapper .icon-login-lock {
     width: 14px;
     height: 14px;
     display: inline-flex;
@@ -2397,7 +2553,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     justify-content: center;
   }
 
-  .nav-tools .default-content-wrapper .icon-login_header img {
+  .nav-tools .default-content-wrapper .icon-login-lock img {
     width: 14px;
     height: 14px;
   }
@@ -2448,6 +2604,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       grid-column: 2;
       grid-row: 3;
       border-bottom: 0;
+
+      .cards .grid-cards .benefit-cards .cards-card-image img {
+        width: 58px;
+        height: 58px;
+      }
     }
   
     .section#download {
@@ -2461,22 +2622,104 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-s);
   }
-  
-    .section#cscards .cards .grid-cards li {
-      display: flex;
-      text-align: left;
-      gap: var(--spacing-xs);
-    }
 
-    & .cards .grid-cards li .cards-card-body {
-      h6 {
-        display: flex;
-        justify-content: space-between;
-    }
+  .section#cscards .cards .benefit-cards {
+    width: 100%;
+    box-shadow: none;
+    padding: var(--spacing-xs);
+    background: var(--gray-200);
+    border-radius: 8px;
+    border: none;
+    gap: 12px;
+    min-height: auto;
+    flex-direction: row;
+    align-items: flex-start;
+    display: flex;
+  }
 
-      p {
-        width: 85%;
-      }
+  .section#cscards .cards .benefit-cards:hover {
+    background: #e0e0e0;
+    box-shadow: none;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-image {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-image img {
+    width: 20px;
+    height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    object-fit: contain;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-body {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-body h6 {
+    font-size: var(--body-font-size-xs);
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 2px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-body h6 .icon img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .section#cscards .cards .benefit-cards .cards-card-body p {
+    font-size: var(--body-font-size-xxs);
+    line-height: 1.3;
+    text-align: left;
+    color: var(--gray-700);
+    margin: 0;
+    width: 100%;
+  }
+
+  .section#helpcenter .cards .benefit-cards {
+    padding: 16px;
+    padding-left: 0;
+    background: unset;
+    border: none;
+    gap: 12px;
+    box-shadow: none;
+  }
+
+  .section#helpcenter .cards .benefit-cards:hover {
+    background: #e0e0e0;
+  }
+
+  .section#helpcenter .cards .benefit-cards .cards-card-body h5 {
+    font-size: var(--body-font-size-s);
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  .section#helpcenter .cards .benefit-cards .cards-card-body h5 .icon img {
+    width: 24px;
+    height: 10px;
+  }
+
+  .section#helpcenter .cards .benefit-cards .cards-card-body p {
+    font-size: var(--body-font-size-xxs);
+  }
+
+  .section#cscards .cards .cards-modal-content,
+  .section#helpcenter .cards .cards-modal-content {
+    display: none;
   }
 }
 
@@ -2567,6 +2810,11 @@ border-radius: 0;
    }
   }
 
+  /* Hide mobile search input on desktop */
+  .mobile-search-input-wrapper {
+    display: none;
+  }
+
   .search-dropdown {
     top: var(--nav-height);
     bottom: auto;
@@ -2585,6 +2833,10 @@ grid-template-rows: auto auto auto;
 padding: 30px;
 border-radius: 0;
 
+  > .section {
+    max-width: unset;
+  }
+
   .search-dropdown-close-btn {
     display: none;
   }
@@ -2601,6 +2853,7 @@ border-radius: 0;
   .section.columns-container {
     grid-column: 2;
     grid-row: 2;
+    width: 598px; /* match sections below for centered grid layout to work correctly*/
   }
 
   /* All cards-container sections except openaccount - will be overridden below */
@@ -2631,7 +2884,7 @@ border-radius: 0;
     flex: unset;
   }
 
-  .cards.related-search .grid-cards li h6 {
+  .cards.related-search .grid-cards .benefit-cards h6 {
     font-size: var(--body-font-size-xs);
   }
 }
@@ -2740,11 +2993,6 @@ border-radius: 0;
       grid-template-columns: repeat(3, 1fr);
       gap: var(--spacing-xs);
     }
-  }
-
-  /* Desktop search results - let them sit naturally in place of first section */
-  .search-dropdown.open .search-results {
-    /* Placeholder for future styling - No special grid positioning needed - it replaces the first section */
   }
   }
 

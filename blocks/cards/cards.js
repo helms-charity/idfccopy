@@ -34,7 +34,7 @@ function sanitizeText(text) {
  */
 function generateTestimonialSchema(block) {
   const testimonials = [];
-  const cards = block.querySelectorAll('li');
+  const cards = block.querySelectorAll('.cards-card');
 
   cards.forEach((card) => {
     const cardBody = card.querySelector('.cards-card-body');
@@ -260,9 +260,9 @@ function injectSchema(schema) {
 /**
  * Extracts block-level properties from placeholder cards and sets them as data attributes
  * @param {HTMLElement} block The block element
- * @param {HTMLElement} ul The ul containing card items
+ * @param {HTMLElement} cardsContainer The container holding card items
  */
-function extractBlockProperties(block, ul) {
+function extractBlockProperties(block, cardsContainer) {
   const propertyFields = [
     'modalTheme',
     'modalDialogBackgroundImageTexture',
@@ -276,41 +276,41 @@ function extractBlockProperties(block, ul) {
   const propertyValues = {};
   const itemsToRemove = [];
 
-  // Check first few li elements for property values
-  const items = [...ul.querySelectorAll('li')];
-  let liIndex = 0;
+  // Check first few card elements for property values
+  const items = [...cardsContainer.querySelectorAll('.cards-card')];
+  let cardIndex = 0;
   let propertyIndex = 0;
 
-  // Process li elements, matching them to expected property fields
-  while (liIndex < items.length && propertyIndex < propertyFields.length) {
-    const li = items[liIndex];
+  // Process card elements, matching them to expected property fields
+  while (cardIndex < items.length && propertyIndex < propertyFields.length) {
+    const cardItem = items[cardIndex];
     const fieldName = propertyFields[propertyIndex];
 
-    // Check if li is completely empty (no content or only whitespace)
-    const isEmpty = !li.textContent.trim() && !li.querySelector('picture, img');
+    // Check if card is completely empty (no content or only whitespace)
+    const isEmpty = !cardItem.textContent.trim() && !cardItem.querySelector('picture, img');
 
     if (isEmpty) {
-      // Empty li - field value not defined, just remove it and move to next field
-      itemsToRemove.push(li);
-      liIndex += 1;
+      // Empty card - field value not defined, just remove it and move to next field
+      itemsToRemove.push(cardItem);
+      cardIndex += 1;
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
     }
 
-    // Check li content structure
-    const paragraphs = li.querySelectorAll('p');
+    // Check card content structure
+    const paragraphs = cardItem.querySelectorAll('p');
     // Only consider picture elements for authored images (not icon imgs)
-    const pictureEl = li.querySelector('picture');
+    const pictureEl = cardItem.querySelector('picture');
     const hasAuthoredImage = !!pictureEl;
-    const hasHeading = li.querySelector('h1, h2, h3, h4, h5, h6');
+    const hasHeading = cardItem.querySelector('h1, h2, h3, h4, h5, h6');
 
-    // Check if this is an image-only li (for image reference fields)
+    // Check if this is an image-only card (for image reference fields)
     // Must have a picture element (not just any img, which could be an icon)
     const isImageOnly = hasAuthoredImage && !hasHeading && paragraphs.length <= 1
       && (!paragraphs.length || paragraphs[0].querySelector('picture'));
 
-    // Check if this is a text-only li (for string/boolean/number fields)
+    // Check if this is a text-only card (for string/boolean/number fields)
     const isTextOnly = paragraphs.length === 1 && !hasAuthoredImage && !hasHeading;
 
     // Handle image reference fields
@@ -325,14 +325,14 @@ function extractBlockProperties(block, ul) {
         const img = pictureEl.querySelector('img');
         if (img && img.src) {
           propertyValues[fieldName] = img.src;
-          itemsToRemove.push(li);
-          liIndex += 1;
+          itemsToRemove.push(cardItem);
+          cardIndex += 1;
           propertyIndex += 1;
           // eslint-disable-next-line no-continue
           continue;
         }
       }
-      // Not an authored image or no src - skip to next field, stay on same li
+      // Not an authored image or no src - skip to next field, stay on same card
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
@@ -340,12 +340,12 @@ function extractBlockProperties(block, ul) {
 
     // Handle richtext fields (modalCtaContent)
     if (fieldName === 'modalCtaContent') {
-      // Check if li contains button-container or links (typical CTA content)
+      // Check if card contains button-container or links (typical CTA content)
       // BUT also verify it's not an actual card structure with image div
-      const hasButtonContainer = li.querySelector('.button-container');
-      const hasLinks = li.querySelector('a');
-      const hasCardImage = li.querySelector('.cards-card-image');
-      const hasCardBody = li.querySelector('.cards-card-body');
+      const hasButtonContainer = cardItem.querySelector('.button-container');
+      const hasLinks = cardItem.querySelector('a');
+      const hasCardImage = cardItem.querySelector('.cards-card-image');
+      const hasCardBody = cardItem.querySelector('.cards-card-body');
 
       // Only extract as modalCtaContent if it has buttons/links but is NOT a full card structure
       const isPlaceholderCta = (hasButtonContainer || hasLinks) && !hasCardImage;
@@ -355,14 +355,14 @@ function extractBlockProperties(block, ul) {
 
       if (isPlaceholderCta && !isRealCard) {
         // Extract the entire innerHTML as richtext content
-        propertyValues[fieldName] = li.innerHTML;
-        itemsToRemove.push(li);
-        liIndex += 1;
+        propertyValues[fieldName] = cardItem.innerHTML;
+        itemsToRemove.push(cardItem);
+        cardIndex += 1;
         propertyIndex += 1;
         // eslint-disable-next-line no-continue
         continue;
       }
-      // Not richtext content or is a real card - skip to next field, stay on same li
+      // Not richtext content or is a real card - skip to next field, stay on same card
       propertyIndex += 1;
       // eslint-disable-next-line no-continue
       continue;
@@ -398,12 +398,12 @@ function extractBlockProperties(block, ul) {
     if (isValidValue) {
       // Value matches expected type - extract it
       propertyValues[fieldName] = text;
-      itemsToRemove.push(li);
-      liIndex += 1;
+      itemsToRemove.push(cardItem);
+      cardIndex += 1;
       propertyIndex += 1;
     } else {
       // Value doesn't match expected type for this field
-      // This li might be for a later field - skip to next field but stay on same li
+      // This card might be for a later field - skip to next field but stay on same card
       propertyIndex += 1;
     }
   }
@@ -414,7 +414,7 @@ function extractBlockProperties(block, ul) {
   });
 
   // Remove placeholder items
-  itemsToRemove.forEach((li) => li.remove());
+  itemsToRemove.forEach((cardItem) => cardItem.remove());
 }
 
 /**
@@ -445,13 +445,13 @@ function appendArrowIcon(cardBody) {
  * 1. Standard card: No link, no modal - not clickable
  * 2. Easy modal card: No link, has modalContent - opens inline modal on click
  * 3. Complex modal card: Has link to /modals/ path - handled by autolinkModals
- * @param {HTMLElement} li The card list item element
+ * @param {HTMLElement} cardItem The card element
  * @param {boolean} shouldAddArrow Whether to add the arrow icon for interactive cards
  * @param {string} modalTheme Optional theme class to apply to the modal
  * @param {HTMLElement} parentBlock The parent block element (passed to avoid repeated queries)
  */
-function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', parentBlock = null) {
-  const cardBodies = li.querySelectorAll('.cards-card-body');
+function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '', parentBlock = null) {
+  const cardBodies = cardItem.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
   // The first cards-card-body is the main text content
@@ -476,16 +476,16 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
   }
 
   // Check for card link (could be in main body or as a standalone link)
-  const cardLink = li.querySelector('a[href]');
+  const cardLink = cardItem.querySelector('a[href]');
   const hasModalPath = cardLink && cardLink.href && cardLink.href.includes('/modals/');
   const hasRegularLink = cardLink && !hasModalPath;
 
   // Type 3: Complex modal with /modals/ path - make entire card clickable
   // The autolinkModals function in scripts.js will handle the actual modal opening
   if (hasModalPath) {
-    li.classList.add('card-clickable');
-    li.setAttribute('role', 'button');
-    li.setAttribute('tabindex', '0');
+    cardItem.classList.add('card-clickable');
+    cardItem.setAttribute('role', 'button');
+    cardItem.setAttribute('tabindex', '0');
 
     const handleClick = (e) => {
       // Don't intercept if clicking on the actual link
@@ -496,8 +496,8 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
       cardLink.click();
     };
 
-    li.addEventListener('click', handleClick);
-    li.addEventListener('keydown', (e) => {
+    cardItem.addEventListener('click', handleClick);
+    cardItem.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         cardLink.click();
@@ -519,9 +519,9 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
 
   // Type 2: Easy modal with inline content (no link to /modals/)
   if (hasModalContent) {
-    li.classList.add('card-clickable', 'card-modal');
-    li.setAttribute('role', 'button');
-    li.setAttribute('tabindex', '0');
+    cardItem.classList.add('card-clickable', 'card-modal');
+    cardItem.setAttribute('role', 'button');
+    cardItem.setAttribute('tabindex', '0');
 
     // Store the modal content (already hidden via CSS .cards-modal-content class)
     const modalContent = modalContentDiv.cloneNode(true);
@@ -564,14 +564,14 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
       showModal();
     };
 
-    li.addEventListener('click', (e) => {
+    cardItem.addEventListener('click', (e) => {
       // Don't trigger modal if clicking on a regular link within the card
       if (e.target.closest('a')) return;
       e.preventDefault();
       e.stopPropagation();
       openCardModal();
     });
-    li.addEventListener('keydown', (e) => {
+    cardItem.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         openCardModal();
@@ -587,9 +587,9 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
 
   // Type 1 variant: Card with regular link (not /modals/) - make entire card clickable
   if (hasRegularLink) {
-    li.classList.add('card-clickable');
-    li.setAttribute('role', 'link');
-    li.setAttribute('tabindex', '0');
+    cardItem.classList.add('card-clickable');
+    cardItem.setAttribute('role', 'link');
+    cardItem.setAttribute('tabindex', '0');
 
     const handleClick = (e) => {
       if (e.target.closest('a')) return;
@@ -597,8 +597,8 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
       cardLink.click();
     };
 
-    li.addEventListener('click', handleClick);
-    li.addEventListener('keydown', (e) => {
+    cardItem.addEventListener('click', handleClick);
+    cardItem.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         cardLink.click();
@@ -625,10 +625,10 @@ function setupCardInteractivity(li, shouldAddArrow = false, modalTheme = '', par
  * - dividerImage: thin horizontal image (cards-card-divider)
  * - backgroundImageTexture: large texture image (cards-card-bg-texture)
  * - cardTag: simple text tag before main content (cards-card-tag)
- * @param {HTMLElement} li The card list item element
+ * @param {HTMLElement} cardItem The card element
  */
-function identifySemanticCardElements(li) {
-  const children = [...li.children];
+function identifySemanticCardElements(cardItem) {
+  const children = [...cardItem.children];
 
   // Process all cards-card-image elements to identify dividers and textures
   children.forEach((div) => {
@@ -683,9 +683,7 @@ export default async function decorate(block) {
   const initialWrapperHeight = wrapper?.getBoundingClientRect().height;
   const initialSectionHeight = section?.getBoundingClientRect().height;
 
-  // Skip CLS visibility hiding in Universal Editor
-  const isEditor = document.querySelector('main[data-aue-resource]');
-  if (isDesktop && isAllAboutCard && section && !isEditor) {
+  if (isDesktop && isAllAboutCard && section) {
     section.style.minHeight = '1412px';
     if (wrapper) wrapper.style.minHeight = '1412px';
     block.style.minHeight = '1412px';
@@ -693,8 +691,7 @@ export default async function decorate(block) {
   }
 
   // Prevent temporary collapse while we rebuild the DOM for cards on desktop.
-  // Skip in Universal Editor to avoid layout issues.
-  if (isDesktop && initialBlockHeight > 0 && !isEditor) {
+  if (isDesktop && initialBlockHeight > 0) {
     block.style.minHeight = `${initialBlockHeight}px`;
     if (wrapper && initialWrapperHeight) {
       wrapper.style.minHeight = `${initialWrapperHeight}px`;
@@ -741,25 +738,31 @@ export default async function decorate(block) {
   const isRelatedSearch = classList.contains('related-search');
   const isExperienceLife = classList.contains('experience-life');
   const isBlogPosts = classList.contains('blog-posts');
+  const isEarnRewards = classList.contains('earn-rewards');
   const isJoiningPerks = classList.contains('joining-perks');
-  const isRewardPoints = classList.contains('reward-points');
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
-    || isRewardPoints;
+    || classList.contains('reward-points');
   const isExploreOtherCards = classList.contains('explore-other-cards');
 
-  // Build UL structure and collect LI elements in one pass
-  const ul = document.createElement('ul');
+  // Check if this cards block is within the #cscards section (customer service dropdown)
+  const isInCsCards = block.closest('#cscards') !== null;
+
+  // Build container structure and collect card elements in one pass
+  // Use div structure for all cards (unified approach, simpler and more maintainable)
+  const cardsContainer = document.createElement('div');
+  cardsContainer.classList.add('grid-cards');
   const rows = [...block.children];
 
   rows.forEach((row) => {
-    const li = document.createElement('li');
-    moveInstrumentation(row, li);
-    while (row.firstElementChild) li.append(row.firstElementChild);
+    const cardItem = document.createElement('div');
+    cardItem.classList.add('cards-card');
+    moveInstrumentation(row, cardItem);
+    while (row.firstElementChild) cardItem.append(row.firstElementChild);
 
     // Process children in a single pass
     const divsToRemove = [];
-    [...li.children].forEach((div) => {
+    [...cardItem.children].forEach((div) => {
       if (div.children.length === 1 && div.querySelector('picture')) {
         div.className = 'cards-card-image';
       } else if (div.children.length > 0 || div.textContent.trim().length > 0) {
@@ -771,18 +774,18 @@ export default async function decorate(block) {
     // Remove empty divs after iteration (avoid modifying during iteration)
     divsToRemove.forEach((div) => div.remove());
 
-    ul.append(li);
+    cardsContainer.append(cardItem);
   });
 
   // Identify semantic elements if needed (before image optimization)
   if (supportsSemanticElements) {
-    ul.querySelectorAll('li').forEach((li) => {
-      identifySemanticCardElements(li);
+    cardsContainer.querySelectorAll('.cards-card').forEach((cardItem) => {
+      identifySemanticCardElements(cardItem);
     });
   }
 
   // Replace images with optimized pictures
-  ul.querySelectorAll('picture > img').forEach((img) => {
+  cardsContainer.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
     const optimizedImg = optimizedPic.querySelector('img');
     moveInstrumentation(img, optimizedImg);
@@ -803,28 +806,28 @@ export default async function decorate(block) {
     img.closest('picture').replaceWith(optimizedPic);
   });
 
-  // Append UL to block (use replaceChildren for better performance)
-  ul.classList.add('grid-cards');
-  block.replaceChildren(ul);
+  // Append container to block (use replaceChildren for better performance)
+  cardsContainer.classList.add('grid-cards');
+  block.replaceChildren(cardsContainer);
 
   // Extract block properties from placeholder cards
-  extractBlockProperties(block, ul);
+  extractBlockProperties(block, cardsContainer);
 
-  // Get all LI elements once and reuse
-  const allLis = ul.querySelectorAll('li');
+  // Get all card elements once and reuse
+  const allCards = cardsContainer.querySelectorAll('.cards-card');
 
   // Add appropriate class to card items
-  allLis.forEach((li) => {
+  allCards.forEach((cardItem) => {
     if (isImportantDocuments) {
-      li.classList.add('important-documents-card');
+      cardItem.classList.add('important-documents-card');
 
       // Make entire card clickable - wrap card content in link
-      const link = li.querySelector('.cards-card-body a');
+      const link = cardItem.querySelector('.cards-card-body a');
       if (link && link.href) {
         const linkUrl = link.href;
         const linkTitle = link.getAttribute('title') || link.textContent.trim();
-        const imageDiv = li.querySelector('.cards-card-image');
-        const bodyDiv = li.querySelector('.cards-card-body');
+        const imageDiv = cardItem.querySelector('.cards-card-image');
+        const bodyDiv = cardItem.querySelector('.cards-card-body');
 
         // Create new link wrapper
         const cardLink = document.createElement('a');
@@ -853,15 +856,17 @@ export default async function decorate(block) {
         }
 
         // Clear and append link wrapper
-        li.textContent = '';
-        li.appendChild(cardLink);
+        cardItem.textContent = '';
+        cardItem.appendChild(cardLink);
       }
     } else if (isBlogPosts) {
-      li.classList.add('blog-post-card');
-    } else if (supportsSemanticElements || isRelatedSearch) {
-      li.classList.add('benefit-cards');
-    } else if (isExploreOtherCards) {
-      li.classList.add('explore-other-cards');
+      cardItem.classList.add('blog-post-card');
+    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks && !isAllAboutCard) {
+      if (isExploreOtherCards) {
+        cardItem.classList.add('explore-other-cards');
+      } else {
+        cardItem.classList.add('benefit-cards');
+      }
     }
 
     // Setup interactivity for all card types (links, modals)
@@ -870,11 +875,11 @@ export default async function decorate(block) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
-      setupCardInteractivity(li, shouldAddArrow, modalTheme, block);
+      setupCardInteractivity(cardItem, shouldAddArrow, modalTheme, block);
     }
   });
 
-  block.append(ul);
+  block.append(cardsContainer);
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
@@ -908,10 +913,10 @@ export default async function decorate(block) {
 
     // Add Swiper classes
     block.classList.add('swiper');
-    ul.classList.add('swiper-wrapper');
-    ul.classList.remove('grid-cards');
-    ul.querySelectorAll('li').forEach((li) => {
-      li.classList.add('swiper-slide');
+    cardsContainer.classList.add('swiper-wrapper');
+    cardsContainer.classList.remove('grid-cards');
+    cardsContainer.querySelectorAll('.cards-card').forEach((cardItem) => {
+      cardItem.classList.add('swiper-slide');
     });
 
     // Add pagination
@@ -919,16 +924,25 @@ export default async function decorate(block) {
     swiperPagination.className = 'swiper-pagination';
     block.appendChild(swiperPagination);
 
+    // Count total slides
+    const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
+
+    // For mobile view (< 600px), always start at first card
+    // For larger views, use authored startingCard value
+    const isMobileView = window.innerWidth < 600;
+    const initialSlideIndex = isMobileView ? 0 : startingCard;
+
     // Build Swiper configuration
-    // Use authored startingCard only on desktop; mobile/tablet always start at index 0
-    const initialSlideIndex = isDesktop ? startingCard : 0;
     const swiperConfig = {
       slidesPerView: 1.2,
       spaceBetween: 16,
       initialSlide: initialSlideIndex,
+      centeredSlides: true, // Will be overridden by breakpoints if all cards fit
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
+        dynamicBullets: false,
+        type: 'bullets',
       },
     };
 
@@ -938,12 +952,12 @@ export default async function decorate(block) {
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.15; // Show more edges of cards on both sides when centered
+      swiperConfig.slidesPerView = 1.3; // Show more edges of cards on both sides when centered
       swiperConfig.spaceBetween = 16;
       swiperConfig.centeredSlides = true; // Keep centered to show edges on both sides
       swiperConfig.breakpoints = {
         600: {
-          slidesPerView: 2.2,
+          slidesPerView: 1.5,
           spaceBetween: 20,
           centeredSlides: true,
         },
@@ -954,85 +968,18 @@ export default async function decorate(block) {
         },
       };
     } else if (isExperienceLife) {
-      // For experience-life cards: no centered slides
-      const slideCount = ul.querySelectorAll('li').length;
+      // For experience-life cards: tighter spacing
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: Math.min(2, slideCount),
           spaceBetween: 20,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
         },
         900: {
           slidesPerView: Math.min(3, slideCount),
           spaceBetween: 36,
-        },
-      };
-    } else if (isJoiningPerks) {
-      // For joining perks cards: show edges on both sides on mobile, 3 cards at larger breakpoints
-      swiperConfig.loop = false;
-      swiperConfig.watchSlidesProgress = true;
-      swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
-      swiperConfig.spaceBetween = 30;
-      swiperConfig.centeredSlides = true;
-      swiperConfig.breakpoints = {
-        600: {
-          slidesPerView: 2,
-          spaceBetween: 30,
-          centeredSlides: true,
-        },
-        900: {
-          slidesPerView: 3,
-          spaceBetween: 60,
-          centeredSlides: true,
-        },
-      };
-    } else if (isExploreOtherCards) {
-      // For explore-other-cards: no centered slides
-      swiperConfig.loop = false;
-      swiperConfig.watchSlidesProgress = true;
-      swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
-      swiperConfig.spaceBetween = 16;
-      swiperConfig.breakpoints = {
-        600: {
-          slidesPerView: 2,
-          spaceBetween: 20,
-        },
-        900: {
-          slidesPerView: 3,
-          spaceBetween: 42,
-        },
-      };
-    } else if (isRewardPoints) {
-      // For reward-points cards: no centered slides
-      const slideCount = ul.querySelectorAll('li').length;
-      swiperConfig.spaceBetween = 16;
-      swiperConfig.breakpoints = {
-        600: {
-          slidesPerView: Math.min(2, slideCount),
-          spaceBetween: 20,
-        },
-        900: {
-          slidesPerView: 3,
-          spaceBetween: 36,
-        },
-      };
-    } else {
-      // For benefit cards: standard breakpoints
-      const slideCount = ul.querySelectorAll('li').length;
-      swiperConfig.spaceBetween = 16;
-      swiperConfig.centeredSlides = true;
-      swiperConfig.breakpoints = {
-        600: {
-          slidesPerView: Math.min(2, slideCount),
-          spaceBetween: 20,
-          centeredSlides: true,
-        },
-        900: {
-          slidesPerView: Math.min(3, slideCount),
-          spaceBetween: 36,
-          centeredSlides: true,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
         },
       };
       // Add class for CSS centering when fewer than 3 cards
@@ -1041,18 +988,76 @@ export default async function decorate(block) {
       } else if (slideCount === 2) {
         block.classList.add('cards-two-slides');
       }
-    }
-
-    // For all-about-card: always center slides (like testimonials)
-    if (isAllAboutCard) {
-      swiperConfig.centeredSlides = true;
-      if (swiperConfig.breakpoints) {
-        if (swiperConfig.breakpoints[600]) {
-          swiperConfig.breakpoints[600].centeredSlides = true;
-        }
-        if (swiperConfig.breakpoints[900]) {
-          swiperConfig.breakpoints[900].centeredSlides = true;
-        }
+    } else if (isJoiningPerks) {
+      // For joining perks cards: show edges on both sides on mobile, 3 cards at larger breakpoints
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
+      swiperConfig.spaceBetween = 30;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 30,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 60,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
+        },
+      };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
+    } else if (isExploreOtherCards || isBlogPosts) {
+      // For explore-other-cards: show edges on mobile, 3 cards at larger breakpoints
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1; // Don't show edges of adjacent cards on mobile
+      swiperConfig.spaceBetween = 25;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 42,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
+        },
+      };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
+    } else {
+      // For benefit cards: standard breakpoints
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: Math.min(2, slideCount),
+          spaceBetween: 20,
+          centeredSlides: slideCount > 2, // Disable centering if all cards fit
+        },
+        900: {
+          slidesPerView: Math.min(3, slideCount),
+          spaceBetween: 36,
+          centeredSlides: slideCount > 3, // Disable centering if all cards fit
+        },
+      };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
       }
     }
 
@@ -1128,17 +1133,17 @@ export default async function decorate(block) {
       swiper.on('slideChangeTransitionEnd', updateStarIcons);
     }
   } else if (
-    supportsSemanticElements
+    !isTestimonial && !isImportantDocuments && !isRelatedSearch
+    && !isEarnRewards && !isJoiningPerks && !isInCsCards
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
-    // WHERE IS THIS USED? -- Charity
     const maxVisible = 3;
 
     const isMobile = () => window.innerWidth <= 768;
 
     const toggleView = (btn, expand) => {
-      // Use allLis instead of re-querying
-      allLis.forEach((card, index) => {
+      // Use allCards instead of re-querying
+      allCards.forEach((card, index) => {
         if (index >= maxVisible) {
           card.style.display = expand ? 'flex' : 'none';
         }
@@ -1147,9 +1152,9 @@ export default async function decorate(block) {
     };
 
     const setupToggleButton = () => {
-      if (allLis.length > maxVisible && isMobile()) {
+      if (allCards.length > maxVisible && isMobile()) {
         // Hide extra cards
-        allLis.forEach((card, index) => {
+        allCards.forEach((card, index) => {
           card.style.display = index >= maxVisible ? 'none' : 'flex';
         });
 
@@ -1175,7 +1180,7 @@ export default async function decorate(block) {
       resizeTimeout = setTimeout(() => {
         const existingBtn = block.querySelector('.view-toggle');
         if (existingBtn) existingBtn.remove();
-        allLis.forEach((card) => { card.style.display = 'flex'; });
+        allCards.forEach((card) => { card.style.display = 'flex'; });
         setupToggleButton();
       }, 150); // Debounce resize events
     });

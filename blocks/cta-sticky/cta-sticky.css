@@ -69,9 +69,7 @@ div:empty {
 
 /* Desktop Styles */
 @media (width >= 990px) {
-
   .cta-sticky {
-
     p {
       font-size: var(--body-font-size-xs);
     }

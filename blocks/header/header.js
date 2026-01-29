@@ -337,10 +337,10 @@ export default async function decorate(block) {
       // Add login icon to the last <li> (authoring contract: last item is always Login)
       if (loginLi) {
         loginLi.id = 'login-button';
-        const existingIcon = loginLi.querySelector('.icon-login_header');
+        const existingIcon = loginLi.querySelector('.icon-login-lock');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
-          loginIcon.classList.add('icon', 'icon-login_header');
+          loginIcon.classList.add('icon', 'icon-login-lock');
           loginLi.prepend(loginIcon);
         }
       }
@@ -529,7 +529,26 @@ export default async function decorate(block) {
       closeDelay: 100,
     });
 
+    // Create mobile search input field for inside the dropdown
+    const mobileSearchBox = document.createElement('div');
+    mobileSearchBox.className = 'mobile-search-input-wrapper';
+    mobileSearchBox.id = 'mobile-search-box';
+    mobileSearchBox.innerHTML = `
+      <span class="icon icon-search"></span>
+      <input type="text" placeholder="What are you looking for..." class="search-input mobile-search-input" />
+    `;
+
+    // Insert mobile search box at the beginning of the dropdown
+    const insertMobileSearchBox = () => {
+      const firstSection = search.dropdown.querySelector('.section');
+      if (firstSection && !search.dropdown.querySelector('#mobile-search-box')) {
+        search.dropdown.insertBefore(mobileSearchBox, firstSection);
+        decorateIcons(mobileSearchBox);
+      }
+    };
+
     const searchInput = searchBox.querySelector('.search-input');
+    const mobileSearchInput = mobileSearchBox.querySelector('.mobile-search-input');
     let searchTimeout = null;
     let defaultDropdownContent = null;
 
@@ -660,6 +679,13 @@ export default async function decorate(block) {
           View all results for "${query}" <span class="icon icon-arrow-right-alt"></span>
         </a>
       `;
+
+      // Add click handler to set session storage before navigation
+      const viewAllLinkElement = viewAllLink.querySelector('.view-all-results');
+      viewAllLinkElement.addEventListener('click', () => {
+        sessionStorage.setItem('searchKeySolar', query);
+      });
+
       container.appendChild(viewAllLink);
       decorateIcons(viewAllLink);
     };
@@ -731,49 +757,74 @@ export default async function decorate(block) {
       }, 300);
     };
 
-    // Handle search input
+    // Handle search input - shared function for both inputs
+    const handleSearchInput = (e) => {
+      const query = e.target.value.trim();
+
+      // Sync both inputs
+      if (e.target === searchInput && mobileSearchInput) {
+        mobileSearchInput.value = query;
+      } else if (e.target === mobileSearchInput && searchInput) {
+        searchInput.value = query;
+      }
+
+      // Clear existing timeout
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+
+      if (query.length === 0) {
+        // Restore default content if search is empty
+        restoreDefaultContent();
+        return;
+      }
+
+      if (query.length >= 2) {
+        // Debounce search by 300ms
+        searchTimeout = setTimeout(() => {
+          createSearchResults(query);
+        }, 300);
+      }
+    };
+
+    // Handle Enter key to redirect to full search page - shared function
+    const handleSearchKeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = e.target.value.trim();
+        if (query) {
+          // Set session storage before redirecting
+          sessionStorage.setItem('searchKeySolar', query);
+          window.location.href = `https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}`;
+        }
+      }
+    };
+
     if (searchInput) {
       // Handle input changes (real-time search)
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-
-        // Clear existing timeout
-        if (searchTimeout) {
-          clearTimeout(searchTimeout);
-        }
-
-        if (query.length === 0) {
-          // Restore default content if search is empty
-          restoreDefaultContent();
-          return;
-        }
-
-        if (query.length >= 2) {
-          // Debounce search by 300ms
-          searchTimeout = setTimeout(() => {
-            createSearchResults(query);
-          }, 300);
-        }
-      });
-
-      // Handle Enter key to redirect to full search page
-      searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          const query = e.target.value.trim();
-          if (query) {
-            window.location.href = `https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}`;
-          }
-        }
-      });
+      searchInput.addEventListener('input', handleSearchInput);
+      searchInput.addEventListener('keydown', handleSearchKeydown);
 
       // Focus search input when dropdown opens
       const originalOpenDropdown = search.openDropdown;
       search.openDropdown = async () => {
         await originalOpenDropdown();
         storeDefaultContent();
-        searchInput.focus();
+        insertMobileSearchBox();
+
+        // Focus the appropriate input based on viewport
+        if (!isDesktop.matches && mobileSearchInput) {
+          mobileSearchInput.focus();
+        } else {
+          searchInput.focus();
+        }
       };
+    }
+
+    // Setup mobile search input handlers
+    if (mobileSearchInput) {
+      mobileSearchInput.addEventListener('input', handleSearchInput);
+      mobileSearchInput.addEventListener('keydown', handleSearchKeydown);
     }
 
     // Click to open
@@ -819,8 +870,11 @@ export default async function decorate(block) {
         // Restore default content when closing
         if (searchInput) {
           searchInput.value = '';
-          restoreDefaultContent();
         }
+        if (mobileSearchInput) {
+          mobileSearchInput.value = '';
+        }
+        restoreDefaultContent();
       }
     });
   }
@@ -969,9 +1023,9 @@ export default async function decorate(block) {
     if (!titleP) return null;
 
     // Check for Cards blocks at the section level (they're siblings of default-content)
-    // Only include cards blocks that actually have content (li elements)
+    // Only include cards blocks that actually have content (cards-card elements)
     const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
-      .filter((cardsBlock) => cardsBlock.querySelector('li'));
+      .filter((cardsBlock) => cardsBlock.querySelector('.cards-card'));
 
     // If no Cards blocks with content, just return the category-nav block directly
     if (cardsBlocks.length === 0) {
@@ -1017,9 +1071,9 @@ export default async function decorate(block) {
     if (children.length === 0) return null;
 
     // Check for Cards blocks at the section level (they're siblings of default-content)
-    // Only include cards blocks that actually have content (li elements)
+    // Only include cards blocks that actually have content (cards-card elements)
     const cardsBlocks = Array.from(section.querySelectorAll('.cards.block'))
-      .filter((cardsBlock) => cardsBlock.querySelector('li'));
+      .filter((cardsBlock) => cardsBlock.querySelector('.cards-card'));
 
     // Helper function: Create view-all wrapper with title and optional "View All" button
     const createViewAllWrapper = (titleElement) => {

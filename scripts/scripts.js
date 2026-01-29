@@ -17,11 +17,11 @@ import {
   toCamelCase,
 } from './aem.js';
 
-// Cached media query results for performance
+// Cached media query results for Section performance
 const MEDIA_QUERIES = {
   mobile: window.matchMedia('(max-width: 599px)'),
-  tablet: window.matchMedia('(min-width: 600px) and (max-width: 899px)'),
-  desktop: window.matchMedia('(min-width: 900px)'),
+  tablet: window.matchMedia('(min-width: 600px) and (max-width: 989px)'),
+  desktop: window.matchMedia('(min-width: 990px)'),
 };
 
 /**
@@ -940,6 +940,85 @@ async function loadEager(doc) {
 }
 
 /**
+ * Decorates the get app banner element
+ * @param {Element} container The container element (typically header)
+ */
+function decorateGetAppBanner(container) {
+  const getAppBanner = container.querySelector('#grnt-app-mob');
+  if (!getAppBanner) return;
+
+  getAppBanner.classList.add('grnt-app-mob-main');
+
+  // Get the header element to adjust its position
+  const header = document.querySelector('.header');
+
+  // Check sessionStorage - hide banner if previously closed
+  if (sessionStorage.getItem('getAppBanner')) {
+    getAppBanner.classList.add('d-none');
+    return;
+  }
+
+  // Show banner and add body class
+  document.body.classList.add('grnt-new-header-app-body');
+
+  // Set header top position to account for banner height
+  if (header) {
+    header.style.top = '77px';
+  }
+
+  // Close button - hide banner and save to sessionStorage
+  const closeBtn = getAppBanner.querySelector('.button-container > a:has(.icon-icon-plus)');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      getAppBanner.classList.add('d-none');
+      sessionStorage.setItem('getAppBanner', 'true');
+      // Reset header position when banner is closed
+      if (header) {
+        header.style.top = '';
+      }
+    });
+  }
+}
+
+/**
+ * Load and inject get app banner fragment into header
+ * Loads the fragment from /fragments/getappbanner and appends to header
+ */
+async function loadGetAppBannerFragment() {
+  // Skip loading fragments when viewing framework pages
+  if (isEditingFrameworkPage() || MEDIA_QUERIES.desktop.matches) {
+    return;
+  }
+
+  const header = document.querySelector('header');
+  if (!header) {
+    return;
+  }
+
+  try {
+    const fragment = await loadFragment('/fragments/getappbanner');
+
+    if (!fragment) {
+      // eslint-disable-next-line no-console
+      console.error('[Get App Banner] Failed to load fragment from: /fragments/getappbanner');
+      return;
+    }
+    const getAppBanner = fragment.querySelector('#grnt-app-mob');
+
+    if (!getAppBanner) {
+      // eslint-disable-next-line no-console
+      console.error('[Get App Banner] No #grnt-app-mob found in fragment');
+      return;
+    }
+    header.appendChild(getAppBanner);
+    decorateGetAppBanner(header);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Get App Banner] Error loading fragment:', error);
+  }
+}
+
+/**
  * Create category navbar wrapper at top of page
  * The actual navigation will be built by category-nav.js which collects all category-nav blocks
  *
@@ -1339,6 +1418,9 @@ async function loadLazy(doc) {
 
   // Load header first so nav-wrapper is available for category navbar
   await loadHeader(doc.querySelector('header'));
+
+  // Load get app banner fragment and append to header
+  await loadGetAppBannerFragment();
 
   // Load breadcrumbs after header is available and insert as first element in main
   await loadBreadcrumbs(main);

@@ -48,7 +48,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   background: #f7f7f7;
   border-top: 1px solid #e5e5e5;
-  min-height: 64px;
+  min-height: 52px;
 }
 
 /* Top of page navigation (Category Nav) - Third row */
@@ -64,6 +64,7 @@ body.is-framework-page .category-nav.block > div > div {
   position: relative;
   margin: 0 auto;
   box-sizing: border-box;
+  margin-left: 80px;
 }
 
 .tab-pane {
@@ -224,7 +225,6 @@ body.is-framework-page .category-nav.block > div > div {
 .category-nav-explore-link {
   color: var(--dark-red-color);
   font-size: 12px;
-  
   text-decoration: none;
   font-weight: 500;
   display: flex;
@@ -402,7 +402,6 @@ body.is-framework-page .category-nav.block > div > div {
   justify-content: space-between;
   align-items: center;
   color: #333;
-  
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
@@ -468,13 +467,13 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 .nav-fragment-content .category-nav-card .category-nav-card-link {
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
   position: relative;
   padding: 10px 16px;
   border-radius: 8px;
   background: unset;
   text-decoration: none;
   transition: all 0.2s ease;
+  align-items: center;
 }
 
 .nav-fragment-content .category-nav-card-link > .category-nav-card-title{
