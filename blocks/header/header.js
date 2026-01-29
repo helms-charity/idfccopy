@@ -337,10 +337,10 @@ export default async function decorate(block) {
       // Add login icon to the last <li> (authoring contract: last item is always Login)
       if (loginLi) {
         loginLi.id = 'login-button';
-        const existingIcon = loginLi.querySelector('.icon-login_header');
+        const existingIcon = loginLi.querySelector('.icon-login-lock');
         if (!existingIcon) {
           const loginIcon = document.createElement('span');
-          loginIcon.classList.add('icon', 'icon-login_header');
+          loginIcon.classList.add('icon', 'icon-login-lock');
           loginLi.prepend(loginIcon);
         }
       }
