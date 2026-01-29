@@ -725,7 +725,7 @@ function parseSectionWithCardsBlock(section) {
   }
 
   // Get all card items from the cards block
-  const cardItems = cardsBlock.querySelectorAll('li');
+  const cardItems = cardsBlock.querySelectorAll('.cards-card');
   const items = [];
 
   cardItems.forEach((cardLi) => {

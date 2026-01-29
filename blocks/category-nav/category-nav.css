@@ -60,11 +60,13 @@ body.is-framework-page .category-nav.block > div > div {
 
 /* Inner container - matches header nav exactly */
 .tabs-pane-js {
-  max-width: 1440px;
+  max-width: unset;
   position: relative;
   margin: 0 auto;
   box-sizing: border-box;
-  margin-left: 80px;
+  padding: 0 var(--spacing-xxl);
+  display: flex;
+  width: 100%;
 }
 
 .tab-pane {
@@ -72,7 +74,8 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .tab-pane.active {
-  display: block;
+  display: flex;
+  width: 100%;
 }
 
 /* Navigation list items */
@@ -85,6 +88,10 @@ body.is-framework-page .category-nav.block > div > div {
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
+}
+
+.top-nav-left {
+  width: 100%;
 }
 
 .category-nav-left > li {
@@ -109,7 +116,7 @@ body.is-framework-page .category-nav.block > div > div {
 
 /* Push bulletin cards notification to the right */
 .category-nav-bulletin-notification {
-  margin-left: auto;
+  margin-left: auto !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
