@@ -416,8 +416,13 @@ function buildUnifiedNavigation(categoriesData) {
 
     // Mark cards block items differently for click behavior
     if (category.isFromCardsBlock) {
-      li.classList.add('category-nav-item-cards', 'category-nav-bulletin-notification');
+      li.classList.add('category-nav-item-cards');
       li.setAttribute('data-click-to-open', 'true');
+      
+      // Only add bulletin-notification class for bell icon items
+      if (category.title === 'bell-outline' || category.title === 'bell') {
+        li.classList.add('category-nav-bulletin-notification');
+      }
     }
 
     const link = document.createElement('a');
