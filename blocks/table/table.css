@@ -169,7 +169,7 @@
 
 @media (width >= 900px) {
   .table.block#fees-and-charges table {
-    font-size: var(--heading-font-size-xs);
+    font-size: var(--body-font-size-m);
   }
 
   .table.block#fees-and-charges table td {
