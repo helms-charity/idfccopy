@@ -175,15 +175,6 @@
 }
 
 /* === EARN REWARDS CARD VARIANT === */
-.section:has(.cards.earn-rewards) {
-  background-color: #000;
-  padding: 40px var(--spacing-s);
-}
-
-.section:has(.cards.earn-rewards) .cards-wrapper,
-.section:has(.cards.earn-rewards) .default-content-wrapper {
-  padding: 0;
-}
 
 /* Title and subtitle */
 .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type {
