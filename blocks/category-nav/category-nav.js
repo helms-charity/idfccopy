@@ -418,7 +418,7 @@ function buildUnifiedNavigation(categoriesData) {
     if (category.isFromCardsBlock) {
       li.classList.add('category-nav-item-cards');
       li.setAttribute('data-click-to-open', 'true');
-      
+
       // Only add bulletin-notification class for bell icon items
       if (category.title === 'bell-outline' || category.title === 'bell') {
         li.classList.add('category-nav-bulletin-notification');
@@ -804,38 +804,30 @@ export default function decorate(block) {
   // Find ALL category-nav blocks on the page
   const allCategoryNavBlocks = document.querySelectorAll('.category-nav.block');
 
-  // Also find sections with Cards blocks (not category-nav blocks)
-  const allSections = document.querySelectorAll('.section');
+  // Find sections with Cards blocks (bell icon) that are siblings of the first category-nav block
+  // This keeps the search scoped and simple - only sections near category-nav blocks are checked
   const sectionsWithCards = [];
 
-  allSections.forEach((section) => {
-    // Check if section has a cards block but NOT a category-nav block
-    const hasCardsBlock = section.querySelector('.cards.block');
-    const hasCategoryNav = section.querySelector('.category-nav.block');
+  if (allCategoryNavBlocks.length > 0) {
+    const firstNavBlock = allCategoryNavBlocks[0];
+    const container = firstNavBlock.closest('.section')?.parentElement;
 
-    if (hasCardsBlock && !hasCategoryNav) {
-      // Check if this section has text content or an icon (the category name/icon)
-      const textElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
-      let hasTextOrIcon = false;
+    if (container) {
+      const allSiblings = Array.from(container.children).filter((el) => el.classList.contains('section'));
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const el of textElements) {
-        const isInsideBlock = el.closest('.block');
-        if (!isInsideBlock) {
-          // Check for either text content or an icon
-          const hasIcon = el.querySelector('span.icon');
-          if (el.textContent.trim() || hasIcon) {
-            hasTextOrIcon = true;
-            break;
-          }
+      allSiblings.forEach((section) => {
+        const hasCardsBlock = section.querySelector('.cards.block');
+        const hasCategoryNav = section.querySelector('.category-nav.block');
+        const hasIcon = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6')).some(
+          (el) => !el.closest('.block') && el.querySelector('span.icon'),
+        );
+
+        if (hasCardsBlock && !hasCategoryNav && hasIcon) {
+          sectionsWithCards.push(section);
         }
-      }
-
-      if (hasTextOrIcon) {
-        sectionsWithCards.push(section);
-      }
+      });
     }
-  });
+  }
 
   if (allCategoryNavBlocks.length === 0 && sectionsWithCards.length === 0) {
     block.style.display = 'none';

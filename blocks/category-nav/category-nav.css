@@ -173,8 +173,8 @@ body.is-framework-page .category-nav.block > div > div {
   display: block !important;
 }
 
-/* Special positioning for bulletin cards dropdown - double class for higher specificity */
-.category-nav-item-cards.category-nav-item-cards .category-nav-dropdown {
+/* Special positioning for bulletin cards dropdown - only for bell icon */
+.category-nav-item-cards.category-nav-bulletin-notification .category-nav-dropdown {
   /* Position dropdown completely to the LEFT of the bell icon */
   position: absolute;
   left: auto !important; /* Important: Override default left: 0 */
@@ -191,7 +191,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 /* Triangle attached to the BELL ICON when dropdown is open */
-.category-nav-item-cards.is-open::before {
+.category-nav-item-cards.category-nav-bulletin-notification.is-open::before {
   content: '';
   position: absolute;
   bottom: -24px; /* Extended further down to connect with dropdown */
@@ -221,8 +221,8 @@ body.is-framework-page .category-nav.block > div > div {
   color: #333;
 }
 
-/* Specific styling for bulletin cards dropdown title */
-.category-nav-item-cards .category-nav-eyebrow-title {
+/* Specific styling for bulletin cards dropdown title - only for bell icon */
+.category-nav-item-cards.category-nav-bulletin-notification .category-nav-eyebrow-title {
   font-size: 32px;
   color: rgb(58 58 58);
   font-weight: 700;
