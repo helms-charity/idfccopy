@@ -960,10 +960,9 @@ function decorateGetAppBanner(container) {
 
   // Show banner and add body class
   document.body.classList.add('grnt-new-header-app-body');
-
   // Set header top position to account for banner height
   if (header) {
-    header.style.top = '77px';
+    header.parentElement.style.height = `${header.clientHeight + getAppBanner.clientHeight}px`;
   }
 
   // Close button - hide banner and save to sessionStorage
@@ -974,7 +973,7 @@ function decorateGetAppBanner(container) {
       sessionStorage.setItem('getAppBanner', 'true');
       // Reset header position when banner is closed
       if (header) {
-        header.style.top = '';
+        header.parentElement.style.height = '80px';
       }
     });
   }
@@ -1010,7 +1009,7 @@ async function loadGetAppBannerFragment() {
       console.error('[Get App Banner] No #grnt-app-mob found in fragment');
       return;
     }
-    header.appendChild(getAppBanner);
+    header.firstChild.prepend(getAppBanner);
     decorateGetAppBanner(header);
   } catch (error) {
     // eslint-disable-next-line no-console

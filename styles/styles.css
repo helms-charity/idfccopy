@@ -773,7 +773,6 @@ main>.section:first-of-type {
 
 &#grnt-app-mob {
   z-index: 4;
-  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -816,6 +815,10 @@ main>.section:first-of-type {
     }
   }
 }
+}
+
+header:has(nav[aria-expanded="true"]) #grnt-app-mob {
+    display: none;
 }
 
 .d-none {
