@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+Sitemap: https://www.idfcfirst.bank.in/sitemap.xml
