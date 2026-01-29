@@ -771,7 +771,7 @@ header nav .nav-tools .default-content-wrapper > ul > li:last-child {
 }
 
 /* Mobile: Login icon */
-header nav .nav-tools .icon-login_header {
+header nav .nav-tools .icon-login-lock {
   width: 14px;
   height: 14px;
   display: inline-flex;
@@ -779,7 +779,7 @@ header nav .nav-tools .icon-login_header {
   justify-content: center;
 }
 
-header nav .nav-tools .icon-login_header img {
+header nav .nav-tools .icon-login-lock img {
   width: 14px;
   height: 14px;
   filter: brightness(0) invert(1);
@@ -1550,7 +1550,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     border-radius: 20px;
   }
 
-  .columns {
+  /* Hide columns with images in has-bg-images section, but show login heading columns */
+  &.has-bg-images .columns {
     display: none;
   }
 }
@@ -2504,7 +2505,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     gap: var(--spacing-xxs);
   }
 
-  .nav-tools .default-content-wrapper .icon-login_header {
+  .nav-tools .default-content-wrapper .icon-login-lock {
     width: 14px;
     height: 14px;
     display: inline-flex;
@@ -2512,7 +2513,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     justify-content: center;
   }
 
-  .nav-tools .default-content-wrapper .icon-login_header img {
+  .nav-tools .default-content-wrapper .icon-login-lock img {
     width: 14px;
     height: 14px;
   }
