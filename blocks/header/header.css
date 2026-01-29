@@ -1206,7 +1206,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   font-family: inherit;
   color: #353535;
   width: 100%;
-  padding: 8px 0;
+  padding: var(--spacing-xxs) 0;
   margin: 0;
   max-width: calc(100% - 32px);
 }
@@ -1363,7 +1363,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-header {
   margin-bottom: var(--spacing-xs);
-  padding: 12px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-header h3 {
@@ -1375,7 +1375,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-loading {
   text-align: left;
-  padding: 12px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-loading p {
@@ -1386,7 +1386,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-empty {
   text-align: left;
-  padding: 12px;
+  padding: var(--spacing-xs);
 }
 
 .search-dropdown .search-results-empty p {
