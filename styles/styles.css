@@ -810,6 +810,7 @@ main>.section:first-of-type {
         font-weight: 300;
         font-size: var(--body-font-size-s);
         padding: var(--spacing-xs) var(--spacing-s);
+        margin-right: var(--spacing-xs);
       }
   }
 
