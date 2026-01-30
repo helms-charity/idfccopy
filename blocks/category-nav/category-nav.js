@@ -358,13 +358,13 @@ export function buildDropdown(categoryData) {
 
     const prevButton = document.createElement('button');
     prevButton.classList.add('category-nav-nav-button', 'category-nav-nav-prev');
-    prevButton.setAttribute('aria-label', 'Previous cards');
+    prevButton.setAttribute('aria-label', 'Previous');
     prevButton.innerHTML = '<span class="nav-arrow">‹</span>';
     prevButton.disabled = true; // Start disabled
 
     const nextButton = document.createElement('button');
     nextButton.classList.add('category-nav-nav-button', 'category-nav-nav-next');
-    nextButton.setAttribute('aria-label', 'Next cards');
+    nextButton.setAttribute('aria-label', 'Next');
     nextButton.innerHTML = '<span class="nav-arrow">›</span>';
 
     navigationWrapper.appendChild(prevButton);
@@ -414,17 +414,6 @@ function buildUnifiedNavigation(categoriesData) {
     li.setAttribute('data-header-gtm', category.title);
     li.setAttribute('data-category', category.id);
 
-    // Mark cards block items differently for click behavior
-    if (category.isFromCardsBlock) {
-      li.classList.add('category-nav-item-cards');
-      li.setAttribute('data-click-to-open', 'true');
-
-      // Only add bulletin-notification class for bell icon items
-      if (category.title === 'bell-outline' || category.title === 'bell') {
-        li.classList.add('category-nav-bulletin-notification');
-      }
-    }
-
     const link = document.createElement('a');
     link.classList.add('category-nav-link');
 
@@ -437,8 +426,16 @@ function buildUnifiedNavigation(categoriesData) {
 
     link.href = `#${category.id}`;
 
-    // Different click behavior for cards block items vs regular items
+    // Mark cards block items differently for click behavior
     if (category.isFromCardsBlock) {
+      li.classList.add('category-nav-item-cards');
+      li.setAttribute('data-click-to-open', 'true');
+
+      // Only add bulletin-notification class for bell icon items
+      if (category.title === 'bell-outline' || category.title === 'bell') {
+        li.classList.add('category-nav-bulletin-notification');
+      }
+
       // For cards block: toggle dropdown on click
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -553,27 +550,25 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
   const cardWrapper = document.createElement('div');
   cardWrapper.classList.add('category-nav-bulletin-card-wrapper');
 
-  // Extract content from card body
+  // Extract content from card body (cards.js already validated structure)
   const cardBody = cardLi.querySelector('.cards-card-body');
   let title = '';
   const paragraphElements = [];
 
-  if (cardBody) {
-    // Check for heading first
-    const heading = cardBody.querySelector('h1, h2, h3, h4, h5, h6');
-    const paragraphs = Array.from(cardBody.querySelectorAll('p'));
+  // Check for heading first
+  const heading = cardBody?.querySelector('h1, h2, h3, h4, h5, h6');
+  const paragraphs = Array.from(cardBody?.querySelectorAll('p') || []);
 
-    if (heading) {
-      // If there's a heading, use it as title
-      title = heading.textContent.trim();
-      // All paragraphs are kept for processing
-      paragraphElements.push(...paragraphs);
-    } else if (paragraphs.length > 0) {
-      // No heading, so first paragraph is the title
-      title = paragraphs[0].textContent.trim();
-      // Remaining paragraphs are kept for processing (skip the first one)
-      paragraphElements.push(...paragraphs.slice(1));
-    }
+  if (heading) {
+    // If there's a heading, use it as title
+    title = heading.textContent.trim();
+    // All paragraphs are kept for processing
+    paragraphElements.push(...paragraphs);
+  } else if (paragraphs.length > 0) {
+    // No heading, so first paragraph is the title
+    title = paragraphs[0].textContent.trim();
+    // Remaining paragraphs are kept for processing (skip the first one)
+    paragraphElements.push(...paragraphs.slice(1));
   }
 
   // Extract and add image first
@@ -676,8 +671,7 @@ function parseSectionWithCardsBlock(section) {
 
   // eslint-disable-next-line no-restricted-syntax
   for (const el of allTextElements || []) {
-    const isInsideBlock = el.closest('.block');
-    if (!isInsideBlock) {
+    if (!el.closest('.block')) {
       textElementsOutsideBlocks.push(el);
     }
   }
@@ -693,12 +687,7 @@ function parseSectionWithCardsBlock(section) {
     if (icon) {
       // Get the icon name from classes like "icon-bell"
       const iconClass = Array.from(icon.classList).find((c) => c.startsWith('icon-'));
-      let iconName = iconClass ? iconClass.substring(5) : 'icon';
-
-      // For Cards blocks, always use bell-outline icon instead of regular bell
-      if (iconName === 'bell') {
-        iconName = 'bell-outline';
-      }
+      const iconName = iconClass ? iconClass.substring(5) : 'icon';
 
       // Create a new icon element with the correct icon name
       iconElement = document.createElement('span');
@@ -801,8 +790,9 @@ export default function decorate(block) {
 
   unifiedNavBuilt = true;
 
-  // Find ALL category-nav blocks on the page
-  const allCategoryNavBlocks = document.querySelectorAll('.category-nav.block');
+  // Find all category-nav blocks within main (scope to main content area)
+  const main = document.querySelector('main');
+  const allCategoryNavBlocks = main ? main.querySelectorAll('.category-nav.block') : [block];
 
   // Find sections with Cards blocks (bell icon) that are siblings of the first category-nav block
   // This keeps the search scoped and simple - only sections near category-nav blocks are checked
@@ -818,9 +808,8 @@ export default function decorate(block) {
       allSiblings.forEach((section) => {
         const hasCardsBlock = section.querySelector('.cards.block');
         const hasCategoryNav = section.querySelector('.category-nav.block');
-        const hasIcon = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6')).some(
-          (el) => !el.closest('.block') && el.querySelector('span.icon'),
-        );
+        const hasIcon = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6'))
+          .some((el) => !el.closest('.block') && el.querySelector('span.icon'));
 
         if (hasCardsBlock && !hasCategoryNav && hasIcon) {
           sectionsWithCards.push(section);
@@ -881,7 +870,6 @@ export default function decorate(block) {
     // If no placeholder wrapper exists, create one
     categoryNavWrapper = document.createElement('div');
     categoryNavWrapper.classList.add('category-nav-wrapper');
-    const main = document.querySelector('main');
     if (main) {
       main.insertBefore(categoryNavWrapper, main.firstChild);
     } else {
