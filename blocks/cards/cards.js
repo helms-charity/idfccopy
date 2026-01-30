@@ -871,7 +871,7 @@ export default async function decorate(block) {
 
     // Setup interactivity for all card types (links, modals)
     // Skip for blog-posts - uses standard link behavior
-    if (!isBlogPosts) {
+    if (!isBlogPosts || !isImportantDocuments) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
