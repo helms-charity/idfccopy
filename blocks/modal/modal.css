@@ -229,6 +229,18 @@ body.modal-open {
   padding: 0;
 }
 
+/* Add padding to modal sections that commonly need spacing */
+.modal dialog .section.table-container,
+.modal dialog .section.grid,
+.modal dialog .section.cards-container,
+.modal dialog .section.columns-container,
+.modal dialog .section.dark-scheme,
+.modal dialog .section.light-scheme,
+.modal dialog .section[class*="grid-"],
+.modal dialog .section[class*="-container"] {
+  padding: 16px;
+}
+
 .modal.block:has(.section[data-id="mayura-card-modal"]) {
 	display: block;
 }
@@ -589,6 +601,18 @@ body.modal-open {
 @media (width < 768px) {
   .modal dialog.modal-auto-popup p {
     font-size: var(--body-font-size-xxs);
+  }
+
+  /* Responsive padding for modal sections on mobile */
+  .modal dialog .section.table-container,
+  .modal dialog .section.grid,
+  .modal dialog .section.cards-container,
+  .modal dialog .section.columns-container,
+  .modal dialog .section.dark-scheme,
+  .modal dialog .section.light-scheme,
+  .modal dialog .section[class*="grid-"],
+  .modal dialog .section[class*="-container"] {
+    padding: var(--spacing-s);
   }
 	
   .modal .modal-page-background .modal-decoration-top-right {
