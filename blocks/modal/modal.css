@@ -612,7 +612,7 @@ body.modal-open {
   .modal dialog .section.light-scheme,
   .modal dialog .section[class*="grid-"],
   .modal dialog .section[class*="-container"] {
-    padding: var(--spacing-s);
+    padding: var(--spacing-xs);
   }
 	
   .modal .modal-page-background .modal-decoration-top-right {
