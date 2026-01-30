@@ -920,6 +920,16 @@ async function loadEager(doc) {
       document.body.classList.add('has-category-nav');
     }
 
+    // Early detection of getAppBanner to prevent CLS
+    // Check sessionStorage - if banner should be shown (not closed), set header height immediately
+    // This prevents layout shift when banner loads later
+    if (MEDIA_QUERIES.mobile.matches && !sessionStorage.getItem('getAppBanner')) {
+      const header = doc.querySelector('.header');
+      if (header) {
+        header.parentElement.style.height = '157px';
+      }
+    }
+
     // Mark framework pages so CSS can show raw content for editing/preview
     if (isEditingFrameworkPage()) {
       document.body.classList.add('is-framework-page');
@@ -961,8 +971,10 @@ function decorateGetAppBanner(container) {
   // Show banner and add body class
   document.body.classList.add('grnt-new-header-app-body');
   // Set header top position to account for banner height
+  // This may have already been set in loadEager to prevent CLS, but we ensure it's correct
   if (header) {
-    header.parentElement.style.height = `${header.clientHeight + getAppBanner.clientHeight}px`;
+    const calculatedHeight = header.clientHeight + getAppBanner.clientHeight;
+    header.parentElement.style.height = `${calculatedHeight}px`;
   }
 
   // Close button - hide banner and save to sessionStorage
