@@ -209,37 +209,6 @@ function decorateButtonGroups(element) {
   });
 }
 
-function prepareHeroForCLS(main) {
-  if (!window.matchMedia('(min-width: 900px)').matches) {
-    return;
-  }
-  main.querySelectorAll('.hero').forEach((block) => {
-    if (block.dataset.heroPrepared === 'true') return;
-
-    const picture = block.querySelector('picture');
-    if (picture) {
-      const pictureParent = picture.parentElement;
-      if (pictureParent) {
-        pictureParent.remove();
-        block.appendChild(picture);
-      }
-    }
-
-    const buttonGroups = block.querySelectorAll('.button-group');
-    if (buttonGroups.length > 0 && !block.querySelector('.button-groups-wrapper')) {
-      const buttonGroupsWrapper = document.createElement('div');
-      buttonGroupsWrapper.className = 'button-groups-wrapper';
-      const firstGroup = buttonGroups[0];
-      firstGroup.parentElement.insertBefore(buttonGroupsWrapper, firstGroup);
-      buttonGroups.forEach((group) => {
-        buttonGroupsWrapper.appendChild(group);
-      });
-    }
-
-    block.dataset.heroPrepared = 'true';
-  });
-}
-
 /**
  * Check if we're viewing a framework page (either in Universal Editor or directly)
  * Framework pages are template/fragment pages and should display their raw content
@@ -905,7 +874,8 @@ async function loadEager(doc) {
 
   const getAppBanner = sessionStorage.getItem('getAppBanner');
   const header = doc.querySelector('header');
-  if (getAppBanner && header) {
+  // we are starting out assuming the app banner is open
+  if (getAppBanner && header && !MEDIA_QUERIES.desktop.matches) {
     header.style.height = 'var(--nav-height)';
   }
 
@@ -916,7 +886,6 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
-    prepareHeroForCLS(main);
 
     // Early detection of category-nav to prevent CLS
     // Check page metadata for category-nav path - if present, add class to body
@@ -925,16 +894,6 @@ async function loadEager(doc) {
     if (categoryNavPath) {
       document.body.classList.add('has-category-nav');
     }
-
-    // Early detection of getAppBanner to prevent CLS
-    // Check sessionStorage - if banner should be shown (not closed), set header height immediately
-    // This prevents layout shift when banner loads later
-    // if (MEDIA_QUERIES.mobile.matches && !sessionStorage.getItem('getAppBanner')) {
-    //   const header = doc.querySelector('.header');
-    //   if (header) {
-    //     header.parentElement.style.height = '157px';
-    //   }
-    // }
 
     // Mark framework pages so CSS can show raw content for editing/preview
     if (isEditingFrameworkPage()) {
@@ -971,22 +930,13 @@ function decorateGetAppBanner(container) {
     return;
   }
 
-  // Show banner and add body class
-  document.body.classList.add('grnt-new-header-app-body');
-  // Set header top position to account for banner height
-  // This may have already been set in loadEager to prevent CLS, but we ensure it's correct
-  // if (header) {
-  //   const calculatedHeight = header.clientHeight + getAppBanner.clientHeight;
-  //   header.parentElement.style.height = `${calculatedHeight}px`;
-  // }
-
   // Close button - hide banner and save to sessionStorage
   const closeBtn = getAppBanner.querySelector('.button-container > a:has(.icon-icon-plus)');
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
       getAppBanner.classList.add('d-none');
       sessionStorage.setItem('getAppBanner', 'true');
-      // Remove height style on header when banner is closed
+      // Reset height style on header when banner is closed
       const header = document.querySelector('header');
       if (header) {
         header.style.height = 'var(--nav-height)';

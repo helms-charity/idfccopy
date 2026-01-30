@@ -108,7 +108,7 @@
   /* nav height */
   --nav-height: 80px;
   --category-nav-height: 52px;
-  --get-app-and-nav-height: 157px;
+  --get-app-banner-height: 77px;
 
   /* grid */
   --grid-container-width: 1160px;
@@ -170,8 +170,8 @@ body.appear {
 }
 
 header {
-  height: var(--get-app-and-nav-height);
-  background-color: #fff; /* Header always white to prevent black flash on nav */
+  height: calc(var(--get-app-banner-height) + var(--nav-height));
+  background-color: var(--background-color); /* Header always white to prevent black flash on nav */
 }
 
 header .header,
@@ -1035,9 +1035,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 }
 
 @media (width >=900px) {
-  main>.section:first-of-type {
-    padding-top: unset;
-  }
   /* =================================================================
      CLS PREVENTION: Desktop-specific layout guards
      ================================================================= */
@@ -1088,10 +1085,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 
   main>.section>div {
     padding: 0 32px;
-  }
-
-  header {
-    height: var(--nav-height); /* nav = 80px */
   }
   
   main .breadcrumbs {
@@ -1276,9 +1269,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 }
 
 @media (width >= 990px) {
-  main>.section:first-of-type {
-    padding-top: unset;
-}
     /* Reserve space for category-nav BEFORE it loads to prevent CLS.
      The has-category-nav class is added by scripts.js based on page metadata.
      This runs BEFORE body.appear, ensuring correct header height from the start. */
