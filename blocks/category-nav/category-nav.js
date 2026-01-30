@@ -662,17 +662,23 @@ function convertCardsBlockCardToDropdownCard(cardLi) {
 /**
  * Parse a section with a Cards block to extract category data
  * @param {HTMLElement} section - The section element containing Cards block
+ * @param {Array<HTMLElement>} [cachedTextElements] - Optional cached text elements
  * @returns {Object} Category data object
  */
-function parseSectionWithCardsBlock(section) {
-  // Get text elements outside of blocks
-  const allTextElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
-  const textElementsOutsideBlocks = [];
+function parseSectionWithCardsBlock(section, cachedTextElements = null) {
+  // Use cached text elements if provided, otherwise query
+  let textElementsOutsideBlocks;
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const el of allTextElements || []) {
-    if (!el.closest('.block')) {
-      textElementsOutsideBlocks.push(el);
+  if (cachedTextElements) {
+    textElementsOutsideBlocks = cachedTextElements;
+  } else {
+    const allTextElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+    textElementsOutsideBlocks = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const el of allTextElements || []) {
+      if (!el.closest('.block')) {
+        textElementsOutsideBlocks.push(el);
+      }
     }
   }
 
@@ -796,7 +802,8 @@ export default function decorate(block) {
 
   // Find sections with Cards blocks (bell icon) that are siblings of the first category-nav block
   // This keeps the search scoped and simple - only sections near category-nav blocks are checked
-  const sectionsWithCards = [];
+  // Cache text elements to avoid re-querying the same sections later
+  const sectionsWithCardsData = [];
 
   if (allCategoryNavBlocks.length > 0) {
     const firstNavBlock = allCategoryNavBlocks[0];
@@ -808,17 +815,20 @@ export default function decorate(block) {
       allSiblings.forEach((section) => {
         const hasCardsBlock = section.querySelector('.cards.block');
         const hasCategoryNav = section.querySelector('.category-nav.block');
-        const hasIcon = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6'))
-          .some((el) => !el.closest('.block') && el.querySelector('span.icon'));
+
+        // Query text elements once and cache them
+        const textElements = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6'))
+          .filter((el) => !el.closest('.block'));
+        const hasIcon = textElements.some((el) => el.querySelector('span.icon'));
 
         if (hasCardsBlock && !hasCategoryNav && hasIcon) {
-          sectionsWithCards.push(section);
+          sectionsWithCardsData.push({ section, textElements });
         }
       });
     }
   }
 
-  if (allCategoryNavBlocks.length === 0 && sectionsWithCards.length === 0) {
+  if (allCategoryNavBlocks.length === 0 && sectionsWithCardsData.length === 0) {
     block.style.display = 'none';
     return;
   }
@@ -841,9 +851,9 @@ export default function decorate(block) {
     }
   });
 
-  // Then, process sections with Cards blocks
-  sectionsWithCards.forEach((section) => {
-    const categoryData = parseSectionWithCardsBlock(section);
+  // Then, process sections with Cards blocks (using cached text elements)
+  sectionsWithCardsData.forEach(({ section, textElements }) => {
+    const categoryData = parseSectionWithCardsBlock(section, textElements);
     if (categoryData && categoryData.items.length > 0) {
       categoriesData.push(categoryData);
 
@@ -928,7 +938,7 @@ export default function decorate(block) {
   });
 
   // Also hide sections with Cards blocks that are now in the nav
-  sectionsWithCards.forEach((section) => {
+  sectionsWithCardsData.forEach(({ section }) => {
     section.style.display = 'none';
   });
 
