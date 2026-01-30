@@ -48,7 +48,7 @@
 .hero-heritage-cc-container .hero-heritage-cc-wrapper {
   position: relative;
   max-width: unset;
-  padding: var(--nav-height) 0 0;
+  padding: 0;
   height: 100vh;
   height: 100dvh;
   min-height: 100vh;

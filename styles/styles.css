@@ -108,6 +108,7 @@
   /* nav height */
   --nav-height: 80px;
   --category-nav-height: 52px;
+  --get-app-and-nav-height: 157px;
 
   /* grid */
   --grid-container-width: 1160px;
@@ -169,7 +170,7 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  height: var(--get-app-and-nav-height);
   background-color: #fff; /* Header always white to prevent black flash on nav */
 }
 

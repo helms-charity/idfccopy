@@ -2,7 +2,6 @@
 .hero-container .hero-wrapper {
   min-height: 600px;
   max-width: unset;
-  padding-top: var(--nav-height);
 }
 
 .hero {

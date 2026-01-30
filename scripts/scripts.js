@@ -903,6 +903,12 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   loadThemeSpreadSheetConfig();
 
+  const getAppBanner = sessionStorage.getItem('getAppBanner');
+  const header = doc.querySelector('header');
+  if (getAppBanner && header) {
+    header.style.height = 'var(--nav-height)';
+  }
+
   const templateName = getMetadata('template');
   if (templateName) {
     await loadTemplate(doc, templateName);
@@ -980,10 +986,10 @@ function decorateGetAppBanner(container) {
     closeBtn.addEventListener('click', () => {
       getAppBanner.classList.add('d-none');
       sessionStorage.setItem('getAppBanner', 'true');
-      // Reset first section padding when banner is closed
-      const firstSection = document.querySelector('body > main > .section:first-of-type');
-      if (firstSection) {
-        firstSection.style.paddingTop = 'unset';
+      // Remove height style on header when banner is closed
+      const header = document.querySelector('header');
+      if (header) {
+        header.style.height = 'var(--nav-height)';
       }
     });
   }
