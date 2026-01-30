@@ -53,7 +53,7 @@
       },
       {
         "component": "text",
-        "name": "h1Title",
+        "name": "h1-title",
         "valueType": "string",
         "label": "H1 Tag Title - hidden from page content"
       },
