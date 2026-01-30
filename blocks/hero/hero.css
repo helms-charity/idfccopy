@@ -1,13 +1,11 @@
 /* Mobile-first base styles */
 .hero-container .hero-wrapper {
+  min-height: 600px;
   max-width: unset;
-  padding: 0;
 }
 
 .hero {
   position: relative;
-  padding: 40px var(--spacing-s);
-  min-height: 400px;
   background-color: #000;
   overflow: hidden;
   display: flex;
@@ -30,29 +28,16 @@
   font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 40px;
+
   text-align: center;
 }
 
 .hero p {
   color: #fff;
   font-size: var(--body-font-size-xs);
-  line-height: 1.2;
   margin-bottom: 0;
   margin-top: 0;
   text-align: center;
-}
-
-.hero p strong {
-  font-weight: 700;
-  font-size: var(--body-font-size-s);
-  margin-top: 0;
-}
-
-.hero p em {
-  font-weight: 700;
-  font-size: var(--body-font-size-s);
-  margin-top: 0;
 }
 
 .hero picture {
@@ -60,24 +45,40 @@
   z-index: 1;
   width: 100%;
   height: auto;
-  margin: -30px auto 0;
   display: block;
   order: 1;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
 }
 
 .hero img {
   object-fit: contain;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
+}
+
+.dark-scheme .hero a.button.primary:any-link,
+.dark-scheme .hero a.button.primary:any-link:hover,
+ .dark-scheme button.primary,
+ .dark-scheme button.primary:hover {
+background-color: var(--red-color);
+color: var(--btn-color-white);
+border-color: transparent;
+}
+
+.dark-scheme .hero a.button.secondary:any-link,
+.dark-scheme .hero a.button.secondary:any-link:hover,
+ .dark-scheme button.secondary,
+ .dark-scheme button.secondary:hover {
+background-color: transparent;
+color: var(--btn-color-white);
+border-color: var(--btn-color-white);
 }
 
 /* Button groups wrapper */
 .hero .button-groups-wrapper {
   display: flex;
   flex-direction: column;
-  margin-bottom: 40px;
   align-items: center;
   width: 90%;
   gap: var(--spacing-s);
@@ -87,120 +88,21 @@
 
 /* Individual button group */
 .hero .button-group {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  width: auto;
-  flex: 1;
   align-items: center;
-  margin: 16px;
+
+  .button-container a {
+    padding: 1em 1.2em;
+  }
 }
 
 .hero .button-group p {
-  margin: 0;
-  font-size: var(--body-font-size-xs);
-  line-height: 1.3;
-  text-align: center;
-}
-
-.hero .button-group p sup {
-  font-size: var(--body-font-size-xs);
-  vertical-align: super;
-  line-height: 0;
-}
-
-/* Button container styling */
-.hero .button-container {
-  margin: 0;
-}
-
-.hero .button {
-  display: block;
-  width: 100%;
-  padding: var(--spacing-xs) 16px;
-  font-size: var(--body-font-size-xs);
-  font-weight: 500;
-  text-decoration: none;
-  text-align: center;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  height: auto;
-  line-height: 1.3;
-}
-
-.hero a.button.primary {
-  background-color: var(--red-color);
-  color: #fff;
-  border: 1px solid var(--red-color);
-  padding: var(--spacing-xs) 16px;
-  margin: 0;
-  font-weight: 700;
-}
-
-.hero .button.primary:hover {
-  background-color: var(--dark-red-color);
-  border-color: var(--dark-red-color);
-}
-
-.hero a.button.secondary:any-link,
-.hero .button.secondary {
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #fff;
-  font-weight: 700;
-  font-style: normal;
-  overflow: hidden;
-  margin: 0;
-}
-
-.hero .button.secondary:hover {
-  background-color: var(--dark-red-color);
-  border-color: var(--dark-red-color);
-}
-
-/* Override dark-scheme global styles to maintain hero button consistency */
-.dark-scheme .hero a.button.primary:any-link,
-.dark-scheme .hero a.button.secondary:any-link {
-  padding: 14px 18px;
-  height: 52px;
-  line-height: 1;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dark-scheme .hero a.button.primary:any-link {
-  background-color: var(--red-color);
-  color: var(--btn-color-white);
-  border: 1px solid transparent;
-}
-
-.dark-scheme .hero a.button.primary:hover,
-.dark-scheme .hero a.button.primary:focus {
-  background-color: var(-red-color);
-  color: var(--btn-color-white);
-  border: 1px solid transparent;
-}
-
-.dark-scheme .hero a.button.secondary:any-link {
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #fff;
-}
-
-.dark-scheme .hero a.button.secondary:hover,
-.dark-scheme .hero a.button.secondary:focus {
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #fff;
+  font-size: var(--body-font-size-s);
 }
 
 /* Tablet: 600px and up */
 @media (width >= 600px) {
   .hero {
-    padding: var(--spacing-xl) var(--spacing-s);
+    padding-left: var(--spacing-s);
     display: block;
   }
 
@@ -210,33 +112,28 @@
   }
 
   .hero h1,
-  .hero h2,
-  .hero h3,
-  .hero h4,
-  .hero h5,
-  .hero h6 {
-    font-size: var(--heading-font-size-xxl);
+  .hero h2 {
+    font-size: var(--heading-font-size-l);
     text-align: left;
+    margin-bottom: var(--spacing-m);
   }
 
   .hero p {
-    font-size: var(--body-font-size-m);
+    font-size: var(--body-font-size-s);
     text-align: left;
-    line-height: 1.4;
   }
 
   .hero p strong {
-    font-size: var(--body-font-size-m);
+    font-size: var(--body-font-size-s);
   }
 
   .hero picture {
     position: absolute;
     right: 0;
-    top: 50%;
     transform: translateY(-50%);
     width: 50%;
     max-width: 600px;
-    margin: 0;
+    margin-top: 50%;
     order: unset;
     animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
@@ -265,65 +162,45 @@
   }
 
 .hero .button-group p sup {
-  font-size: var(--body-font-size-s);
-  vertical-align: super;
-  line-height: 0;
+  font-size: var(--body-font-size-xs);
 }
 
   .hero .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: auto;
     padding: 14px 18px;
     font-size: var(--body-font-size-s);
     height: 52px;
-    line-height: 1;
-    box-sizing: border-box;
-  }
-
-  .hero a.button.primary,
-  .hero a.button.secondary {
-    padding: 14px 18px;
-    height: 52px;
-    line-height: 1;
-    box-sizing: border-box;
   }
 }
 
 /* Desktop: 900px and up */
 @media (width >= 900px) {
   .hero {
-    padding: 10px var(--spacing-xl) 80px;
-    min-height: 500px; /* Prevent CLS from hero content resizing */
+    padding: 0 var(--spacing-s) var(--spacing-xl);
   }
 
   .hero-container .hero-wrapper {
+    min-height: 500px; /* Prevent CLS from hero content resizing */
     max-width: 1200px;
+    padding-top: 0;
   }
 
   .hero > div {
     max-width: 700px;
   }
 
-  .hero h1,
-  .hero h2,
-  .hero h3,
-  .hero h4,
-  .hero h5,
-  .hero h6 {
-    font-size: var(--heading-font-size-xl);
-    margin-top: 0;
-  }
-
   .hero picture {
     width: 50%;
     max-width: 650px;
+    margin-top: 0;
+    top: 40%;
   }
 
   .hero .button-groups-wrapper {
     flex-direction: row;
-    gap: 20px;
+    gap: var(--spacing-xs);
     align-items: flex-end;
   }
 

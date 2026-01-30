@@ -903,6 +903,13 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
   loadThemeSpreadSheetConfig();
 
+  const getAppBanner = sessionStorage.getItem('getAppBanner');
+  const header = doc.querySelector('header');
+  // we are starting out assuming the app banner is open
+  if (getAppBanner && header && !MEDIA_QUERIES.desktop.matches) {
+    header.style.height = 'var(--nav-height)';
+  }
+
   const templateName = getMetadata('template');
   if (templateName) {
     await loadTemplate(doc, templateName);
@@ -949,20 +956,10 @@ function decorateGetAppBanner(container) {
 
   getAppBanner.classList.add('grnt-app-mob-main');
 
-  // Get the header element to adjust its position
-  const header = document.querySelector('.header');
-
   // Check sessionStorage - hide banner if previously closed
   if (sessionStorage.getItem('getAppBanner')) {
     getAppBanner.classList.add('d-none');
     return;
-  }
-
-  // Show banner and add body class
-  document.body.classList.add('grnt-new-header-app-body');
-  // Set header top position to account for banner height
-  if (header) {
-    header.parentElement.style.height = `${header.clientHeight + getAppBanner.clientHeight}px`;
   }
 
   // Close button - hide banner and save to sessionStorage
@@ -971,9 +968,10 @@ function decorateGetAppBanner(container) {
     closeBtn.addEventListener('click', () => {
       getAppBanner.classList.add('d-none');
       sessionStorage.setItem('getAppBanner', 'true');
-      // Reset header position when banner is closed
+      // Reset height style on header when banner is closed
+      const header = document.querySelector('header');
       if (header) {
-        header.parentElement.style.height = '80px';
+        header.style.height = 'var(--nav-height)';
       }
     });
   }

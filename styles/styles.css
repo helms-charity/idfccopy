@@ -108,6 +108,7 @@
   /* nav height */
   --nav-height: 80px;
   --category-nav-height: 52px;
+  --get-app-banner-height: 77px;
 
   /* grid */
   --grid-container-width: 1160px;
@@ -169,8 +170,8 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
-  background-color: #fff; /* Header always white to prevent black flash on nav */
+  height: calc(var(--get-app-banner-height) + var(--nav-height));
+  background-color: var(--background-color); /* Header always white to prevent black flash on nav */
 }
 
 header .header,
@@ -306,7 +307,6 @@ button.button {
   border: 2px solid transparent;
   border-radius: 2.4em;
   padding: 0.5em 1.2em;
-  
   font-style: normal;
   font-weight: 700;
   line-height: 1.25;
@@ -531,12 +531,16 @@ a.button:has(span.icon) {
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
   align-items: flex-start;
-}
+  margin: var(--spacing-xs);
 
-.button-group p {
-  margin: 0;
+  p {
+    margin: 0;
+  }
+
+  sup {
+    vertical-align: text-bottom;
+  }
 }
 
 .button-group .button-container {
@@ -788,6 +792,11 @@ main>.section:first-of-type {
         align-content: center;
       }
 
+      > div:last-child {
+        flex: 2;
+        text-align: right;
+      }
+
       .columns-img-col img {
         width: auto;
         height: 60px;
@@ -801,6 +810,7 @@ main>.section:first-of-type {
         font-weight: 300;
         font-size: var(--body-font-size-s);
         padding: var(--spacing-xs) var(--spacing-s);
+        margin-right: var(--spacing-xs);
       }
   }
 
@@ -1076,20 +1086,12 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   main>.section>div {
     padding: 0 32px;
   }
-
-  header {
-    height: var(--nav-height); /* nav = 80px */
-  }
-
-
-
   
   main .breadcrumbs {
     display: inline-block;
-    margin: 10px 40px 0;
+    margin: var(--spacing-xxs) var(--spacing-s);
     padding: 6px 20px;
     font-size: var(--body-font-size-xxs);
-    font-family: var(--body-font-family-semibold);
     position: relative;
     z-index: 3;
     background-color: rgb(232 232 232 / 90%);
@@ -1152,10 +1154,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     font-weight: 400;
   }
 
-  main:has(.hero-wrapper) .breadcrumbs {
-    margin-left: 60px;
-  }
-
   .section {
     &.grid-4 .block-content,
     &.grid-6 .block-content {
@@ -1185,6 +1183,12 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   
     &.spacing-xxl {
       --top-bottom-spacing: calc(var(--spacing-xxl) * 2);
+    }
+
+    &#grnt-app-mob {
+      .columns > div > div {
+        flex: 0;
+      }
     }
   }
 

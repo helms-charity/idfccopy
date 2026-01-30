@@ -11,6 +11,28 @@ and outer background value (such as rgb(0 0 0 / 60%) */
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.section.cta-sticky-container.hidden {
+  display: none;
+}
+
+.section.cta-sticky-container.slide-in {
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .cta-sticky {
