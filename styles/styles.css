@@ -306,7 +306,6 @@ button.button {
   border: 2px solid transparent;
   border-radius: 2.4em;
   padding: 0.5em 1.2em;
-  
   font-style: normal;
   font-weight: 700;
   line-height: 1.25;
@@ -531,12 +530,16 @@ a.button:has(span.icon) {
 .button-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
   align-items: flex-start;
-}
+  margin: var(--spacing-xs);
 
-.button-group p {
-  margin: 0;
+  p {
+    margin: 0;
+  }
+
+  sup {
+    vertical-align: text-bottom;
+  }
 }
 
 .button-group .button-container {
@@ -655,6 +658,7 @@ main>.section>div {
 
 main>.section:first-of-type {
   margin-top: 0;
+  padding-top: var(--nav-height);
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -786,6 +790,11 @@ main>.section:first-of-type {
       > div {
         order: unset;
         align-content: center;
+      }
+
+      > div:last-child {
+        flex: 2;
+        text-align: right;
       }
 
       .columns-img-col img {
@@ -1025,6 +1034,9 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 }
 
 @media (width >=900px) {
+  main>.section:first-of-type {
+    padding-top: unset;
+  }
   /* =================================================================
      CLS PREVENTION: Desktop-specific layout guards
      ================================================================= */
@@ -1080,16 +1092,12 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   header {
     height: var(--nav-height); /* nav = 80px */
   }
-
-
-
   
   main .breadcrumbs {
     display: inline-block;
-    margin: 10px 40px 0;
+    margin: var(--spacing-xxs) var(--spacing-s);
     padding: 6px 20px;
     font-size: var(--body-font-size-xxs);
-    font-family: var(--body-font-family-semibold);
     position: relative;
     z-index: 3;
     background-color: rgb(232 232 232 / 90%);
@@ -1152,10 +1160,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     font-weight: 400;
   }
 
-  main:has(.hero-wrapper) .breadcrumbs {
-    margin-left: 60px;
-  }
-
   .section {
     &.grid-4 .block-content,
     &.grid-6 .block-content {
@@ -1185,6 +1189,12 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   
     &.spacing-xxl {
       --top-bottom-spacing: calc(var(--spacing-xxl) * 2);
+    }
+
+    &#grnt-app-mob {
+      .columns > div > div {
+        flex: 0;
+      }
     }
   }
 
@@ -1265,6 +1275,9 @@ The height and width are set to 200 assuming the doodles won't be larger. */
 }
 
 @media (width >= 990px) {
+  main>.section:first-of-type {
+    padding-top: unset;
+}
     /* Reserve space for category-nav BEFORE it loads to prevent CLS.
      The has-category-nav class is added by scripts.js based on page metadata.
      This runs BEFORE body.appear, ensuring correct header height from the start. */

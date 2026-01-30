@@ -923,12 +923,12 @@ async function loadEager(doc) {
     // Early detection of getAppBanner to prevent CLS
     // Check sessionStorage - if banner should be shown (not closed), set header height immediately
     // This prevents layout shift when banner loads later
-    if (MEDIA_QUERIES.mobile.matches && !sessionStorage.getItem('getAppBanner')) {
-      const header = doc.querySelector('.header');
-      if (header) {
-        header.parentElement.style.height = '157px';
-      }
-    }
+    // if (MEDIA_QUERIES.mobile.matches && !sessionStorage.getItem('getAppBanner')) {
+    //   const header = doc.querySelector('.header');
+    //   if (header) {
+    //     header.parentElement.style.height = '157px';
+    //   }
+    // }
 
     // Mark framework pages so CSS can show raw content for editing/preview
     if (isEditingFrameworkPage()) {
@@ -959,9 +959,6 @@ function decorateGetAppBanner(container) {
 
   getAppBanner.classList.add('grnt-app-mob-main');
 
-  // Get the header element to adjust its position
-  const header = document.querySelector('.header');
-
   // Check sessionStorage - hide banner if previously closed
   if (sessionStorage.getItem('getAppBanner')) {
     getAppBanner.classList.add('d-none');
@@ -972,10 +969,10 @@ function decorateGetAppBanner(container) {
   document.body.classList.add('grnt-new-header-app-body');
   // Set header top position to account for banner height
   // This may have already been set in loadEager to prevent CLS, but we ensure it's correct
-  if (header) {
-    const calculatedHeight = header.clientHeight + getAppBanner.clientHeight;
-    header.parentElement.style.height = `${calculatedHeight}px`;
-  }
+  // if (header) {
+  //   const calculatedHeight = header.clientHeight + getAppBanner.clientHeight;
+  //   header.parentElement.style.height = `${calculatedHeight}px`;
+  // }
 
   // Close button - hide banner and save to sessionStorage
   const closeBtn = getAppBanner.querySelector('.button-container > a:has(.icon-icon-plus)');
@@ -983,9 +980,10 @@ function decorateGetAppBanner(container) {
     closeBtn.addEventListener('click', () => {
       getAppBanner.classList.add('d-none');
       sessionStorage.setItem('getAppBanner', 'true');
-      // Reset header position when banner is closed
-      if (header) {
-        header.parentElement.style.height = '80px';
+      // Reset first section padding when banner is closed
+      const firstSection = document.querySelector('body > main > .section:first-of-type');
+      if (firstSection) {
+        firstSection.style.paddingTop = 'unset';
       }
     });
   }

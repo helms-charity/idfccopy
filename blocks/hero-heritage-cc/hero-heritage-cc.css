@@ -205,7 +205,6 @@
 
 .hero-heritage-cc .hero-heritage-cc-intro> div {
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
@@ -279,7 +278,6 @@
 }
 
 .hero-heritage-cc .hero-heritage-cc-banner > div {
-  position: absolute;
   opacity: 0;
   visibility: hidden;
   display: flex;
@@ -507,7 +505,6 @@
   width: 100%;
   max-width: 1200px;
   height: 100%;
-  margin: 0 auto;
 }
 
 .hero-heritage-cc-header-cta-link .icon-arrow-right-white {
@@ -543,11 +540,6 @@
 
 /* Tablet: 600px and up */
 @media (width >= 600px) {
-  .hero-heritage-cc-header-cta {
-    padding: 0 18px;
-    display: flex;
-  }
-
   .hero-heritage-cc-banner-cta-group {
     flex-flow: row wrap;
     gap: 52px;
@@ -568,6 +560,11 @@
 
   .hero-heritage-cc h2 {
     font-size: var(--heading-font-size-m);
+  }
+
+  .hero-heritage-cc-header-cta {
+    padding: 0 18px;
+    display: flex;
   }
 
   .hero-heritage-cc .hero-heritage-cc-banner-cta-group {
