@@ -60,11 +60,13 @@ body.is-framework-page .category-nav.block > div > div {
 
 /* Inner container - matches header nav exactly */
 .tabs-pane-js {
-  max-width: 1440px;
+  max-width: unset;
   position: relative;
   margin: 0 auto;
   box-sizing: border-box;
-  margin-left: 80px;
+  padding: 0 var(--spacing-xxl);
+  display: flex;
+  width: 100%;
 }
 
 .tab-pane {
@@ -72,10 +74,11 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .tab-pane.active {
-  display: block;
+  display: flex;
+  width: 100%;
 }
 
-/* Navigation list */
+/* Navigation list items */
 .category-nav-left {
   display: flex;
   gap: 48px;
@@ -85,6 +88,10 @@ body.is-framework-page .category-nav.block > div > div {
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
+}
+
+.top-nav-left {
+  width: 100%;
 }
 
 .category-nav-left > li {
@@ -105,6 +112,32 @@ body.is-framework-page .category-nav.block > div > div {
 
 .category-nav-left > li > a:hover {
   color: var(--dark-red-color);
+}
+
+/* Push bulletin cards notification to the right */
+.category-nav-bulletin-notification {
+  margin-left: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-width: 60px; /* Give it a width so there's a proper center point */
+}
+
+/* Center the link content within the bell notification item */
+.category-nav-bulletin-notification > a.category-nav-link {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  padding: 14px 0 !important; /* Remove left/right padding, keep top/bottom */
+}
+
+/* Center the icon itself within the bell notification - remove margin */
+.category-nav-bulletin-notification .icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 !important; /* Remove any margin that pushes it to the left */
 }
 
 /* Dropdown Styles */
@@ -130,8 +163,46 @@ body.is-framework-page .category-nav.block > div > div {
   animation: fade-in-dropdown 0.25s ease-out;
 }
 
-.category-nav-item:hover > .category-nav-dropdown {
+/* Show dropdown on hover for regular items */
+.category-nav-item:not(.category-nav-item-cards):hover > .category-nav-dropdown {
   display: block;
+}
+
+/* Show dropdown on click for cards block items - use !important to override default hiding */
+.category-nav-item-cards.is-open > .category-nav-dropdown {
+  display: block !important;
+}
+
+/* Special positioning for bulletin cards dropdown - only for bell icon */
+.category-nav-item-cards.category-nav-bulletin-notification .category-nav-dropdown {
+  /* Position dropdown completely to the LEFT of the bell icon */
+  position: absolute;
+  left: auto !important; /* Important: Override default left: 0 */
+  right: 100% !important; /* Important: Override default left positioning */
+  margin-right: -55px;
+  top: calc(100% + 24px);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  width: 984px !important; /* Important: Override base 860px width */
+  min-width: 984px !important; /* Important: Override base min-width */
+  max-width: 984px !important; /* Important: Override base max-width */
+  overflow: visible;
+  padding: 50px 38px 29px; /* Top, Left/Right, Bottom padding */
+}
+
+/* Triangle attached to the BELL ICON when dropdown is open */
+.category-nav-item-cards.category-nav-bulletin-notification.is-open::before {
+  content: '';
+  position: absolute;
+  bottom: -24px; /* Extended further down to connect with dropdown */
+  left: 50%;
+  transform: translateX(-50%); /* Center below bell icon */
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid #fff;
+  z-index: 1003;
 }
 
 /* Dropdown Header */
@@ -150,6 +221,13 @@ body.is-framework-page .category-nav.block > div > div {
   color: #333;
 }
 
+/* Specific styling for bulletin cards dropdown title - only for bell icon */
+.category-nav-item-cards.category-nav-bulletin-notification .category-nav-eyebrow-title {
+  font-size: 32px;
+  color: rgb(58 58 58);
+  font-weight: 700;
+}
+
 /* Explore link - right side of header */
 .category-nav-explore-link {
   color: var(--dark-red-color);
@@ -159,6 +237,42 @@ body.is-framework-page .category-nav.block > div > div {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* Close button for cards block dropdown */
+.category-nav-close-button {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--dark-red-color);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.category-nav-close-button:hover {
+  color: #c00;
+  transform: scale(1.1);
+}
+
+.category-nav-close-button:active {
+  transform: scale(0.95);
+}
+
+/* Adjust dropdown header for cards block to accommodate close button */
+.category-nav-item-cards .category-nav-dropdown-header {
+  position: relative; /* Allow close button to position absolutely within header */
+  padding-right: 60px; /* Make room for close button */
 }
 
 .category-nav-dropdown .category-nav-explore-link {
@@ -193,7 +307,7 @@ body.is-framework-page .category-nav.block > div > div {
   transform: rotate(-45deg) translateX(2px);
 }
 
-/* Cards Container */
+/* Cards Container - Default grid layout for regular dropdowns */
 .category-nav-cards-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -201,10 +315,32 @@ body.is-framework-page .category-nav.block > div > div {
   padding: 10px var(--spacing-s) 20px;
 }
 
+/* Bulletin Cards - Swiper Integration (only for carousel variant) */
+.category-nav-item-cards .category-nav-cards-carousel {
+  display: block;
+  width: 100%;
+  padding: 10px 24px;
+}
+
+.category-nav-item-cards .category-nav-cards-carousel.swiper {
+  overflow: visible;
+}
+
+.category-nav-item-cards .category-nav-cards-carousel .swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.category-nav-item-cards .category-nav-cards-carousel .swiper-slide {
+  height: auto;
+  display: flex;
+}
+
 /* Category Nav Cards */
 .category-nav-card {
   min-width: 0;
   border-radius: 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 } 
 
 .category-nav-card .category-nav-card-link {
@@ -399,6 +535,160 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 
 .category-nav-card.gradient-silver .category-nav-card-link {
   background: linear-gradient(135deg, #fafafa 0%, #e8e8e8 100%);
+}
+
+/* Bulletin Cards from Cards block in dropdown */
+.category-nav-bulletin-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-nav-bulletin-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f5; /* Light gray background for the whole card */
+}
+
+.category-nav-bulletin-card-image {
+  /* Ensure images fit properly in dropdown */
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 0;
+  border-radius: 0; /* No rounded corners at bottom where text starts */
+  background: #f5f5f5; /* Light gray background behind images */
+}
+
+.category-nav-bulletin-card-image .cards-card-image,
+.category-nav-bulletin-card-image img,
+.category-nav-bulletin-card-image picture {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.category-nav-bulletin-card-image picture img {
+  object-fit: cover;
+}
+
+/* Body container - wraps title, description, divider, and buttons with red background */
+.category-nav-bulletin-card-body {
+  background: var(--dark-red-color, #922); /* Red background for entire text area */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card title - white text */
+.category-nav-bulletin-card-title {
+  padding: 16px 10px 15px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.3;
+}
+
+/* Description text - white text */
+.category-nav-bulletin-card-description {
+  padding: 0 24px 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #fff;
+}
+
+/* Horizontal divider - white line with margins from edges */
+.category-nav-bulletin-card-divider {
+  margin: 1px 10px; /* 40px horizontal margins create spacing from edges */
+  border: none;
+  border-top: 1px solid #fff;
+  height: 0;
+}
+
+/* Links row at the bottom - simple text links */
+.category-nav-bulletin-card-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 10px 15px;
+}
+
+.category-nav-bulletin-card-button {
+  font-size: 16px;
+  font-weight: 700; /* Bold font */
+  color: #fff !important; /* Always white, never blue */
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Keep links white on hover - no color change */
+.category-nav-bulletin-card-button:hover {
+  color: #fff !important; /* Always white on hover */
+  text-decoration: none;
+}
+
+/* Carousel Navigation */
+.category-nav-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden; /* Prevent cards from overflowing outside dropdown */
+}
+
+.category-nav-navigation {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  margin-top: 8px;
+}
+
+.category-nav-nav-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f5f5; /* Light gray background */
+  color: var(--dark-red-color, #922); /* Red arrows when active */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 32px; /* Larger arrows */
+  line-height: 1;
+  padding: 0;
+  font-weight: 300; /* Thin arrows */
+}
+
+.category-nav-nav-button:hover:not(:disabled) {
+  background: #e8e8e8; /* Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+.category-nav-nav-button:disabled,
+.category-nav-nav-button.swiper-button-disabled {
+  background: #f5f5f5; /* Same light background */
+  color: #d99; /* Light red/pink arrows when disabled - mix of red and gray */
+  cursor: not-allowed;
+  opacity: 0.7; /* Slightly less opacity to keep the lighter red visible */
+}
+
+.category-nav-nav-button .nav-arrow {
+  display: block;
+  line-height: 1;
+  font-weight: 300; /* Thin arrows */
+}
+
+/* Animation for card transitions */
+.category-nav-card[style*="display: none"] {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* Mobile Responsiveness */

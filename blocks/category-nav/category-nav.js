@@ -2,6 +2,8 @@
  * Category Navigation - Collects all category-nav blocks and builds unified navigation
  */
 
+import { loadCSS, loadScript } from '../../scripts/aem.js';
+
 // Track if we've already built the unified nav
 let unifiedNavBuilt = false;
 
@@ -188,6 +190,98 @@ export function parseCategoryNavBlock(block) {
 }
 
 /**
+ * Initialize Swiper for card navigation
+ * @param {HTMLElement} carouselWrapper - The carousel wrapper element
+ * @param {HTMLElement} prevButton - Previous button
+ * @param {HTMLElement} nextButton - Next button
+ * @returns {Promise<void>}
+ */
+async function initializeSwiperNavigation(carouselWrapper, prevButton, nextButton) {
+  // Load Swiper library if not already loaded
+  await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
+  await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
+
+  // Wait for Swiper to be available
+  const waitForSwiper = () => new Promise((resolve) => {
+    if (typeof Swiper !== 'undefined') {
+      resolve();
+    } else {
+      const checkInterval = setInterval(() => {
+        if (typeof Swiper !== 'undefined') {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 10);
+      // Timeout after 2 seconds
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve();
+      }, 2000);
+    }
+  });
+  await waitForSwiper();
+
+  if (typeof Swiper === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.warn('Swiper library not available');
+    return;
+  }
+
+  // Get the container that should become the swiper
+  const container = carouselWrapper.querySelector('.category-nav-cards-container');
+  if (!container) return;
+
+  // Add Swiper classes to the container
+  container.classList.add('swiper');
+
+  // Find all cards and wrap them
+  const cards = Array.from(container.children);
+
+  // Create swiper-wrapper
+  const swiperWrapper = document.createElement('div');
+  swiperWrapper.classList.add('swiper-wrapper');
+
+  // Move all cards into swiper-wrapper and add swiper-slide class
+  cards.forEach((card) => {
+    card.classList.add('swiper-slide');
+    swiperWrapper.appendChild(card);
+  });
+
+  container.appendChild(swiperWrapper);
+
+  // Configure Swiper
+  const swiperConfig = {
+    slidesPerView: 3,
+    spaceBetween: 30,
+    navigation: {
+      nextEl: nextButton,
+      prevEl: prevButton,
+    },
+    breakpoints: {
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 25,
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      },
+    },
+  };
+
+  // Initialize Swiper
+  // eslint-disable-next-line no-undef
+  const swiper = new Swiper(container, swiperConfig);
+
+  // Store swiper instance for potential future use
+  carouselWrapper.swiperInstance = swiper;
+}
+
+/**
  * Build dropdown content
  */
 export function buildDropdown(categoryData) {
@@ -218,17 +312,82 @@ export function buildDropdown(categoryData) {
     hdBx.appendChild(linkElement);
   }
 
+  // Add close button for cards block items
+  if (categoryData.isFromCardsBlock) {
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('category-nav-close-button');
+    closeButton.setAttribute('aria-label', 'Close');
+    closeButton.innerHTML = '×'; // Using × symbol
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Find the parent nav item and remove is-open class
+      const navItem = dropdown.closest('.category-nav-item-cards');
+      if (navItem) {
+        navItem.classList.remove('is-open');
+      }
+    });
+    hdBx.appendChild(closeButton);
+  }
+
   dropdown.appendChild(hdBx);
 
-  // Build card list
-  const menuCardList = document.createElement('div');
-  menuCardList.classList.add('category-nav-cards-container');
+  // Create carousel wrapper if we have cards from Cards block
+  const hasCardsFromBlock = categoryData.isFromCardsBlock && categoryData.items.length > 0;
 
-  categoryData.items.forEach((card) => {
-    menuCardList.appendChild(card);
-  });
+  if (hasCardsFromBlock) {
+    // Create carousel wrapper
+    const carouselWrapper = document.createElement('div');
+    carouselWrapper.classList.add('category-nav-carousel-wrapper');
 
-  dropdown.appendChild(menuCardList);
+    // Build card list
+    const menuCardList = document.createElement('div');
+    menuCardList.classList.add('category-nav-cards-container', 'category-nav-cards-carousel');
+    menuCardList.setAttribute('data-current-page', '0');
+    menuCardList.setAttribute('data-total-items', categoryData.items.length);
+
+    categoryData.items.forEach((card) => {
+      menuCardList.appendChild(card);
+    });
+
+    carouselWrapper.appendChild(menuCardList);
+
+    // Always add navigation arrows for Cards block items
+    const navigationWrapper = document.createElement('div');
+    navigationWrapper.classList.add('category-nav-navigation');
+
+    const prevButton = document.createElement('button');
+    prevButton.classList.add('category-nav-nav-button', 'category-nav-nav-prev');
+    prevButton.setAttribute('aria-label', 'Previous');
+    prevButton.innerHTML = '<span class="nav-arrow">‹</span>';
+    prevButton.disabled = true; // Start disabled
+
+    const nextButton = document.createElement('button');
+    nextButton.classList.add('category-nav-nav-button', 'category-nav-nav-next');
+    nextButton.setAttribute('aria-label', 'Next');
+    nextButton.innerHTML = '<span class="nav-arrow">›</span>';
+
+    navigationWrapper.appendChild(prevButton);
+    navigationWrapper.appendChild(nextButton);
+
+    carouselWrapper.appendChild(navigationWrapper);
+
+    // Initialize Swiper navigation
+    initializeSwiperNavigation(carouselWrapper, prevButton, nextButton);
+
+    dropdown.appendChild(carouselWrapper);
+  } else {
+    // Build card list (traditional approach for category-nav blocks)
+    const menuCardList = document.createElement('div');
+    menuCardList.classList.add('category-nav-cards-container');
+
+    categoryData.items.forEach((card) => {
+      menuCardList.appendChild(card);
+    });
+
+    dropdown.appendChild(menuCardList);
+  }
+
   return dropdown;
 }
 
@@ -245,6 +404,7 @@ function buildUnifiedNavigation(categoriesData) {
   const tabPane = document.createElement('div');
   tabPane.classList.add('tab-pane', 'top-second-nav-js', 'active', 'category-nav-tab-pane');
 
+  // Create single navigation list
   const navList = document.createElement('ul');
   navList.classList.add('top-nav-left', 'category-nav-list');
 
@@ -256,17 +416,54 @@ function buildUnifiedNavigation(categoriesData) {
 
     const link = document.createElement('a');
     link.classList.add('category-nav-link');
-    link.textContent = category.title;
+
+    // If category has an icon, use it; otherwise use text
+    if (category.iconElement) {
+      link.appendChild(category.iconElement);
+    } else {
+      link.textContent = category.title;
+    }
+
     link.href = `#${category.id}`;
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.getElementById(category.id);
-      if (target) {
-        const yOffset = -200;
-        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+
+    // Mark cards block items differently for click behavior
+    if (category.isFromCardsBlock) {
+      li.classList.add('category-nav-item-cards');
+      li.setAttribute('data-click-to-open', 'true');
+
+      // Only add bulletin-notification class for bell icon items
+      if (category.title === 'bell-outline' || category.title === 'bell') {
+        li.classList.add('category-nav-bulletin-notification');
       }
-    });
+
+      // For cards block: toggle dropdown on click
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Close all other open dropdowns
+        document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
+          if (openItem !== li) {
+            openItem.classList.remove('is-open');
+          }
+        });
+
+        // Toggle this dropdown
+        li.classList.toggle('is-open');
+      });
+    } else {
+      // For regular items: scroll to section
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById(category.id);
+        if (target) {
+          const yOffset = -200;
+          const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
+    }
+
     li.appendChild(link);
 
     // Build dropdown
@@ -275,12 +472,25 @@ function buildUnifiedNavigation(categoriesData) {
       li.appendChild(dropdown);
     }
 
+    // Append to single list
     navList.appendChild(li);
   });
 
+  // Append list to the tab pane
   tabPane.appendChild(navList);
+
   tabsPane.appendChild(tabPane);
   topNav.appendChild(tabsPane);
+
+  // Add click-outside listener to close cards block dropdowns
+  document.addEventListener('click', (e) => {
+    const clickedInsideCardsNav = e.target.closest('.category-nav-item-cards');
+    if (!clickedInsideCardsNav) {
+      document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
+        openItem.classList.remove('is-open');
+      });
+    }
+  });
 
   return topNav;
 }
@@ -325,6 +535,216 @@ function positionDropdowns() {
       dropdown.style.left = '0';
     }
   });
+}
+
+/**
+ * Convert a cards block card (li element) to category-nav dropdown card format
+ * @param {HTMLElement} cardLi - The card li element from cards block
+ * @returns {HTMLElement} Converted card element for dropdown
+ */
+function convertCardsBlockCardToDropdownCard(cardLi) {
+  const card = document.createElement('div');
+  card.classList.add('category-nav-card', 'category-nav-bulletin-card');
+
+  // Main card wrapper (not a link anymore, since we have multiple links inside)
+  const cardWrapper = document.createElement('div');
+  cardWrapper.classList.add('category-nav-bulletin-card-wrapper');
+
+  // Extract content from card body (cards.js already validated structure)
+  const cardBody = cardLi.querySelector('.cards-card-body');
+  let title = '';
+  const paragraphElements = [];
+
+  // Check for heading first
+  const heading = cardBody?.querySelector('h1, h2, h3, h4, h5, h6');
+  const paragraphs = Array.from(cardBody?.querySelectorAll('p') || []);
+
+  if (heading) {
+    // If there's a heading, use it as title
+    title = heading.textContent.trim();
+    // All paragraphs are kept for processing
+    paragraphElements.push(...paragraphs);
+  } else if (paragraphs.length > 0) {
+    // No heading, so first paragraph is the title
+    title = paragraphs[0].textContent.trim();
+    // Remaining paragraphs are kept for processing (skip the first one)
+    paragraphElements.push(...paragraphs.slice(1));
+  }
+
+  // Extract and add image first
+  const cardImage = cardLi.querySelector('.cards-card-image');
+  if (cardImage) {
+    const imageWrapper = document.createElement('div');
+    imageWrapper.classList.add('category-nav-bulletin-card-image');
+    imageWrapper.appendChild(cardImage.cloneNode(true));
+    cardWrapper.appendChild(imageWrapper);
+  }
+
+  // Create a body container to wrap title, description, divider, and buttons
+  // This container will have the red background and padding
+  const bodyContainer = document.createElement('div');
+  bodyContainer.classList.add('category-nav-bulletin-card-body');
+
+  // Add title
+  if (title) {
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('category-nav-bulletin-card-title');
+    titleDiv.textContent = title;
+    bodyContainer.appendChild(titleDiv);
+  }
+
+  // Process paragraphs according to the new logic
+  // Separate paragraphs into description text and button links
+  const descriptionParagraphs = [];
+  const buttonParagraphs = [];
+
+  paragraphElements.forEach((p) => {
+    const link = p.querySelector('a[href]');
+    const text = p.textContent.trim();
+    const isJustLink = link && text === link.textContent.trim();
+
+    if (isJustLink) {
+      // This paragraph is just a link, should be a button
+      buttonParagraphs.push(p);
+    } else if (text) {
+      // This paragraph has text content (not just a link)
+      descriptionParagraphs.push(p);
+    }
+  });
+
+  // Display description paragraphs
+  descriptionParagraphs.forEach((p) => {
+    const text = p.textContent.trim();
+
+    if (text === '---') {
+      // Convert "---" to horizontal divider
+      const divider = document.createElement('hr');
+      divider.classList.add('category-nav-bulletin-card-divider');
+      bodyContainer.appendChild(divider);
+    } else if (text) {
+      // Display as description text
+      const textLine = document.createElement('div');
+      textLine.classList.add('category-nav-bulletin-card-description');
+      textLine.textContent = text;
+      bodyContainer.appendChild(textLine);
+    }
+  });
+
+  // Display button links in a row at the bottom
+  if (buttonParagraphs.length > 0) {
+    const buttonsRow = document.createElement('div');
+    buttonsRow.classList.add('category-nav-bulletin-card-buttons');
+
+    buttonParagraphs.forEach((p) => {
+      const link = p.querySelector('a[href]');
+      if (link) {
+        const button = document.createElement('a');
+        button.classList.add('category-nav-bulletin-card-button');
+        button.href = link.href;
+        button.textContent = link.textContent.trim();
+        button.setAttribute('data-gtm-desk-l3cards-click', '');
+        buttonsRow.appendChild(button);
+      }
+    });
+
+    if (buttonsRow.children.length > 0) {
+      bodyContainer.appendChild(buttonsRow);
+    }
+  }
+
+  // Append the body container to the card wrapper
+  cardWrapper.appendChild(bodyContainer);
+
+  card.appendChild(cardWrapper);
+  return card;
+}
+
+/**
+ * Parse a section with a Cards block to extract category data
+ * @param {HTMLElement} section - The section element containing Cards block
+ * @param {Array<HTMLElement>} [cachedTextElements] - Optional cached text elements
+ * @returns {Object} Category data object
+ */
+function parseSectionWithCardsBlock(section, cachedTextElements = null) {
+  // Use cached text elements if provided, otherwise query
+  let textElementsOutsideBlocks;
+
+  if (cachedTextElements) {
+    textElementsOutsideBlocks = cachedTextElements;
+  } else {
+    const allTextElements = section.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+    textElementsOutsideBlocks = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const el of allTextElements || []) {
+      if (!el.closest('.block')) {
+        textElementsOutsideBlocks.push(el);
+      }
+    }
+  }
+
+  let categoryName = 'Category';
+  let iconElement = null;
+  let dropdownTitle = '';
+
+  // First text element: icon or category name
+  if (textElementsOutsideBlocks.length > 0) {
+    const firstElement = textElementsOutsideBlocks[0];
+    const icon = firstElement.querySelector('span.icon');
+    if (icon) {
+      // Get the icon name from classes like "icon-bell"
+      const iconClass = Array.from(icon.classList).find((c) => c.startsWith('icon-'));
+      const iconName = iconClass ? iconClass.substring(5) : 'icon';
+
+      // Create a new icon element with the correct icon name
+      iconElement = document.createElement('span');
+      iconElement.classList.add('icon', `icon-${iconName}`);
+
+      // Create the img element directly
+      const iconImg = document.createElement('img');
+      iconImg.setAttribute('data-icon-name', iconName);
+      iconImg.src = `/icons/${iconName}.svg`;
+      iconImg.alt = iconName;
+      iconImg.loading = 'lazy';
+      iconElement.appendChild(iconImg);
+
+      categoryName = iconName;
+    } else {
+      categoryName = firstElement.textContent.trim();
+    }
+  }
+
+  // Second text element: dropdown container title (eyebrow title)
+  if (textElementsOutsideBlocks.length > 1) {
+    dropdownTitle = textElementsOutsideBlocks[1].textContent.trim();
+  }
+
+  // Find the cards block in this section
+  const cardsBlock = section.querySelector('.cards.block');
+  if (!cardsBlock) {
+    return null;
+  }
+
+  // Get all card items from the cards block
+  const cardItems = cardsBlock.querySelectorAll('.cards-card');
+  const items = [];
+
+  cardItems.forEach((cardLi) => {
+    const convertedCard = convertCardsBlockCardToDropdownCard(cardLi);
+    if (convertedCard) {
+      items.push(convertedCard);
+    }
+  });
+
+  return {
+    title: categoryName,
+    id: categoryName.toLowerCase().replace(/\s+/g, '-').replace(/[&]/g, ''),
+    eyebrowTitle: dropdownTitle, // This will be the container title
+    linkText: '',
+    linkUrl: '',
+    items,
+    isFromCardsBlock: true, // Flag to identify this type
+    iconElement, // Store the icon element if found
+  };
 }
 
 /**
@@ -376,16 +796,47 @@ export default function decorate(block) {
 
   unifiedNavBuilt = true;
 
-  // Find ALL category-nav blocks on the page
-  const allCategoryNavBlocks = document.querySelectorAll('.category-nav.block');
+  // Find all category-nav blocks within main (scope to main content area)
+  const main = document.querySelector('main');
+  const allCategoryNavBlocks = main ? main.querySelectorAll('.category-nav.block') : [block];
 
-  if (allCategoryNavBlocks.length === 0) {
+  // Find sections with Cards blocks (bell icon) that are siblings of the first category-nav block
+  // This keeps the search scoped and simple - only sections near category-nav blocks are checked
+  // Cache text elements to avoid re-querying the same sections later
+  const sectionsWithCardsData = [];
+
+  if (allCategoryNavBlocks.length > 0) {
+    const firstNavBlock = allCategoryNavBlocks[0];
+    const container = firstNavBlock.closest('.section')?.parentElement;
+
+    if (container) {
+      const allSiblings = Array.from(container.children).filter((el) => el.classList.contains('section'));
+
+      allSiblings.forEach((section) => {
+        const hasCardsBlock = section.querySelector('.cards.block');
+        const hasCategoryNav = section.querySelector('.category-nav.block');
+
+        // Query text elements once and cache them
+        const textElements = Array.from(section.querySelectorAll('p, h1, h2, h3, h4, h5, h6'))
+          .filter((el) => !el.closest('.block'));
+        const hasIcon = textElements.some((el) => el.querySelector('span.icon'));
+
+        if (hasCardsBlock && !hasCategoryNav && hasIcon) {
+          sectionsWithCardsData.push({ section, textElements });
+        }
+      });
+    }
+  }
+
+  if (allCategoryNavBlocks.length === 0 && sectionsWithCardsData.length === 0) {
     block.style.display = 'none';
     return;
   }
 
-  // Parse data from all blocks and add section IDs
+  // Parse data from all blocks and sections, and add section IDs
   const categoriesData = [];
+
+  // First, process traditional category-nav blocks
   allCategoryNavBlocks.forEach((navBlock) => {
     const categoryData = parseCategoryNavBlock(navBlock);
     if (categoryData.items.length > 0) {
@@ -394,6 +845,20 @@ export default function decorate(block) {
       // Add ID to the section for anchor navigation
       const section = navBlock.closest('.section');
       if (section && !section.id) {
+        section.id = categoryData.id;
+        section.setAttribute('data-category-id', categoryData.id);
+      }
+    }
+  });
+
+  // Then, process sections with Cards blocks (using cached text elements)
+  sectionsWithCardsData.forEach(({ section, textElements }) => {
+    const categoryData = parseSectionWithCardsBlock(section, textElements);
+    if (categoryData && categoryData.items.length > 0) {
+      categoriesData.push(categoryData);
+
+      // Add ID to the section for anchor navigation
+      if (!section.id) {
         section.id = categoryData.id;
         section.setAttribute('data-category-id', categoryData.id);
       }
@@ -415,7 +880,6 @@ export default function decorate(block) {
     // If no placeholder wrapper exists, create one
     categoryNavWrapper = document.createElement('div');
     categoryNavWrapper.classList.add('category-nav-wrapper');
-    const main = document.querySelector('main');
     if (main) {
       main.insertBefore(categoryNavWrapper, main.firstChild);
     } else {
@@ -471,6 +935,11 @@ export default function decorate(block) {
         section.style.display = 'none';
       }
     }
+  });
+
+  // Also hide sections with Cards blocks that are now in the nav
+  sectionsWithCardsData.forEach(({ section }) => {
+    section.style.display = 'none';
   });
 
   // Position dropdowns intelligently after a short delay to ensure DOM is fully rendered
