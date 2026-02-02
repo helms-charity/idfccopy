@@ -59,10 +59,18 @@
   background: rgba(255 255 255 / 30%);
 }
 
+/* swapna: Dark scheme - unset filter on handle image */
+.mayura .dark-scheme .cards .swiper-pagination-handle img {
+  filter: unset;
+}
+
 /* swapna: Light scheme overrides for progressbar track (mayura) */
+/*
 .mayura .light-scheme .cards .swiper-pagination {
   background: rgba(0 0 0 / 20%);
 }
+*/
+
 
 /* swapna: Hide pagination when Swiper adds lock class (all slides visible) */
 .mayura .cards .swiper-pagination.swiper-pagination-lock {
