@@ -1,6 +1,6 @@
 /*
- * swapna: START - Progressbar with Handle Indicator Styles (mayura template only)
- * swapna: Using scrollbar-handle.svg as the draggable indicator
+ * START - Progressbar with Handle Indicator Styles (mayura template only)
+ * Using scrollbar-handle.svg as the draggable indicator
  */
 .mayura .cards .swiper-pagination {
   bottom: 20px;
@@ -16,14 +16,14 @@
   cursor: pointer;
 }
 
-/* swapna: Hide progressbar fill - only show track and handle indicator */
+/* Hide progressbar fill - only show track and handle indicator */
 .mayura .cards .swiper-pagination-progressbar-fill {
   display: none;
 }
 
 /*
- * swapna: Custom Handle Indicator - Using scrollbar-handle.svg
- * swapna: This is a draggable indicator that moves along the progressbar
+ * Custom Handle Indicator - Using scrollbar-handle.svg
+ * This is a draggable indicator that moves along the progressbar
  */
 .mayura .cards .swiper-pagination-handle {
   position: absolute;
@@ -40,12 +40,12 @@
   touch-action: none;
 }
 
-/* swapna: Cursor changes to grabbing while dragging */
+/* Cursor changes to grabbing while dragging */
 .mayura .cards .swiper-pagination-handle:active {
   cursor: grabbing;
 }
 
-/* swapna: SVG handle image styling */
+/* SVG handle image styling */
 .mayura .cards .swiper-pagination-handle img {
   display: block;
   width: auto;
@@ -54,30 +54,25 @@
   filter: brightness(0.4) drop-shadow(0 1px 2px rgba(0 0 0 / 20%));
 }
 
-/* swapna: Dark scheme overrides for progressbar track (mayura) */
+/* Dark scheme overrides for progressbar track (mayura) */
 .mayura .dark-scheme .cards .swiper-pagination {
   background: rgba(255 255 255 / 30%);
 }
 
-/* swapna: Dark scheme - unset filter on handle image */
+/* Dark scheme - unset filter on handle image */
 .mayura .dark-scheme .cards .swiper-pagination-handle img {
   filter: unset;
 }
 
-/* swapna: Light scheme overrides for progressbar track (mayura) */
-/*
-.mayura .light-scheme .cards .swiper-pagination {
-  background: rgba(0 0 0 / 20%);
-}
-*/
 
 
-/* swapna: Hide pagination when Swiper adds lock class (all slides visible) */
+
+/* Hide pagination when Swiper adds lock class (all slides visible) */
 .mayura .cards .swiper-pagination.swiper-pagination-lock {
   display: none;
 }
 
-/* swapna: END - Progressbar with Handle Indicator Styles */
+/* END - Progressbar with Handle Indicator Styles */
 
 .mayura .cards-container h2,
 .mayura .tabs-container h2 {

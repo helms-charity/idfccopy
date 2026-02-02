@@ -932,7 +932,7 @@ export default async function decorate(block) {
     const isMobileView = window.innerWidth < 600;
     const initialSlideIndex = isMobileView ? 0 : startingCard;
 
-    // swapna: Check if page uses mayura template for progressbar pagination
+    // Check if page uses mayura template for progressbar pagination
     const isMayuraTemplate = document.body.classList.contains('mayura');
 
     // Build Swiper configuration
@@ -943,7 +943,7 @@ export default async function decorate(block) {
       centeredSlides: true, // Will be overridden by breakpoints if all cards fit
       pagination: {
         el: '.swiper-pagination',
-        // swapna: Use progressbar for mayura template, bullets for others
+        // Use progressbar for mayura template, bullets for others
         type: isMayuraTemplate ? 'progressbar' : 'bullets',
         clickable: !isMayuraTemplate, // Only for bullets
         dynamicBullets: false,
@@ -1093,17 +1093,17 @@ export default async function decorate(block) {
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
 
-    // swapna: Add custom indicator element ONLY for mayura template (progressbar)
+    // Add custom indicator element ONLY for mayura template (progressbar)
     if (isMayuraTemplate) {
       const paginationEl = block.querySelector('.swiper-pagination');
       if (paginationEl) {
         const handleIndicator = document.createElement('div');
         handleIndicator.className = 'swiper-pagination-handle';
-        // swapna: Using scrollbar-handle.svg as the indicator
+        // Using scrollbar-handle.svg as the indicator
         handleIndicator.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" />';
         paginationEl.appendChild(handleIndicator);
 
-        // swapna: Update handle indicator position based on swiper progress
+        // Update handle indicator position based on swiper progress
         const updateHandlePosition = () => {
           const { progress } = swiper;
           // Clamp progress between 0 and 1
@@ -1111,14 +1111,14 @@ export default async function decorate(block) {
           handleIndicator.style.left = `${clampedProgress * 100}%`;
         };
 
-        // swapna: Initial position update
+        // Initial position update
         updateHandlePosition();
 
-        // swapna: Update handle position on slide change and progress events
+        // Update handle position on slide change and progress events
         swiper.on('progress', updateHandlePosition);
         swiper.on('slideChange', updateHandlePosition);
 
-        // swapna: Make progressbar clickable to navigate to slides
+        // Make progressbar clickable to navigate to slides
         paginationEl.style.cursor = 'pointer';
         paginationEl.addEventListener('click', (e) => {
           // Ignore clicks on the handle itself (handled by drag)
@@ -1130,7 +1130,7 @@ export default async function decorate(block) {
           swiper.slideTo(targetSlide);
         });
 
-        // swapna: Make handle indicator draggable for slide navigation
+        // Make handle indicator draggable for slide navigation
         let isDragging = false;
 
         const handleDragStart = (e) => {
@@ -1149,10 +1149,10 @@ export default async function decorate(block) {
           const relativeX = clientX - rect.left;
           const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
 
-          // swapna: Update handle position immediately for smooth dragging
+          // Update handle position immediately for smooth dragging
           handleIndicator.style.left = `${percentage * 100}%`;
 
-          // swapna: Calculate and go to target slide (0 = no animation during drag)
+          // Calculate and go to target slide (0 = no animation during drag)
           const targetSlide = Math.round(percentage * (slideCount - 1));
           swiper.slideTo(targetSlide, 0);
         };
@@ -1164,22 +1164,22 @@ export default async function decorate(block) {
           handleIndicator.style.cursor = 'grab';
           document.body.style.userSelect = '';
 
-          // swapna: Snap to final position after drag ends
+          // Snap to final position after drag ends
           updateHandlePosition();
         };
 
-        // swapna: Mouse events for desktop drag support
+        // Mouse events for desktop drag support
         handleIndicator.addEventListener('mousedown', handleDragStart);
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
 
-        // swapna: Touch events for mobile drag support
+        // Touch events for mobile drag support
         handleIndicator.addEventListener('touchstart', handleDragStart, { passive: false });
         document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
       }
     }
-    // swapna: End of progressbar with handle indicator implementation (mayura only)
+    // End of progressbar with handle indicator implementation (mayura only)
 
     // For testimonial cards, update star icons on active slide
     if (isTestimonial) {
