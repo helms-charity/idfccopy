@@ -969,6 +969,7 @@ export default async function decorate(block) {
       };
     } else if (isExperienceLife) {
       // For experience-life cards: tighter spacing
+      swiperConfig.slidesPerView = 1.15; // ~287px cards at 360px viewport
       swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
@@ -993,8 +994,8 @@ export default async function decorate(block) {
       swiperConfig.loop = false;
       swiperConfig.watchSlidesProgress = true;
       swiperConfig.watchSlidesVisibility = true;
-      swiperConfig.slidesPerView = 1.2; // Show edges of adjacent cards on mobile
-      swiperConfig.spaceBetween = 30;
+      swiperConfig.slidesPerView = 1.5; // ~198px cards at 360px viewport
+      swiperConfig.spaceBetween = 16;
       swiperConfig.breakpoints = {
         600: {
           slidesPerView: 2,
@@ -1030,6 +1031,31 @@ export default async function decorate(block) {
           slidesPerView: 3,
           spaceBetween: 42,
           centeredSlides: slideCount > 3, // Disable centering if all cards fit
+        },
+      };
+      // Add class for CSS centering when fewer than 3 cards
+      if (slideCount === 1) {
+        block.classList.add('cards-single-slide');
+      } else if (slideCount === 2) {
+        block.classList.add('cards-two-slides');
+      }
+    } else if (isAllAboutCard) {
+      // For all-about-card: narrower cards at mobile (~198px)
+      swiperConfig.loop = false;
+      swiperConfig.watchSlidesProgress = true;
+      swiperConfig.watchSlidesVisibility = true;
+      swiperConfig.slidesPerView = 1.5; // ~198px cards at 360px viewport
+      swiperConfig.spaceBetween = 16;
+      swiperConfig.breakpoints = {
+        600: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+          centeredSlides: slideCount > 2,
+        },
+        900: {
+          slidesPerView: 3,
+          spaceBetween: 42,
+          centeredSlides: slideCount > 3,
         },
       };
       // Add class for CSS centering when fewer than 3 cards

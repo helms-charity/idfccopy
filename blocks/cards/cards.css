@@ -811,7 +811,7 @@
   border-radius: 20px;
   overflow: hidden;
   position: relative;
-  min-height: 380px;
+  min-height: 280px;
   width: 100%;
   box-shadow: 0 8px 12px rgba(0 0 0 / 30%);
 }
@@ -819,7 +819,7 @@
 .cards.experience-life > .grid-cards > .cards-card,
 .cards.experience-life > .swiper-wrapper > .cards-card,
 .cards.experience-life .benefit-cards {
-  padding-top: 220px;
+  padding-top: 140px;
 }
 
 /* Experience Life - Gray/silver gradient with image as background */
@@ -1458,7 +1458,7 @@
 
 .cards.joining-perks .swiper-slide {
   height: auto;
-  min-height: 500px;
+  min-height: 280px;
   display: flex;
 }
 
@@ -1504,7 +1504,7 @@
   z-index: 1;
   width: 100%;
   height: auto;
-  min-height: 380px;
+  min-height: 240px;
   box-shadow: none;
 }
 
@@ -1545,8 +1545,8 @@
 .cards.joining-perks .benefit-cards .cards-card-image img {
   width: auto;
   max-width: 100%;
-  height: 300px;
-  max-height: 380px;
+  height: 180px;
+  max-height: 240px;
   border-radius: 0;
   object-fit: cover;
 }
@@ -1631,7 +1631,7 @@
 
 .cards.all-about-card .swiper-slide {
   height: auto;
-  min-height: 400px;
+  min-height: 240px;
   display: flex;
 }
 
@@ -1651,7 +1651,7 @@
   z-index: 1;
   width: 100%;
   height: auto;
-  min-height: 400px;
+  min-height: 240px;
 }
 
 /* Diagonal mask overlay image at card level */
@@ -1678,7 +1678,7 @@
   
   /* background: linear-gradient(135deg, rgb(139 92 246 / 20%) 0%, rgb(59 130 246 / 20%) 100%); */
   padding: 20px;
-  min-height: 200px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1703,7 +1703,7 @@
   display: flex;
   align-items: center;
   position: relative;
-  margin-top: -30px;
+  margin-top: -110px;
   z-index: 4;
 }
 
@@ -2081,8 +2081,8 @@
   .cards.reward-points > .grid-cards > .cards-card,
   .cards.reward-points > .swiper-wrapper > .cards-card,
   .cards.reward-points .benefit-cards {
-    min-height: 400px;
-    max-width: 326px;
+    min-height: 380px;
+    max-width: 324px;
   }
 
   .cards.reward-points > .grid-cards > .cards-card .cards-card-image,
@@ -2133,6 +2133,18 @@
   .cards.reward-points .benefit-cards .cards-card-body .icon-arrow-right-white img {
     width: 40px;
     height: 40px;
+  }
+
+  /* Joining Perks Cards - Desktop */
+  .cards.joining-perks > .grid-cards > .cards-card,
+  .cards.joining-perks > .swiper-wrapper > .cards-card,
+  .cards.joining-perks .benefit-cards {
+    min-height: 400px;
+  }
+
+  .cards.joining-perks .cards-card-image img,
+  .cards.joining-perks .benefit-cards .cards-card-image img {
+    height: 240px;
   }
 
   /* Blog Post Cards - Desktop */
