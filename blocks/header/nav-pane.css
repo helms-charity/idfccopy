@@ -843,7 +843,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 
 .top-nav.bg-light-white {
     /* padding: 0 70px; */
-    background-color: var(--light-color);
+    background-color: var(--color-white-100);
 
 }
 

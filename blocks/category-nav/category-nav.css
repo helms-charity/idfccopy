@@ -736,7 +736,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 }
 
 .category-nav-dropdown::-webkit-scrollbar-track {
-  background: var(--light-color);
+  background: var(--color-white-100);
   border-radius: 3px;
 }
 

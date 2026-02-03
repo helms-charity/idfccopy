@@ -1336,7 +1336,7 @@
 
 .cards .swiper-button-next:hover,
 .cards .swiper-button-prev:hover {
-  background: var(--light-color);
+  background: var(--color-white-100);
 }
 
 /* Swiper Pagination - Bullet Style (default) */

@@ -966,7 +966,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   bottom: 0;
   left: 0;
   width: 100vw;
-  background: var(--light-color);
+  background: var(--color-white-100);
   border-top: 1px solid var(--color-white-200);
   z-index: 1001;
   visibility: hidden;
@@ -1222,7 +1222,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   bottom: 0;
   left: 0;
   width: 100vw;
-  background: var(--light-color);
+  background: var(--color-white-100);
   border-top: 1px solid var(--color-white-200);
   z-index: 1001;
   visibility: hidden;
