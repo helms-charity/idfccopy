@@ -66,7 +66,7 @@ header nav .nav-sections .default-content-wrapper>ul>li p {
   line-height: 1.4;
   letter-spacing: normal;
   position: relative;
-  color: var(--gray-900);
+  color: var(--color-gray-900);
 }
 
 header nav .nav-sections .default-content-wrapper>ul>li p a {
@@ -281,7 +281,7 @@ header nav .nav-sections .nav-fragment-section-content {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.3s ease-in-out;
-  background: #fff;
+  background: var(--color-white);
   border-radius: 16px;
   box-shadow: 0 0 var(--spacing-xs) 1px rgb(0 0 0 / 4%);
 }
@@ -394,7 +394,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-eyebrow-tit
 
 header nav .nav-sections .nav-fragment-section-content .category-nav-explore-link {
   font-size: var(--body-font-size-s);
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   font-weight: 500;
 }
 
@@ -419,9 +419,9 @@ header nav .nav-sections .nav-view-all-btn {
   margin: 0;
   font-size: var(--body-font-size-xs);
   font-weight: 600;
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   text-decoration: none;
-  background-color: #fff;
+  background-color: var(--color-white);
   border: none;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -465,7 +465,7 @@ header nav .nav-sections .nav-fragment-section-content .nav-h4-section-content {
   list-style: none;
   padding: 0;
   margin: 0;
-  background: #fff;
+  background: var(--color-white);
   border-radius: 16px;
   box-shadow: 0 0 12px 1px rgb(0 0 0 / 4%);
   text-indent: 0;
@@ -533,7 +533,7 @@ header nav .nav-sections .nav-tab {
 header nav .nav-sections .nav-tab.active {
   color: var(--text-color);
   font-weight: 500;
-  border-bottom-color: var(--dark-red-color);
+  border-bottom-color: var(--text-red-color);
 }
 
 header nav .nav-sections .nav-tab:hover {
@@ -548,9 +548,9 @@ header nav .nav-sections .explore-section-link {
   margin: 0 0 16px;
   font-size: var(--body-font-size-s);
   font-weight: 600;
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   text-decoration: none;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-top: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -755,7 +755,7 @@ header nav .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
 
 /* Mobile: Login button styling */
 header nav .nav-tools .default-content-wrapper > ul > li:last-child {
-  color: #fff;
+  color: var(--color-white);
   background-color: #902a2c;
   border: 1px solid #902a2c;
   border-radius: 50px;
@@ -808,7 +808,7 @@ header nav[aria-expanded='true'] .nav-tools {
   justify-self: stretch;
   position: sticky;
   bottom: 0;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-top: 1px solid #e0e0e0;
   padding: 16px;
   gap: var(--spacing-xs);
@@ -967,7 +967,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   left: 0;
   width: 100vw;
   background: var(--light-color);
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--color-white-200);
   z-index: 1001;
   visibility: hidden;
   overflow-y: auto;
@@ -1001,8 +1001,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   display: grid;
 
   .section#helpcenter {
-    border-top: 1px solid var(--gray-300);
-    border-bottom: 1px solid var(--gray-300);
+    border-top: 1px solid var(--color-gray-200);
+    border-bottom: 1px solid var(--color-gray-200);
     padding: var(--spacing-xs) 0;
   }
 
@@ -1025,7 +1025,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     width: 100%;
     box-shadow: none;
     padding: 12px;
-    background: var(--gray-200);
+    background: var(--color-white-200);
     border-radius: 8px;
     border: none;
     gap: 0;
@@ -1166,7 +1166,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 
   .section#download p {
-    color: var(--red-800);
+    color: var(--color-red-800);
     font-size: var(--body-font-size-xxs);
     line-height: var(--body-font-size-xs);
     margin: var(--spacing-xs) 0 0;
@@ -1223,7 +1223,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   left: 0;
   width: 100vw;
   background: var(--light-color);
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--color-white-200);
   z-index: 1001;
   visibility: hidden;
   overflow-y: auto;
@@ -1275,9 +1275,9 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   a.button.secondary:any-link, button.secondary {
     font-size: var(--body-font-size-xxs);
     line-height: var(--body-font-size-s);
-    background-color: var(--gray-200);
+    background-color: var(--color-white-200);
     border: 0;
-    color: var(--gray);
+    color: var(--color-gray-300);
     margin-top: 0;
     margin-bottom: 0;
     font-weight: normal;
@@ -1307,7 +1307,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
     &:hover {
       background: var(--btn-color-red);
-      color: var(--btn-color-white);
+      color: var(--color-white);
     }
   }
 }
@@ -1317,7 +1317,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     gap: var(--spacing-xxs);
 
     .benefit-cards {
-     background: var(--gray-200);
+     background: var(--color-white-200);
      box-shadow: none;
      transform: none;
      gap: 0;
@@ -1354,9 +1354,9 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 /* Search Results Styles */
 .search-dropdown .search-results {
   padding: 0;
-  background: var(--white);
+  background: var(--color-white);
   border-radius: 20px;
-  border: 1px var(--gray) solid;
+  border: 1px var(--color-gray-300) solid;
   width: calc(100% - 32px);
   margin: 0 var(--spacing-xs);
 }
@@ -1391,7 +1391,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-empty p {
   font-size: var(--body-font-size-xs);
-  color: var(--gray);
+  color: var(--color-gray-300);
   margin: 0 0 var(--spacing-xxs);
   line-height: 1.4;
 }
@@ -1433,7 +1433,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 }
 
 .search-dropdown .search-results-list li:hover {
-  background: var(--gray-200);
+  background: var(--color-white-200);
   transition: background-color 0.3s ease-in-out;
 }
 
@@ -1446,8 +1446,8 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
 
 .search-dropdown .search-results-list .search-result-type {
   font-size: var(--body-font-size-xxs);
-  color: var(--dark-red-color);
-  background: var(--gray-200);
+  color: var(--text-red-color);
+  background: var(--color-white-200);
   padding: 4px var(--spacing-xxs);
   border-radius: 12px;
   margin-left: var(--spacing-xs);
@@ -1465,14 +1465,14 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   gap: var(--spacing-xxs);
   font-size: var(--body-font-size-xs);
   font-weight: 600;
-  color: var(--dark-red-link-color);
+  color: var(--color-red-600);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .search-dropdown .search-results-footer .view-all-results:hover {
-  color: var(--dark-red-color);
-  background: var(--gray-200);
+  color: var(--text-red-color);
+  background: var(--color-white-200);
   transition: background-color 0.3s ease-in-out;
 }
 
@@ -1566,7 +1566,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   }
 
   span.icon {
-    background: var(--gray-200);
+    background: var(--color-white-200);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1618,7 +1618,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     grid-template-columns: 20px 1fr;
     text-align: left;
     gap: var(--spacing-xs);
-    border-bottom: 1px var(--gray-300) solid;
+    border-bottom: 1px var(--color-gray-200) solid;
     padding: 0;
     padding-bottom: var(--spacing-xs);
     width: 100%; /* Override global 50% width from cards.css */
@@ -1630,7 +1630,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
     margin-bottom: 0;
 
     p {
-      color: var(--gray);
+      color: var(--color-gray-300);
       margin-top: 0;
     }
 
@@ -1664,7 +1664,7 @@ header nav .nav-sections .default-content-wrapper>ul>li .nav-h4-section-content 
   right: 20px;
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--color-white);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -1714,9 +1714,9 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 @media (width >= 990px) {
   /* Gray button styling for odometer on desktop */
   .nav-tools .default-content-wrapper>ul>li:first-child {
-    background-color: var(--gray-btn-light);
-    color: var(--black);
-    border-color: var(--gray-btn-dark);
+    background-color: var(--color-gray-100);
+    color: var(--color-black);
+    border-color: var(--color-gray-500);
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 
@@ -1729,7 +1729,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     height: auto;
     z-index: 1000;
     transition: all 0.3s ease;
-    background-color: #fff;
+    background-color: var(--color-white);
   }
 
   header nav {
@@ -1832,7 +1832,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   header nav .nav-sections .nav-drop:hover>p>a {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
   }
 
   header nav .nav-sections .nav-drop:hover::after {
@@ -1871,7 +1871,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* Nav title links */
   header nav .nav-sections .default-content-wrapper>ul>li p a {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     font-weight: 400;
     border: none;
     border-bottom: 3px solid transparent;
@@ -1881,7 +1881,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover p a,
   header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] p a {
-    border-bottom-color: var(--dark-red-color);
+    border-bottom-color: var(--text-red-color);
   }
 
   header nav .nav-sections .default-content-wrapper>ul>li>ul {
@@ -1931,7 +1931,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     padding: 0;
     white-space: initial;
     z-index: 999;
-    background: #fff;
+    background: var(--color-white);
     box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
     border-radius: 0;
   }
@@ -1958,7 +1958,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     margin: 0 auto;
     padding: 32px 40px;
     min-height: 400px;
-    background-color: #fff;
+    background-color: var(--color-white);
     position: relative;
   }
 
@@ -1968,20 +1968,20 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     padding: var(--spacing-xs) 20px;
     font-size: var(--body-font-size-xs);
     font-weight: 400;
-    color: var(--dark-red-link-color);
-    background-color: #fff;
+    color: var(--color-red-600);
+    background-color: var(--color-white);
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
     cursor: pointer;
   }
 
   header nav .nav-sections .nav-fragment-section:hover .nav-fragment-section-title {
-    background-color: var(--gray-200);
+    background-color: var(--color-white-200);
     border-radius: 8px 0 0 8px;
   }
 
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] p.nav-fragment-section-title {
-    background-color: var(--gray-200);
+    background-color: var(--color-white-200);
     font-weight: 700;
     border-radius: 16px 0 0 16px;
   }
@@ -1990,7 +1990,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-fragment-section[aria-expanded='true'] .nav-fragment-section-content {
     display: block;
     padding: 0;
-    background: var(--gray-200);
+    background: var(--color-white-200);
     box-shadow: none;
     border-radius: 0;
     height: 520px; /* Fixed default height */
@@ -2008,7 +2008,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .nav-fragment-section-content > li > div {
     padding: 0;
     padding-right: 236px; /* Reserve space for discover card: 220px width + 16px gap */
-    background: var(--gray-200);
+    background: var(--color-white-200);
     border-radius: 8px;
     height: 520px; /* Fixed default height - matches parent */
     max-height: calc(100vh - 150px); /* Constrain on smaller viewports */
@@ -2126,7 +2126,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Updated for div structure: .cards-card.blog-post-card > .cards-card-body (outer wrapper) */
   header nav .nav-sections .nav-discover-section .cards.block .cards-card.blog-post-card > .cards-card-body {
     padding: 16px 16px 0; /* No bottom padding */
-    background: var(--gray-200);
+    background: var(--color-white-200);
     border-radius: 16px;
   }
 
@@ -2221,8 +2221,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     display: inline-block;
     padding: var(--spacing-xxs) 20px;
     background-color: transparent;
-    color: var(--dark-red-link-color);
-    border: 1px solid var(--dark-red-link-color);
+    color: var(--color-red-600);
+    border: 1px solid var(--color-red-600);
     border-radius: 30px;
     text-decoration: none;
     font-size: var(--body-font-size-xs);
@@ -2234,8 +2234,8 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   header nav .nav-sections .nav-discover-section .cards-card-body .button:hover,
   header nav .nav-sections .nav-discover-section .cards.blog-posts .button:hover {
-    background-color: var(--dark-red-link-color);
-    color: var(--btn-color-white);
+    background-color: var(--color-red-600);
+    color: var(--color-white);
   }
 
   /* Outer grid background column - not needed with unified grid approach */
@@ -2274,7 +2274,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* Content items: Links default state (exclude View All buttons which have their own styling) */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content div:not(.cards-card-body) > p.button-container a,
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content p:not(.button-container) a:not(.nav-view-all-btn) {
-    color: var(--dark-red-link-color);
+    color: var(--color-red-600);
     text-decoration: none;
     font-size: var(--body-font-size-xs);
     font-weight: 400;
@@ -2337,7 +2337,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     font-size: var(--body-font-size-xxs);
     font-weight: 600;
     line-height: 1.3;
-    color: var(--dark-red-link-color);
+    color: var(--color-red-600);
     background-color: transparent;
   }
 
@@ -2369,7 +2369,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   /* H4 section container */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section {
     margin: 16px 0 var(--spacing-xxs);
-    background: var(--gray-200);
+    background: var(--color-white-200);
     display: flex;
     flex-direction: column;
   }
@@ -2386,7 +2386,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     color: var(--text-color);
     letter-spacing: 0.5px;
     padding: 10px 16px;
-    background-color: var(--gray-200);
+    background-color: var(--color-white-200);
     margin-bottom: 4px;
   }
 
@@ -2403,7 +2403,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* H4 section content - simple vertical list */
   header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-h4-section-content {
-    background: var(--gray-200);
+    background: var(--color-white-200);
     box-shadow: none;
     border-radius: 0;
     display: block;
@@ -2433,7 +2433,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   header nav .nav-sections .default-content-wrapper>ul>li:hover>ul:hover {
     padding: 20px 0 0 20px;
     width: 100%;
-    background: #fff;
+    background: var(--color-white);
     box-shadow: 2px 2px 24px rgb(120 120 120 / 8%);
     z-index: 2;
 
@@ -2445,12 +2445,12 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
 
   header nav .nav-sections .default-content-wrapper>ul>li:hover p a {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     font-weight: bold;
   }
 
   .header nav .nav-sections .default-content-wrapper>ul>li>ul>li:hover a {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
   }
 
   .nav-tools .default-content-wrapper {
@@ -2467,7 +2467,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     align-items: center;
     border-radius: 20px;
     border: 1px solid #353535;
-    background: #fff;
+    background: var(--color-white);
     padding: var(--spacing-xxs) var(--spacing-xs);
     color: #3a3a3a;
     font-size: var(--body-font-size-xs);
@@ -2537,7 +2537,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   .nav-tools .default-content-wrapper>ul>li:last-child {
-    color: #fff;
+    color: var(--color-white);
     background-color: #902a2c;
     border-color: #902a2c;
     display: flex;
@@ -2627,7 +2627,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     width: 100%;
     box-shadow: none;
     padding: var(--spacing-xs);
-    background: var(--gray-200);
+    background: var(--color-white-200);
     border-radius: 8px;
     border: none;
     gap: 12px;

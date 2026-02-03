@@ -67,7 +67,7 @@
 
 .tabs.blue-white-text .tabs-tab[aria-selected='true'] {
   background: var(--gradient-blue);
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .tabs.silver-blue-text .tabs-list {

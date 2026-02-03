@@ -113,7 +113,7 @@
 }
 
 .mayura .cards.related-search .benefit-cards .cards-card-body h3 a:hover {
-color: var(--dark-red-color);
+color: var(--text-red-color);
 }
 
 .mayura .section[data-id="get-in-touch"] h3 {
@@ -150,7 +150,7 @@ color: var(--dark-red-color);
 
 .mayura .accordion .accordion-cta.button{
   background: var(--gradient-pewter);
-  color: var(--white);
+  color: var(--color-white);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);

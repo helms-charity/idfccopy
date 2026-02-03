@@ -218,7 +218,7 @@ body.modal-open {
 
 .modal-mayura-blue .close-button .icon.icon-close::before,
 .modal-mayura-blue .close-button .icon.icon-close::after {
-  background-color: var(--white);
+  background-color: var(--color-white);
 }
 
 .modal .close-button .icon.icon-close::after {
@@ -284,7 +284,7 @@ body.modal-open {
 
 /* ===== Modal Theme: Mayura Silver ===== */
 .modal dialog.modal-mayura-silver {
-  background: var(--metal-silver);
+  background: var(--gradient-metal-silver);
 }
 
 .modal dialog.modal-mayura-silver .modal-content {
@@ -313,23 +313,23 @@ body.modal-open {
 
 /* Link styles for Mayura themes - base styles first */
 .modal dialog.modal-mayura-silver a {
-  color: var(--dark-red-link-color);
+  color: var(--color-red-600);
   text-decoration: none;
 }
 
 .modal dialog.modal-mayura-blue a {
-  color: var(--white);
+  color: var(--color-white);
   text-decoration: none;
 }
 
 /* Link styles - hover states */
 .modal dialog.modal-mayura-silver a:hover {
-  color: var(--dark-red-link-color);
+  color: var(--color-red-600);
   opacity: 0.8;
 }
 
 .modal dialog.modal-mayura-blue a:hover {
-  color: var(--white);
+  color: var(--color-white);
   opacity: 0.8;
 }
 
@@ -338,7 +338,7 @@ body.modal-open {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  color: var(--modal-silver-text);
+  color: var(--color-blue-900);
   border: none;
   border-bottom: 1px solid #2e3e79;
   border-radius: 0;
@@ -356,9 +356,9 @@ body.modal-open {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
-  color: var(--modal-blue-text);
+  color: var(--color-gray-100);
   border: none;
-  border-bottom: 1px solid var(--modal-blue-text);
+  border-bottom: 1px solid var(--color-gray-100);
   border-radius: 0;
   font-size: var(--body-font-size-m);
   font-weight: 500;
@@ -378,11 +378,11 @@ body.modal-open {
 
 /* ===== Modal Theme: Mayura Blue - additional styles ===== */
 .modal dialog.modal-mayura-blue {
-  background: var(--metal-blue);
+  background: var(--gradient-metal-blue);
 }
 
 .modal dialog.modal-mayura-blue .modal-content {
-  color: var(--white);
+  color: var(--color-white);
   position: relative;
   z-index: 2;
 }
@@ -394,14 +394,14 @@ body.modal-open {
 .modal dialog.modal-mayura-blue h4,
 .modal dialog.modal-mayura-blue h5,
 .modal dialog.modal-mayura-blue h6 {
-  color: var(--white);
+  color: var(--color-white);
   -webkit-text-fill-color: transparent;
   background: var(--gradient-silver) text;
 }
 
 /* Paragraph styles for Mayura Blue */
 .modal dialog.modal-mayura-blue p {
-  color: var(--white);
+  color: var(--color-white);
   margin: 0 0 var(--spacing-xs);
 }
 
@@ -512,10 +512,10 @@ body.modal-open {
     font-size: var(--body-font-size-xs);
     line-height: 20px;
     font-weight: 700;
-    color: #fff;
+    color: var(--color-white);
     display: block;
     padding: 11px 40px;
-    background: #9b1e26;
+    background: var(--color-red-400);
     border-radius: 23px;
     max-width: fit-content;
     margin: 0;
@@ -574,14 +574,14 @@ body.modal-open {
   line-height: 18px;
   margin: 0 0 6px;
   font-weight: 500;
-  color: #222;
+  color: var(--color-gray-900);
 }
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div h3 {
   font-size: var(--body-font-size-l);
   line-height: 24px;
   font-weight: 700;
-  color: #9b1e26;
+  color: var(--color-red-400);
   margin: 0;
 }
 
@@ -589,10 +589,10 @@ body.modal-open {
   font-size: var(--body-font-size-xs);
   line-height: 20px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-white);
   display: none;
   padding: 13px 40px;
-  background: #9b1e26;
+  background: var(--color-red-400);
   border-radius: 23px;
   max-width: fit-content;
   margin: 20px auto 0;
@@ -790,7 +790,7 @@ body.modal-open {
 }
 
 .section[data-id^="mayura-metal-concept-"] p {
-  background: var(--Primary, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
+  background: var(--color-blue-200, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(0, 0, 0, 0);
   background-clip: text;

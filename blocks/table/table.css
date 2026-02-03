@@ -73,7 +73,7 @@
 .table.block#fees-and-charges table td {
   max-width: 100%;
   word-wrap: break-word;
-  color: var(--white);
+  color: var(--color-white);
   position: relative;
 }
 
@@ -107,7 +107,7 @@
   left: var(--spacing-s);
   right: var(--spacing-s);
   height: 1px;
-  background-color: var(--white);
+  background-color: var(--color-white);
 }
 
 /* Reward Points Table Specific Styles */
@@ -117,7 +117,7 @@
 }
 
 .table.block#reward-points table {
-  border: 1px solid var(--white);
+  border: 1px solid var(--color-white);
   border-radius: 8px;
   overflow: hidden;
   border-collapse: separate;
@@ -126,8 +126,8 @@
 
 .table.block#reward-points table td {
   padding: 10px var(--spacing-xs);
-  border: 1px solid var(--white);
-  color: var(--white);
+  border: 1px solid var(--color-white);
+  color: var(--color-white);
 }
 
 .table.block#reward-points table tbody td:first-child {

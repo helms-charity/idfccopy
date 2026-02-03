@@ -41,7 +41,7 @@ position: relative;
 
 p {
   font-size: var(--body-font-size-xxs);
-  color: #fff;
+  color: var(--color-white);
   text-shadow: 0 0 20px rgb(0 0 0 / 25%);
 }
 
@@ -55,9 +55,9 @@ p + p {
 }
 
 p.button-container a.button.primary:any-link {
-  background-color: var(--red-color);
-  border-color: var(--red-color);
-  color: var(--btn-color-white);
+  background-color: var(--color-red-300);
+  border-color: var(--color-red-300);
+  color: var(--color-white);
   font-size: var(--body-font-size-xs);
   box-shadow: 0 0 20px 0 rgb(0 0 0 / 25%);
   margin: 0;
@@ -68,8 +68,8 @@ p.button-container a.button.primary:any-link {
   padding: var(--spacing-xxs);
 
   &:hover {
-    border-color: var(--red-color);
-    background-color: var(--red-color);
+    border-color: var(--color-red-300);
+    background-color: var(--color-red-300);
   }
 }
 

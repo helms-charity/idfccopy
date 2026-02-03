@@ -6,7 +6,7 @@
 
 .hero {
   position: relative;
-  background-color: #000;
+  background-color: var(--color-black);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
 .hero h3 {
   margin-left: 0;
   margin-right: 0;
-  color: #fff;
+  color: var(--color-white);
   font-size: var(--heading-font-size-l);
   font-weight: 700;
   line-height: 1.1;
@@ -33,7 +33,7 @@
 }
 
 .hero p {
-  color: #fff;
+  color: var(--color-white);
   font-size: var(--body-font-size-xs);
   margin-bottom: 0;
   margin-top: 0;
@@ -61,8 +61,8 @@
 .dark-scheme .hero a.button.primary:any-link:hover,
  .dark-scheme button.primary,
  .dark-scheme button.primary:hover {
-background-color: var(--red-color);
-color: var(--btn-color-white);
+background-color: var(--color-red-300);
+color: var(--color-white);
 border-color: transparent;
 }
 
@@ -71,8 +71,8 @@ border-color: transparent;
  .dark-scheme button.secondary,
  .dark-scheme button.secondary:hover {
 background-color: transparent;
-color: var(--btn-color-white);
-border-color: var(--btn-color-white);
+color: var(--color-white);
+border-color: var(--color-white);
 }
 
 /* Button groups wrapper */

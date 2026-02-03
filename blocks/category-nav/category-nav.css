@@ -27,7 +27,7 @@ body.is-framework-page .category-nav.block > div {
   visibility: visible !important;
   padding: var(--spacing-xxs);
   margin-bottom: var(--spacing-xxs);
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid #e0e0e0;
   border-radius: 4px;
 }
@@ -111,7 +111,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .category-nav-left > li > a:hover {
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
 }
 
 /* Push bulletin cards notification to the right */
@@ -153,7 +153,7 @@ body.is-framework-page .category-nav.block > div > div {
   left: 0;
   border-radius: 0 var(--spacing-xxs) var(--spacing-xxs);
   box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
-  background: #fff;
+  background: var(--color-white);
   border: 1px solid #e0e0e0;
   min-width: 860px;
   max-width: 860px;
@@ -201,7 +201,7 @@ body.is-framework-page .category-nav.block > div > div {
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  border-bottom: 20px solid #fff;
+  border-bottom: 20px solid var(--color-white);
   z-index: 1003;
 }
 
@@ -230,7 +230,7 @@ body.is-framework-page .category-nav.block > div > div {
 
 /* Explore link - right side of header */
 .category-nav-explore-link {
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   font-size: 12px;
   text-decoration: none;
   font-weight: 500;
@@ -248,7 +248,7 @@ body.is-framework-page .category-nav.block > div > div {
   border: none;
   font-size: 32px;
   line-height: 1;
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -276,7 +276,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .category-nav-dropdown .category-nav-explore-link {
-  color: var(--dark-red-link-color);
+  color: var(--color-red-600);
   font-size: 12px;
   text-decoration: none;
   font-weight: 500;
@@ -286,7 +286,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .category-nav-dropdown .category-nav-explore-link:hover {
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   text-decoration: underline;
   font-weight: 600;
 }
@@ -297,8 +297,8 @@ body.is-framework-page .category-nav.block > div > div {
   display: inline-block;
   width: 6px;
   height: 6px;
-  border-right: 2px solid var(--dark-red-color);
-  border-bottom: 2px solid var(--dark-red-color);
+  border-right: 2px solid var(--text-red-color);
+  border-bottom: 2px solid var(--text-red-color);
   transform: rotate(-45deg);
   transition: transform 0.2s ease;
 }
@@ -393,14 +393,14 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 /* Tag Background Colors - Pastel Palette */
-.category-nav-card .category-nav-tag.tg-clr-pale-yellow { background-color: #fffbe6; }
+.category-nav-card .category-nav-tag.tg-clr-pale-yellow { background-color: var(--color-white)be6; }
 .category-nav-card .category-nav-tag.tg-clr-pale-cyan { background-color: #ebffff; }
 .category-nav-card .category-nav-tag.tg-clr-pale-lavender { background-color: #ffeffd; }
 .category-nav-card .category-nav-tag.tg-clr-pale-rose { background-color: #ffcece; }
 .category-nav-card .category-nav-tag.tg-clr-pale-pink { background-color: #ffe1ec; }
 .category-nav-card .category-nav-tag.tg-clr-pale-purple { background-color: #f2e5ff; }
 .category-nav-card .category-nav-tag.tg-clr-pale-mint { background-color: #eefff2; }
-.category-nav-card .category-nav-tag.tg-clr-pale-white { background-color: #fff7f7; }
+.category-nav-card .category-nav-tag.tg-clr-pale-white { background-color: var(--color-white)7f7; }
 .category-nav-card .category-nav-tag.tg-clr-none { background-color: unset; }
 
 /* Card Title */
@@ -422,7 +422,7 @@ body.is-framework-page .category-nav.block > div > div {
   height: 20px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-white);
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   display: flex;
   align-items: center;
@@ -432,7 +432,7 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 .category-nav-card .category-nav-card-link:hover .category-nav-card-icon {
-  background: var(--dark-red-color);
+  background: var(--text-red-color);
   box-shadow: 0 2px 6px rgb(157 29 39 / 25%);
 }
 
@@ -441,14 +441,14 @@ body.is-framework-page .category-nav.block > div > div {
   display: block;
   width: 6px;
   height: 6px;
-  border-right: 2px solid var(--dark-red-color);
-  border-bottom: 2px solid var(--dark-red-color);
+  border-right: 2px solid var(--text-red-color);
+  border-bottom: 2px solid var(--text-red-color);
   transform: rotate(-45deg);
   transition: border-color 0.2s ease;
 }
 
 .category-nav-card .category-nav-card-link:hover .category-nav-card-icon::after {
-  border-color: #fff;
+  border-color: var(--color-white);
 }
 
 /* New CC Cards Style */
@@ -484,7 +484,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 }
 
 .nav-fragment-content .category-nav-card-link > .category-nav-card-title{
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   font-weight: 600;
   font-size: 13px;
   line-height: 17px;
@@ -577,7 +577,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 
 /* Body container - wraps title, description, divider, and buttons with red background */
 .category-nav-bulletin-card-body {
-  background: var(--dark-red-color, #922); /* Red background for entire text area */
+  background: var(--text-red-color, #922); /* Red background for entire text area */
   display: flex;
   flex-direction: column;
 }
@@ -587,7 +587,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
   padding: 16px 10px 15px;
   font-size: 16px;
   font-weight: 500;
-  color: #fff;
+  color: var(--color-white);
   line-height: 1.3;
 }
 
@@ -596,14 +596,14 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
   padding: 0 24px 16px;
   font-size: 16px;
   line-height: 1.5;
-  color: #fff;
+  color: var(--color-white);
 }
 
 /* Horizontal divider - white line with margins from edges */
 .category-nav-bulletin-card-divider {
   margin: 1px 10px; /* 40px horizontal margins create spacing from edges */
   border: none;
-  border-top: 1px solid #fff;
+  border-top: 1px solid var(--color-white);
   height: 0;
 }
 
@@ -618,7 +618,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 .category-nav-bulletin-card-button {
   font-size: 16px;
   font-weight: 700; /* Bold font */
-  color: #fff !important; /* Always white, never blue */
+  color: var(--color-white) !important; /* Always white, never blue */
   text-decoration: none;
   cursor: pointer;
   background: none;
@@ -628,7 +628,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 
 /* Keep links white on hover - no color change */
 .category-nav-bulletin-card-button:hover {
-  color: #fff !important; /* Always white on hover */
+  color: var(--color-white) !important; /* Always white on hover */
   text-decoration: none;
 }
 
@@ -654,7 +654,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
   border-radius: 50%;
   border: none;
   background: #f5f5f5; /* Light gray background */
-  color: var(--dark-red-color, #922); /* Red arrows when active */
+  color: var(--text-red-color, #922); /* Red arrows when active */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -746,6 +746,6 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 }
 
 .category-nav-dropdown::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-red-color);
+  background: var(--text-red-color);
 }
 

@@ -20,23 +20,26 @@
 
 :root {
   /* colors */
-  --background-color: white;
-  --dark-color: #505050;
-  --text-color: #25243B;
-  --text-color-light: #DDDBDA; /* mayura */
-  --text-color-hero-heritage-cc: #2d3679;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
-  --purple-color: #563b80;
-  --dark-red-color: #9c1d26;
-  --footer-red-color: #9d1d27;
-  --dark-red-link-color:#801c1e;
-  --red-color: #d13d3f;
-  --red-800: #6e0a0f;
-  --btn-color-red: #902a2b;
-  --btn-color-white: white;
-  --gray-btn-light: #d9d9d9;
-  --gray-btn-dark: #4b4b4b;
+  --color-red-300: #d13d3f;
+  --color-red-400: #9c1d26;
+  --color-red-500: #902a2b; /* arrow-right-red.svg */
+  --color-red-600:#801c1e;
+  --color-red-800: #6e0a0f;
+  --color-blue-200: #007bff;
+  --colos-blue-800: #2d3679;
+  --color-blue-900: #182659;
+
+  --color-white: #fff;
+  --color-white-200: #eee; /* #e9e9e9 */
+  --color-gray-100: #DDDBDA; /* mayura */
+  --color-gray-200: #dbdbde;
+  --color-gray-300: #6c757d;
+  --color-gray-400: #505050;
+  --color-gray-500: #4b4b4b;
+  --color-gray-700: #25243B;
+  --color-gray-900: #222;
+  --color-black: #000;
+
   --gradient-translucent: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.24) 100%);
   --gradient-pearl: linear-gradient(73deg, #C7C6C6 -74.4%, #F1F1F1 23.15%);
   --gradient-red-purple: linear-gradient(165deg, #D94751 0%, #8C2034 40%, #732C53 80%, #513873 100%);
@@ -46,44 +49,24 @@
   --gradient-red: linear-gradient(92deg, #5D2227 36.27%, #982B35 70.68%, #5D2227 85.89%);
   --gradient-light-red: linear-gradient(97.67deg, rgba(55, 10, 14, 0.8) 6.64%, rgba(157, 29, 39, 0.8) 90.39%);
   --gradient-blue: linear-gradient(137deg, #08133C 4.07%, #2E3E79 75.46%);
-  --gradient-heritage-cc-mayura-intro: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
-  --black-gradient: linear-gradient(90deg, rgb(0 0 0 / 0%) 0%, #000 65%);
-  --black-gradient-mobile: linear-gradient(to bottom, transparent 0%, black 100%);
+  --gradient-indigo: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
+  --gradient-black-90: linear-gradient(90deg, rgb(0 0 0 / 0%) 0%, #000 65%);
+  --gradient-black: linear-gradient(to bottom, transparent 0%, black 100%);
   --gradient-pewter: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
   --gradient-silver: linear-gradient(208deg, #C8C6C6 0%, #F1F0F0 53.5%, #C8C6C6 100%);
-  --metal-blue: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
-  --metal-silver: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
-  --modal-silver-text: #182659;
-  --modal-blue-text: #d6d4d4;
+  --gradient-metal-blue: linear-gradient(308deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
+  --gradient-metal-silver: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
   --modal-backdrop-gradient: linear-gradient(to bottom, rgb(200 198 198 / 70%) 0, rgb(200 198 198 / 95%) 1px, #C8C6C6 250px, #F1F0F0 50%, #C8C6C6 100%);
 
-  /* bootstrap colors */
-  --blue: #007bff;
-  --indigo: #6610f2;
-  --purple: #6f42c1;
-  --pink: #e83e8c;
-  --red: #dc3545;
-  --orange: #fd7e14;
-  --yellow: #ffc107;
-  --green: #28a745;
-  --teal: #20c997;
-  --cyan: #17a2b8;
-  --white: #fff;
-  --light-color: #f5f5f5; /* #f6f6f6 */
-  --gray-light: #f9f9f9;
-  --gray-200: #eee; /* #e9e9e9 */
-  --gray-300: #dbdbde;
-  --gray-900: #222;
-  --gray: #6c757d;
-  --gray-dark: #343a40;
-  --primary: #007bff;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --info: #17a2b8;
-  --warning: #ffc107;
-  --danger: #dc3545;
-  --light: #f8f9fa;
-  --dark: #343a40;
+  --background-color: var(--color-white);
+  --text-color: var(--color-gray-700);
+  --text-red-color: var(--color-red-400);
+  --footer-red-color: var(--color-red-400);
+  --btn-color-red: var(--color-red-500);
+  /* metal card specific */
+  --gradient-heritage-cc-mayura-intro: var(--gradient-indigo); /* change to --gradient-heritage-cc-intro */
+  --text-color-hero-heritage-cc: var(--color-blue-800);
+
 
   /* fonts */
   --body-font-family: 'Inter', 'inter-fallback', sans-serif;
@@ -148,7 +131,7 @@ html {
 body {
   display: none;
   margin: 0;
-  background-color: #000; /* Start with black to prevent white flash on dark-themed pages */
+  background-color: var(--color-black); /* Start with black to prevent white flash on dark-themed pages */
 }
 
 /* In Universal Editor, use default background immediately */
@@ -263,7 +246,7 @@ button {
 /* links */
 a {
   text-decoration: none;
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
 }
 
 a:any-link {
@@ -274,7 +257,7 @@ a:any-link {
 
 a:hover {
   text-decoration: none;
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
 }
 
 a:focus {
@@ -322,7 +305,7 @@ button.button {
 a.button.primary:any-link,
 button.primary {
   background-color: var(--btn-color-red);
-  color: var(--btn-color-white);
+  color: var(--color-white);
   border-color: transparent;
   transition: background-color 0.2s ease;
 }
@@ -331,7 +314,7 @@ a.button.primary:hover,
 a.button.primary:focus,
 button.primary:hover,
 button.primary:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red);
   cursor: pointer;
@@ -349,7 +332,7 @@ a.button.secondary:hover,
 a.button.secondary:focus,
 button.secondary:hover,
 button.secondary:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
 }
 
 /* Button block styles (Universal Editor component) - base states */
@@ -372,7 +355,7 @@ button.secondary:focus {
 .button.block.primary a {
   background-color: var(--btn-color-red);
   border: 2px solid transparent;
-  color: var(--btn-color-white);
+  color: var(--color-white);
 }
 
 .button.block.secondary a {
@@ -384,7 +367,7 @@ button.secondary:focus {
 /* Button block scheme variants - base states */
 .light-scheme .button.block.primary a {
   background-color: var(--btn-color-red);
-  color: var(--btn-color-white);
+  color: var(--color-white);
 }
 
 .light-scheme .button.block.secondary a {
@@ -393,57 +376,57 @@ button.secondary:focus {
 }
 
 .dark-scheme .button.block.primary a {
-  background-color: var(--btn-color-white);
-  border-color: var(--btn-color-white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
   color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.secondary a {
   background-color: transparent;
-  border-color: var(--btn-color-white);
-  color: var(--btn-color-white);
+  border-color: var(--color-white);
+  color: var(--color-white);
 }
 
 /* Button block hover/focus states */
 .button.block.primary a:hover,
 .button.block.primary a:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red);
 }
 
 .button.block.secondary a:hover,
 .button.block.secondary a:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   color: var(--btn-color-red);
-  border-color: var(--btn-color-white);
+  border-color: var(--color-white);
 }
 
 .light-scheme .button.block.primary a:hover,
 .light-scheme .button.block.primary a:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red);
 }
 
 .light-scheme .button.block.secondary a:hover,
 .light-scheme .button.block.secondary a:focus {
-  background-color: var(--btn-color-white);
-  border-color: var(--btn-color-white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
   color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.primary a:hover,
 .dark-scheme .button.block.primary a:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red);
 }
 
 .dark-scheme .button.block.secondary a:hover,
 .dark-scheme .button.block.secondary a:focus {
-  background-color: var(--btn-color-white);
-  border-color: var(--btn-color-white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
   color: var(--btn-color-red);
 }
 
@@ -451,20 +434,20 @@ button.secondary:focus {
 .light-scheme a.button.primary:any-link,
 .light-scheme button.primary {
   background-color: var(--btn-color-red);
-  color: var(--btn-color-white);
+  color: var(--color-white);
   border-color: transparent;
 }
 
 .dark-scheme a.button.primary:any-link,
 .dark-scheme button.primary {
-  background-color: var(--btn-color-white);
-  border-color: var(--btn-color-white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
   color: var(--btn-color-red);
 }
 
 .light-scheme a.button.secondary:any-link,
 .light-scheme button.secondary {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border: 2px solid var(--btn-color-red);
   color: var(--btn-color-red);
 }
@@ -472,14 +455,14 @@ button.secondary:focus {
 .dark-scheme a.button.secondary:any-link,
 .dark-scheme button.secondary {
   background-color: transparent;
-  border: 2px solid var(--btn-color-white);
-  color: var(--btn-color-white);
+  border: 2px solid var(--color-white);
+  color: var(--color-white);
 }
 
 /* Disabled button states */
 button.primary:disabled,
 button.primary:disabled:hover {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   cursor: unset;
 }
 
@@ -488,7 +471,7 @@ button.primary:disabled:hover {
 .light-scheme a.button.primary:focus,
 .light-scheme button.primary:hover,
 .light-scheme button.primary:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red); 
 }
@@ -497,7 +480,7 @@ button.primary:disabled:hover {
 .dark-scheme a.button.primary:focus,
 .dark-scheme button.primary:hover,
 .dark-scheme button.primary:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
   border-color: transparent;
 }
 
@@ -505,15 +488,15 @@ button.primary:disabled:hover {
 .light-scheme a.button.secondary:focus,
 .light-scheme button.secondary:hover,
 .light-scheme button.secondary:focus {
-  background-color: var(--btn-color-white);
+  background-color: var(--color-white);
 }
 
 .dark-scheme a.button.secondary:hover,
 .dark-scheme a.button.secondary:focus,
 .dark-scheme button.secondary:hover,
 .dark-scheme button.secondary:focus {
-  background-color: var(--btn-color-white);
-  border-color: var(--btn-color-white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
   color: var(--btn-color-red);
 }
 
@@ -577,14 +560,14 @@ main img {
 }
 
 .dark-scheme {
-  color: var(--white);
+  color: var(--color-white);
 
   .swiper-pagination-bullet {
     background: rgba(255 255 255 / 50%);
   }
 
   .swiper-pagination-bullet-active {
-    background: var(--white);
+    background: var(--color-white);
   }
 }
 
@@ -607,7 +590,7 @@ main:not([data-aue-resource]) .section.columns-container:not([data-section-statu
   visibility: hidden;
   height: 450px;
   overflow: hidden;
-  background: #000;
+  background: var(--color-black);
 }
 
 /* Ensure all children of hidden sections also have black background */
@@ -641,7 +624,7 @@ main not:dialog.section.columns-container[data-section-status="loaded"] {
 /* 4. Sections with dark-scheme children should have dark backgrounds to prevent flash.
       This catches cases where inline styles haven't applied yet. */
 .section:has(.dark-scheme) {
-  background-color: #000;
+  background-color: var(--color-black);
 }
 
 /* sections */
@@ -780,10 +763,10 @@ main>.section:first-of-type {
   top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid var(--gray-300);
+  border-bottom: 1px solid var(--color-gray-200);
 
   .columns > div {
-    background-color: var(--white);
+    background-color: var(--color-white);
     flex-direction: row;
       flex: 1;
 
@@ -820,7 +803,7 @@ main>.section:first-of-type {
       filter: invert(100%);
       transform: rotate(45deg);
       padding: 4px;
-      border: 1px solid var(--gray-300);
+      border: 1px solid var(--color-gray-200);
       border-radius: 50%;
     }
   }
@@ -894,11 +877,11 @@ main .section.highlight {
 
 /* when scheme is manually chosen from the section style */
 .section.dark-scheme {
-  color: var(--white);
+  color: var(--color-white);
 
   > .default-content.light-scheme,
   > .block-content.light-scheme {
-    color: var(--white);
+    color: var(--color-white);
   }
 }
 
@@ -1133,7 +1116,7 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   }
 
   main .breadcrumbs ol li a:hover {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     text-decoration: none;
   }
 
@@ -1142,14 +1125,14 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     display: inline-block;
     width: 7px;
     height: 7px;
-    border: solid var(--dark-red-color);
+    border: solid var(--text-red-color);
     border-width: 1px 1px 0 0;
     transform: rotate(45deg);
     margin-left: 10px;
   }
 
   main .breadcrumbs ol li[aria-current] {
-    color: var(--dark-color);
+    color: var(--color-gray-400);
     font-family: var(--body-font-family-semibold);
     font-weight: 400;
   }

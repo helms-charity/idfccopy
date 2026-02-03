@@ -15,7 +15,7 @@
 .accordion details summary,
 .light-scheme .dark-scheme .accordion details summary {
   color: var(--text-color);
-  border-bottom: 1px solid var(--text-color-light);
+  border-bottom: 1px solid var(--color-gray-100);
 }
 
 .accordion details summary {
@@ -52,7 +52,7 @@
   border-radius: 5px;
 
   a:any-link {
-    color: var(--text-color-light);
+    color: var(--color-gray-100);
     }
 }
 
@@ -122,7 +122,7 @@
 .accordion details[open] summary,
 .light-scheme .dark-scheme .accordion details[open] summary {
   background: var(--gradient-pewter);
-  color: var(--text-color-light);
+  color: var(--color-gray-100);
   transition: all 0.3s ease-in-out;
 }
 
@@ -141,7 +141,7 @@
   }
   
   .accordion details[open], .accordion details[open] summary {
-    background: var(--white);
+    background: var(--color-white);
     color: var(--text-color);
 
     > p > strong {
@@ -150,13 +150,13 @@
   }
   
   a.accordion-cta.button {
-    color: var(--white);
+    color: var(--color-white);
     display: block;
     text-align: right;
   }
 
   .accordion details summary {
-    color: var(--text-color-light);
+    color: var(--color-gray-100);
     font-weight: 400;
 
     > p > strong {
@@ -174,7 +174,7 @@
   .dark-scheme .light-scheme {
 
     .accordion details summary {
-      color: var(--text-color-light);
+      color: var(--color-gray-100);
     }
 
     .accordion details[open], .accordion details[open] summary {
@@ -182,7 +182,7 @@
     }
 
     .accordion-cta {
-      color: var(--white);
+      color: var(--color-white);
     }
   }
 
@@ -194,5 +194,5 @@
 .accordion.light-scheme details[open],
 .accordion.light-scheme details[open] summary {
   background: var(--gradient-pewter);
-  color: var(--text-color-light);
+  color: var(--color-gray-100);
 }

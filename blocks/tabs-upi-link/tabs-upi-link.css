@@ -6,7 +6,7 @@
   inset: 12% 8% 5%;
   overflow: hidden;
   border-radius: 15px;
-  background: #000;
+  background: var(--color-black);
   z-index: 1;
 }
 
@@ -138,8 +138,8 @@
 }
 
 .tabs-upi-link .tabs-list button[aria-selected='true'] p .icon {
-  background-color: var(--white);
-  border-color: var(--white);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
 }
 
 .tabs-upi-link .tabs-upi-link-image img,
@@ -159,7 +159,7 @@
 
 .tabs-upi-link .tabs-list button[aria-selected='true'] {
   background-color: transparent;
-  color: var(--white);
+  color: var(--color-white);
   font-weight: 600;
   font-size: var(--body-font-size-xs);
   cursor: default;
@@ -259,7 +259,7 @@
   width: 100%;
   padding: 14px 32px;
   background-color: var(--btn-color-red);
-  color: var(--white);
+  color: var(--color-white);
   border: none;
 }
 
@@ -386,7 +386,7 @@
   .tabs-upi-link .tabs-panel .tabs-upi-link-panel-content picture {
     display: block;
     padding: 10px 10px 6px;
-    background-color: var(--white);
+    background-color: var(--color-white);
     border-radius: 15px 15px 0 0;
   }
 
@@ -395,7 +395,7 @@
     padding: var(--spacing-xxs) 32px var(--spacing-xs);
     font-size: 10px;
     color: var(--text-color);
-    background-color: var(--white);
+    background-color: var(--color-white);
     border-radius: 0 0 15px 15px;
     text-align: center;
   }
@@ -419,9 +419,9 @@
   .tabs-upi-link .tabs-list::after {
     left: var(--spacing-xs);
     right: 0;
-    background-color: var(--white);
+    background-color: var(--color-white);
     background-image:
-      linear-gradient(to right, var(--white) 0%, var(--white) 2px, transparent 2px, transparent calc(100% - 2px), var(--white) calc(100% - 2px), var(--white) 100%);
+      linear-gradient(to right, var(--color-white) 0%, var(--color-white) 2px, transparent 2px, transparent calc(100% - 2px), var(--color-white) calc(100% - 2px), var(--color-white) 100%);
   }
 
   .tabs-upi-link .tabs-list button {
@@ -438,7 +438,7 @@
     flex-direction: row;
     align-items: center;
     gap: 0;
-    color: var(--white);
+    color: var(--color-white);
     text-align: left;
     white-space: nowrap;
     padding: var(--spacing-xxs) 16px;
@@ -449,7 +449,7 @@
   }
 
   .tabs-upi-link .tabs-list button[aria-selected='true'] p {
-    background-color: var(--white);
+    background-color: var(--color-white);
     color: var(--text-color);
   }
 

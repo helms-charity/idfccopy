@@ -14,7 +14,7 @@
 
 #user-verification-modal .modal-header {
   background-color: none;
-  color: #000000;
+  color: var(--color-black)000;
 }
 
 #user-verification-modal .modal-title {
@@ -24,7 +24,7 @@
 }
 
 #user-verification-modal .modal-header .close {
-  color: #ffffff;
+  color: var(--color-white);
   opacity: 1;
   font-size: 1.5rem;
   font-weight: 300;
@@ -70,7 +70,7 @@
   font-size: 1rem;
   line-height: 1.5;
   color: #495057;
-  background-color: #fff;
+  background-color: var(--color-white);
   background-clip: padding-box;
   border: none;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -78,7 +78,7 @@
 
 .form-control:focus {
   color: #495057;
-  background-color: #fff;
+  background-color: var(--color-white);
   outline: 0;
 }
 
@@ -130,7 +130,7 @@
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--color-white);
   background-color: #EC1C24;
   border: 1px solid #EC1C24;
   border-radius: 4px;
@@ -162,7 +162,7 @@
   font-size: 1rem;
   font-weight: 500;
   color: #333333;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   border: 1px solid #ced4da;
   border-radius: 4px;
   cursor: pointer;
@@ -227,7 +227,7 @@ input[type="date"].form-control::-webkit-calendar-picker-indicator {
   left: 50%;
   margin-left: -8px;
   margin-top: -8px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--color-white);
   border-radius: 50%;
   border-top-color: transparent;
   animation: spinner 0.6s linear infinite;

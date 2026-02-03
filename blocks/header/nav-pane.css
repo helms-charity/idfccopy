@@ -8,13 +8,13 @@
   }
 
   .top-nav-container .top-nav .btn-box .btn-white {
-    border: solid 1px var(--dark-red-color);
+    border: solid 1px var(--text-red-color);
     padding: var(--spacing-xxs) 15px;
     margin-left: 15px;
     font-size: var(--body-font-size-s);
     font-weight: 500;
-    background-color: var(--dark-red-color);
-    color: #fff;
+    background-color: var(--text-red-color);
+    color: var(--color-white);
   }
 
   .top-nav-container .top-nav .btn-box .btn-white#dropdownMenuHelp {
@@ -36,13 +36,13 @@
 }
 
 .top-nav-container .top-nav .btn-box .btn-white {
-  border: solid 1px var(--dark-red-color);
+  border: solid 1px var(--text-red-color);
   padding: var(--spacing-xxs) 15px;
   margin-left: 15px;
   font-size: var(--body-font-size-s);
   font-weight: 500;
-  background-color: var(--dark-red-color);
-  color: #fff
+  background-color: var(--text-red-color);
+  color: var(--color-white)
 }
 
 .top-nav-container .top-nav .btn-box .btn-white#dropdownMenuHelp {
@@ -96,7 +96,7 @@
   }
 
   .top-nav .menu-mob .icon-menu:before {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .main-link {
@@ -106,7 +106,7 @@
   }
 
   .mob-menu .mob-smenu .main-link a {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .fhd {
@@ -117,7 +117,7 @@
   }
 
   .mob-menu .mob-smenu .fhd.act {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     font-weight: 700
   }
 
@@ -132,12 +132,12 @@
     content: "\e900";
     right: 15px;
     top: 20px;
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .fhd.others-menu {
     background: #525252;
-    color: #fff;
+    color: var(--color-white);
     border-bottom-color: #d0d0d0
   }
 
@@ -146,7 +146,7 @@
   }
 
   .mob-menu .mob-smenu .fhd.others-menu:before {
-    color: #fff
+    color: var(--color-white)
   }
 
   .mob-menu .mob-smenu .fbody {
@@ -172,7 +172,7 @@
 
   .mob-menu .mob-smenu .fbody .fhd.act:before {
     content: "\e903";
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .fbody .fhd:before {
@@ -199,7 +199,7 @@
   }
 
   .mob-menu .mob-smenu .flist li.viewAll a {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .flist li a {
@@ -207,7 +207,7 @@
   }
 
   .mob-menu .mob-smenu .flist li a.f16br {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .mob-menu .mob-smenu .flist li hr {
@@ -220,7 +220,7 @@
 
   .mob-menu .mob-smenu .flist li.flist-hd {
     font-weight: 700;
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     padding-left: 15px
   }
 
@@ -325,7 +325,7 @@
 }
 
 .top-nav .menu-mob .icon-menu::before {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
  }
 }
 
@@ -425,7 +425,7 @@ font-size: 12px;
   font-size: 64px;
   line-height: 1.1;
   letter-spacing: -2px;
-  color: #FFFFFF;
+  color: var(--color-white);
 }
 
 .hd1.black {
@@ -490,7 +490,7 @@ header .header {
   left: 0;
   z-index: 4;
   /* height: 110px; */
-  background: #fff;
+  background: var(--color-white);
   transition: all .1s ease
 }
 
@@ -654,7 +654,7 @@ header.sticky .login a {
 
 .top-nav-left>li.active>a .icon-Down:before,
 .top-nav-left>li:hover>a .icon-Down:before {
-  color: var(--dark-red-color);
+  color: var(--text-red-color);
   content: "\e903"
 }
 
@@ -665,11 +665,11 @@ header.sticky .login a {
 }
 
 .top-nav-left>li>a .icon-Down:before {
-  color: var(--dark-red-color)
+  color: var(--text-red-color)
 }
 
 .top-nav-left>li>a:hover {
-  border-bottom: 3px solid var(--dark-red-color);
+  border-bottom: 3px solid var(--text-red-color);
   background: #f6f6f6
 }
 
@@ -744,7 +744,7 @@ header.sticky .login a {
 }
 
 .gradientCard a span {
-  background: #fff;
+  background: var(--color-white);
   border-radius: 50%;
   height: 30px;
   width: 30px;
@@ -757,7 +757,7 @@ header.sticky .login a {
 }
 
 .gradientCard a span:before {
- color: var(--dark-red-color);
+ color: var(--text-red-color);
     font-weight: 600;
     content: '';
     display: inline-block;
@@ -838,7 +838,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
     align-items: center;
     
     /* padding: 9px 65px; */
-    background: #fff
+    background: var(--color-white)
 }
 
 .top-nav.bg-light-white {
@@ -942,7 +942,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 
 .top-nav-left>li.active>a .icon-Down::before,
 .top-nav-left>li:hover>a .icon-Down::before {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     content: ""
 }
 
@@ -963,11 +963,11 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .top-nav-left>li>a .icon-Down::before {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
 }
 
 .top-nav-left>li>a:hover {
-    border-bottom: 3px solid var(--dark-red-color)
+    border-bottom: 3px solid var(--text-red-color)
 }
 
 .top-nav-left>li .dfm {
@@ -1003,7 +1003,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 .top-nav .dropdown-content {
     display: none;
     position: absolute;
-    background: #fff;
+    background: var(--color-white);
     width: 760px;
     left: -20px;
     z-index: 2;
@@ -1026,7 +1026,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .top-nav .drop-down:hover>a {
-    border-bottom-color: var(--dark-red-color)
+    border-bottom-color: var(--text-red-color)
 }
 
 .top-nav .drop-down:hover>a .icon-Down::before {
@@ -1058,7 +1058,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .gradientCard a span {
-    background: #fff;
+    background: var(--color-white);
     border-radius: 50%;
     height: 30px;
     width: 30px;
@@ -1071,7 +1071,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .gradientCard a span:before {
-    color: var(--dark-red-color);
+    color: var(--text-red-color);
     font-weight: 600
 }
 
@@ -1092,7 +1092,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
     content: "\a";
     border-style: solid;
     border-width: 10px 15px 10px 0;
-    border-color: rgba(0, 0, 0, 0) #fff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0) var(--color-white) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
     position: absolute;
     left: 30%;
     transform-origin: center bottom;
@@ -1103,7 +1103,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 }
 
 .item-car .icon-Right:before {
-  color: var(--dark-red-color)
+  color: var(--text-red-color)
 }
 
 .icon-Right:before {
@@ -1128,7 +1128,7 @@ header.d-lg-none .top-nav-right ul li:last-child {
 .nav-list-wrapper .dropdown-content{
     display: none;
     position: absolute;
-    background: #fff;
+    background: var(--color-white);
     width: 760px;
     left: -20px;
     z-index: 2;
