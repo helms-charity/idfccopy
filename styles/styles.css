@@ -1120,11 +1120,6 @@ The height and width are set to 200 assuming the doodles won't be larger. */
     transition: color 0.2s ease;
   }
 
-  main .breadcrumbs ol li a:hover {
-    color: var(--text-red-color);
-    text-decoration: none;
-  }
-
   main .breadcrumbs ol li:not(:last-child)::after {
     content: '';
     display: inline-block;
