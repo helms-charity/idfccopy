@@ -268,15 +268,16 @@ export default async function decorate(block) {
 
   let searchP;
   let toolsUl;
+  let toolsContent;
 
   if (toolsSection) {
     // Get content from the tools section
-    const toolsContent = toolsSection.querySelector('.default-content');
+    toolsContent = toolsSection.querySelector('.default-content');
     if (toolsContent) {
       // Authoring contract: First <p> with <strong> is the search bar text
       searchP = toolsContent.querySelector('p strong')?.parentElement;
 
-      // Authoring contract: First <ul> is the tools list (odometer items + login)
+      // Authoring contract: First <ul> is the tools list (odometer items)
       toolsUl = toolsContent.querySelector('ul');
     }
   }
@@ -292,62 +293,92 @@ export default async function decorate(block) {
     navToolsWrapper.appendChild(searchElement);
   }
 
-  // Extract odometer items from original list (before cloning/modifying)
+  // Extract odometer items from original list (all items are odometer items now)
   let odometerItemTexts = [];
   if (toolsUl) {
     const originalLis = Array.from(toolsUl.querySelectorAll('li'));
-    if (originalLis.length > 1) {
-      // Get all items except the last one (Login)
-      odometerItemTexts = originalLis.slice(0, -1).map((li) => li.textContent.trim());
+    if (originalLis.length > 0) {
+      odometerItemTexts = originalLis.map((li) => li.textContent.trim());
     }
   }
 
-  // Build the tools list with dynamic odometer
-  if (toolsUl) {
-    const toolsUlClone = toolsUl.cloneNode(true);
-    const allLis = Array.from(toolsUlClone.querySelectorAll('li'));
+  // Build the tools list with dynamic odometer (if UL exists)
+  if (toolsUl && odometerItemTexts.length > 0) {
+    const toolsUlClone = document.createElement('ul');
+    const odometerLi = document.createElement('li');
 
-    if (allLis.length > 1) {
-      // Get all items except the last one (Login)
-      const odometerItems = allLis.slice(0, -1);
-      const loginLi = allLis[allLis.length - 1];
-
-      // Build odometer HTML from the list items
-      const odometerSpans = odometerItems.map((li) => `<span>${li.textContent.trim()}</span>`).join('');
-      // Add first item again at the end for seamless loop
-      const firstItemText = odometerItems[0].textContent.trim();
-      const odometerHTML = `
-        <div class="grnt-animation-odometer">
-          <div class="grnt-odometer-track">
-            ${odometerSpans}
-            <span>${firstItemText}</span>
-          </div>
+    // Build odometer HTML from all list items
+    const odometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
+    // Add first item again at the end for seamless loop
+    const firstItemText = odometerItemTexts[0];
+    const odometerHTML = `
+      <div class="grnt-animation-odometer">
+        <div class="grnt-odometer-track">
+          ${odometerSpans}
+          <span>${firstItemText}</span>
         </div>
-      `;
+      </div>
+    `;
 
-      // Replace the first LI with the odometer
-      const firstLi = toolsUlClone.querySelector('li:first-child');
-      if (firstLi) {
-        firstLi.innerHTML = odometerHTML;
-      }
-
-      // Remove the middle items (they're now in the odometer)
-      odometerItems.slice(1).forEach((li) => li.remove());
-
-      // Add login icon to the last <li> (authoring contract: last item is always Login)
-      if (loginLi) {
-        loginLi.id = 'login-button';
-        const existingIcon = loginLi.querySelector('.icon-login-lock');
-        if (!existingIcon) {
-          const loginIcon = document.createElement('span');
-          loginIcon.classList.add('icon', 'icon-login-lock');
-          loginLi.prepend(loginIcon);
-        }
-      }
-    }
-
+    odometerLi.innerHTML = odometerHTML;
+    toolsUlClone.appendChild(odometerLi);
     navToolsWrapper.appendChild(toolsUlClone);
   }
+
+  // Extract standalone button paragraphs (Pay, Login, etc.)
+  // These are <p> tags with either <a> links or plain text after the UL
+  const buttonParagraphs = toolsContent
+    ? Array.from(toolsContent.querySelectorAll('p'))
+      .filter((p) => {
+        // Exclude the search paragraph (has <strong>)
+        if (p.querySelector('strong')) return false;
+        // Include paragraphs with links or plain text that looks like a button
+        const hasLink = p.querySelector('a');
+        const textContent = p.textContent.trim().toLowerCase();
+        const isButton = ['pay', 'login'].includes(textContent);
+        return hasLink || isButton;
+      })
+    : [];
+
+  // Add standalone buttons (Pay, Login, etc.)
+  buttonParagraphs.forEach((p) => {
+    const link = p.querySelector('a');
+    const buttonLi = document.createElement('li');
+    const buttonText = link ? link.textContent.trim() : p.textContent.trim();
+    const buttonTextLower = buttonText.toLowerCase();
+
+    // Set ID based on button text
+    if (buttonTextLower === 'pay') {
+      buttonLi.id = 'pay-button';
+      // Add the link text
+      buttonLi.appendChild(document.createTextNode(buttonText));
+      // Make clickable and navigate to link
+      if (link) {
+        buttonLi.style.cursor = 'pointer';
+        buttonLi.addEventListener('click', () => {
+          window.location.href = link.href;
+        });
+      }
+    } else if (buttonTextLower === 'login') {
+      buttonLi.id = 'login-button';
+      buttonLi.style.cursor = 'pointer';
+      // Add login icon
+      const loginIcon = document.createElement('span');
+      loginIcon.classList.add('icon', 'icon-login-lock');
+      buttonLi.appendChild(loginIcon);
+      // Add the text
+      buttonLi.appendChild(document.createTextNode(buttonText));
+      // Don't add click handler - login dropdown is handled separately below
+    }
+
+    // Add to existing UL or create one
+    let targetUl = navToolsWrapper.querySelector('ul');
+    if (!targetUl) {
+      targetUl = document.createElement('ul');
+      navToolsWrapper.appendChild(targetUl);
+    }
+    targetUl.appendChild(buttonLi);
+  });
 
   navTools.appendChild(navToolsWrapper);
 

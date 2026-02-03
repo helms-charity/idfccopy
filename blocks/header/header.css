@@ -753,8 +753,25 @@ header nav .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
   display: none;
 }
 
+/* Mobile: Pay button styling */
+header nav .nav-tools .default-content-wrapper > ul > li#pay-button {
+  color: #902a2c;
+  background-color: transparent;
+  border: 1px solid #902a2c;
+  border-radius: 50px;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  font-size: var(--body-font-size-xs);
+  font-weight: 400;
+  line-height: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Mobile: Login button styling */
-header nav .nav-tools .default-content-wrapper > ul > li:last-child {
+header nav .nav-tools .default-content-wrapper > ul > li#login-button {
   color: var(--color-white);
   background-color: #902a2c;
   border: 1px solid #902a2c;
@@ -851,12 +868,18 @@ header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > p:first-c
 }
 
 /* Mobile: Show all UL items when expanded */
-header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
+header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(#pay-button, #login-button) {
   display: none;
 }
 
+/* Mobile: Pay button adjustments when expanded */
+header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li#pay-button {
+  padding: 10px 20px;
+  font-size: var(--body-font-size-s);
+}
+
 /* Mobile: Login button adjustments when expanded */
-header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:last-child {
+header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li#login-button {
   padding: 10px 20px;
   font-size: var(--body-font-size-s);
 }
@@ -1808,11 +1831,11 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     display: flex;
   }
 
-  header nav .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
+  header nav .nav-tools .default-content-wrapper > ul > li:not(#pay-button, #login-button) {
     display: flex;
   }
 
-  header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(:last-child) {
+  header nav[aria-expanded='true'] .nav-tools .default-content-wrapper > ul > li:not(#pay-button, #login-button) {
     display: flex;
   }
 
@@ -2536,7 +2559,24 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     cursor: pointer;
   }
 
-  .nav-tools .default-content-wrapper>ul>li:last-child {
+  .nav-tools .default-content-wrapper>ul>li#pay-button {
+    color: #902a2c;
+    background-color: transparent;
+    border: 1px solid #902a2c;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    padding: var(--spacing-xxs) 16px;
+    line-height: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .nav-tools .default-content-wrapper>ul>li#pay-button:hover {
+    background-color: #902a2c;
+    color: var(--color-white);
+  }
+
+  .nav-tools .default-content-wrapper>ul>li#login-button {
     color: var(--color-white);
     background-color: #902a2c;
     border-color: #902a2c;
@@ -2853,7 +2893,7 @@ border-radius: 0;
   .section.columns-container {
     grid-column: 2;
     grid-row: 2;
-    width: 598px; /* match sections below for centered grid layout to work correctly*/
+    width: 598px; /* match sections below for centered grid layout to work correctly */
   }
 
   /* All cards-container sections except openaccount - will be overridden below */
