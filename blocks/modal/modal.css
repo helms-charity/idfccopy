@@ -790,7 +790,7 @@ body.modal-open {
 }
 
 .section[data-id^="mayura-metal-concept-"] p {
-  background: var(--color-blue-200, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
+  background: linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(0, 0, 0, 0);
   background-clip: text;
@@ -835,7 +835,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
 .section[data-id="mayura-metal-concept-1"] div.columns-img-col::after {
@@ -848,7 +848,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
   .section[data-id="mayura-metal-concept-1"] div.columns-img-col > picture::before {
@@ -861,7 +861,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
 .section[data-id="mayura-metal-concept-2"] div.columns-img-col::before {
@@ -874,7 +874,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
 .section[data-id="mayura-metal-concept-2"] div.columns-img-col::after {
@@ -887,7 +887,7 @@ body.modal-open {
   width: 20px;
   height: 20px; 
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
   .section[data-id="mayura-metal-concept-2"] div.columns-img-col > picture::before {
@@ -900,7 +900,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
 .section[data-id="mayura-metal-concept-3"] div.columns-img-col::before {
@@ -926,7 +926,7 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
   .section[data-id="mayura-metal-concept-3"] div.columns-img-col > picture::before {
@@ -939,18 +939,18 @@ body.modal-open {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  animation: zoomFade 2s infinite;
+  animation: zoomFade 1s infinite;
 }
 
 @keyframes zoomFade {
   0% {
-    transform: scale(0.3);
+    transform: scale(0.75);
     opacity: 0.5
   }
 
   40% {
-    transform: scale(1);
-    opacity: 1
+    transform: scale(0.75);
+    opacity: 0.75
   }
 
   60% {
@@ -959,8 +959,8 @@ body.modal-open {
   }
 
   100% {
-    transform: scale(1.5);
-    opacity: 0
+    transform: scale(1.25);
+    opacity: 0.5
   }
 }
 
