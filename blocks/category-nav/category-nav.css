@@ -47,21 +47,39 @@ body.is-framework-page .category-nav.block > div > div {
    Bell sections are Cards blocks with icons that get moved to header nav.
    Hiding them immediately prevents Cumulative Layout Shift.
    
-   TODO: Refactor to make bell sections proper category-nav blocks
-         See GitHub issue for proper architecture implementation
+   NOTE: Exceptions:
+     - Universal Editor (main[data-aue-resource]) - content must be visible for editing
+     - Framework pages (body.is-framework-page) - content must be visible for preview/editing
    ================================================================= */
 
-/* Hide bell notification sections immediately to prevent CLS */
-.section.cards-container[id*="bell"],
-.section[data-category-id*="bell"],
-.section#bell-outline,
-.section[id*="outline"].cards-container {
+/* Hide bell notification sections on normal pages to prevent CLS */
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container[id*="bell"],
+body:not(.is-framework-page) main:not([data-aue-resource]) .section[data-category-id*="bell"],
+body:not(.is-framework-page) main:not([data-aue-resource]) .section#bell-outline {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
-/* Also hide via :has() for sections with icons in default-content */
-.section.cards-container:has(.default-content .icon) {
-  display: none !important;
+/* In Universal Editor, show bell sections for editing */
+main[data-aue-resource] .section.cards-container[id*="bell"],
+main[data-aue-resource] .section[data-category-id*="bell"],
+main[data-aue-resource] .section#bell-outline {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* On framework pages, show bell sections for preview/editing */
+body.is-framework-page .section.cards-container[id*="bell"],
+body.is-framework-page .section[data-category-id*="bell"],
+body.is-framework-page .section#bell-outline {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  overflow: visible !important;
 }
 
 /* Category Nav Wrapper - full width gray background */
