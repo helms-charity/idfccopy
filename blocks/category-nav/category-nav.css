@@ -42,6 +42,28 @@ body.is-framework-page .category-nav.block > div > div {
   font-size: 12px;
 }
 
+/* =================================================================
+   CLS Prevention: Hide bell notification sections before JS processes them
+   Bell sections are Cards blocks with icons that get moved to header nav.
+   Hiding them immediately prevents Cumulative Layout Shift.
+   
+   TODO: Refactor to make bell sections proper category-nav blocks
+         See GitHub issue for proper architecture implementation
+   ================================================================= */
+
+/* Hide bell notification sections immediately to prevent CLS */
+.section.cards-container[id*="bell"],
+.section[data-category-id*="bell"],
+.section#bell-outline,
+.section[id*="outline"].cards-container {
+  display: none !important;
+}
+
+/* Also hide via :has() for sections with icons in default-content */
+.section.cards-container:has(.default-content .icon) {
+  display: none !important;
+}
+
 /* Category Nav Wrapper - full width gray background */
 .category-nav-wrapper {
   width: 100%;
