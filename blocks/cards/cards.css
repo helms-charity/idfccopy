@@ -268,9 +268,8 @@
 }
 
 .cards.earn-rewards .cards-card-body p {
-  color: var(--color-white);
   font-size: var(--body-font-size-s);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.4;
   margin: 0;
 }
@@ -423,7 +422,6 @@
 
 /* Important Documents Section Title */
 .section:has(.cards.all-about-card) h3 {
-  font-size: var(--heading-font-size-m);
   margin: 20px auto 0;
   text-align: center;
 }
@@ -1097,7 +1095,6 @@
 .cards.blog-posts .blog-post-card .cards-card-body p {
   font-size: var(--body-font-size-xs);
   font-weight: 400;
-  line-height: 18px;
   margin: 0 0 16px;
 }
 
@@ -1202,10 +1199,6 @@
 
   .cards.blog-posts .blog-post-card .cards-card-body h3 {
     font-size: var(--body-font-size-m);
-  }
-
-  .cards.blog-posts .blog-post-card .cards-card-body p {
-    font-size: var(--body-font-size-s);
   }
 
   /* Related Search Cards - Tablet (2 columns)
@@ -1534,10 +1527,6 @@
 }
 
 /* === ALL ABOUT CARD VARIANT === */
-
-.section:has(.cards.all-about-card) :is(h1, h2, h3, h4, h5, h6, p) {
-  color: var(--color-white);
-}
 
 .cards.all-about-card.swiper {
   width: 100%;
@@ -1939,19 +1928,6 @@
   .cards.key-benefits .benefit-cards .cards-card-body {
     padding: 0 28px 28px;
   }
-
-  .cards.key-benefits .benefit-cards .cards-card-body h3 {
-    font-size: var(--heading-font-size-m);
-  }
-
-  .cards.key-benefits .benefit-cards .cards-card-body p {
-    font-size: var(--body-font-size-m);
-    line-height: 1.6;
-  }
-
-  .cards.experience-life .benefit-cards .cards-card-body p {
-    font-size: var(--body-font-size-m);
-  }
   
   .cards.reward-points .benefit-cards .cards-card-body p {
     font-size: var(--body-font-size-m);
@@ -2043,11 +2019,7 @@
   /* Blog Post Cards - Desktop */
 
   .cards.blog-posts .blog-post-card .cards-card-body h3 {
-    font-size: var(--body-font-size-l);
-  }
-
-  .cards.blog-posts .blog-post-card .cards-card-body p {
-    font-size: var(--body-font-size-s);
+    font-size: var(--body-font-size-m);
   }
 
   .section:has(.cards.related-search) .default-content-wrapper h2 {
