@@ -1093,7 +1093,7 @@
 
 /* Blog Post Card - Description */
 .cards.blog-posts .blog-post-card .cards-card-body p {
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-xs);
   font-weight: 400;
   margin: 0 0 16px;
 }
@@ -2019,7 +2019,7 @@
   /* Blog Post Cards - Desktop */
 
   .cards.blog-posts .blog-post-card .cards-card-body h3 {
-    font-size: var(--body-font-size-l);
+    font-size: var(--body-font-size-m);
   }
 
   .section:has(.cards.related-search) .default-content-wrapper h2 {
