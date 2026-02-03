@@ -2560,12 +2560,6 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
     color: #902a2c;
     background-color: transparent;
     border: 1px solid #902a2c;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .nav-tools .default-content-wrapper>ul>li#pay-button:hover {
-    background-color: #902a2c;
-    color: var(--color-white);
   }
 
   /* Desktop: Login button specific styling */
