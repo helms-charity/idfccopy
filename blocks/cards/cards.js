@@ -919,7 +919,7 @@ export default async function decorate(block) {
       cardItem.classList.add('swiper-slide');
     });
 
-    // Add pagination
+    // Add pagination container
     const swiperPagination = document.createElement('div');
     swiperPagination.className = 'swiper-pagination';
     block.appendChild(swiperPagination);
@@ -932,6 +932,9 @@ export default async function decorate(block) {
     const isMobileView = window.innerWidth < 600;
     const initialSlideIndex = isMobileView ? 0 : startingCard;
 
+    // Check if page uses mayura template for progressbar pagination
+    const isMayuraTemplate = document.body.classList.contains('mayura');
+
     // Build Swiper configuration
     const swiperConfig = {
       slidesPerView: 1.2,
@@ -940,9 +943,10 @@ export default async function decorate(block) {
       centeredSlides: true, // Will be overridden by breakpoints if all cards fit
       pagination: {
         el: '.swiper-pagination',
-        clickable: true,
+        // Use progressbar for mayura template, bullets for others
+        type: isMayuraTemplate ? 'progressbar' : 'bullets',
+        clickable: !isMayuraTemplate, // Only for bullets
         dynamicBullets: false,
-        type: 'bullets',
       },
     };
 
@@ -1114,6 +1118,94 @@ export default async function decorate(block) {
 
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
+
+    // Add custom indicator element ONLY for mayura template (progressbar)
+    if (isMayuraTemplate) {
+      const paginationEl = block.querySelector('.swiper-pagination');
+      if (paginationEl) {
+        const handleIndicator = document.createElement('div');
+        handleIndicator.className = 'swiper-pagination-handle';
+        // Using scrollbar-handle.svg as the indicator
+        handleIndicator.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" />';
+        paginationEl.appendChild(handleIndicator);
+
+        // Update handle indicator position based on swiper progress
+        const updateHandlePosition = () => {
+          const { progress } = swiper;
+          // Clamp progress between 0 and 1
+          const clampedProgress = Math.max(0, Math.min(1, progress));
+          handleIndicator.style.left = `${clampedProgress * 100}%`;
+        };
+
+        // Initial position update
+        updateHandlePosition();
+
+        // Update handle position on slide change and progress events
+        swiper.on('progress', updateHandlePosition);
+        swiper.on('slideChange', updateHandlePosition);
+
+        // Make progressbar clickable to navigate to slides
+        paginationEl.style.cursor = 'pointer';
+        paginationEl.addEventListener('click', (e) => {
+          // Ignore clicks on the handle itself (handled by drag)
+          if (e.target.closest('.swiper-pagination-handle')) return;
+          const rect = paginationEl.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = clickX / rect.width;
+          const targetSlide = Math.round(percentage * (slideCount - 1));
+          swiper.slideTo(targetSlide);
+        });
+
+        // Make handle indicator draggable for slide navigation
+        let isDragging = false;
+
+        const handleDragStart = (e) => {
+          isDragging = true;
+          handleIndicator.style.transition = 'none';
+          handleIndicator.style.cursor = 'grabbing';
+          document.body.style.userSelect = 'none';
+          e.preventDefault();
+        };
+
+        const handleDragMove = (e) => {
+          if (!isDragging) return;
+
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const rect = paginationEl.getBoundingClientRect();
+          const relativeX = clientX - rect.left;
+          const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
+
+          // Update handle position immediately for smooth dragging
+          handleIndicator.style.left = `${percentage * 100}%`;
+
+          // Calculate and go to target slide (0 = no animation during drag)
+          const targetSlide = Math.round(percentage * (slideCount - 1));
+          swiper.slideTo(targetSlide, 0);
+        };
+
+        const handleDragEnd = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          handleIndicator.style.transition = 'left 0.3s ease';
+          handleIndicator.style.cursor = 'grab';
+          document.body.style.userSelect = '';
+
+          // Snap to final position after drag ends
+          updateHandlePosition();
+        };
+
+        // Mouse events for desktop drag support
+        handleIndicator.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+
+        // Touch events for mobile drag support
+        handleIndicator.addEventListener('touchstart', handleDragStart, { passive: false });
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+      }
+    }
+    // End of progressbar with handle indicator implementation (mayura only)
 
     // For testimonial cards, update star icons on active slide
     if (isTestimonial) {
