@@ -5,7 +5,7 @@ footer {
 }
 
 .footer a:any-link {
-  color: #FFFFFF;
+  color: var(--color-white);
 }
 
 .footer a:hover {
@@ -200,7 +200,7 @@ footer .footer>div .section>div {
 
 .footer>div>div .accordion-wrapper .accordion>div>div:nth-child(2) ul li a,
 .footer>div>div .accordion-wrapper .accordion .accordion-item-body ul li a {
-  color: #FFFFFF;
+  color: var(--color-white);
   font: 14px "Inter", sans-serif;
   font-weight: 300;
   word-break: unset;
@@ -216,7 +216,7 @@ footer .footer>div .section>div {
 .footer>div>div:nth-child(2)>div,
 .footer .accordion-item-body {
   width: 100%;
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .footer>div>div:nth-child(2)>div>ul {
@@ -232,7 +232,7 @@ footer .footer>div .section>div {
 .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li>.icon {
   height: 56px;
   width: 56px;
-  background: #fff;
+  background: var(--color-white);
   padding: 2px;
 }
 
@@ -271,7 +271,7 @@ footer .footer>div .section>div {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .footer>div>div:nth-child(3) .accordion-item-label > p {margin: 0;}
@@ -506,8 +506,8 @@ footer .footer>div .section>div {
   .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:nth-child(2) {
     display: inline-block;
     border-radius: 25px;
-    background: #FFFFFF;
-    color: var(--dark-red-color);
+    background: var(--color-white);
+    color: var(--text-red-color);
     text-align: center;
     white-space: nowrap;
     border: 0;
@@ -518,7 +518,7 @@ footer .footer>div .section>div {
   }
 
   .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:nth-child(2) a {
-    color: var(--dark-red-color)
+    color: var(--text-red-color)
   }
 
   .footer>div>div:nth-child(2)>div>ul>li:nth-child(2)>ul>li:first-child {
@@ -540,7 +540,7 @@ footer .footer>div .section>div {
 
   .footer .section.accordion-container:first-of-type .accordion-wrapper .accordion .accordion-item-label {
     border-bottom: unset;
-    color: var(--white);
+    color: var(--color-white);
   }
 
   .footer .accordion-wrapper .accordion .accordion-item[open] .accordion-item-label {

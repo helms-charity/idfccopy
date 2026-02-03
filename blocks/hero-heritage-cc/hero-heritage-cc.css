@@ -98,12 +98,12 @@
 }
 
 .hero-heritage-cc-header-cta a.button.primary {
-  background: var(--dark-red-color);
+  background: var(--text-red-color);
   padding: 14px 40px;
   font-size: var(--body-font-size-m);
   font-weight: 700;
   border: none;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .hero-heritage-cc-header-cta-fees-link {
@@ -423,7 +423,7 @@
 }
 
 .hero-heritage-cc-banner-cta a.button {
-  color: #000;
+  color: var(--color-black);
   font-size: var(--body-font-size-m);
   font-weight: 500;
   text-decoration: underline;
@@ -441,7 +441,7 @@
   text-decoration: none;
 
   &:hover {
-    color: var(--btn-color-white);
+    color: var(--color-white);
   }
 }
 

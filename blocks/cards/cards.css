@@ -50,7 +50,7 @@
   margin-bottom: 0;
   width: 100%;
   border-radius: 8px;
-  background: var(--white);
+  background: var(--color-white);
   box-shadow: 0 0 8px 0 rgb(37 36 59 / 15%);
   box-sizing: border-box;
   transition: all 0.3s ease;
@@ -157,7 +157,7 @@
 
 /* TESTIMONIAL CARD CONTAINER STYLING */
 .section.cards-container:has(.cards.testimonial-card) {
-  background-color: #000;
+  background-color: var(--color-black);
   margin: 0;
   padding: 40px 0;
 }
@@ -169,7 +169,7 @@
 }
 
 .section.cards-container:has(.cards.testimonial-card) .default-content-wrapper h2 {
-  color: var(--white);
+  color: var(--color-white);
   font-weight: 700;
   text-align: center;
 }
@@ -183,7 +183,7 @@
 
 .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h2,
 .section:has(.cards.earn-rewards) .default-content-wrapper:first-of-type h3 {
-  color: var(--white);
+  color: var(--color-white);
   margin: 0;
 }
 
@@ -268,7 +268,7 @@
 }
 
 .cards.earn-rewards .cards-card-body p {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--body-font-size-s);
   font-weight: 500;
   line-height: 1.4;
@@ -281,7 +281,7 @@
 }
 
 .section:has(.cards.earn-rewards) .default-content-wrapper:last-of-type p {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--body-font-size-xs);
   font-weight: 400;
   line-height: 1.5;
@@ -326,7 +326,7 @@
   flex-direction: column;
   align-items: center;
   padding: 16px 10px;
-  background: var(--white);
+  background: var(--color-white);
   border-radius: 8px;
   box-shadow: 0 0 8px 0 rgb(37 36 59 / 15%);
   width: 100%;
@@ -377,7 +377,7 @@
   overflow-wrap: break-word;
 
   /* Base font styling for all text elements */
-  color: #000;
+  color: var(--color-black);
   font-size: var(--body-font-size-s);
   font-weight: 600;
   line-height: 1.4;
@@ -392,7 +392,7 @@
 .cards.important-documents .cards-card-body .button-container,
 .cards.important-documents .cards-card-body a,
 .cards.important-documents .cards-card-body a.button.primary {
-  color: #000;
+  color: var(--color-black);
   font-size: var(--body-font-size-s);
   font-weight: 600;
   line-height: 1.4;
@@ -429,7 +429,7 @@
 }
 
 .cards.all-about-card .cards-card-body h3 {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--body-font-size-s);
   font-weight: 600;
   line-height: 1.4;
@@ -440,7 +440,7 @@
 }
 
 .section:has(.cards.important-documents) .default-content-wrapper h3 {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--body-font-size-xl);
   font-weight: 600;
   text-align: center;
@@ -485,7 +485,7 @@
   height: 90px;
   padding: 0 16px;
   margin-bottom: var(--spacing-s);
-  background: var(--white);
+  background: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0 0 0 / 8%);
   width: 100%;
@@ -669,7 +669,7 @@
 
 /* Title styling */
 .cards.key-benefits .benefit-cards .cards-card-body h3 {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.3;
@@ -697,7 +697,7 @@
 
 /* Links within key-benefits cards */
 .cards.key-benefits .benefit-cards .cards-card-body h3 a {
-  color: var(--white);
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -928,7 +928,7 @@
 
 .cards.experience-life .benefit-cards .cards-card-body h3,
 .cards.reward-points .benefit-cards .cards-card-body h3 {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   line-height: 1.3;
@@ -948,7 +948,7 @@
 
 .cards.experience-life .benefit-cards .cards-card-body h3 a,
 .cards.reward-points .benefit-cards .cards-card-body h3 a {
-  color: var(--white);
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -1011,7 +1011,7 @@
 }
 
 .section:has(.cards.blog-posts) h1 + p {
-  color: #000;
+  color: var(--color-black);
   font-size: var(--body-font-size-m);
   margin: 0 auto var(--spacing-s);
   text-align: center;
@@ -1021,22 +1021,22 @@
 
 /* Blog Posts - UPI steps red background variant text colors */
 .section.upi-steps-red-bg:has(.cards.blog-posts) h1{
-  color: var(--white);
+  color: var(--color-white);
   background: unset;
   -webkit-text-fill-color: unset;
 }
 
 .section.upi-steps-red-bg:has(.cards.blog-posts) h1 + p {
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .upi-steps-red-bg .cards.blog-posts .blog-post-card .cards-card-body h3, 
 .upi-steps-red-bg .cards.blog-posts .blog-post-card .cards-card-body p {
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .cards.blog-posts .default-content-wrapper h2 {
-  color: #000;
+  color: var(--color-black);
   font-size: var(--heading-font-size-xl);
   margin: 0 auto;
   text-align: center;
@@ -1112,7 +1112,7 @@
   display: inline-flex;
   align-items: center;
   background: var(--btn-color-red);
-  color: var(--btn-color-white);
+  color: var(--color-white);
   font-size: var(--body-font-size-s);
   font-weight: 700;
   padding: var(--spacing-xxs) 30px;
@@ -1303,7 +1303,7 @@
 .explore-other-cards .swiper-slide .cards-card-body h3 {
   text-align: center;
   font-size: var(--heading-font-size-s);
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .explore-other-cards .swiper-slide .cards-card-image {
@@ -1336,7 +1336,7 @@
 
 .cards .swiper-button-next:hover,
 .cards .swiper-button-prev:hover {
-  background: var(--light-color);
+  background: var(--color-white-100);
 }
 
 /* Swiper Pagination - Bullet Style (default) */
@@ -1360,7 +1360,7 @@
 .cards .swiper-pagination-bullet-active {
   width: 14px;
   height: 14px;
-  background: var(--white);
+  background: var(--color-white);
   border-radius: 50%;
 }
 
@@ -1370,7 +1370,7 @@
 }
 
 .dark-scheme .cards .swiper-pagination-bullet-active {
-  background: var(--white);
+  background: var(--color-white);
 }
 
 /* General cards - Light scheme overrides */
@@ -1387,7 +1387,7 @@
 .section:has(.cards.joining-perks) h2,
 .section:has(.cards.joining-perks) h3,
 .section:has(.cards.joining-perks) p {
-  color: var(--white);
+  color: var(--color-white);
   text-align: center;
   margin: 0;
   padding: 0;
@@ -1515,7 +1515,7 @@
 
 .cards.joining-perks .cards-card-body h3,
 .cards.joining-perks .benefit-cards .cards-card-body h3 {
-  color: var(--white);
+  color: var(--color-white);
   font-size: var(--body-font-size-m);
   font-weight: 700;
   line-height: 1.4;
@@ -1536,7 +1536,7 @@
 /* === ALL ABOUT CARD VARIANT === */
 
 .section:has(.cards.all-about-card) :is(h1, h2, h3, h4, h5, h6, p) {
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .cards.all-about-card.swiper {
@@ -1642,7 +1642,7 @@
 
 .cards.testimonial-card.swiper .swiper-slide {
   flex: 0 0 auto;
-  background-color: var(--gray);
+  background-color: var(--color-gray-300);
   border-radius: 20px;
   box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
   padding: 34px 20px;
@@ -1661,7 +1661,7 @@
 }
 
 .cards.testimonial-card.swiper .swiper-slide-active {
-  background-color: var(--purple-color);
+  background-color: var(--color-purple-400);
   transform: scale(1);
   z-index: 10;
   box-shadow: 0 8px 16px 4px rgb(37 36 59 / 25%);
@@ -1672,7 +1672,7 @@
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h6,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p {
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 {

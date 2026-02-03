@@ -17,7 +17,7 @@
 .tabs .tabs-list .tabs-tab {
   flex: 0 0 max-content;
   margin: 0;
-  background-color: var(--light-color);
+  background-color: var(--color-white-100);
   color: #08133C;
   font-size: var(--body-font-size-m);
   font-weight: 400;
@@ -67,7 +67,7 @@
 
 .tabs.blue-white-text .tabs-tab[aria-selected='true'] {
   background: var(--gradient-blue);
-  color: var(--white);
+  color: var(--color-white);
 }
 
 .tabs.silver-blue-text .tabs-list {

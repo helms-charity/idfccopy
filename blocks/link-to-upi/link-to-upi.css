@@ -53,7 +53,7 @@
 }
 
 .link-to-upi .link-to-upi-text a u {
-  color: #fff;
+  color: var(--color-white);
   
   text-decoration: underline;
 }
@@ -95,12 +95,12 @@
   width: 60px;
   height: 60px;
   min-width: 60px;
-  background: linear-gradient(150deg, #3F46A0 -112.96%, #9B1E26 4.82%, #E04D56 106.6%);
+  background: linear-gradient(150deg, #3F46A0 -112.96%, var(--color-red-400) 4.82%, #E04D56 106.6%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-white);
   font-size: var(--heading-font-size-xs);
   font-weight: 700;
   
