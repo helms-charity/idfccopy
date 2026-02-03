@@ -917,6 +917,12 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    const h1Title = getMetadata('h1-title');
+    if (h1Title) {
+      const h1 = document.createElement('h1');
+      h1.textContent = h1Title;
+      main.insertBefore(h1, main.firstChild);
+    }
     prepareHeroForCLS(main);
 
     // Early detection of category-nav to prevent CLS
