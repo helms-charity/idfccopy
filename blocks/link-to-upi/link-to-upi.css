@@ -95,7 +95,7 @@
   width: 60px;
   height: 60px;
   min-width: 60px;
-  background: linear-gradient(150deg, #3F46A0 -112.96%, --color-red-400 4.82%, #E04D56 106.6%);
+  background: linear-gradient(150deg, #3F46A0 -112.96%, var(--color-red-400) 4.82%, #E04D56 106.6%);
   border-radius: 50%;
   display: flex;
   align-items: center;

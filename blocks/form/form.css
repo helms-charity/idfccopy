@@ -14,7 +14,7 @@
 
 #user-verification-modal .modal-header {
   background-color: none;
-  color: var(--color-black)000;
+  color: var(--color-black);
 }
 
 #user-verification-modal .modal-title {

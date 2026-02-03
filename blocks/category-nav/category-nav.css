@@ -393,14 +393,14 @@ body.is-framework-page .category-nav.block > div > div {
 }
 
 /* Tag Background Colors - Pastel Palette */
-.category-nav-card .category-nav-tag.tg-clr-pale-yellow { background-color: var(--color-white)be6; }
+.category-nav-card .category-nav-tag.tg-clr-pale-yellow { background-color: #fffbe6; }
 .category-nav-card .category-nav-tag.tg-clr-pale-cyan { background-color: #ebffff; }
 .category-nav-card .category-nav-tag.tg-clr-pale-lavender { background-color: #ffeffd; }
 .category-nav-card .category-nav-tag.tg-clr-pale-rose { background-color: #ffcece; }
 .category-nav-card .category-nav-tag.tg-clr-pale-pink { background-color: #ffe1ec; }
 .category-nav-card .category-nav-tag.tg-clr-pale-purple { background-color: #f2e5ff; }
 .category-nav-card .category-nav-tag.tg-clr-pale-mint { background-color: #eefff2; }
-.category-nav-card .category-nav-tag.tg-clr-pale-white { background-color: var(--color-white)7f7; }
+.category-nav-card .category-nav-tag.tg-clr-pale-white { background-color: #fff7f7; }
 .category-nav-card .category-nav-tag.tg-clr-none { background-color: unset; }
 
 /* Card Title */

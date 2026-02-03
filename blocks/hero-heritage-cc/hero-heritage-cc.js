@@ -14,7 +14,7 @@ function isCssColorOrGradient(value) {
   const trimmed = value.trim();
   const lower = trimmed.toLowerCase();
 
-  // Check for hex color (#fff, var(--color-white), var(--color-white)ff)
+  // Check for hex color (#fff, #ffffff, #ffffffff)
   if (/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(trimmed)) return true;
 
   // Check for rgb/rgba
