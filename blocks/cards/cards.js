@@ -1123,46 +1123,17 @@ export default async function decorate(block) {
     if (isMayuraTemplate) {
       const paginationEl = block.querySelector('.swiper-pagination');
       if (paginationEl) {
-        const handleIndicator = document.createElement('div');
-        handleIndicator.className = 'swiper-pagination-handle';
-        // Using scrollbar-handle.svg as the indicator
-        handleIndicator.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" />';
-        paginationEl.appendChild(handleIndicator);
-
-        // Update handle indicator position based on swiper progress
-        const updateHandlePosition = () => {
-          const { progress } = swiper;
-          // Clamp progress between 0 and 1
-          const clampedProgress = Math.max(0, Math.min(1, progress));
-          handleIndicator.style.left = `${clampedProgress * 100}%`;
-        };
-
-        // Initial position update
-        updateHandlePosition();
-
-        // Update handle position on slide change and progress events
-        swiper.on('progress', updateHandlePosition);
-        swiper.on('slideChange', updateHandlePosition);
-
-        // Make progressbar clickable to navigate to slides
-        paginationEl.style.cursor = 'pointer';
-        paginationEl.addEventListener('click', (e) => {
-          // Ignore clicks on the handle itself (handled by drag)
-          if (e.target.closest('.swiper-pagination-handle')) return;
-          const rect = paginationEl.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const percentage = clickX / rect.width;
-          const targetSlide = Math.round(percentage * (slideCount - 1));
-          swiper.slideTo(targetSlide);
-        });
-
-        // Make handle indicator draggable for slide navigation
+        // Drag state (shared across handle instances)
         let isDragging = false;
 
+        // Drag event handlers
         const handleDragStart = (e) => {
           isDragging = true;
-          handleIndicator.style.transition = 'none';
-          handleIndicator.style.cursor = 'grabbing';
+          const handle = paginationEl.querySelector('.swiper-pagination-handle');
+          if (handle) {
+            handle.style.transition = 'none';
+            handle.style.cursor = 'grabbing';
+          }
           document.body.style.userSelect = 'none';
           e.preventDefault();
         };
@@ -1176,7 +1147,10 @@ export default async function decorate(block) {
           const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
 
           // Update handle position immediately for smooth dragging
-          handleIndicator.style.left = `${percentage * 100}%`;
+          const handle = paginationEl.querySelector('.swiper-pagination-handle');
+          if (handle) {
+            handle.style.left = `${percentage * 100}%`;
+          }
 
           // Calculate and go to target slide (0 = no animation during drag)
           const targetSlide = Math.round(percentage * (slideCount - 1));
@@ -1186,21 +1160,78 @@ export default async function decorate(block) {
         const handleDragEnd = () => {
           if (!isDragging) return;
           isDragging = false;
-          handleIndicator.style.transition = 'left 0.3s ease';
-          handleIndicator.style.cursor = 'grab';
+          const handle = paginationEl.querySelector('.swiper-pagination-handle');
+          if (handle) {
+            handle.style.transition = 'left 0.3s ease';
+            handle.style.cursor = 'grab';
+          }
           document.body.style.userSelect = '';
-
-          // Snap to final position after drag ends
-          updateHandlePosition();
         };
 
-        // Mouse events for desktop drag support
-        handleIndicator.addEventListener('mousedown', handleDragStart);
+        // swapna: Function to create and attach a new handle indicator
+        const createHandleIndicator = () => {
+          const handle = document.createElement('div');
+          handle.className = 'swiper-pagination-handle';
+          handle.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" width="28" height="8">';
+          // swapna: Attach drag listeners to new handle
+          handle.addEventListener('mousedown', handleDragStart);
+          handle.addEventListener('touchstart', handleDragStart, { passive: false });
+          return handle;
+        };
+
+        // swapna: Function to ensure handle exists (recreates if missing after Swiper re-renders)
+        const ensureHandleExists = () => {
+          let handle = paginationEl.querySelector('.swiper-pagination-handle');
+          if (!handle) {
+            handle = createHandleIndicator();
+            paginationEl.appendChild(handle);
+          }
+          return handle;
+        };
+
+        // Create initial handle
+        const handleIndicator = createHandleIndicator();
+        paginationEl.appendChild(handleIndicator);
+
+        // Update handle indicator position based on swiper progress
+        const updateHandlePosition = () => {
+          // swapna: Ensure handle exists (may have been removed by Swiper
+          // during resize/breakpoint change)
+          const handle = ensureHandleExists();
+          const { progress } = swiper;
+          // Clamp progress between 0 and 1
+          const clampedProgress = Math.max(0, Math.min(1, progress));
+          handle.style.left = `${clampedProgress * 100}%`;
+        };
+
+        // Initial position update
+        updateHandlePosition();
+
+        // Update handle position on slide change and progress events
+        swiper.on('progress', updateHandlePosition);
+        swiper.on('slideChange', updateHandlePosition);
+
+        // swapna: Re-check handle existence on resize/breakpoint changes
+        // swapna: This is the key fix: when Swiper transitions between locked/unlocked states,
+        // swapna: it may re-render pagination and remove our custom handle
+        swiper.on('resize', updateHandlePosition);
+        swiper.on('breakpoint', updateHandlePosition);
+
+        // Make progressbar clickable to navigate to slides
+        paginationEl.style.cursor = 'pointer';
+        paginationEl.addEventListener('click', (e) => {
+          // Ignore clicks on the handle itself (handled by drag)
+          if (e.target.closest('.swiper-pagination-handle')) return;
+          const rect = paginationEl.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = clickX / rect.width;
+          const targetSlide = Math.round(percentage * (slideCount - 1));
+          swiper.slideTo(targetSlide);
+        });
+
+        // Document-level drag listeners (only added once)
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
-
-        // Touch events for mobile drag support
-        handleIndicator.addEventListener('touchstart', handleDragStart, { passive: false });
         document.addEventListener('touchmove', handleDragMove, { passive: false });
         document.addEventListener('touchend', handleDragEnd);
       }
