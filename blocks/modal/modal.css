@@ -571,7 +571,6 @@ body.modal-open {
 
 .modal .section[data-id="mayura-card-modal"] > div > div:nth-child(3) > div > div p:first-child {
   font-size: var(--body-font-size-xs);
-  line-height: 18px;
   margin: 0 0 6px;
   font-weight: 500;
   color: var(--color-gray-900);
