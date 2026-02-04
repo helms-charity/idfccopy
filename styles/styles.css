@@ -516,6 +516,14 @@ a.button:has(span.icon) {
   justify-content: center;
 }
 
+/* Align icons within headings (similar to button icon alignment above) */
+h3:has(span.icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+}
+
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */
 .button-group {
   display: flex;
