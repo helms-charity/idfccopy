@@ -1123,7 +1123,7 @@ export default async function decorate(block) {
     if (isMayuraTemplate) {
       const paginationEl = block.querySelector('.swiper-pagination');
       if (paginationEl) {
-        // swapna: Initialize global drag tracking system (only once per page)
+        // Initialize global drag tracking system (only once per page)
         if (!window.swiperHandleDragState) {
           window.swiperHandleDragState = {
             isDragging: false,
@@ -1132,7 +1132,7 @@ export default async function decorate(block) {
             activeSlideCount: 0,
           };
 
-          // swapna: Single global mousemove listener for all swipers (performance)
+          // Single global mousemove listener for all swipers (performance)
           document.addEventListener('mousemove', (e) => {
             const state = window.swiperHandleDragState;
             if (!state.isDragging || !state.activePagination) return;
@@ -1150,7 +1150,7 @@ export default async function decorate(block) {
             state.activeSwiper.slideTo(targetSlide, 0);
           });
 
-          // swapna: Single global touchmove listener (performance)
+          // Single global touchmove listener (performance)
           document.addEventListener('touchmove', (e) => {
             const state = window.swiperHandleDragState;
             if (!state.isDragging || !state.activePagination) return;
@@ -1168,7 +1168,7 @@ export default async function decorate(block) {
             state.activeSwiper.slideTo(targetSlide, 0);
           }, { passive: true });
 
-          // swapna: Single global mouseup/touchend listener (performance)
+          // Single global mouseup/touchend listener (performance)
           const handleGlobalDragEnd = () => {
             const state = window.swiperHandleDragState;
             if (!state.isDragging) return;
@@ -1190,7 +1190,7 @@ export default async function decorate(block) {
           document.addEventListener('touchend', handleGlobalDragEnd);
         }
 
-        // swapna: Drag start handler - sets global state for this swiper instance
+        // Drag start handler - sets global state for this swiper instance
         const handleDragStart = (e) => {
           const state = window.swiperHandleDragState;
           state.isDragging = true;
@@ -1205,7 +1205,7 @@ export default async function decorate(block) {
           e.preventDefault();
         };
 
-        // swapna: Factory to create handle with drag listeners attached
+        // Factory to create handle with drag listeners attached
         const createHandle = () => {
           const handle = document.createElement('div');
           handle.className = 'swiper-pagination-handle';
@@ -1215,7 +1215,7 @@ export default async function decorate(block) {
           return handle;
         };
 
-        // swapna: Ensure handle exists - recreates if removed by Swiper during resize
+        // Ensure handle exists - recreates if removed by Swiper during resize
         const ensureHandleExists = () => {
           let handle = paginationEl.querySelector('.swiper-pagination-handle');
           if (!handle) {
@@ -1225,10 +1225,10 @@ export default async function decorate(block) {
           return handle;
         };
 
-        // swapna: Create initial handle
+        // Create initial handle
         paginationEl.appendChild(createHandle());
 
-        // swapna: Update handle position with existence check for resilience
+        // Update handle position with existence check for resilience
         const updateHandlePosition = () => {
           const handle = ensureHandleExists();
           const { progress } = swiper;
@@ -1243,7 +1243,7 @@ export default async function decorate(block) {
         swiper.on('progress', updateHandlePosition);
         swiper.on('slideChange', updateHandlePosition);
 
-        // swapna: Listen for resize/breakpoint to recreate handle if Swiper removes it
+        // Listen for resize/breakpoint to recreate handle if Swiper removes it
         swiper.on('resize', updateHandlePosition);
         swiper.on('breakpoint', updateHandlePosition);
 
