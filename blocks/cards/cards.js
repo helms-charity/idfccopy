@@ -1123,18 +1123,117 @@ export default async function decorate(block) {
     if (isMayuraTemplate) {
       const paginationEl = block.querySelector('.swiper-pagination');
       if (paginationEl) {
-        const handleIndicator = document.createElement('div');
-        handleIndicator.className = 'swiper-pagination-handle';
-        // Using scrollbar-handle.svg as the indicator
-        handleIndicator.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" />';
-        paginationEl.appendChild(handleIndicator);
+        // Initialize global drag tracking system (only once per page)
+        if (!window.swiperHandleDragState) {
+          window.swiperHandleDragState = {
+            isDragging: false,
+            activeSwiper: null,
+            activePagination: null,
+            activeSlideCount: 0,
+          };
 
-        // Update handle indicator position based on swiper progress
+          // Single global mousemove listener for all swipers (performance)
+          document.addEventListener('mousemove', (e) => {
+            const state = window.swiperHandleDragState;
+            if (!state.isDragging || !state.activePagination) return;
+
+            const handle = state.activePagination.querySelector('.swiper-pagination-handle');
+            if (!handle) return;
+
+            const { clientX } = e;
+            const rect = state.activePagination.getBoundingClientRect();
+            const relativeX = clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
+
+            handle.style.left = `${percentage * 100}%`;
+            const targetSlide = Math.round(percentage * (state.activeSlideCount - 1));
+            state.activeSwiper.slideTo(targetSlide, 0);
+          });
+
+          // Single global touchmove listener (performance)
+          document.addEventListener('touchmove', (e) => {
+            const state = window.swiperHandleDragState;
+            if (!state.isDragging || !state.activePagination) return;
+
+            const handle = state.activePagination.querySelector('.swiper-pagination-handle');
+            if (!handle) return;
+
+            const { clientX } = e.touches[0];
+            const rect = state.activePagination.getBoundingClientRect();
+            const relativeX = clientX - rect.left;
+            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
+
+            handle.style.left = `${percentage * 100}%`;
+            const targetSlide = Math.round(percentage * (state.activeSlideCount - 1));
+            state.activeSwiper.slideTo(targetSlide, 0);
+          }, { passive: true });
+
+          // Single global mouseup/touchend listener (performance)
+          const handleGlobalDragEnd = () => {
+            const state = window.swiperHandleDragState;
+            if (!state.isDragging) return;
+
+            const handle = state.activePagination?.querySelector('.swiper-pagination-handle');
+            if (handle) {
+              handle.style.transition = 'left 0.3s ease';
+              handle.style.cursor = 'grab';
+            }
+            document.body.style.userSelect = '';
+
+            state.isDragging = false;
+            state.activeSwiper = null;
+            state.activePagination = null;
+            state.activeSlideCount = 0;
+          };
+
+          document.addEventListener('mouseup', handleGlobalDragEnd);
+          document.addEventListener('touchend', handleGlobalDragEnd);
+        }
+
+        // Drag start handler - sets global state for this swiper instance
+        const handleDragStart = (e) => {
+          const state = window.swiperHandleDragState;
+          state.isDragging = true;
+          state.activeSwiper = swiper;
+          state.activePagination = paginationEl;
+          state.activeSlideCount = slideCount;
+
+          const handle = e.currentTarget;
+          handle.style.transition = 'none';
+          handle.style.cursor = 'grabbing';
+          document.body.style.userSelect = 'none';
+          e.preventDefault();
+        };
+
+        // Factory to create handle with drag listeners attached
+        const createHandle = () => {
+          const handle = document.createElement('div');
+          handle.className = 'swiper-pagination-handle';
+          handle.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" width="28" height="8">';
+          handle.addEventListener('mousedown', handleDragStart);
+          handle.addEventListener('touchstart', handleDragStart, { passive: false });
+          return handle;
+        };
+
+        // Ensure handle exists - recreates if removed by Swiper during resize
+        const ensureHandleExists = () => {
+          let handle = paginationEl.querySelector('.swiper-pagination-handle');
+          if (!handle) {
+            handle = createHandle();
+            paginationEl.appendChild(handle);
+          }
+          return handle;
+        };
+
+        // Create initial handle
+        paginationEl.appendChild(createHandle());
+
+        // Update handle position with existence check for resilience
         const updateHandlePosition = () => {
+          const handle = ensureHandleExists();
           const { progress } = swiper;
-          // Clamp progress between 0 and 1
           const clampedProgress = Math.max(0, Math.min(1, progress));
-          handleIndicator.style.left = `${clampedProgress * 100}%`;
+          handle.style.left = `${clampedProgress * 100}%`;
         };
 
         // Initial position update
@@ -1144,10 +1243,13 @@ export default async function decorate(block) {
         swiper.on('progress', updateHandlePosition);
         swiper.on('slideChange', updateHandlePosition);
 
+        // Listen for resize/breakpoint to recreate handle if Swiper removes it
+        swiper.on('resize', updateHandlePosition);
+        swiper.on('breakpoint', updateHandlePosition);
+
         // Make progressbar clickable to navigate to slides
         paginationEl.style.cursor = 'pointer';
         paginationEl.addEventListener('click', (e) => {
-          // Ignore clicks on the handle itself (handled by drag)
           if (e.target.closest('.swiper-pagination-handle')) return;
           const rect = paginationEl.getBoundingClientRect();
           const clickX = e.clientX - rect.left;
@@ -1155,54 +1257,6 @@ export default async function decorate(block) {
           const targetSlide = Math.round(percentage * (slideCount - 1));
           swiper.slideTo(targetSlide);
         });
-
-        // Make handle indicator draggable for slide navigation
-        let isDragging = false;
-
-        const handleDragStart = (e) => {
-          isDragging = true;
-          handleIndicator.style.transition = 'none';
-          handleIndicator.style.cursor = 'grabbing';
-          document.body.style.userSelect = 'none';
-          e.preventDefault();
-        };
-
-        const handleDragMove = (e) => {
-          if (!isDragging) return;
-
-          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-          const rect = paginationEl.getBoundingClientRect();
-          const relativeX = clientX - rect.left;
-          const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
-
-          // Update handle position immediately for smooth dragging
-          handleIndicator.style.left = `${percentage * 100}%`;
-
-          // Calculate and go to target slide (0 = no animation during drag)
-          const targetSlide = Math.round(percentage * (slideCount - 1));
-          swiper.slideTo(targetSlide, 0);
-        };
-
-        const handleDragEnd = () => {
-          if (!isDragging) return;
-          isDragging = false;
-          handleIndicator.style.transition = 'left 0.3s ease';
-          handleIndicator.style.cursor = 'grab';
-          document.body.style.userSelect = '';
-
-          // Snap to final position after drag ends
-          updateHandlePosition();
-        };
-
-        // Mouse events for desktop drag support
-        handleIndicator.addEventListener('mousedown', handleDragStart);
-        document.addEventListener('mousemove', handleDragMove);
-        document.addEventListener('mouseup', handleDragEnd);
-
-        // Touch events for mobile drag support
-        handleIndicator.addEventListener('touchstart', handleDragStart, { passive: false });
-        document.addEventListener('touchmove', handleDragMove, { passive: false });
-        document.addEventListener('touchend', handleDragEnd);
       }
     }
     // End of progressbar with handle indicator implementation (mayura only)
