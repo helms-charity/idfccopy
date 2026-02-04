@@ -1426,7 +1426,7 @@
         "component": "text",
         "name": "id",
         "label": "ID",
-        "description": "Adds an ID value to the section"
+        "description": "Adds an ID value to the block"
       }
     ]
   },
