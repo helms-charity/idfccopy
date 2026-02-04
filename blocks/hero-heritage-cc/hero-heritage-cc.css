@@ -315,7 +315,6 @@
   height: auto;
   animation: none;
   flex-direction: column;
-  padding: var(--spacing-s);
   overflow-y: auto;
 }
 
@@ -498,6 +497,12 @@
 
 .hero-heritage-cc p.hero-heritage-cc-banner-image {
   margin: 10px 0 0;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+}
+
+/* Add transition for CTA group during concept swap */
+.hero-heritage-cc-banner-cta-group {
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
 }
 
 .hero-heritage-cc .hero-heritage-cc-banner {
