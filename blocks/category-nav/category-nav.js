@@ -939,9 +939,14 @@ export default function decorate(block) {
 
   // Remove sections with Cards blocks that are now in the nav (bell notifications, etc.)
   // These sections have already been processed and moved to the navigation bar
-  sectionsWithCardsData.forEach(({ section }) => {
-    section.remove();
-  });
+  // EXCEPT in Universal Editor where they need to remain visible for editing
+  const isInUniversalEditor = window.hlx?.isEditor === true;
+
+  if (!isInUniversalEditor) {
+    sectionsWithCardsData.forEach(({ section }) => {
+      section.remove();
+    });
+  }
 
   // Position dropdowns intelligently after a short delay to ensure DOM is fully rendered
   setTimeout(() => {
