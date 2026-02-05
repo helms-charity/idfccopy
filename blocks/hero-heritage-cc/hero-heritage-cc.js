@@ -359,6 +359,22 @@ export default function decorate(block) {
     const showOriginalBanner = () => {
       if (!conceptContainer) return;
 
+      // Show banner elements first (before concept slides down)
+      const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
+      const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
+
+      // Override the CSS animation on bannerInner to prevent 6s delay
+      bannerInner.style.animation = 'none';
+      bannerInner.style.opacity = '1';
+      bannerInner.style.visibility = 'visible';
+
+      if (bannerImage) {
+        bannerImage.style.display = '';
+      }
+      if (bannerCtaGroup) {
+        bannerCtaGroup.style.display = '';
+      }
+
       // Slide down concept
       conceptContainer.style.opacity = '0';
       conceptContainer.style.transform = 'translateY(100%)';
@@ -367,72 +383,31 @@ export default function decorate(block) {
         conceptContainer.style.display = 'none';
         conceptContainer.style.opacity = '';
         conceptContainer.style.transform = '';
-
-        // Find the specific elements to restore
-        const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-        const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
-
-        // Override the CSS animation on bannerInner to prevent 6s delay
-        bannerInner.style.animation = 'none';
-        bannerInner.style.opacity = '1';
-        bannerInner.style.visibility = 'visible';
-
-        // Show the hidden elements starting invisible (no slide)
-        if (bannerImage) {
-          bannerImage.style.display = '';
-          bannerImage.style.opacity = '0';
-        }
-        if (bannerCtaGroup) {
-          bannerCtaGroup.style.display = '';
-          bannerCtaGroup.style.opacity = '0';
-        }
-
-        // Force reflow
-        // eslint-disable-next-line no-unused-expressions
-        bannerInner.offsetHeight;
-
-        // Fade in only
-        if (bannerImage) {
-          bannerImage.style.opacity = '1';
-        }
-        if (bannerCtaGroup) {
-          bannerCtaGroup.style.opacity = '1';
-        }
         bannerDiv.classList.remove('hero-heritage-cc-banner-swapped');
       }, 350);
     };
 
     // Function to show concept, hide original banner
     const showConceptView = () => {
-      // Find the specific elements to hide
-      const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-      const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
+      // Show concept starting below (banner stays visible underneath)
+      conceptContainer.style.display = '';
+      conceptContainer.style.opacity = '1';
+      conceptContainer.style.transform = 'translateY(100%)';
 
-      // Fade out only (no slide)
-      if (bannerImage) {
-        bannerImage.style.opacity = '0';
-      }
-      if (bannerCtaGroup) {
-        bannerCtaGroup.style.opacity = '0';
-      }
+      // Force reflow
+      // eslint-disable-next-line no-unused-expressions
+      conceptContainer.offsetHeight;
 
+      // Slide up over the banner
+      conceptContainer.style.transform = 'translateY(0)';
+      bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
+
+      // After animation completes, hide banner elements to prevent interaction
       setTimeout(() => {
+        const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
+        const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
         if (bannerImage) bannerImage.style.display = 'none';
         if (bannerCtaGroup) bannerCtaGroup.style.display = 'none';
-
-        // Show concept starting below and invisible
-        conceptContainer.style.display = '';
-        conceptContainer.style.opacity = '0';
-        conceptContainer.style.transform = 'translateY(100%)';
-
-        // Force reflow
-        // eslint-disable-next-line no-unused-expressions
-        conceptContainer.offsetHeight;
-
-        // Slide up
-        conceptContainer.style.opacity = '1';
-        conceptContainer.style.transform = 'translateY(0)';
-        bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
       }, 350);
     };
 
