@@ -1413,6 +1413,55 @@
     ]
   },
   {
+    "id": "hotspot",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "id",
+        "label": "ID",
+        "description": "Adds an ID value to the block"
+      },
+      {
+        "component": "richtext",
+        "name": "hotspot-text",
+        "value": "",
+        "label": "Hotspot block Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "hotspot-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "tooltip-text",
+        "value": "",
+        "label": "Tooltip Text",
+        "valueType": "string"
+      },
+      {
+        "component": "number",
+        "name": "x-hotspot",
+        "label": "X Coordinate",
+        "description": "X coordinate of the hotspot"
+      },
+      {
+        "component": "number",
+        "name": "y-hotspot",
+        "label": "Y Coordinate",
+        "description": "Y coordinate of the hotspot"
+      }
+    ]
+  },
+  {
     "id": "library-metadata",
     "fields": [
       {
