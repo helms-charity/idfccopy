@@ -1451,18 +1451,6 @@
         "name": "y-hotspot",
         "label": "Y Coordinate",
         "description": "Y coordinate of the hotspot"
-      },
-      {
-        "component": "number",
-        "name": "x-text",
-        "label": "X Coordinate of text",
-        "description": "X coordinate of the text"
-      },
-      {
-        "component": "number",
-        "name": "y-text",
-        "label": "Y Coordinate of text",
-        "description": "Y coordinate of the text"
       }
     ]
   },
