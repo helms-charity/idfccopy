@@ -359,9 +359,9 @@ export default function decorate(block) {
     const showOriginalBanner = () => {
       if (!conceptContainer) return;
 
-      // Fade out concept with scale
+      // Slide down concept
       conceptContainer.style.opacity = '0';
-      conceptContainer.style.transform = 'scale(0.97)';
+      conceptContainer.style.transform = 'translateY(100%)';
 
       setTimeout(() => {
         conceptContainer.style.display = 'none';
@@ -377,30 +377,26 @@ export default function decorate(block) {
         bannerInner.style.opacity = '1';
         bannerInner.style.visibility = 'visible';
 
-        // Show the hidden elements immediately (override animation)
+        // Show the hidden elements starting invisible (no slide)
         if (bannerImage) {
           bannerImage.style.display = '';
           bannerImage.style.opacity = '0';
-          bannerImage.style.transform = 'scale(0.97)';
         }
         if (bannerCtaGroup) {
           bannerCtaGroup.style.display = '';
           bannerCtaGroup.style.opacity = '0';
-          bannerCtaGroup.style.transform = 'scale(0.97)';
         }
 
         // Force reflow
         // eslint-disable-next-line no-unused-expressions
         bannerInner.offsetHeight;
 
-        // Fade in with scale
+        // Fade in only
         if (bannerImage) {
           bannerImage.style.opacity = '1';
-          bannerImage.style.transform = 'scale(1)';
         }
         if (bannerCtaGroup) {
           bannerCtaGroup.style.opacity = '1';
-          bannerCtaGroup.style.transform = 'scale(1)';
         }
         bannerDiv.classList.remove('hero-heritage-cc-banner-swapped');
       }, 350);
@@ -412,32 +408,30 @@ export default function decorate(block) {
       const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
       const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
 
-      // Fade out only the image and CTA group with scale
+      // Fade out only (no slide)
       if (bannerImage) {
         bannerImage.style.opacity = '0';
-        bannerImage.style.transform = 'scale(0.97)';
       }
       if (bannerCtaGroup) {
         bannerCtaGroup.style.opacity = '0';
-        bannerCtaGroup.style.transform = 'scale(0.97)';
       }
 
       setTimeout(() => {
         if (bannerImage) bannerImage.style.display = 'none';
         if (bannerCtaGroup) bannerCtaGroup.style.display = 'none';
 
-        // Show concept starting invisible and scaled down
+        // Show concept starting below and invisible
         conceptContainer.style.display = '';
         conceptContainer.style.opacity = '0';
-        conceptContainer.style.transform = 'scale(0.97)';
+        conceptContainer.style.transform = 'translateY(100%)';
 
         // Force reflow
         // eslint-disable-next-line no-unused-expressions
         conceptContainer.offsetHeight;
 
-        // Fade in with scale
+        // Slide up
         conceptContainer.style.opacity = '1';
-        conceptContainer.style.transform = 'scale(1)';
+        conceptContainer.style.transform = 'translateY(0)';
         bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
       }, 350);
     };
