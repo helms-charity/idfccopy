@@ -57,9 +57,6 @@ body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-contai
 body:not(.is-framework-page) main:not([data-aue-resource]) .section[data-category-id*="bell"],
 body:not(.is-framework-page) main:not([data-aue-resource]) .section#bell-outline {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
 }
 
 /* In Universal Editor, show bell sections for editing */
@@ -67,9 +64,6 @@ main[data-aue-resource] .section.cards-container[id*="bell"],
 main[data-aue-resource] .section[data-category-id*="bell"],
 main[data-aue-resource] .section#bell-outline {
   display: block !important;
-  visibility: visible !important;
-  height: auto !important;
-  overflow: visible !important;
 }
 
 /* On framework pages, show bell sections for preview/editing */
@@ -77,9 +71,6 @@ body.is-framework-page .section.cards-container[id*="bell"],
 body.is-framework-page .section[data-category-id*="bell"],
 body.is-framework-page .section#bell-outline {
   display: block !important;
-  visibility: visible !important;
-  height: auto !important;
-  overflow: visible !important;
 }
 
 /* Category Nav Wrapper - full width gray background */
