@@ -376,7 +376,6 @@ export default function decorate(block) {
       }
 
       // Slide down concept
-      conceptContainer.style.opacity = '0';
       conceptContainer.style.transform = 'translateY(100%)';
 
       setTimeout(() => {
