@@ -1619,7 +1619,7 @@
       },
       {
         "component": "select",
-        "name": "classes",
+        "name": "textSize",
         "label": "Text Size",
         "value": "",
         "valueType": "string",
@@ -1656,7 +1656,7 @@
       },
       {
         "component": "select",
-        "name": "classes",
+        "name": "alignment",
         "label": "Alignment",
         "value": "",
         "valueType": "string",
