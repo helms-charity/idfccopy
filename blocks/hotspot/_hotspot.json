@@ -48,6 +48,13 @@
                 "name": "id",
                 "label": "ID",
                 "description": "Adds an ID value to the block"
+            },
+            {
+              "component": "richtext",
+              "name": "hotspot-text",
+              "value": "",
+              "label": "Hotspot block Text",
+              "valueType": "string"
             }
         ]
       },
