@@ -937,9 +937,10 @@ export default function decorate(block) {
     }
   });
 
-  // Also hide sections with Cards blocks that are now in the nav
+  // Remove sections with Cards blocks that are now in the nav (bell notifications, etc.)
+  // These sections have already been processed and moved to the navigation bar
   sectionsWithCardsData.forEach(({ section }) => {
-    section.style.display = 'none';
+    section.remove();
   });
 
   // Position dropdowns intelligently after a short delay to ensure DOM is fully rendered
