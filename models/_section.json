@@ -324,6 +324,7 @@
         "library-metadata",
         "banner",
         "overview",
+        "section-title",
         "hotspot"
       ]
     }
