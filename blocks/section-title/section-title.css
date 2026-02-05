@@ -6,6 +6,68 @@
   padding: 0;
 }
 
+/* Text size overrides using CSS custom properties from styles.css */
+.section-title.size-xxl h1,
+.section-title.size-xxl h2,
+.section-title.size-xxl h3,
+.section-title.size-xxl h4,
+.section-title.size-xxl h5,
+.section-title.size-xxl h6,
+.section-title.size-xxl p {
+  font-size: var(--heading-font-size-xxl);
+}
+
+.section-title.size-xl h1,
+.section-title.size-xl h2,
+.section-title.size-xl h3,
+.section-title.size-xl h4,
+.section-title.size-xl h5,
+.section-title.size-xl h6,
+.section-title.size-xl p {
+  font-size: var(--heading-font-size-xl);
+}
+
+.section-title.size-l h1,
+.section-title.size-l h2,
+.section-title.size-l h3,
+.section-title.size-l h4,
+.section-title.size-l h5,
+.section-title.size-l h6,
+.section-title.size-l p {
+  font-size: var(--heading-font-size-l);
+}
+
+.section-title.size-m h1,
+.section-title.size-m h2,
+.section-title.size-m h3,
+.section-title.size-m h4,
+.section-title.size-m h5,
+.section-title.size-m h6,
+.section-title.size-m p {
+  font-size: var(--heading-font-size-m);
+}
+
+.section-title.size-s h1,
+.section-title.size-s h2,
+.section-title.size-s h3,
+.section-title.size-s h4,
+.section-title.size-s h5,
+.section-title.size-s h6,
+.section-title.size-s p {
+  font-size: var(--heading-font-size-s);
+}
+
+.section-title.size-xs h1,
+.section-title.size-xs h2,
+.section-title.size-xs h3,
+.section-title.size-xs h4,
+.section-title.size-xs h5,
+.section-title.size-xs h6,
+.section-title.size-xs p {
+  font-size: var(--heading-font-size-xs);
+}
+
+/* Alignment */
 .section-title.center {
   text-align: center;
 }

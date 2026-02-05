@@ -1571,6 +1571,43 @@
       {
         "component": "select",
         "name": "classes",
+        "label": "Text Size",
+        "value": "",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default (based on heading type)",
+            "value": ""
+          },
+          {
+            "name": "XXL (45px/48px)",
+            "value": "size-xxl"
+          },
+          {
+            "name": "XL (36px/42px)",
+            "value": "size-xl"
+          },
+          {
+            "name": "L (32px/36px)",
+            "value": "size-l"
+          },
+          {
+            "name": "M (28px/32px)",
+            "value": "size-m"
+          },
+          {
+            "name": "S (24px/28px)",
+            "value": "size-s"
+          },
+          {
+            "name": "XS (22px/24px)",
+            "value": "size-xs"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "classes",
         "label": "Alignment",
         "value": "",
         "valueType": "string",
