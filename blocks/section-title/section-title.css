@@ -1,0 +1,15 @@
+/* Section Title block - no margin/padding to maintain semantic HTML with proper heading styles */
+
+/* Headings maintain their own margins from styles.css */
+.section-title {
+  margin: 0;
+  padding: 0;
+}
+
+.section-title.center {
+  text-align: center;
+}
+
+.section-title.right {
+  text-align: right;
+}
