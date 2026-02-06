@@ -59,7 +59,7 @@
   {
     "id": "cards-testimonial",
     "components": [
-      "card"
+      "card-testimonial"
     ]
   },
   {

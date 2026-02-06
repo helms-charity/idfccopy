@@ -198,15 +198,15 @@
           }
         },
         {
-          "title": "Card",
-          "id": "card",
+          "title": "Testimonial Card",
+          "id": "card-testimonial",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "Card",
-                  "model": "card"
+                  "name": "Testimonial Card",
+                  "model": "card-testimonial"
                 }
               }
             }
