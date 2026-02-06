@@ -12,7 +12,19 @@
   width: 100%;
   min-height: 400px;
   position: relative;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
+}
+
+/* SVG connector line styles (line drawn via JS) */
+.hotspot-connector-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
 }
 
 /* Fade animation for block transitions */
@@ -33,7 +45,7 @@
   flex: 0 0 50%;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: 40px;
   position: relative;
   opacity: 0;
@@ -54,7 +66,7 @@
   font-size: 18px;
   line-height: 1.6;
   position: relative;
-  padding-right: 30px;
+  padding-right: 0;
   transition: padding-top 0.5s ease-in-out;
 }
 
@@ -68,10 +80,9 @@
 
 .hotspot-panel-item p {
   margin: 0;
-  background: var(--Primary, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
+  background: var(--primary, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
   background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: rgba(0, 0, 0, 0);
+  -webkit-text-fill-color: rgb(0 0 0 / 0%);
   font-size: 16px;
   font-weight: 500;
   line-height: normal;
@@ -79,6 +90,16 @@
 
 .hotspot-panel-item p:last-child {
   margin-bottom: 0;
+}
+
+.hotspot-panel-item > p > a.button {
+  color: rgb(0 0 0);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration-line: underline;
+  margin-top: 8px;
+  padding: 0;
 }
 
 .hotspot-panel-item em {
@@ -100,18 +121,6 @@
 
 .hotspot-go-back a:hover {
   text-decoration: none;
-}
-
-/* SVG connector line styles (line drawn via JS) */
-.hotspot-connector-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-  z-index: 1;
 }
 
 .hotspot-connector-svg line {
@@ -204,7 +213,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
   .hotspot-container {
     min-height: 350px;
   }
@@ -223,7 +232,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .hotspot-container {
     flex-direction: column;
     min-height: auto;
