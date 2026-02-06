@@ -918,6 +918,14 @@ export default function decorate(block) {
         const hasIcon = textElements.some((el) => el.querySelector('span.icon'));
 
         if (hasCardsBlock && !hasCategoryNav && hasIcon) {
+          // Hide IMMEDIATELY with inline styles to prevent CLS (before any processing)
+          section.style.display = 'none';
+          section.style.visibility = 'hidden';
+          section.style.height = '0';
+          section.style.overflow = 'hidden';
+          section.style.margin = '0';
+          section.style.padding = '0';
+          
           sectionsWithCardsData.push({ section, textElements });
         }
       });
@@ -1040,6 +1048,8 @@ export default function decorate(block) {
 
   if (!isInUniversalEditor) {
     sectionsWithCardsData.forEach(({ section }) => {
+      // Sections were already hidden immediately when detected
+      // Now safely remove from DOM after processing is complete
       section.remove();
     });
   }
