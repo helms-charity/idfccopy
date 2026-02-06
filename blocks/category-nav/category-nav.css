@@ -225,14 +225,14 @@ body.is-framework-page .section#bell-outline {
   min-width: 984px;
   max-width: 984px;
   overflow: visible;
-  padding: 50px 38px 29px;
+  padding: 48px 12px 24px;
 }
 
 /* Triangle pointer attached to bell icon when dropdown is open */
 .category-nav-bulletin-notification.is-open::before {
   content: '';
   position: absolute;
-  bottom: -10px; /* 10px gap between nav and dropdown */
+  bottom: -11px; /* 10px gap between nav and dropdown */
   left: 50%;
   transform: translateX(-50%); /* Center below bell icon */
   width: 0;
