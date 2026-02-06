@@ -227,7 +227,7 @@
           "collapsible": true,
           "description": "For schema and display when block Style is Testimonial.",
           "condition": {
-            "==": [{ "var": "style" }, "testimonial-card"]
+            "==": [{ "var": "classes" }, "testimonial-card"]
           },
           "fields": [
             {

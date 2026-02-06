@@ -28,6 +28,40 @@ function sanitizeText(text) {
 }
 
 /**
+ * Parses a review date string to Schema.org ISO date (YYYY-MM-DD)
+ * @param {string} dateText Raw date text (e.g. "March 26, 2025" or "2025-03-26")
+ * @returns {string} ISO date or empty string
+ */
+function parseReviewDateToISO(dateText) {
+  if (!dateText || !dateText.trim()) return '';
+  const trimmed = dateText.trim();
+  // Already ISO-like
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  try {
+    const parsed = new Date(trimmed);
+    if (!Number.isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
+      return parsed.toISOString().split('T')[0];
+    }
+  } catch (e) { /* ignore */ }
+  return '';
+}
+
+/**
+ * Formats an ISO date (YYYY-MM-DD) for display (e.g. "March 26, 2025").
+ * Used for the testimonial date on the page; JSON-LD keeps YYYY-MM-DD.
+ * @param {string} isoDate Date in YYYY-MM-DD format
+ * @returns {string} Readable date or original string if parsing fails
+ */
+function formatDateForDisplay(isoDate) {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate.trim())) return isoDate || '';
+  try {
+    const d = new Date(`${isoDate.trim()}T12:00:00`);
+    if (Number.isNaN(d.getTime())) return isoDate;
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch (e) { return isoDate; }
+}
+
+/**
  * Generates JSON-LD schema for testimonial cards
  * @param {HTMLElement} block The testimonial cards block
  * @returns {Object} JSON-LD schema object
@@ -40,53 +74,47 @@ function generateTestimonialSchema(block) {
     const cardBody = card.querySelector('.cards-card-body');
     if (!cardBody) return;
 
-    // Extract review text (skip the first paragraph with icon)
+    // Prefer structured data from data attributes (authored via UE fields)
+    let authorName = sanitizeText(card.getAttribute('data-person-name') || '');
+    let productName = sanitizeText(card.getAttribute('data-product-name') || 'IDFC FIRST Bank Credit Card');
+    let ratingValue = parseInt(card.getAttribute('data-author-rating'), 10) || 0;
+    let datePublished = parseReviewDateToISO(card.getAttribute('data-review-date') || '');
+
+    // Fallback: extract from DOM (legacy or normalized elements)
+    if (!authorName) {
+      const authorEl = cardBody.querySelector('.testimonial-person-name') || cardBody.querySelector('h5');
+      authorName = sanitizeText(authorEl ? authorEl.textContent : '');
+    }
+    if (!productName || productName === 'IDFC FIRST Bank Credit Card') {
+      const productEl = cardBody.querySelector('.testimonial-product-name u') || cardBody.querySelector('p u');
+      productName = sanitizeText(productEl ? productEl.textContent : 'IDFC FIRST Bank Credit Card');
+    }
+    if (ratingValue <= 0) {
+      const starIcons = cardBody.querySelectorAll('[class*="icon-star"]');
+      ratingValue = starIcons.length;
+    }
+
+    // Extract review text (skip first paragraph with icon and product name paragraph)
     const paragraphs = cardBody.querySelectorAll('p');
     let reviewText = '';
     paragraphs.forEach((p, index) => {
-      // Skip first paragraph (icon) and product name paragraph (has <u> tag)
-      if (index > 0 && !p.querySelector('u')) {
+      if (p.classList.contains('testimonial-person-name') || p.classList.contains('testimonial-date')
+          || p.classList.contains('testimonial-product-name')) return;
+      if (index > 0 && !p.querySelector('u') && !p.querySelector('.icon-inverted-commas')
+          && !p.querySelector('[class*="icon-star"]')) {
         reviewText += p.textContent.trim();
       }
     });
     reviewText = sanitizeText(reviewText);
 
-    // Extract author name from h5
-    const authorElement = cardBody.querySelector('h5');
-    const authorName = sanitizeText(authorElement ? authorElement.textContent : '');
-
-    // Extract product name from underlined paragraph
-    const productElement = cardBody.querySelector('p u');
-    const productName = sanitizeText(
-      productElement ? productElement.textContent : 'IDFC FIRST Bank Credit Card',
-    );
-
-    // Extract rating from star icons count
-    const starIcons = cardBody.querySelectorAll('[class*="icon-star"]');
-    const ratingValue = starIcons.length;
-
-    // Extract date from h6
-    const dateElement = cardBody.querySelector('h6');
-    let datePublished = '';
-    if (dateElement) {
-      const dateText = sanitizeText(dateElement.textContent);
-      // Extract date after the pipe symbol
+    // Date: from data-review-date or .testimonial-date / h6
+    if (!datePublished) {
+      const dateEl = cardBody.querySelector('.testimonial-date') || cardBody.querySelector('h6');
+      const dateText = dateEl ? dateEl.textContent : '';
       const dateParts = dateText.split('|');
-      if (dateParts.length > 1) {
-        const dateString = dateParts[1].trim();
-        // Convert "March 26, 2025" to ISO format "2025-03-26"
-        try {
-          const parsedDate = new Date(dateString);
-          if (!Number.isNaN(parsedDate.getTime()) && parsedDate.getFullYear() > 2000) {
-            [datePublished] = parsedDate.toISOString().split('T');
-          }
-        } catch (e) {
-          // Silently fail, will use fallback below
-        }
-      }
+      const dateString = dateParts.length > 1 ? dateParts[1].trim() : dateText.trim();
+      datePublished = parseReviewDateToISO(dateString);
     }
-
-    // Fallback to current date if no valid date found
     if (!datePublished) {
       [datePublished] = new Date().toISOString().split('T');
     }
@@ -438,6 +466,169 @@ function appendArrowIcon(cardBody) {
   arrowSpan.appendChild(arrowImg);
   arrowP.appendChild(arrowSpan);
   cardBody.appendChild(arrowP);
+}
+
+/**
+ * Creates the quote (inverted commas) icon element for testimonial cards
+ * @returns {HTMLElement} Paragraph containing the icon
+ */
+function createQuoteIconElement() {
+  const p = document.createElement('p');
+  const span = document.createElement('span');
+  span.className = 'icon icon-inverted-commas';
+  const img = document.createElement('img');
+  img.setAttribute('data-icon-name', 'inverted-commas');
+  img.src = '/icons/inverted-commas.svg';
+  img.alt = '';
+  img.loading = 'lazy';
+  span.appendChild(img);
+  p.appendChild(span);
+  return p;
+}
+
+/**
+ * Creates star rating element (1-5 stars) for testimonial cards.
+ * Converts the authored numeric rating (1-5) into the corresponding number of star icons
+ * for display; same star markup is used by Swiper for active/inactive styling.
+ * @param {number} rating Value 1-5
+ * @returns {HTMLElement} Paragraph containing star icons
+ */
+function createStarRatingElement(rating) {
+  const p = document.createElement('p');
+  const count = Math.min(5, Math.max(0, parseInt(Number(rating), 10) || 0));
+  for (let i = 0; i < count; i += 1) {
+    const span = document.createElement('span');
+    span.className = 'icon icon-star icon-star-yellow';
+    const img = document.createElement('img');
+    img.setAttribute('data-icon-name', 'star-yellow');
+    img.src = '/icons/star-yellow.svg';
+    img.alt = '';
+    img.loading = 'lazy';
+    span.appendChild(img);
+    p.appendChild(span);
+  }
+  return p;
+}
+
+/**
+ * Normalizes testimonial card structure: semantic P tags with classes, optional quote icon,
+ * and data attributes for schema. Supports both structured UE fields and legacy richtext.
+ * @param {HTMLElement} cardItem The card element
+ */
+function normalizeTestimonialCard(cardItem) {
+  const bodyDivs = [...cardItem.querySelectorAll('.cards-card-body')];
+  if (bodyDivs.length === 0) return;
+
+  const mainBody = bodyDivs[0];
+  // Structured flow: last 5 body divs are quoteIcon, personName, productName, authorRating,
+  // reviewDate (card testimonialDetails order)
+  const hasStructuredFields = bodyDivs.length >= 5
+    && (bodyDivs[bodyDivs.length - 5].textContent.trim()
+        || bodyDivs[bodyDivs.length - 4].textContent.trim()
+        || bodyDivs[bodyDivs.length - 3].textContent.trim()
+        || bodyDivs[bodyDivs.length - 2].textContent.trim()
+        || bodyDivs[bodyDivs.length - 1].textContent.trim());
+
+  if (hasStructuredFields) {
+    const quoteIconVal = bodyDivs[bodyDivs.length - 5].textContent.trim().toLowerCase();
+    const quoteIcon = (quoteIconVal === 'inverted-commas' || quoteIconVal === 'none')
+      ? quoteIconVal : 'inverted-commas';
+    const reviewHtml = mainBody.innerHTML;
+    const personName = sanitizeText(bodyDivs[bodyDivs.length - 4].textContent);
+    const productName = sanitizeText(bodyDivs[bodyDivs.length - 3].textContent)
+      || 'IDFC FIRST Bank Credit Card';
+    const ratingRaw = bodyDivs[bodyDivs.length - 2].textContent.trim();
+    const ratingNum = parseInt(ratingRaw, 10);
+    const authorRating = (Number.isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5)
+      ? 5 : ratingNum;
+    const dateText = bodyDivs[bodyDivs.length - 1].textContent.trim();
+
+    const newBody = document.createElement('div');
+    newBody.className = 'cards-card-body';
+
+    if (quoteIcon === 'inverted-commas') {
+      newBody.appendChild(createQuoteIconElement());
+    }
+    cardItem.setAttribute('data-quote-icon', quoteIcon);
+    const reviewWrapper = document.createElement('div');
+    reviewWrapper.innerHTML = reviewHtml;
+    newBody.append(...reviewWrapper.childNodes);
+
+    const pPerson = document.createElement('p');
+    pPerson.className = 'testimonial-person-name';
+    pPerson.textContent = personName;
+    newBody.appendChild(pPerson);
+
+    const pProduct = document.createElement('p');
+    pProduct.className = 'testimonial-product-name';
+    const u = document.createElement('u');
+    u.textContent = productName;
+    pProduct.appendChild(u);
+    newBody.appendChild(pProduct);
+
+    newBody.appendChild(createStarRatingElement(authorRating));
+
+    const pDate = document.createElement('p');
+    pDate.className = 'testimonial-date';
+    // Store raw YYYY-MM-DD for Schema.org; show readable format on page
+    const isoDate = /^\d{4}-\d{2}-\d{2}$/.test(dateText.trim()) ? dateText.trim() : parseReviewDateToISO(dateText) || dateText;
+    pDate.textContent = formatDateForDisplay(isoDate) || dateText;
+    newBody.appendChild(pDate);
+
+    cardItem.setAttribute('data-person-name', personName);
+    cardItem.setAttribute('data-product-name', productName);
+    cardItem.setAttribute('data-author-rating', String(authorRating));
+    cardItem.setAttribute('data-review-date', isoDate);
+
+    bodyDivs.forEach((div) => div.remove());
+    const imageDiv = cardItem.querySelector('.cards-card-image');
+    if (imageDiv) {
+      cardItem.insertBefore(newBody, imageDiv.nextSibling);
+    } else {
+      cardItem.appendChild(newBody);
+    }
+    return;
+  }
+
+  // Legacy flow: convert h5/h6/p u to semantic p with classes and set data-* for schema
+  if (!mainBody.querySelector('.icon-inverted-commas')) {
+    mainBody.insertBefore(createQuoteIconElement(), mainBody.firstChild);
+  }
+
+  const authorEl = mainBody.querySelector('h5');
+  if (authorEl) {
+    const name = sanitizeText(authorEl.textContent);
+    const p = document.createElement('p');
+    p.className = 'testimonial-person-name';
+    p.textContent = name;
+    authorEl.replaceWith(p);
+    cardItem.setAttribute('data-person-name', name);
+  }
+
+  const dateEl = mainBody.querySelector('h6');
+  if (dateEl) {
+    const dateText = sanitizeText(dateEl.textContent);
+    const p = document.createElement('p');
+    p.className = 'testimonial-date';
+    p.textContent = dateText;
+    dateEl.replaceWith(p);
+    cardItem.setAttribute('data-review-date', dateText);
+  }
+
+  const productEl = mainBody.querySelector('p u');
+  if (productEl) {
+    const name = sanitizeText(productEl.textContent);
+    const parentP = productEl.closest('p');
+    if (parentP && !parentP.classList.contains('testimonial-product-name')) {
+      parentP.classList.add('testimonial-product-name');
+    }
+    cardItem.setAttribute('data-product-name', name);
+  }
+
+  const starIcons = mainBody.querySelectorAll('[class*="icon-star"]');
+  if (starIcons.length > 0) {
+    cardItem.setAttribute('data-author-rating', String(starIcons.length));
+  }
 }
 
 /**
@@ -815,6 +1006,11 @@ export default async function decorate(block) {
 
   // Get all card elements once and reuse
   const allCards = cardsContainer.querySelectorAll('.cards-card');
+
+  // Normalize testimonial cards: semantic P tags, quote icon, data-* for schema
+  if (isTestimonial) {
+    allCards.forEach((cardItem) => normalizeTestimonialCard(cardItem));
+  }
 
   // Add appropriate class to card items
   allCards.forEach((cardItem) => {

@@ -1657,24 +1657,31 @@
   transition: all 0.5s ease;
 }
 
-/* Testimonial card text styling for Swiper slides */
+/* Testimonial card text styling for Swiper slides (semantic P with classes, no h5/h6) */
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-person-name,
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-date,
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-product-name,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h6,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p {
   color: var(--color-white);
 }
 
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-person-name,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 {
   font-size: var(--body-font-size-l);
   font-weight: 500;
   margin: 36px 0 11px;
 }
 
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-person-name + p,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h5 + p {
   font-size: var(--body-font-size-s);
   margin: 0 0 var(--spacing-xxs);
 }
 
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-product-name,
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-product-name u,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body p u {
   font-size: var(--body-font-size-s);
   text-decoration: none;
@@ -1712,6 +1719,7 @@
   padding-right: 4px;
 }
 
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body .testimonial-date,
 .cards.testimonial-card.swiper .swiper-slide .cards-card-body h6 {
   font-size: var(--body-font-size-xs);
   line-height: 1.5;
@@ -1806,6 +1814,7 @@
   .cards.joining-perks > .swiper-wrapper > .cards-card,
   .cards.joining-perks .benefit-cards {
     max-width: 326px;
+    min-height: 400px;
   }
 
   .cards.joining-perks .swiper-slide {
@@ -2004,13 +2013,6 @@
     height: 40px;
   }
 
-  /* Joining Perks Cards - Desktop */
-  .cards.joining-perks > .grid-cards > .cards-card,
-  .cards.joining-perks > .swiper-wrapper > .cards-card,
-  .cards.joining-perks .benefit-cards {
-    min-height: 400px;
-  }
-
   .cards.joining-perks .cards-card-image img,
   .cards.joining-perks .benefit-cards .cards-card-image img {
     height: 240px;
@@ -2053,6 +2055,7 @@
   }
 }
 
+.cards.testimonial-card.swiper .swiper-slide .cards-card-body p:has(.icon-star) .icon-star:last-child,
 .cards.testimonial-card.swiper .swiper-slide h6:has(.icon-star) .icon-star:last-child {
   padding-right: 16px;
 }

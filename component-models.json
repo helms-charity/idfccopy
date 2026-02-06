@@ -910,7 +910,7 @@
         "condition": {
           "==": [
             {
-              "var": "style"
+              "var": "classes"
             },
             "testimonial-card"
           ]
