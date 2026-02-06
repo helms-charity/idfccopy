@@ -284,16 +284,45 @@ function setupConnectorLine(container, currentBlockId = null) {
     }
 
     const containerRect = container.getBoundingClientRect();
-    const panelItemRect = panelItem.getBoundingClientRect();
     const hotspotRect = targetHotspot.getBoundingClientRect();
     const tooltipPanelRect = tooltipPanel.getBoundingClientRect();
     const imageSectionRect = imageSection.getBoundingClientRect();
+    const tooltipContent = container.querySelector('.hotspot-tooltip-content');
 
     // Detect mobile mode: panel is below image when panel's top is >= image's bottom
     // or when container has flex-direction: column (stacked layout)
     const containerStyles = window.getComputedStyle(container);
     const isMobileLayout = containerStyles.flexDirection === 'column'
       || tooltipPanelRect.top >= imageSectionRect.bottom - 20;
+
+    // Align panel item center with hotspot center (desktop only)
+    if (!isMobileLayout && tooltipContent) {
+      // Reset padding first to get accurate measurements
+      tooltipContent.style.paddingTop = '0px';
+      
+      // Get fresh measurements after reset
+      const panelItemRectFresh = panelItem.getBoundingClientRect();
+      const tooltipPanelRectFresh = tooltipPanel.getBoundingClientRect();
+      
+      // Calculate hotspot center Y relative to the panel
+      const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
+      
+      // Calculate current panel item center Y
+      const panelItemCenterY = panelItemRectFresh.top + (panelItemRectFresh.height / 2);
+      
+      // Calculate offset needed to align centers
+      const offsetNeeded = hotspotCenterY - panelItemCenterY;
+      
+      // Apply as padding-top (only if positive, can't have negative padding)
+      const desiredPaddingTop = Math.max(0, offsetNeeded);
+      tooltipContent.style.paddingTop = `${desiredPaddingTop}px`;
+    } else if (tooltipContent) {
+      // Reset padding in mobile mode
+      tooltipContent.style.paddingTop = '';
+    }
+
+    // Re-get panelItem rect after potential padding change
+    const panelItemRect = panelItem.getBoundingClientRect();
 
     let x1; let y1; let x2; let y2;
 
