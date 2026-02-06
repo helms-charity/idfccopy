@@ -117,32 +117,50 @@ function showInitialPanel(container, currentBlockId) {
   tooltipContent.innerHTML = panelHTML;
   tooltipPanel.classList.add('visible');
 
-  // Calculate and set initial padding position immediately (don't wait for RAF)
-  const panelItem = tooltipContent.querySelector('.hotspot-panel-item');
-  if (panelItem && firstHotspot) {
-    // Disable transition for instant positioning
-    tooltipContent.style.transition = 'none';
+  // Function to calculate and set padding position
+  const calculateInitialPadding = (withTransition = false) => {
+    const panelItem = tooltipContent.querySelector('.hotspot-panel-item');
+    if (!panelItem || !firstHotspot) return;
+
+    if (!withTransition) {
+      // Disable transition for instant positioning
+      tooltipContent.style.transition = 'none';
+    }
     
     // Force layout to get accurate measurements
     tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
     
     const hotspotRect = firstHotspot.getBoundingClientRect();
     const panelItemRect = panelItem.getBoundingClientRect();
+    const currentPadding = parseFloat(tooltipContent.style.paddingTop) || 0;
     
     // Calculate hotspot center Y
     const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
     
-    // Calculate panel item center Y (currently at padding 0)
-    const panelItemCenterY = panelItemRect.top + (panelItemRect.height / 2);
+    // Calculate panel item center Y at padding 0
+    const panelItemCenterYAtZero = panelItemRect.top + (panelItemRect.height / 2) - currentPadding;
     
     // Calculate desired padding
-    const desiredPadding = Math.max(0, hotspotCenterY - panelItemCenterY);
+    const desiredPadding = Math.max(0, hotspotCenterY - panelItemCenterYAtZero);
     tooltipContent.style.paddingTop = `${desiredPadding}px`;
     
-    // Force reflow then re-enable transition
-    tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
-    tooltipContent.style.transition = '';
-  }
+    if (!withTransition) {
+      // Force reflow then re-enable transition
+      tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
+      tooltipContent.style.transition = '';
+    }
+  };
+
+  // Calculate initial position immediately
+  calculateInitialPadding(false);
+
+  // Also recalculate after images load (in case layout shifts)
+  const images = container.querySelectorAll('img');
+  images.forEach((img) => {
+    if (!img.complete) {
+      img.addEventListener('load', () => calculateInitialPadding(false), { once: true });
+    }
+  });
 
   // Set up the go-back behavior:
   // - If on first block: hide the entire hotspot block
