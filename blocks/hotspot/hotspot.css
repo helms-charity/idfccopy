@@ -111,7 +111,7 @@
   height: 100%;
   pointer-events: none;
   overflow: visible;
-  z-index: 5;
+  z-index: 1;
 }
 
 .hotspot-connector-svg line {
@@ -177,7 +177,7 @@
   border-radius: 50%;
   cursor: pointer;
   transform: translate(-50%, -50%);
-  z-index: 10;
+  z-index: 2;
   padding: 0;
   box-shadow: none;
   animation: hotspot-pulse 1500ms ease-in-out infinite;

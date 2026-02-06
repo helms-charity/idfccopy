@@ -21,6 +21,12 @@ let firstBlockElement = null;
 // Store animation frame IDs for cleanup
 const animationFrameMap = new Map();
 
+// Track containers that are currently transitioning (skip padding updates)
+const transitioningContainers = new Set();
+
+// Track max height of all hotspot blocks for consistent section height
+let maxHotspotHeight = 0;
+
 /**
  * Parse hotspot item rows
  * Each row with 3 cells (text, x, y) becomes a hotspot
@@ -208,6 +214,9 @@ function waitForImages(element) {
  */
 function fadeTransition(container, contentSwapCallback) {
   return new Promise((resolve) => {
+    // Mark container as transitioning - RAF will skip padding updates
+    transitioningContainers.add(container);
+
     // Start fade out
     container.classList.add('fade-out');
 
@@ -235,6 +244,9 @@ function fadeTransition(container, contentSwapCallback) {
         // Re-enable transition for the animation
         newTooltipContent.style.transition = '';
       }
+
+      // Allow RAF to calculate final position again
+      transitioningContainers.delete(container);
 
       // Wait for images to load before fading in
       waitForImages(container).then(() => {
@@ -291,7 +303,7 @@ function setupConnectorLine(container, currentBlockId = null) {
     height: 100%;
     pointer-events: none;
     overflow: visible;
-    z-index: 5;
+    z-index: 1;
   `;
   container.style.position = 'relative';
   container.appendChild(svg);
@@ -342,7 +354,8 @@ function setupConnectorLine(container, currentBlockId = null) {
       || tooltipPanelRect.top >= imageSectionRect.bottom - 20;
 
     // Align panel item center with hotspot center (desktop only)
-    if (!isMobileLayout && tooltipContent) {
+    // Skip during transitions to allow CSS animation to complete
+    if (!isMobileLayout && tooltipContent && !transitioningContainers.has(container)) {
       // Get the TARGET padding value (what we're animating towards)
       const targetPadding = parseFloat(tooltipContent.style.paddingTop) || 0;
       
@@ -369,8 +382,8 @@ function setupConnectorLine(container, currentBlockId = null) {
       
       // Re-get panelItem rect after potential padding change
       panelItemRect = panelItem.getBoundingClientRect();
-    } else if (tooltipContent) {
-      // Reset padding in mobile mode
+    } else if (tooltipContent && !transitioningContainers.has(container)) {
+      // Reset padding in mobile mode (but not during transitions)
       tooltipContent.style.paddingTop = '';
     }
 
@@ -699,10 +712,6 @@ export default function decorate(block) {
     firstBlockId = blockId;
     firstBlockElement = block;
     isFirstHotspotBlock = false;
-  } else {
-    // Hide non-first blocks (only show the first hotspot block initially)
-    block.style.display = 'none';
-    block.setAttribute('aria-hidden', 'true');
   }
 
   // Setup SVG connector line
@@ -710,6 +719,23 @@ export default function decorate(block) {
 
   // Show initial panel with hotspot-text (so it's visible by default)
   showInitialPanel(container, blockId);
+
+  // Measure block height BEFORE hiding (for consistent section height)
+  const blockHeight = block.offsetHeight;
+  if (blockHeight > maxHotspotHeight) {
+    maxHotspotHeight = blockHeight;
+    // Update section min-height to accommodate the tallest block
+    const sectionWrapper = block.closest('.section');
+    if (sectionWrapper) {
+      sectionWrapper.style.minHeight = `${maxHotspotHeight}px`;
+    }
+  }
+
+  // Hide non-first blocks (only show the first hotspot block initially)
+  if (blockId !== firstBlockId) {
+    block.style.display = 'none';
+    block.setAttribute('aria-hidden', 'true');
+  }
 
   // Store original content AFTER showing initial panel (so stored state includes visible panel)
   if (blockId) {
