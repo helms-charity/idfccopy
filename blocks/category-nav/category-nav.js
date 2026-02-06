@@ -321,7 +321,6 @@ export function buildDropdown(categoryData) {
     closeButton.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      // Find the parent nav item and remove is-open class
       const navItem = dropdown.closest('.category-nav-item-cards');
       if (navItem) {
         navItem.classList.remove('is-open');
@@ -441,6 +440,8 @@ function buildUnifiedNavigation(categoriesData) {
         e.preventDefault();
         e.stopPropagation();
 
+        const isCurrentlyOpen = li.classList.contains('is-open');
+
         // Close all other open dropdowns
         document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
           if (openItem !== li) {
@@ -449,7 +450,11 @@ function buildUnifiedNavigation(categoriesData) {
         });
 
         // Toggle this dropdown
-        li.classList.toggle('is-open');
+        if (isCurrentlyOpen) {
+          li.classList.remove('is-open');
+        } else {
+          li.classList.add('is-open');
+        }
       });
     } else {
       // For regular items: scroll to section

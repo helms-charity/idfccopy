@@ -53,10 +53,18 @@ body.is-framework-page .category-nav.block > div > div {
    ================================================================= */
 
 /* Hide bell notification sections on normal pages to prevent CLS */
+/* Use :has() to match sections containing bell icons BEFORE JavaScript runs */
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container:has(.icon-bell),
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container:has(.icon-bell-outline),
 body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container[id*="bell"],
 body:not(.is-framework-page) main:not([data-aue-resource]) .section[data-category-id*="bell"],
 body:not(.is-framework-page) main:not([data-aue-resource]) .section#bell-outline {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* In Universal Editor, show bell sections for editing */
@@ -199,41 +207,42 @@ body.is-framework-page .section#bell-outline {
   display: block;
 }
 
-/* Show dropdown on click for cards block items - use !important to override default hiding */
+/* Show dropdown on click for cards block items */
 .category-nav-item-cards.is-open > .category-nav-dropdown {
-  display: block !important;
+  display: block;
 }
 
-/* Special positioning for bulletin cards dropdown - only for bell icon */
-.category-nav-item-cards.category-nav-bulletin-notification .category-nav-dropdown {
-  /* Position dropdown completely to the LEFT of the bell icon */
+/* Special positioning for bell dropdown - positioned to align with nav */
+.category-nav-item-cards.category-nav-bulletin-notification.is-open > .category-nav-dropdown {
   position: absolute;
-  left: auto !important; /* Important: Override default left: 0 */
-  right: 100% !important; /* Important: Override default left positioning */
-  margin-right: -55px;
-  top: calc(100% + 24px);
+  left: auto !important; /* Must override base dropdown left: 0 */
+  right: 100% !important; /* Position to the left of bell icon */
+  margin-right: -55px !important; /* Shift back right to create proper alignment */
+  top: calc(100% + 10px) !important; /* 10px gap for triangle */
   border-radius: 12px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
-  width: 984px !important; /* Important: Override base 860px width */
-  min-width: 984px !important; /* Important: Override base min-width */
-  max-width: 984px !important; /* Important: Override base max-width */
+  width: 984px;
+  min-width: 984px;
+  max-width: 984px;
   overflow: visible;
-  padding: 50px 38px 29px; /* Top, Left/Right, Bottom padding */
+  padding: var(--spacing-l) var(--spacing-xs) var(--spacing-s);
 }
 
-/* Triangle attached to the BELL ICON when dropdown is open */
-.category-nav-item-cards.category-nav-bulletin-notification.is-open::before {
+/* Triangle pointer attached to bell icon when dropdown is open */
+.category-nav-bulletin-notification.is-open::before {
   content: '';
   position: absolute;
-  bottom: -24px; /* Extended further down to connect with dropdown */
+  bottom: -11px; /* 10px gap between nav and dropdown */
   left: 50%;
   transform: translateX(-50%); /* Center below bell icon */
   width: 0;
   height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 20px solid var(--color-white);
+  border-left: 12px solid transparent; /* Wider triangle */
+  border-right: 12px solid transparent; /* Wider triangle */
+  border-bottom: 11px solid var(--color-white); /* Slightly taller to overlap with dropdown */
   z-index: 1003;
+  pointer-events: none; /* Don't interfere with clicks */
+  filter: drop-shadow(0 0 0 transparent); /* Remove any shadow artifacts */
 }
 
 /* Dropdown Header */
