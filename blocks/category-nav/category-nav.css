@@ -212,6 +212,36 @@ body.is-framework-page .section#bell-outline {
   display: block;
 }
 
+/* Special positioning for bell dropdown - positioned to align with nav */
+.category-nav-bulletin-notification .category-nav-dropdown {
+  top: calc(100% + 10px); /* 10px gap for triangle */
+  left: auto;
+  right: 0; /* Align right edge with bell icon */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  width: 984px;
+  min-width: 984px;
+  max-width: calc(100vw - 32px);
+  overflow: visible;
+  padding: 50px 38px 29px;
+}
+
+/* Triangle pointer attached to bell icon when dropdown is open */
+.category-nav-bulletin-notification.is-open::before {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* 10px gap between nav and dropdown */
+  left: 50%;
+  transform: translateX(-50%); /* Center below bell icon */
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent; /* Wider triangle */
+  border-right: 12px solid transparent; /* Wider triangle */
+  border-bottom: 10px solid var(--color-white); /* Shorter triangle */
+  z-index: 1003;
+  pointer-events: none; /* Don't interfere with clicks */
+}
+
 /* Dropdown Header */
 .category-nav-dropdown-header {
   padding: 16px var(--spacing-s) 6px;
