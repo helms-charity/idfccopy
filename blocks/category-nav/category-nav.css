@@ -53,10 +53,18 @@ body.is-framework-page .category-nav.block > div > div {
    ================================================================= */
 
 /* Hide bell notification sections on normal pages to prevent CLS */
+/* Use :has() to match sections containing bell icons BEFORE JavaScript runs */
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container:has(.icon-bell),
+body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container:has(.icon-bell-outline),
 body:not(.is-framework-page) main:not([data-aue-resource]) .section.cards-container[id*="bell"],
 body:not(.is-framework-page) main:not([data-aue-resource]) .section[data-category-id*="bell"],
 body:not(.is-framework-page) main:not([data-aue-resource]) .section#bell-outline {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* In Universal Editor, show bell sections for editing */

@@ -918,14 +918,8 @@ export default function decorate(block) {
         const hasIcon = textElements.some((el) => el.querySelector('span.icon'));
 
         if (hasCardsBlock && !hasCategoryNav && hasIcon) {
-          // Hide IMMEDIATELY with inline styles to prevent CLS (before any processing)
-          section.style.display = 'none';
-          section.style.visibility = 'hidden';
-          section.style.height = '0';
-          section.style.overflow = 'hidden';
-          section.style.margin = '0';
-          section.style.padding = '0';
-          
+          // Bell sections are already hidden by CSS using :has() selector
+          // No need for JavaScript hiding - CSS applies before page render
           sectionsWithCardsData.push({ section, textElements });
         }
       });
