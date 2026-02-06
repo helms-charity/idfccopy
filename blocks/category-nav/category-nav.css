@@ -225,7 +225,7 @@ body.is-framework-page .section#bell-outline {
   min-width: 984px;
   max-width: 984px;
   overflow: visible;
-  padding: 48px 12px 24px;
+  padding: var(--spacing-l) var(--spacing-xs) var(--spacing-s);
 }
 
 /* Triangle pointer attached to bell icon when dropdown is open */
