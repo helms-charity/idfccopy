@@ -426,8 +426,6 @@ function decorateButtons(element) {
           && up.tagName === 'STRONG'
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
-          && threeup.childNodes.length === 1
-          && threeup.tagName === 'P'
         ) {
           a.className = 'button primary';
           twoup.classList.add('button-container');
@@ -437,8 +435,6 @@ function decorateButtons(element) {
           && up.tagName === 'EM'
           && twoup.childNodes.length === 1
           && twoup.tagName === 'P'
-          && threeup.childNodes.length === 1
-          && threeup.tagName === 'P'
         ) {
           a.className = 'button secondary';
           twoup.classList.add('button-container');
