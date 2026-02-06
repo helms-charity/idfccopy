@@ -215,10 +215,10 @@ body.is-framework-page .section#bell-outline {
 /* Special positioning for bell dropdown - positioned to align with nav */
 .category-nav-item-cards.category-nav-bulletin-notification.is-open > .category-nav-dropdown {
   position: absolute;
-  left: auto;
-  right: 100%; /* Position to the left of bell icon */
-  margin-right: -55px; /* Shift back right to create proper alignment */
-  top: calc(100% + 10px); /* 10px gap for triangle */
+  left: auto !important; /* Must override base dropdown left: 0 */
+  right: 100% !important; /* Position to the left of bell icon */
+  margin-right: -55px !important; /* Shift back right to create proper alignment */
+  top: calc(100% + 10px) !important; /* 10px gap for triangle */
   border-radius: 12px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
   width: 984px;
