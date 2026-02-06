@@ -827,8 +827,6 @@ export default function decorate(block) {
         const hasIcon = textElements.some((el) => el.querySelector('span.icon'));
 
         if (hasCardsBlock && !hasCategoryNav && hasIcon) {
-          // Bell sections are already hidden by CSS using :has() selector
-          // No need for JavaScript hiding - CSS applies before page render
           sectionsWithCardsData.push({ section, textElements });
         }
       });
@@ -951,8 +949,6 @@ export default function decorate(block) {
 
   if (!isInUniversalEditor) {
     sectionsWithCardsData.forEach(({ section }) => {
-      // Sections were already hidden immediately when detected
-      // Now safely remove from DOM after processing is complete
       section.remove();
     });
   }
