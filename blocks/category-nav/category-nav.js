@@ -322,8 +322,7 @@ export function buildDropdown(categoryData) {
       e.preventDefault();
       e.stopPropagation();
       // Find the parent nav item - check stored reference first (for bell dropdown moved to body)
-      // eslint-disable-next-line no-underscore-dangle
-      const navItem = dropdown._navItem || dropdown.closest('.category-nav-item-cards');
+      const navItem = dropdownNavItemMap.get(dropdown) || dropdown.closest('.category-nav-item-cards');
       if (navItem) {
         navItem.classList.remove('is-open');
         // Also remove is-visible class if it's a bell dropdown
@@ -395,6 +394,10 @@ export function buildDropdown(categoryData) {
 
   return dropdown;
 }
+
+// WeakMaps to store references without polluting DOM elements with custom properties
+const bellDropdownMap = new WeakMap();
+const dropdownNavItemMap = new WeakMap();
 
 /**
  * Calculate and set position for bell dropdown using fixed positioning
@@ -483,8 +486,7 @@ function buildUnifiedNavigation(categoriesData) {
           if (openItem !== li) {
             openItem.classList.remove('is-open');
             // Also remove is-visible class from its dropdown if it's a bell notification
-            // eslint-disable-next-line no-underscore-dangle
-            const otherDropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+            const otherDropdown = bellDropdownMap.get(openItem) || openItem.querySelector('.category-nav-dropdown');
             if (otherDropdown && otherDropdown.classList.contains('category-nav-bell-dropdown')) {
               otherDropdown.classList.remove('is-visible');
             }
@@ -494,8 +496,7 @@ function buildUnifiedNavigation(categoriesData) {
         // Toggle this dropdown
         if (isCurrentlyOpen) {
           li.classList.remove('is-open');
-          // eslint-disable-next-line no-underscore-dangle
-          const dropdown = li._bellDropdown || li.querySelector('.category-nav-dropdown');
+          const dropdown = bellDropdownMap.get(li) || li.querySelector('.category-nav-dropdown');
           if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
             dropdown.classList.remove('is-visible');
           }
@@ -506,11 +507,9 @@ function buildUnifiedNavigation(categoriesData) {
           if (li.classList.contains('category-nav-bulletin-notification')) {
             // Find dropdown - it might be in the li or already moved to body
             let dropdown = li.querySelector('.category-nav-dropdown');
-            // eslint-disable-next-line no-underscore-dangle
-            if (!dropdown && li._bellDropdown) {
+            if (!dropdown) {
               // Reference stored from previous move
-              // eslint-disable-next-line no-underscore-dangle
-              dropdown = li._bellDropdown;
+              dropdown = bellDropdownMap.get(li);
             }
             if (dropdown) {
               // Add a class to the dropdown so it can be styled when moved to body
@@ -518,8 +517,7 @@ function buildUnifiedNavigation(categoriesData) {
               dropdown.classList.add('is-visible'); // Add class to show it
 
               calculateBellDropdownPosition(li, dropdown);
-              // eslint-disable-next-line no-underscore-dangle
-              li._bellDropdown = dropdown; // Store reference on the li
+              bellDropdownMap.set(li, dropdown); // Store reference
             }
           }
         }
@@ -544,8 +542,7 @@ function buildUnifiedNavigation(categoriesData) {
     if (dropdown) {
       // Store bidirectional reference between dropdown and nav item
       // (needed for bell dropdown moved to body)
-      // eslint-disable-next-line no-underscore-dangle
-      dropdown._navItem = li;
+      dropdownNavItemMap.set(dropdown, li);
       li.appendChild(dropdown);
     }
 
@@ -567,8 +564,7 @@ function buildUnifiedNavigation(categoriesData) {
       document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
         openItem.classList.remove('is-open');
         // Also remove is-visible class from its dropdown if it's a bell notification
-        // eslint-disable-next-line no-underscore-dangle
-        const dropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+        const dropdown = bellDropdownMap.get(openItem) || openItem.querySelector('.category-nav-dropdown');
         if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
           dropdown.classList.remove('is-visible');
         }
@@ -588,8 +584,7 @@ function buildUnifiedNavigation(categoriesData) {
         document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
           openItem.classList.remove('is-open');
           // Also remove is-visible class from bell dropdown
-          // eslint-disable-next-line no-underscore-dangle
-          const dropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+          const dropdown = bellDropdownMap.get(openItem) || openItem.querySelector('.category-nav-dropdown');
           if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
             dropdown.classList.remove('is-visible');
           }

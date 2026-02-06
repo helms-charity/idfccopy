@@ -216,8 +216,8 @@ body.is-framework-page .section#bell-outline {
 /* This dropdown will be moved to body via JS to avoid layout shifts */
 .category-nav-bell-dropdown {
   /* Remove from document flow entirely to prevent CLS */
-  position: fixed !important;
-  left: auto !important; /* Override base left: 0 */
+  position: fixed;
+  left: auto; /* Override base left: 0 */
   visibility: hidden;
   opacity: 0;
   transform: translateY(20px);
@@ -229,9 +229,9 @@ body.is-framework-page .section#bell-outline {
   
   border-radius: 12px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
-  width: 984px !important;
-  min-width: 984px !important;
-  max-width: calc(100vw - 32px) !important;
+  width: 984px;
+  min-width: 984px;
+  max-width: calc(100vw - 32px);
   overflow: visible;
   padding: 50px 38px 29px;
   z-index: 1001;
@@ -240,11 +240,11 @@ body.is-framework-page .section#bell-outline {
 
 /* Show dropdown when open */
 .category-nav-bell-dropdown.is-visible {
-  visibility: visible !important;
+  visibility: visible;
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s 0s;
-  display: block !important;
+  display: block;
 }
 
 /* Triangle attached to the BELL ICON when dropdown is open */
@@ -759,7 +759,7 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 
   /* Ensure bell dropdown is also hidden on mobile */
   .category-nav-bell-dropdown {
-    display: none !important;
+    display: none;
   }
 }
 
