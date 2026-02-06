@@ -55,6 +55,7 @@
   line-height: 1.6;
   position: relative;
   padding-right: 30px;
+  transition: padding-top 0.5s ease-in-out;
 }
 
 .hotspot-panel-item {

@@ -111,6 +111,33 @@ function showInitialPanel(container, currentBlockId) {
   tooltipContent.innerHTML = panelHTML;
   tooltipPanel.classList.add('visible');
 
+  // Calculate and set initial padding position immediately (don't wait for RAF)
+  const panelItem = tooltipContent.querySelector('.hotspot-panel-item');
+  if (panelItem && firstHotspot) {
+    // Disable transition for instant positioning
+    tooltipContent.style.transition = 'none';
+    
+    // Force layout to get accurate measurements
+    tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
+    
+    const hotspotRect = firstHotspot.getBoundingClientRect();
+    const panelItemRect = panelItem.getBoundingClientRect();
+    
+    // Calculate hotspot center Y
+    const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
+    
+    // Calculate panel item center Y (currently at padding 0)
+    const panelItemCenterY = panelItemRect.top + (panelItemRect.height / 2);
+    
+    // Calculate desired padding
+    const desiredPadding = Math.max(0, hotspotCenterY - panelItemCenterY);
+    tooltipContent.style.paddingTop = `${desiredPadding}px`;
+    
+    // Force reflow then re-enable transition
+    tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
+    tooltipContent.style.transition = '';
+  }
+
   // Set up the go-back behavior:
   // - If on first block: hide the entire hotspot block
   // - If on any other block: return to the first block
@@ -174,7 +201,7 @@ function waitForImages(element) {
 /**
  * Performs a fade transition when switching block content.
  * Waits for fade-out to complete, swaps content, waits for images to load,
- * then fades back in.
+ * then fades back in. Also handles text position animation.
  * @param {HTMLElement} container - The container element
  * @param {Function} contentSwapCallback - Function to call during the fade (swaps content)
  * @returns {Promise} Resolves when the transition is complete
@@ -188,8 +215,26 @@ function fadeTransition(container, contentSwapCallback) {
     const onFadeOutEnd = () => {
       container.removeEventListener('transitionend', onFadeOutEnd);
 
+      // Capture the ACTUAL computed position at the END of fade-out (mid-animation point)
+      const tooltipContent = container.querySelector('.hotspot-tooltip-content');
+      const positionAtFadeOut = tooltipContent
+        ? window.getComputedStyle(tooltipContent).paddingTop
+        : '0px';
+
       // Swap content while invisible
       contentSwapCallback();
+
+      // Set new content's initial position to where the old content was
+      const newTooltipContent = container.querySelector('.hotspot-tooltip-content');
+      if (newTooltipContent && positionAtFadeOut) {
+        // Temporarily disable transition to set initial position instantly
+        newTooltipContent.style.transition = 'none';
+        newTooltipContent.style.paddingTop = positionAtFadeOut;
+        // Force reflow to apply the instant change
+        newTooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
+        // Re-enable transition for the animation
+        newTooltipContent.style.transition = '';
+      }
 
       // Wait for images to load before fading in
       waitForImages(container).then(() => {
@@ -288,6 +333,7 @@ function setupConnectorLine(container, currentBlockId = null) {
     const tooltipPanelRect = tooltipPanel.getBoundingClientRect();
     const imageSectionRect = imageSection.getBoundingClientRect();
     const tooltipContent = container.querySelector('.hotspot-tooltip-content');
+    let panelItemRect = panelItem.getBoundingClientRect();
 
     // Detect mobile mode: panel is below image when panel's top is >= image's bottom
     // or when container has flex-direction: column (stacked layout)
@@ -297,32 +343,36 @@ function setupConnectorLine(container, currentBlockId = null) {
 
     // Align panel item center with hotspot center (desktop only)
     if (!isMobileLayout && tooltipContent) {
-      // Reset padding first to get accurate measurements
-      tooltipContent.style.paddingTop = '0px';
+      // Get the TARGET padding value (what we're animating towards)
+      const targetPadding = parseFloat(tooltipContent.style.paddingTop) || 0;
       
-      // Get fresh measurements after reset
-      const panelItemRectFresh = panelItem.getBoundingClientRect();
-      const tooltipPanelRectFresh = tooltipPanel.getBoundingClientRect();
+      // Use tooltip panel's top as stable reference (doesn't change during animation)
+      // Panel item's position at padding=0 would be near the top of the panel
+      const panelItemHeight = panelItem.offsetHeight;
+      const panelTopPadding = parseFloat(window.getComputedStyle(tooltipPanel).paddingTop) || 40;
       
-      // Calculate hotspot center Y relative to the panel
-      const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
+      // Calculate where panel item center would be at padding 0
+      // (tooltip panel top + panel's padding + half of panel item height)
+      const panelItemCenterYAtZero = tooltipPanelRect.top + panelTopPadding + (panelItemHeight / 2);
       
-      // Calculate current panel item center Y
-      const panelItemCenterY = panelItemRectFresh.top + (panelItemRectFresh.height / 2);
+      // Calculate hotspot center Y (absolute position)
+      const hotspotCenterYAbs = hotspotRect.top + (hotspotRect.height / 2);
       
-      // Calculate offset needed to align centers
-      const offsetNeeded = hotspotCenterY - panelItemCenterY;
+      // Calculate desired padding to align centers
+      const desiredPaddingTop = Math.max(0, hotspotCenterYAbs - panelItemCenterYAtZero);
       
-      // Apply as padding-top (only if positive, can't have negative padding)
-      const desiredPaddingTop = Math.max(0, offsetNeeded);
-      tooltipContent.style.paddingTop = `${desiredPaddingTop}px`;
+      // Only update if significantly different from TARGET (avoids fighting with CSS transition)
+      const paddingDiff = Math.abs(desiredPaddingTop - targetPadding);
+      if (paddingDiff > 2) {
+        tooltipContent.style.paddingTop = `${desiredPaddingTop}px`;
+      }
+      
+      // Re-get panelItem rect after potential padding change
+      panelItemRect = panelItem.getBoundingClientRect();
     } else if (tooltipContent) {
       // Reset padding in mobile mode
       tooltipContent.style.paddingTop = '';
     }
-
-    // Re-get panelItem rect after potential padding change
-    const panelItemRect = panelItem.getBoundingClientRect();
 
     let x1; let y1; let x2; let y2;
 
@@ -555,8 +605,26 @@ export default function decorate(block) {
         }
 
         if (newContent) {
+          // Start moving text towards the clicked hotspot during fade-out
+          const currentTooltipContent = container.querySelector('.hotspot-tooltip-content');
+          const currentPanelItem = container.querySelector('.hotspot-panel-item');
+          if (currentTooltipContent && currentPanelItem) {
+            const hotspotRect = hotspot.getBoundingClientRect();
+            const panelItemRect = currentPanelItem.getBoundingClientRect();
+            const currentPadding = parseFloat(currentTooltipContent.style.paddingTop) || 0;
+            
+            // Calculate where panel item center would be at padding 0
+            const panelItemCenterYAtZero = panelItemRect.top + (panelItemRect.height / 2) - currentPadding;
+            
+            // Calculate hotspot center Y
+            const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
+            
+            // Calculate target padding to move towards clicked hotspot
+            const targetPadding = Math.max(0, hotspotCenterY - panelItemCenterYAtZero);
+            currentTooltipContent.style.paddingTop = `${targetPadding}px`;
+          }
+
           // Use fade transition when switching blocks
-          // Don't mark hotspot as active until after fade-out to avoid line jumping
           fadeTransition(container, () => {
             container.innerHTML = newContent;
             reattachHotspotListeners(container, group.targetId);
@@ -694,6 +762,25 @@ function reattachHotspotListeners(container, blockId) {
         }
 
         if (newContent) {
+          // Start moving text towards the clicked hotspot during fade-out
+          const currentTooltipContent = container.querySelector('.hotspot-tooltip-content');
+          const currentPanelItem = container.querySelector('.hotspot-panel-item');
+          if (currentTooltipContent && currentPanelItem) {
+            const hotspotRect = hotspot.getBoundingClientRect();
+            const panelItemRect = currentPanelItem.getBoundingClientRect();
+            const currentPadding = parseFloat(currentTooltipContent.style.paddingTop) || 0;
+            
+            // Calculate where panel item center would be at padding 0
+            const panelItemCenterYAtZero = panelItemRect.top + (panelItemRect.height / 2) - currentPadding;
+            
+            // Calculate hotspot center Y
+            const hotspotCenterY = hotspotRect.top + (hotspotRect.height / 2);
+            
+            // Calculate target padding to move towards clicked hotspot
+            const targetPadding = Math.max(0, hotspotCenterY - panelItemCenterYAtZero);
+            currentTooltipContent.style.paddingTop = `${targetPadding}px`;
+          }
+
           // Use fade transition when switching blocks
           fadeTransition(container, () => {
             container.innerHTML = newContent;
