@@ -674,6 +674,79 @@ function identifySemanticCardElements(cardItem) {
   }
 }
 
+// Mayura scrollbar recovery: one global resize listener instead of per-swiper resize/breakpoint
+let mayuraScrollbarResizeAttached = false;
+
+function runScrollbarRecoveryForSwiper(swiper, scrollbarContainer) {
+  try {
+    if (scrollbarContainer) {
+      scrollbarContainer.querySelectorAll('.swiper-pagination-handle').forEach((el) => el.remove());
+      if (swiper.scrollbar && swiper.scrollbar.dragEl) {
+        swiper.scrollbar.dragEl = null;
+      }
+    }
+    if (swiper.scrollbar && typeof swiper.scrollbar.init === 'function') {
+      swiper.scrollbar.init();
+    }
+    if (swiper.scrollbar && typeof swiper.scrollbar.updateSize === 'function') {
+      swiper.scrollbar.updateSize();
+    }
+    swiper.update();
+  } catch (_err) {
+    // Recovery failed; continue without logging in production
+  }
+}
+
+function checkAndRecoverMayuraScrollbarForBlock(block, swiper) {
+  if (!block || !swiper || !swiper.scrollbar) return;
+  const scrollbarEl = block.querySelector('.swiper-scrollbar');
+  const handleEl = block.querySelector('.swiper-pagination-handle');
+  const hasScrollbar = !!scrollbarEl;
+  const hasHandle = !!handleEl;
+  const isLocked = scrollbarEl?.classList.contains('swiper-scrollbar-lock');
+  const isHidden = scrollbarEl?.style?.display === 'none';
+
+  if (!hasScrollbar) {
+    const newScrollbar = document.createElement('div');
+    newScrollbar.className = 'swiper-scrollbar swiper-scrollbar-horizontal';
+    block.appendChild(newScrollbar);
+    runScrollbarRecoveryForSwiper(swiper, null);
+    return;
+  }
+
+  // Swiper can add swiper-scrollbar-lock + display:none when container had zero size at init
+  // (e.g. tab panel hidden). Force-unlock and unhide so recovery can run and handle is visible.
+  if (isLocked || isHidden) {
+    scrollbarEl.classList.remove('swiper-scrollbar-lock');
+    scrollbarEl.style.removeProperty('display');
+  }
+
+  if (!hasHandle || isLocked || isHidden) {
+    runScrollbarRecoveryForSwiper(swiper, scrollbarEl);
+    // Fix slide offset when block is visible (tabbed or not: init may have run in hidden container)
+    const tabpanel = block.closest('[role="tabpanel"]');
+    const isVisible = !tabpanel || tabpanel.getAttribute('aria-hidden') === 'false';
+    if (isVisible && typeof swiper.slideTo === 'function') {
+      const expectedSlide = parseInt(block.dataset.startingCard || '0', 10);
+      const isMobile = window.innerWidth < 600;
+      const targetSlide = isMobile ? 0 : expectedSlide;
+      if (swiper.activeIndex !== targetSlide) {
+        swiper.slideTo(targetSlide, 0);
+      }
+    }
+  }
+}
+
+function globalMayuraScrollbarResizeHandler() {
+  requestAnimationFrame(() => {
+    const blocks = document.querySelectorAll('.mayura .cards.swiper');
+    blocks.forEach((block) => {
+      const swiper = block.swiperInstance;
+      if (swiper) checkAndRecoverMayuraScrollbarForBlock(block, swiper);
+    });
+  });
+}
+
 export default async function decorate(block) {
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
@@ -919,11 +992,6 @@ export default async function decorate(block) {
       cardItem.classList.add('swiper-slide');
     });
 
-    // Add pagination container
-    const swiperPagination = document.createElement('div');
-    swiperPagination.className = 'swiper-pagination';
-    block.appendChild(swiperPagination);
-
     // Count total slides
     const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
 
@@ -932,8 +1000,18 @@ export default async function decorate(block) {
     const isMobileView = window.innerWidth < 600;
     const initialSlideIndex = isMobileView ? 0 : startingCard;
 
-    // Check if page uses mayura template for progressbar pagination
+    // Mayura template uses native Swiper scrollbar (draggable handle); others use bullet pagination
     const isMayuraTemplate = document.body.classList.contains('mayura');
+
+    if (isMayuraTemplate) {
+      const scrollbarEl = document.createElement('div');
+      scrollbarEl.className = 'swiper-scrollbar';
+      block.appendChild(scrollbarEl);
+    } else {
+      const swiperPagination = document.createElement('div');
+      swiperPagination.className = 'swiper-pagination';
+      block.appendChild(swiperPagination);
+    }
 
     // Build Swiper configuration
     const swiperConfig = {
@@ -941,13 +1019,24 @@ export default async function decorate(block) {
       spaceBetween: 16,
       initialSlide: initialSlideIndex,
       centeredSlides: true, // Will be overridden by breakpoints if all cards fit
-      pagination: {
-        el: '.swiper-pagination',
-        // Use progressbar for mayura template, bullets for others
-        type: isMayuraTemplate ? 'progressbar' : 'bullets',
-        clickable: !isMayuraTemplate, // Only for bullets
-        dynamicBullets: false,
-      },
+      ...(isMayuraTemplate
+        ? {
+          scrollbar: {
+            el: '.swiper-scrollbar',
+            dragClass: 'swiper-pagination-handle',
+            dragSize: 33,
+            draggable: true,
+            snapOnRelease: true,
+          },
+        }
+        : {
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: false,
+            type: 'bullets',
+          },
+        }),
     };
 
     // Configure breakpoints based on card type
@@ -1119,147 +1208,86 @@ export default async function decorate(block) {
     // Store swiper instance for potential future use
     block.swiperInstance = swiper;
 
-    // Add custom indicator element ONLY for mayura template (progressbar)
-    if (isMayuraTemplate) {
-      const paginationEl = block.querySelector('.swiper-pagination');
-      if (paginationEl) {
-        // Initialize global drag tracking system (only once per page)
-        if (!window.swiperHandleDragState) {
-          window.swiperHandleDragState = {
-            isDragging: false,
-            activeSwiper: null,
-            activePagination: null,
-            activeSlideCount: 0,
-          };
-
-          // Single global mousemove listener for all swipers (performance)
-          document.addEventListener('mousemove', (e) => {
-            const state = window.swiperHandleDragState;
-            if (!state.isDragging || !state.activePagination) return;
-
-            const handle = state.activePagination.querySelector('.swiper-pagination-handle');
-            if (!handle) return;
-
-            const { clientX } = e;
-            const rect = state.activePagination.getBoundingClientRect();
-            const relativeX = clientX - rect.left;
-            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
-
-            handle.style.left = `${percentage * 100}%`;
-            const targetSlide = Math.round(percentage * (state.activeSlideCount - 1));
-            state.activeSwiper.slideTo(targetSlide, 0);
-          });
-
-          // Single global touchmove listener (performance)
-          document.addEventListener('touchmove', (e) => {
-            const state = window.swiperHandleDragState;
-            if (!state.isDragging || !state.activePagination) return;
-
-            const handle = state.activePagination.querySelector('.swiper-pagination-handle');
-            if (!handle) return;
-
-            const { clientX } = e.touches[0];
-            const rect = state.activePagination.getBoundingClientRect();
-            const relativeX = clientX - rect.left;
-            const percentage = Math.max(0, Math.min(1, relativeX / rect.width));
-
-            handle.style.left = `${percentage * 100}%`;
-            const targetSlide = Math.round(percentage * (state.activeSlideCount - 1));
-            state.activeSwiper.slideTo(targetSlide, 0);
-          }, { passive: true });
-
-          // Single global mouseup/touchend listener (performance)
-          const handleGlobalDragEnd = () => {
-            const state = window.swiperHandleDragState;
-            if (!state.isDragging) return;
-
-            const handle = state.activePagination?.querySelector('.swiper-pagination-handle');
-            if (handle) {
-              handle.style.transition = 'left 0.3s ease';
-              handle.style.cursor = 'grab';
-            }
-            document.body.style.userSelect = '';
-
-            state.isDragging = false;
-            state.activeSwiper = null;
-            state.activePagination = null;
-            state.activeSlideCount = 0;
-          };
-
-          document.addEventListener('mouseup', handleGlobalDragEnd);
-          document.addEventListener('touchend', handleGlobalDragEnd);
-        }
-
-        // Drag start handler - sets global state for this swiper instance
-        const handleDragStart = (e) => {
-          const state = window.swiperHandleDragState;
-          state.isDragging = true;
-          state.activeSwiper = swiper;
-          state.activePagination = paginationEl;
-          state.activeSlideCount = slideCount;
-
-          const handle = e.currentTarget;
-          handle.style.transition = 'none';
-          handle.style.cursor = 'grabbing';
-          document.body.style.userSelect = 'none';
-          e.preventDefault();
-        };
-
-        // Factory to create handle with drag listeners attached
-        const createHandle = () => {
-          const handle = document.createElement('div');
-          handle.className = 'swiper-pagination-handle';
-          handle.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" width="28" height="8">';
-          handle.addEventListener('mousedown', handleDragStart);
-          handle.addEventListener('touchstart', handleDragStart, { passive: false });
-          return handle;
-        };
-
-        // Ensure handle exists - recreates if removed by Swiper during resize
-        const ensureHandleExists = () => {
-          let handle = paginationEl.querySelector('.swiper-pagination-handle');
-          if (!handle) {
-            handle = createHandle();
-            paginationEl.appendChild(handle);
-          }
-          return handle;
-        };
-
-        // Create initial handle
-        paginationEl.appendChild(createHandle());
-
-        // Update handle position with existence check for resilience
-        const updateHandlePosition = () => {
-          const handle = ensureHandleExists();
-          const { progress } = swiper;
-          const clampedProgress = Math.max(0, Math.min(1, progress));
-          handle.style.left = `${clampedProgress * 100}%`;
-        };
-
-        // Initial position update
-        updateHandlePosition();
-
-        // Update handle position on slide change and progress events
-        swiper.on('progress', updateHandlePosition);
-        swiper.on('slideChange', updateHandlePosition);
-
-        // Listen for resize/breakpoint to recreate handle if Swiper removes it
-        swiper.on('resize', updateHandlePosition);
-        swiper.on('breakpoint', updateHandlePosition);
-
-        // Make progressbar clickable to navigate to slides
-        paginationEl.style.cursor = 'pointer';
-        paginationEl.addEventListener('click', (e) => {
-          if (e.target.closest('.swiper-pagination-handle')) return;
-          const rect = paginationEl.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const percentage = clickX / rect.width;
-          const targetSlide = Math.round(percentage * (slideCount - 1));
-          swiper.slideTo(targetSlide);
-        });
+    // Correct slide if init ran in hidden tab (active/realIndex can be wrong)
+    const loggedInitialSlideIndex = initialSlideIndex;
+    const tryFixSlide = () => {
+      const active = swiper.activeIndex;
+      const real = swiper.realIndex;
+      const mismatch = (active !== loggedInitialSlideIndex) || (real !== loggedInitialSlideIndex);
+      if (mismatch && typeof swiper.slideTo === 'function' && loggedInitialSlideIndex >= 0) {
+        swiper.slideTo(loggedInitialSlideIndex, 0);
       }
+    };
+    requestAnimationFrame(() => {
+      setTimeout(tryFixSlide, 50);
+      setTimeout(tryFixSlide, 350); // Retry after layout (e.g. fragment/tab visible)
+    });
+
+    // Recover scrollbar + handle when missing (Mayura; fragments/tabs)
+    if (isMayuraTemplate) {
+      checkAndRecoverMayuraScrollbarForBlock(block, swiper);
+      swiper.on('init', () => checkAndRecoverMayuraScrollbarForBlock(block, swiper));
+      if (!mayuraScrollbarResizeAttached) {
+        mayuraScrollbarResizeAttached = true;
+        window.addEventListener('resize', () => globalMayuraScrollbarResizeHandler());
+        // One-time passes after layout settles (fix first tab handle when it inits before others)
+        setTimeout(() => globalMayuraScrollbarResizeHandler(), 700);
+        setTimeout(() => globalMayuraScrollbarResizeHandler(), 1400);
+        // Run recovery after tab switch so newly visible panel gets scrollbar handle
+        document.addEventListener('click', (e) => {
+          const tab = e.target.closest('.mayura [role="tab"]');
+          if (!tab) return;
+          const panelId = tab.getAttribute('aria-controls');
+          setTimeout(() => globalMayuraScrollbarResizeHandler(), 150);
+          setTimeout(() => globalMayuraScrollbarResizeHandler(), 400);
+          // Slide to startingCard when tab is selected so the correct card is in the center slot
+          setTimeout(() => {
+            const panel = panelId ? document.getElementById(panelId) : null;
+            const tabBlock = panel?.querySelector('.cards.swiper');
+            const target = tabBlock
+              ? parseInt(tabBlock.dataset.startingCard || '0', 10) : null;
+            if (tabBlock?.swiperInstance && window.innerWidth >= 600 && target != null) {
+              tabBlock.swiperInstance.slideTo(target, 0);
+            }
+          }, 200);
+        });
+        // Run recovery when a tab panel becomes visible (aria-hidden -> false);
+        // handles Travel when block inits in hidden panel and panel is shown later
+        const mayuraRoot = document.querySelector('.mayura');
+        if (mayuraRoot) {
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+                const panel = mutation.target;
+                if (panel.getAttribute?.('role') === 'tabpanel'
+                  && panel.getAttribute('aria-hidden') === 'false') {
+                  const visibleBlock = panel.querySelector('.cards.swiper');
+                  requestAnimationFrame(() => {
+                    setTimeout(() => globalMayuraScrollbarResizeHandler(), 50);
+                    setTimeout(() => globalMayuraScrollbarResizeHandler(), 250);
+                  });
+                  // Slide to startingCard so correct card is in center (initial load or tab switch)
+                  if (visibleBlock && window.innerWidth >= 600) {
+                    setTimeout(() => {
+                      const swiperInst = visibleBlock.swiperInstance;
+                      const target = parseInt(visibleBlock.dataset.startingCard || '0', 10);
+                      if (swiperInst) {
+                        swiperInst.slideTo(target, 0);
+                      }
+                    }, 200);
+                  }
+                }
+              }
+            });
+          });
+          observer.observe(mayuraRoot, { attributes: true, subtree: true, attributeFilter: ['aria-hidden'] });
+        }
+      }
+      requestAnimationFrame(() => {
+        setTimeout(() => checkAndRecoverMayuraScrollbarForBlock(block, swiper), 150);
+        setTimeout(() => checkAndRecoverMayuraScrollbarForBlock(block, swiper), 450);
+      });
     }
-    // End of progressbar with handle indicator implementation (mayura only)
 
     // For testimonial cards, update star icons on active slide
     if (isTestimonial) {

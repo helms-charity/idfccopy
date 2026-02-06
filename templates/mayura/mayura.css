@@ -1,12 +1,17 @@
+/* stylelint-disable property-no-vendor-prefix */
+
 /*
- * START - Progressbar with Handle Indicator Styles (mayura template only)
- * Using scrollbar-handle.svg as the draggable indicator
+ * Scrollbar with custom handle (mayura template only).
+ * Uses native Swiper scrollbar; handle image via scrollbar-handle.svg.
  */
-.mayura .cards .swiper-pagination {
-  bottom: 20px;
+.mayura .cards .swiper-scrollbar {
   top: auto;
-  height: 2px;
-  background: rgba(120 110 100 / 50%);
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  background: transparent;
   border-radius: 2px;
   width: 60%;
   max-width: 152px;
@@ -16,63 +21,60 @@
   cursor: pointer;
 }
 
-/* Hide progressbar fill - only show track and handle indicator */
-.mayura .cards .swiper-pagination-progressbar-fill {
-  display: none;
-}
-
-/*
- * Custom Handle Indicator - Using scrollbar-handle.svg
- * This is a draggable indicator that moves along the progressbar
- */
-.mayura .cards .swiper-pagination-handle {
+/* Track line (visual bar only) */
+.mayura .cards .swiper-scrollbar::before {
+  content: '';
   position: absolute;
   left: 0;
+  right: 0;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
+  height: 2px;
+  background: rgba(120 110 100 / 50%);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Custom handle indicator - scrollbar-handle.svg applied via CSS */
+.mayura .cards .swiper-pagination-handle {
+  position: absolute;
+  top: calc(50% - 5px);
+  left: 0;
   z-index: 10;
   pointer-events: auto;
   cursor: grab;
-  transition: left 0.3s ease;
+  transition: transform 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   touch-action: none;
+  width: 33px;
+  height: 10px;
+  flex-shrink: 0;
+  background: url('/icons/scrollbar-handle.svg') center / contain no-repeat;
+  filter: brightness(0.4) drop-shadow(0 1px 2px rgba(0 0 0 / 20%));
 }
 
-/* Cursor changes to grabbing while dragging */
 .mayura .cards .swiper-pagination-handle:active {
   cursor: grabbing;
 }
 
-/* SVG handle image styling */
-.mayura .cards .swiper-pagination-handle img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 28px;
-  filter: brightness(0.4) drop-shadow(0 1px 2px rgba(0 0 0 / 20%));
-}
+/* Dark scheme overrides for scrollbar track (mayura) */
 
-/* Dark scheme overrides for progressbar track (mayura) */
-.mayura .dark-scheme .cards .swiper-pagination {
+/* Dark scheme - track line */
+.mayura .dark-scheme .cards .swiper-scrollbar::before {
   background: rgba(255 255 255 / 30%);
 }
 
-/* Dark scheme - unset filter on handle image */
-.mayura .dark-scheme .cards .swiper-pagination-handle img {
+/* Dark scheme - unset filter on handle */
+.mayura .dark-scheme .cards .swiper-pagination-handle {
   filter: unset;
 }
 
-
-
-
-/* Hide pagination when Swiper adds lock class (all slides visible) */
-.mayura .cards .swiper-pagination.swiper-pagination-lock {
+/* Hide scrollbar when Swiper adds lock class (all slides visible) */
+.mayura .cards .swiper-scrollbar.swiper-scrollbar-lock {
   display: none;
 }
-
-/* END - Progressbar with Handle Indicator Styles */
 
 .mayura .cards-container h2,
 .mayura .tabs-container h2 {
@@ -83,7 +85,11 @@
     background: var(--gradient-red);
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: rgba(0, 0, 0, 0);
+    -webkit-text-fill-color: rgba(0 0 0 / 0%);
+}
+
+.mayura .columns-container h2 {
+  margin: 0;
 }
 
 .mayura .cards-container .dark-scheme h2,
@@ -91,18 +97,14 @@
   background: var(--gradient-silver);
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: rgba(0, 0, 0, 0);
-}
-
-.mayura .columns-container h2 {
- margin: 0;
+  -webkit-text-fill-color: rgba(0 0 0 / 0%);
 }
 
 .mayura .banner-container .banner-heading h2 {
   background: #fbf8f2;
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: rgba(0, 0, 0, 0);
+  -webkit-text-fill-color: rgba(0 0 0 / 0%);
   text-align: left;
   font-size: var(--heading-font-size-xl);
 }
@@ -113,7 +115,7 @@
 }
 
 .mayura .cards.related-search .benefit-cards .cards-card-body h3 a:hover {
-color: var(--text-red-color);
+color: var(--dark-red-color);
 }
 
 .mayura .section[data-id="get-in-touch"] h3 {
@@ -121,7 +123,6 @@ color: var(--text-red-color);
 }
 
 .mayura .section[data-id="get-in-touch"] .cards.related-search {
-
   .grid-cards {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 4px;
@@ -150,7 +151,7 @@ color: var(--text-red-color);
 
 .mayura .accordion .accordion-cta.button{
   background: var(--gradient-pewter);
-  color: var(--color-white);
+  color: var(--white);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);
@@ -163,11 +164,11 @@ color: var(--text-red-color);
 }
 
 .mayura .sticky-cta.block {
-  background: rgba(239, 239, 239, 0.6)
+  background: rgba(239 239 239 / 60%)
 }
 
 .mayura .sticky-cta-subtitle-content {
-  color: rgb(26, 26, 26);
+  color: rgb(26 26 26);
   padding-top: 10px;
   font-size: var(--body-font-size-s);
 }
