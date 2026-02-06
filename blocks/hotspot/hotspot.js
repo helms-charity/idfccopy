@@ -122,11 +122,21 @@ function showInitialPanel(container, currentBlockId) {
       evt.preventDefault();
 
       if (isOnFirstBlock) {
-        // Hide the entire hotspot block, revealing content underneath
-        if (firstBlockElement) {
-          firstBlockElement.style.display = 'none';
-          firstBlockElement.setAttribute('aria-hidden', 'true');
-        }
+        // Hide the entire hotspot section, revealing content underneath
+        // Fade out first, then hide completely
+        container.classList.add('fade-out');
+        container.addEventListener('transitionend', () => {
+          // Find the parent .section wrapper and hide it
+          const sectionWrapper = firstBlockElement?.closest('.section');
+          if (sectionWrapper) {
+            sectionWrapper.style.display = 'none';
+            sectionWrapper.setAttribute('aria-hidden', 'true');
+          } else if (firstBlockElement) {
+            // Fallback to hiding the block itself
+            firstBlockElement.style.display = 'none';
+            firstBlockElement.setAttribute('aria-hidden', 'true');
+          }
+        }, { once: true });
       } else {
         // Return to the first block with fade transition
         const firstBlockContent = originalContentMap.get(firstBlockId);
@@ -586,6 +596,18 @@ export default function decorate(block) {
   // Replace block content
   block.replaceChildren(container);
 
+  // Track the first block's info for "Go back" functionality
+  // Must be done BEFORE showInitialPanel so it knows if this is the first block
+  if (isFirstHotspotBlock) {
+    firstBlockId = blockId;
+    firstBlockElement = block;
+    isFirstHotspotBlock = false;
+  } else {
+    // Hide non-first blocks (only show the first hotspot block initially)
+    block.style.display = 'none';
+    block.setAttribute('aria-hidden', 'true');
+  }
+
   // Setup SVG connector line
   setupConnectorLine(container, blockId);
 
@@ -595,17 +617,6 @@ export default function decorate(block) {
   // Store original content AFTER showing initial panel (so stored state includes visible panel)
   if (blockId) {
     originalContentMap.set(blockId, container.innerHTML);
-  }
-
-  // Track the first block's info for "Go back" functionality
-  if (isFirstHotspotBlock) {
-    firstBlockId = blockId;
-    firstBlockElement = block;
-    isFirstHotspotBlock = false;
-  } else {
-    // Hide non-first blocks (only show the first hotspot block initially)
-    block.style.display = 'none';
-    block.setAttribute('aria-hidden', 'true');
   }
 }
 
