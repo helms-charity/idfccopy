@@ -4,6 +4,10 @@
 
 import { loadCSS, loadScript } from '../../scripts/aem.js';
 
+// WeakMaps to store references without polluting DOM elements with custom properties
+const bellDropdownMap = new WeakMap();
+const dropdownNavItemMap = new WeakMap();
+
 // Track if we've already built the unified nav
 let unifiedNavBuilt = false;
 
@@ -394,10 +398,6 @@ export function buildDropdown(categoryData) {
 
   return dropdown;
 }
-
-// WeakMaps to store references without polluting DOM elements with custom properties
-const bellDropdownMap = new WeakMap();
-const dropdownNavItemMap = new WeakMap();
 
 /**
  * Calculate and set position for bell dropdown using fixed positioning
