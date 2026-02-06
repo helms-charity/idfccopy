@@ -321,10 +321,14 @@ export function buildDropdown(categoryData) {
     closeButton.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      // Find the parent nav item and remove is-open class
-      const navItem = dropdown.closest('.category-nav-item-cards');
+      // Find the parent nav item - check stored reference first (for bell dropdown moved to body)
+      const navItem = dropdown._navItem || dropdown.closest('.category-nav-item-cards');
       if (navItem) {
         navItem.classList.remove('is-open');
+        // Also remove is-visible class if it's a bell dropdown
+        if (dropdown.classList.contains('category-nav-bell-dropdown')) {
+          dropdown.classList.remove('is-visible');
+        }
       }
     });
     hdBx.appendChild(closeButton);
@@ -441,15 +445,48 @@ function buildUnifiedNavigation(categoriesData) {
         e.preventDefault();
         e.stopPropagation();
 
+        const isCurrentlyOpen = li.classList.contains('is-open');
+
         // Close all other open dropdowns
         document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
           if (openItem !== li) {
             openItem.classList.remove('is-open');
+            // Also remove is-visible class from its dropdown if it's a bell notification
+            const otherDropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+            if (otherDropdown && otherDropdown.classList.contains('category-nav-bell-dropdown')) {
+              otherDropdown.classList.remove('is-visible');
+            }
           }
         });
 
         // Toggle this dropdown
-        li.classList.toggle('is-open');
+        if (isCurrentlyOpen) {
+          li.classList.remove('is-open');
+          const dropdown = li._bellDropdown || li.querySelector('.category-nav-dropdown');
+          if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
+            dropdown.classList.remove('is-visible');
+          }
+        } else {
+          li.classList.add('is-open');
+          
+          // Special handling for bell notification: calculate position and show
+          if (li.classList.contains('category-nav-bulletin-notification')) {
+            // Find dropdown - it might be in the li or already moved to body
+            let dropdown = li.querySelector('.category-nav-dropdown');
+            if (!dropdown && li._bellDropdown) {
+              // Reference stored from previous move
+              dropdown = li._bellDropdown;
+            }
+            if (dropdown) {
+              // Add a class to the dropdown so it can be styled when moved to body
+              dropdown.classList.add('category-nav-bell-dropdown');
+              dropdown.classList.add('is-visible'); // Add class to show it
+
+              calculateBellDropdownPosition(li, dropdown);
+              li._bellDropdown = dropdown; // Store reference on the li
+            }
+          }
+        }
       });
     } else {
       // For regular items: scroll to section
@@ -469,6 +506,8 @@ function buildUnifiedNavigation(categoriesData) {
     // Build dropdown
     const dropdown = buildDropdown(category);
     if (dropdown) {
+      // Store bidirectional reference between dropdown and nav item (needed for bell dropdown moved to body)
+      dropdown._navItem = li;
       li.appendChild(dropdown);
     }
 
@@ -485,14 +524,71 @@ function buildUnifiedNavigation(categoriesData) {
   // Add click-outside listener to close cards block dropdowns
   document.addEventListener('click', (e) => {
     const clickedInsideCardsNav = e.target.closest('.category-nav-item-cards');
-    if (!clickedInsideCardsNav) {
+    const clickedInsideDropdown = e.target.closest('.category-nav-bell-dropdown'); // Target the bell dropdown directly
+    if (!clickedInsideCardsNav && !clickedInsideDropdown) {
       document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
         openItem.classList.remove('is-open');
+        // Also remove is-visible class from its dropdown if it's a bell notification
+        const dropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+        if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
+          dropdown.classList.remove('is-visible');
+        }
       });
     }
   });
 
+  // Add window resize listener to close dropdowns when going to mobile (<990px)
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const isMobile = window.innerWidth < 990;
+      
+      if (isMobile) {
+        // Close all open card dropdowns when switching to mobile
+        document.querySelectorAll('.category-nav-item-cards.is-open').forEach((openItem) => {
+          openItem.classList.remove('is-open');
+          // Also remove is-visible class from bell dropdown
+          const dropdown = openItem._bellDropdown || openItem.querySelector('.category-nav-dropdown');
+          if (dropdown && dropdown.classList.contains('category-nav-bell-dropdown')) {
+            dropdown.classList.remove('is-visible');
+          }
+        });
+      }
+    }, 150); // Debounce to avoid excessive calls
+  });
+
   return topNav;
+}
+
+/**
+ * Calculate and set position for bell dropdown using fixed positioning
+ * @param {HTMLElement} bellItem - The bell nav item element
+ * @param {HTMLElement} dropdown - The dropdown element
+ */
+function calculateBellDropdownPosition(bellItem, dropdown) {
+  const bellRect = bellItem.getBoundingClientRect();
+
+  // Calculate dropdown position - align right edge with right edge of bell
+  const dropdownTop = bellRect.bottom + 10; // 10px gap for triangle
+  const dropdownRight = window.innerWidth - bellRect.right; // Distance from right edge of viewport
+
+  // Set CSS custom properties for dropdown position
+  dropdown.style.setProperty('--bell-dropdown-top', `${dropdownTop}px`);
+  dropdown.style.setProperty('--bell-dropdown-right', `${dropdownRight}px`);
+
+  // Calculate triangle position (centered below bell icon)
+  const triangleTop = bellRect.bottom;
+  const triangleLeft = bellRect.left + (bellRect.width / 2);
+  
+  // Set CSS custom properties for triangle position
+  bellItem.style.setProperty('--bell-triangle-top', `${triangleTop}px`);
+  bellItem.style.setProperty('--bell-triangle-left', `${triangleLeft}px`);
+  
+  // Move dropdown to body if not already there (to ensure it's not clipped)
+  if (dropdown.parentElement !== document.body) {
+    document.body.appendChild(dropdown);
+  }
 }
 
 /**

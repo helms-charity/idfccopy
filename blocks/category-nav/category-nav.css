@@ -200,40 +200,61 @@ body.is-framework-page .section#bell-outline {
 }
 
 /* Show dropdown on click for cards block items - use !important to override default hiding */
-.category-nav-item-cards.is-open > .category-nav-dropdown {
+.category-nav-item-cards.is-open:not(.category-nav-bulletin-notification) > .category-nav-dropdown {
   display: block !important;
 }
 
-/* Special positioning for bulletin cards dropdown - only for bell icon */
-.category-nav-item-cards.category-nav-bulletin-notification .category-nav-dropdown {
-  /* Position dropdown completely to the LEFT of the bell icon */
-  position: absolute;
-  left: auto !important; /* Important: Override default left: 0 */
-  right: 100% !important; /* Important: Override default left positioning */
-  margin-right: -55px;
-  top: calc(100% + 24px);
+/* Special positioning for bulletin cards dropdown - uses FIXED positioning to prevent CLS */
+/* This dropdown will be moved to body via JS to avoid layout shifts */
+.category-nav-bell-dropdown {
+  /* Remove from document flow entirely to prevent CLS */
+  position: fixed !important;
+  left: auto !important; /* Override base left: 0 */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s 0.25s;
+  
+  /* Position will be calculated dynamically via CSS custom properties */
+  top: var(--bell-dropdown-top, 80px);
+  right: var(--bell-dropdown-right, 50px);
+  
   border-radius: 12px;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
-  width: 984px !important; /* Important: Override base 860px width */
-  min-width: 984px !important; /* Important: Override base min-width */
-  max-width: 984px !important; /* Important: Override base max-width */
+  width: 984px !important;
+  min-width: 984px !important;
+  max-width: calc(100vw - 32px) !important;
   overflow: visible;
-  padding: 50px 38px 29px; /* Top, Left/Right, Bottom padding */
+  padding: 50px 38px 29px;
+  z-index: 1001;
+  background: var(--color-white);
+}
+
+/* Show dropdown when open */
+.category-nav-bell-dropdown.is-visible {
+  visibility: visible !important;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s 0s;
+  display: block !important;
 }
 
 /* Triangle attached to the BELL ICON when dropdown is open */
-.category-nav-item-cards.category-nav-bulletin-notification.is-open::before {
+.category-nav-bulletin-notification.is-open::before {
   content: '';
-  position: absolute;
-  bottom: -24px; /* Extended further down to connect with dropdown */
-  left: 50%;
-  transform: translateX(-50%); /* Center below bell icon */
+  position: fixed; /* Changed to fixed to work with fixed dropdown */
+  /* Position calculated dynamically via CSS custom properties */
+  top: var(--bell-triangle-top, 80px);
+  left: var(--bell-triangle-left, 50%);
+  transform: translateX(-50%); /* Center the triangle on the calculated point */
+  /* Shorter and wider triangle */
   width: 0;
   height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 20px solid var(--color-white);
-  z-index: 1003;
+  border-left: 12px solid transparent; /* Half of 24px width */
+  border-right: 12px solid transparent; /* Half of 24px width */
+  border-bottom: 10px solid var(--color-white); /* 10px height */
+  z-index: 1002;
+  pointer-events: none; /* Don't interfere with clicks */
 }
 
 /* Dropdown Header */
@@ -726,6 +747,11 @@ header nav .nav-sections .nav-fragment-section-content .category-nav-explore-lin
 @media (width < 990px) {
   .category-nav-wrapper {
     display: none;
+  }
+
+  /* Ensure bell dropdown is also hidden on mobile */
+  .category-nav-bell-dropdown {
+    display: none !important;
   }
 }
 
