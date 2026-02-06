@@ -56,6 +56,12 @@
     ]
   },
   {
+    "id": "cards-testimonial",
+    "components": [
+      "card"
+    ]
+  },
+  {
     "id": "cards",
     "components": [
       "card"

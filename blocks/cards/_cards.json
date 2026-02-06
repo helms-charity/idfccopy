@@ -46,10 +46,6 @@
               "value": ""
             },
             {
-              "name": "Testimonial",
-              "value": "testimonial-card"
-            },
-            {
               "name": "All About",
               "value": "all-about-card"
             },
@@ -219,67 +215,6 @@
           "label": "Modal Content (optional)",
           "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
           "valueType": "string"
-        },
-        {
-          "component": "container",
-          "name": "testimonial-details",
-          "label": "Testimonial (optional)",
-          "collapsible": true,
-          "description": "For schema and display when block Style is Testimonial.",
-          "condition": {
-            "==": [{ "var": "classes" }, "testimonial-card"]
-          },
-          "fields": [
-            {
-              "component": "select",
-              "name": "quote-icon",
-              "label": "Quote Icon",
-              "valueType": "string",
-              "description": "Icon shown at top of this testimonial card.",
-              "options": [
-                {
-                  "name": "None",
-                  "value": ""
-                },
-                {
-                  "name": "Inverted commas",
-                  "value": "inverted-commas"
-                }
-              ]
-            },
-            {
-              "component": "text",
-              "name": "person-name",
-              "label": "Person Name",
-              "valueType": "string",
-              "description": "Author or reviewer name"
-            },
-            {
-              "component": "text",
-              "name": "product-name",
-              "label": "Product Name",
-              "valueType": "string",
-              "description": "Product being reviewed (e.g. card name)"
-            },
-            {
-              "component": "number",
-              "name": "author-rating",
-              "label": "Author Rating",
-              "valueType": "number",
-              "description": "Star rating 1-5 (displayed as stars)",
-              "validation": {
-                "numberMin": 1,
-                "numberMax": 5
-              }
-            },
-            {
-              "component": "text",
-              "name": "review-date",
-              "label": "Date",
-              "valueType": "string",
-              "description": "Review date. Required format: YYYY-MM-DD (e.g. 2025-03-26). Stored for Schema.org; shown on page in readable format."
-            }
-          ]
         }
       ]
     }
