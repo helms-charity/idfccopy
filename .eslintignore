@@ -1,5 +1,5 @@
 helix-importer-ui
-tools/*
+tools/**/*
 blocks/swipper/swipper-bundle.min.js
 scripts/swiperjs/swiper-bundle.min.js
 scripts/dompurify.min.js

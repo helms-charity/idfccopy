@@ -2,7 +2,8 @@
   {
     "id": "main",
     "components": [
-      "section"
+      "section",
+      "tab-section"
     ]
   },
   {
@@ -36,6 +37,28 @@
       "section-title",
       "hotspot",
       "cards-testimonial"
+    ]
+  },
+  {
+    "id": "tab-section",
+    "components": [
+      "text",
+      "image",
+      "button",
+      "title",
+      "hero",
+      "cards",
+      "columns",
+      "fragment",
+      "accordion",
+      "table",
+      "tabs",
+      "steps",
+      "table",
+      "banner",
+      "overview",
+      "section-title",
+      "hotspot"
     ]
   },
   {
