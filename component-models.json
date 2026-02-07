@@ -329,6 +329,10 @@
           {
             "name": "UPI steps red background",
             "value": "upi-steps-red-bg"
+          },
+          {
+            "name": "Entrance Animation",
+            "value": "entrance-animation"
           }
         ]
       },
