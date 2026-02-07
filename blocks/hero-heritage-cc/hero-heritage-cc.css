@@ -291,6 +291,11 @@
   animation: banner-fade-in 0.25s ease-in-out 6s forwards;
 }
 
+.hero-heritage-cc-banner-curtain {
+  transition: clip-path 0.35s ease-out;
+  will-change: clip-path;
+}
+
 /* Concept container - holds modal content separately from original banner */
 .hero-heritage-cc-concept-container {
   position: absolute;

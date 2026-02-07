@@ -355,28 +355,31 @@ export default function decorate(block) {
     // Create a separate container for concept content (keeps original intact)
     let conceptContainer = null;
 
+    // Create div to hide/show the banner content
+    const bannerCurtain = document.createElement('div');
+    bannerCurtain.classList.add('hero-heritage-cc-banner-curtain');
+    bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
+    bannerCurtain.style.transition = 'clip-path 0.35s ease-out 0s forwards';
+    bannerInner.appendChild(bannerCurtain);
+
+    const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
+    const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
+    bannerCurtain.appendChild(bannerImage);
+    bannerCurtain.appendChild(bannerCtaGroup);
+
     // Function to show original banner, hide concept
     const showOriginalBanner = () => {
       if (!conceptContainer) return;
 
       // Show banner elements first (before concept slides down)
-      const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-      const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
-
       // Override the CSS animation on bannerInner to prevent 6s delay
       bannerInner.style.animation = 'none';
       bannerInner.style.opacity = '1';
       bannerInner.style.visibility = 'visible';
 
-      if (bannerImage) {
-        bannerImage.style.display = '';
-      }
-      if (bannerCtaGroup) {
-        bannerCtaGroup.style.display = '';
-      }
-
       // Slide down concept
       conceptContainer.style.transform = 'translateY(100%)';
+      bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
       setTimeout(() => {
         conceptContainer.style.display = 'none';
@@ -392,6 +395,7 @@ export default function decorate(block) {
       conceptContainer.style.display = '';
       conceptContainer.style.opacity = '1';
       conceptContainer.style.transform = 'translateY(100%)';
+      bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
       // Force reflow
       // eslint-disable-next-line no-unused-expressions
@@ -399,15 +403,8 @@ export default function decorate(block) {
 
       // Slide up over the banner
       conceptContainer.style.transform = 'translateY(0)';
+      bannerCurtain.style.clipPath = 'inset(0 0 100% 0)';
       bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
-
-      // After animation completes, hide banner elements to prevent interaction
-      setTimeout(() => {
-        const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-        const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
-        if (bannerImage) bannerImage.style.display = 'none';
-        if (bannerCtaGroup) bannerCtaGroup.style.display = 'none';
-      }, 350);
     };
 
     bannerDiv.addEventListener('click', async (e) => {
