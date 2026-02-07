@@ -573,13 +573,13 @@
     "fields": [
       {
         "component": "text",
-        "name": "tabSection",
-        "label": "Tab group identifier",
+        "name": "tabsection",
+        "label": "Tab group identifier - give all tab sections the same value to group them together",
         "value": "group1"
       },
       {
         "component": "text",
-        "name": "content",
+        "name": "tabname",
         "label": "Tab label"
       },
       {
@@ -1944,9 +1944,9 @@
         ]
       },
       {
-        "component": "select",
-        "name": "alignment",
-        "label": "Alignment",
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Alignment / location",
         "value": "",
         "valueType": "string",
         "options": [
@@ -1961,6 +1961,10 @@
           {
             "name": "Right",
             "value": "right"
+          },
+          {
+            "name": "Tab section: above tabs",
+            "value": "tab-section-title"
           }
         ]
       }

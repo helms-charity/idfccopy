@@ -38,10 +38,6 @@ export default function decorate(block) {
     const sizeClass = toSizeClass(cellText(rows[1]));
     if (sizeClass) block.classList.add(sizeClass);
   }
-  if (rows.length >= 3) {
-    const align = cellText(rows[2]).toLowerCase();
-    if (align === 'center' || align === 'right') block.classList.add(align);
-  }
 
   const heading = block.querySelector('h1, h2, h3, h4, h5, h6, p');
   if (heading && block.children.length > 1) {

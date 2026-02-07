@@ -87,7 +87,8 @@
                   "name": "Tab Section",
                   "model": "tab-section",
                   "filter": "tab-section",
-                  "tabSection": "group1"
+                  "tabSection": "group1",
+                  "tabname": "Tab Name"
                 }
               }
             }

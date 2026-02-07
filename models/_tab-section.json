@@ -11,7 +11,8 @@
                 "name": "Tab Section",
                 "model": "tab-section",
                 "filter": "tab-section",
-                "tabSection": "group1"
+                "tabSection": "group1",
+                "tabname": "Tab Name"
               }
             }
           }
@@ -24,13 +25,13 @@
         "fields": [
           {
             "component": "text",
-            "name": "tabSection",
-            "label": "Tab group identifier",
+            "name": "tabsection",
+            "label": "Tab group identifier - give all tab sections the same value to group them together",
             "value": "group1"
           },
           {
             "component": "text",
-            "name": "content",
+            "name": "tabname",
             "label": "Tab label"
           },
           {
