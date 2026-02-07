@@ -572,16 +572,15 @@
     "id": "tab-section",
     "fields": [
       {
-        "component": "boolean",
+        "component": "text",
         "name": "tabSection",
-        "label": "Identifier",
-        "value": true,
-        "hidden": true
+        "label": "Tab group identifier",
+        "value": "group1"
       },
       {
         "component": "text",
         "name": "content",
-        "label": "Heading"
+        "label": "Tab label"
       },
       {
         "component": "text",
