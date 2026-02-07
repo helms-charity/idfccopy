@@ -569,6 +569,23 @@
     ]
   },
   {
+    "id": "tab-section",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "tabSection",
+        "label": "Identifier",
+        "value": true,
+        "hidden": true
+      },
+      {
+        "component": "text",
+        "name": "content",
+        "label": "Heading"
+      }
+    ]
+  },
+  {
     "id": "accordion",
     "fields": [
       {

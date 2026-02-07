@@ -10,7 +10,12 @@ import {
   getMetadata,
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
-import { decorateSections, decorateMain, loadFragment } from './scripts.js';
+import {
+  decorateSections,
+  decorateMain,
+  loadFragment,
+  moveAllAttributes,
+} from './scripts.js';
 
 // Set flag to indicate we're in the Universal Editor - suppresses timed modals etc.
 window.hlx = window.hlx || {};
@@ -241,6 +246,9 @@ async function applyChanges(event) {
           decorateIcons(newSection);
           decorateRichtext(newSection);
           decorateSections(parentElement);
+          if (element.closest('.tabs')) {
+            moveAllAttributes(element, newSection);
+          }
           decorateBlocks(parentElement);
           await loadSections(parentElement);
           element.remove();

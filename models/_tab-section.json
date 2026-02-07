@@ -1,0 +1,64 @@
+{
+    "definitions": [
+      {
+        "title": "Tab Section",
+        "id": "tab-section",
+        "plugins": {
+          "xwalk": {
+            "page": {
+              "resourceType": "core/franklin/components/section/v1/section",
+              "template": {
+                "name": "Tab Section",
+                "model": "tab-section",
+                "filter": "tab-section",
+                "tabSection": true
+              }
+            }
+          }
+        }
+      }
+    ],
+    "models": [
+      {
+        "id": "tab-section",
+        "fields": [
+          {
+            "component": "boolean",
+            "name": "tabSection",
+            "label": "Identifier",
+            "value": true,
+            "hidden": true
+          },
+          {
+            "component": "text",
+            "name": "content",
+            "label": "Heading"
+          }
+        ]
+      }
+    ],
+    "filters": [
+      {
+        "id": "tab-section",
+        "components": [
+            "text",
+            "image",
+            "button",
+            "title",
+            "hero",
+            "cards",
+            "columns",
+            "fragment",
+            "accordion",
+            "table",
+            "tabs",
+            "steps",
+            "table",
+            "banner",
+            "overview",
+            "section-title",
+            "hotspot"
+        ]
+      }
+    ]
+  }

@@ -76,6 +76,27 @@ export function moveInstrumentation(from, to) {
   );
 }
 
+// Purpose of this function is to copy all attributes from source element to target element.
+// This is used to copy all attributes from a tab section to the new section.
+export function moveAllAttributes(from, to) {
+  moveAttributes(
+    from,
+    to,
+    [...from.attributes]
+      .map(({ nodeName }) => nodeName),
+  );
+}
+
+/* add a block id_number to a block instance (when any decorate(block) defines it)
+  to be used for martech tracking, aria-controls, aria-labelledby, etc.
+*/
+const blockIds = {};
+export function getBlockId(name) {
+  const forBlock = blockIds[name] || 0;
+  blockIds[name] = forBlock + 1;
+  return `${name}_${forBlock}`;
+}
+
 /**
  * load fonts.css and set a session storage flag
  */
@@ -765,6 +786,23 @@ export function decorateSections(parent, isDoc) {
   });
 }
 
+export function buildTabSection(main) {
+  const tabItems = main.querySelectorAll('div[data-tabSection]');
+  if (tabItems.length > 0) {
+    const tabSection = document.createElement('div');
+    tabSection.classList.add('section');
+    const tabDiv = document.createElement('div');
+    const tabBlock = document.createElement('div');
+    tabBlock.classList.add('tabs');
+    tabItems.forEach((item) => {
+      tabBlock.append(item);
+    });
+    tabDiv.append(tabBlock);
+    tabSection.append(tabDiv);
+    main.append(tabSection);
+  }
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -773,6 +811,7 @@ function buildAutoBlocks(main) {
   try {
     // TODO: add auto block, if needed
     loadAutoBlock(main);
+    buildTabSection(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
