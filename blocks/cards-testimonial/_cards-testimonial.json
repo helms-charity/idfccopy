@@ -96,6 +96,14 @@
           ]
         },
         {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Text",
+          "valueType": "string",
+          "description": "Review or testimonial content"
+        },
+        {
           "component": "text",
           "name": "person-name",
           "label": "Person Name",
