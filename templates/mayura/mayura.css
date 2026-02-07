@@ -151,7 +151,7 @@ color: var(--dark-red-color);
 
 .mayura .accordion .accordion-cta.button{
   background: var(--gradient-pewter);
-  color: var(--white);
+  color: var(--color-white);
   width: max-content;
   margin-top: var(--spacing-m);
   margin-left: calc(50% - 100px);
