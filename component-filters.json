@@ -3,7 +3,7 @@
     "id": "main",
     "components": [
       "section",
-      "tab-section"
+      "multi-section"
     ]
   },
   {
@@ -48,6 +48,7 @@
       "title",
       "hero",
       "cards",
+      "cards-testimonial",
       "columns",
       "fragment",
       "accordion",

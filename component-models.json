@@ -633,12 +633,12 @@
             "value": "hide-desktop"
           },
           {
-            "name": "Entrance Animation",
-            "value": "entrance-animation"
+            "name": "UPI steps red background",
+            "value": "upi-steps-red-bg"
           },
           {
-            "name": "Tabs - Silver with Blue Text",
-            "value": "silver-blue-text"
+            "name": "Entrance Animation",
+            "value": "entrance-animation"
           }
         ]
       },
