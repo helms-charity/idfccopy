@@ -26,7 +26,7 @@
           "...": "./_section.json#/definitions"
         },
         {
-          "...": "./_tab-section.json#/definitions"
+          "...": "./_multi-section.json#/definitions"
         }
       ]
     },
