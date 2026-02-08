@@ -589,6 +589,25 @@
         "description": "Adds an ID value to the section"
       },
       {
+        "component": "select",
+        "name": "category",
+        "label": "Grouped section type",
+        "options": [
+          {
+            "name": "horizontal",
+            "value": "Tabs horizontal (default)"
+          },
+          {
+            "name": "vertical",
+            "value": "Tabs vertical"
+          },
+          {
+            "name": "accordion",
+            "value": "Accordion"
+          }
+        ]
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Style",
@@ -612,10 +631,6 @@
           {
             "name": "Hide in desktop",
             "value": "hide-desktop"
-          },
-          {
-            "name": "UPI steps red background",
-            "value": "upi-steps-red-bg"
           },
           {
             "name": "Entrance Animation",
@@ -1952,7 +1967,7 @@
         "options": [
           {
             "name": "Default (Left)",
-            "value": ""
+            "value": "left"
           },
           {
             "name": "Center",
