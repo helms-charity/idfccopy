@@ -20,7 +20,7 @@ module.exports = {
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
     'xwalk/max-cells': ['error', {
       section: 30, // section is a key-value block and over 4 is OK
-      'tab-section': 30,
+      'multi-section': 30,
       accordion: 5, // the rest of these need adjustments per https://www.aem.live/developer/component-model-definitions#type-inference
       'banner-item': 6,
       cards: 8,
