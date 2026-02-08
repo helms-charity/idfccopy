@@ -1,0 +1,32 @@
+{
+    "options": [
+        {
+          "name": "Center",
+          "value": "center"
+        },
+        {
+          "name": "Light scheme",
+          "value": "light-scheme"
+        },
+        {
+          "name": "Dark scheme",
+          "value": "dark-scheme"
+        },
+        {
+          "name": "Hide in mobile",
+          "value": "hide-mobile"
+        },
+        {
+          "name": "Hide in desktop",
+          "value": "hide-desktop"
+        },
+        {
+          "name": "UPI steps red background",
+          "value": "upi-steps-red-bg"
+        },
+        {
+          "name": "Entrance Animation",
+          "value": "entrance-animation"
+        }
+      ]
+}

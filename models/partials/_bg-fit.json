@@ -1,0 +1,16 @@
+{
+    "options": [
+        {
+          "name": "cover",
+          "value": "cover"
+        },
+        {
+          "name": "contain",
+          "value": "contain"
+        },
+        {
+          "name": "none",
+          "value": "none"
+        }
+      ]
+}
