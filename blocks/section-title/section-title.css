@@ -71,7 +71,10 @@
 .section-title.center {
   text-align: center;
 }
-
 .section-title.right {
   text-align: right;
+}
+
+.section-title.left {
+  text-align: left;
 }

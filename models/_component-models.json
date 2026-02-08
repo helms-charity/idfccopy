@@ -18,7 +18,7 @@
     "...": "./_section.json#/models"
   },
   {
-    "...": "./_tab-section.json#/models"
+    "...": "./_multi-section.json#/models"
   },
   {
     "...": "../blocks/*/_*.json#/models"

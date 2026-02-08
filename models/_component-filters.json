@@ -10,7 +10,7 @@
     "...": "./_section.json#/filters"
   },
   {
-    "...": "./_tab-section.json#/filters"
+    "...": "./_multi-section.json#/filters"
   },
   {
     "...": "../blocks/*/_*.json#/filters"

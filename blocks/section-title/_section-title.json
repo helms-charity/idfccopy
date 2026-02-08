@@ -110,7 +110,7 @@
           "options": [
             {
               "name": "Default (Left)",
-              "value": ""
+              "value": "left"
             },
             {
               "name": "Center",

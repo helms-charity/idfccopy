@@ -40,7 +40,7 @@
     ]
   },
   {
-    "id": "tab-section",
+    "id": "multi-section",
     "components": [
       "text",
       "image",
@@ -52,7 +52,6 @@
       "fragment",
       "accordion",
       "table",
-      "tabs",
       "steps",
       "table",
       "banner",
