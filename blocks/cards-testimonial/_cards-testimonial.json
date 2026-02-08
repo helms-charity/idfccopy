@@ -1,14 +1,14 @@
 {
   "definitions": [
     {
-      "title": "Testimonial Cards",
+      "title": "Cards Testimonial",
       "id": "cards-testimonial",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
-              "name": "Testimonial Cards",
+              "name": "Cards Testimonial",
               "model": "cards-testimonial",
               "filter": "cards-testimonial"
             }
@@ -17,14 +17,14 @@
       }
     },
     {
-      "title": "Testimonial Card",
+      "title": "Card Testimonial",
       "id": "card-testimonial",
       "plugins": {
         "xwalk": {
           "page": {
             "resourceType": "core/franklin/components/block/v1/block/item",
             "template": {
-              "name": "Testimonial Card",
+              "name": "Card Testimonial",
               "model": "card-testimonial"
             }
           }
