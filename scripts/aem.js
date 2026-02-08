@@ -386,6 +386,9 @@ function wrapTextNodes(block) {
   };
 
   block.querySelectorAll(':scope > div > div').forEach((blockColumn) => {
+    if (blockColumn.classList.contains('block-content') || blockColumn.classList.contains('default-content')) {
+      return; // skip re-wrapping block-content created via groupChildren in scripts.js
+    }
     if (blockColumn.hasChildNodes()) {
       const hasWrapper = !!blockColumn.firstElementChild
         && validWrappers.some((tagName) => blockColumn.firstElementChild.tagName === tagName);

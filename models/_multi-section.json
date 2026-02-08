@@ -180,29 +180,6 @@
             "value": "",
             "valueType": "string",
             "description": "optional minimum height when in mobile, e.g. 400px"
-          },
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "doodle-image-top",
-            "label": "Background accessory image - top",
-            "description": "Displayed at top left of the section",
-            "multi": false
-          },
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "doodle-image-bottom",
-            "label": "Background accessory image - bottom",
-            "description": "Displayed at bottom right of the section",
-            "multi": false
-          },
-          {
-            "component": "boolean",
-            "valueType": "boolean",
-            "name": "doodle-reverse",
-            "label": "Reverse background accessory images",
-            "description": "Display at top right and bottom left of the section"
           }
             ]
           }

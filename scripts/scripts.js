@@ -654,10 +654,17 @@ export function handleSectionMetadata(el) {
   // Define which keys are handled specially for section or block-content
   const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'doodle-image-top', 'doodle-image-bottom', 'doodle-reverse'];
 
+  // Keys that should preserve original case (not lowercased)
+  const preserveCaseKeys = ['tabname', 'multisection'];
+
   // Catch-all: set any other metadata as data- attributes on section
   Object.keys(metadata).forEach((key) => {
     if (!specialKeys.includes(key)) {
-      section.dataset[toCamelCase(key)] = metadata[key].text;
+      // For tabname and multisection, use original text from content to preserve case
+      const value = preserveCaseKeys.includes(key)
+        ? metadata[key].content.textContent.trim()
+        : metadata[key].text;
+      section.dataset[toCamelCase(key)] = value;
     }
   });
 
@@ -786,20 +793,83 @@ export function decorateSections(parent, isDoc) {
   });
 }
 
-export function buildTabSection(main) {
-  const tabItems = main.querySelectorAll('div[data-tabSection]');
-  if (tabItems.length > 0) {
-    const tabSection = document.createElement('div');
-    tabSection.classList.add('section');
-    const tabDiv = document.createElement('div');
-    const tabBlock = document.createElement('div');
-    tabBlock.classList.add('tabs');
-    tabItems.forEach((item) => {
-      tabBlock.append(item);
+function groupItemsByMultisection(items) {
+  const grouped = {};
+  items.forEach((item) => {
+    const groupValue = item.getAttribute('data-multisection');
+    if (!grouped[groupValue]) {
+      grouped[groupValue] = [];
+    }
+    grouped[groupValue].push(item);
+  });
+  return grouped;
+}
+
+function createSectionFromGroup(groupItems, blockClass, handlePicture = false) {
+  const firstItem = groupItems[0];
+  const section = document.createElement('div');
+  section.classList.add('section', 'multi');
+  section.id = firstItem.getAttribute('data-multisection');
+
+  // Copy all classes from the first item to the section
+  firstItem.classList.forEach((className) => {
+    section.classList.add(className);
+  });
+
+  // Copy inline styles from the first item to the section
+  const inlineStyles = firstItem.getAttribute('style');
+  if (inlineStyles) {
+    section.setAttribute('style', inlineStyles);
+    firstItem.removeAttribute('style');
+  }
+
+  // Handle picture.bg-images for tabs
+  if (handlePicture) {
+    const firstChild = firstItem.firstElementChild;
+    if (firstChild && firstChild.tagName === 'PICTURE' && firstChild.classList.contains('bg-images')) {
+      firstChild.remove();
+      section.prepend(firstChild);
+    }
+  }
+
+  // Create wrapper and block structure
+  const wrapperDiv = document.createElement('div');
+  const blockDiv = document.createElement('div');
+  blockDiv.classList.add(blockClass);
+  groupItems.forEach((item) => {
+    blockDiv.append(item);
+  });
+  wrapperDiv.append(blockDiv);
+  section.append(wrapperDiv);
+
+  return section;
+}
+
+export function buildMultiSection(main) {
+  // Handle accordions
+  const accordionItems = main.querySelectorAll('div[data-category="accordion"]');
+  if (accordionItems.length > 0) {
+    const groupedAccordions = groupItemsByMultisection(accordionItems);
+    Object.values(groupedAccordions).forEach((groupItems) => {
+      const [firstItem] = groupItems;
+      const { parentElement: parent, nextSibling } = firstItem;
+      const accordionSection = createSectionFromGroup(groupItems, 'accordion', true);
+      // Insert section at the position where the first item was
+      parent.insertBefore(accordionSection, nextSibling);
     });
-    tabDiv.append(tabBlock);
-    tabSection.append(tabDiv);
-    main.append(tabSection);
+  }
+
+  // Handle tabs: items with data-multisection that are not accordions
+  const tabItems = main.querySelectorAll('div[data-multisection]:not([data-category="accordion"])');
+  if (tabItems.length > 0) {
+    const groupedTabs = groupItemsByMultisection(tabItems);
+    Object.values(groupedTabs).forEach((groupItems) => {
+      const [firstItem] = groupItems;
+      const { parentElement: parent, nextSibling } = firstItem;
+      const multisection = createSectionFromGroup(groupItems, 'tabs', true);
+      // Insert section at the position where the first item was
+      parent.insertBefore(multisection, nextSibling);
+    });
   }
 }
 
@@ -811,7 +881,7 @@ function buildAutoBlocks(main) {
   try {
     // TODO: add auto block, if needed
     loadAutoBlock(main);
-    buildTabSection(main);
+    buildMultiSection(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -845,8 +915,8 @@ export function decorateMain(main) {
   decorateButtons(main);
   decorateButtonGroups(main);
   decorateIcons(main);
+  decorateSections(main); /* must be before buildAutoBlocks */
   buildAutoBlocks(main);
-  decorateSections(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);
