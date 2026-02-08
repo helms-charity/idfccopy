@@ -13,14 +13,13 @@ function fetchTabName(tab) {
   return tabTextWrapper;
 }
 
-function createTabButton(block, tab, tabpanel, tablist, index, isInEditor = false) {
+function createTabButton(block, tab, tabpanel, tablist, index) {
   const button = document.createElement('button');
   button.className = 'tabs-tab';
   button.id = `${block.id}_tab_${index}`;
   button.innerHTML = fetchTabName(tab).innerHTML;
   button.setAttribute('aria-controls', tabpanel.id);
-  // In editor, all tabs start unselected; otherwise first tab is selected
-  button.setAttribute('aria-selected', isInEditor ? 'false' : !index);
+  button.setAttribute('aria-selected', !index);
   button.setAttribute('role', 'tab');
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
@@ -38,10 +37,6 @@ function createTabButton(block, tab, tabpanel, tablist, index, isInEditor = fals
 
 export default async function decorate(block) {
   block.id = getBlockId('tabs');
-
-  // Check if we're in Universal Editor
-  const isInUniversalEditor = window.hlx?.isEditor === true
-    || !!document.querySelector('main[data-aue-resource]');
 
   // build tablist
   const tablist = document.createElement('div');
@@ -75,16 +70,12 @@ export default async function decorate(block) {
       const tabpanel = block.children[i];
       tabpanel.classList.add('tabs-panel');
       tabpanel.id = `${block.id}_tabPane_${i}`;
-      // In Universal Editor, collapse all tabs initially; otherwise show first tab
-      tabpanel.setAttribute('aria-hidden', isInUniversalEditor ? 'true' : !!i);
+      tabpanel.setAttribute('aria-hidden', !!i);
       tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
       tabpanel.setAttribute('role', 'tabpanel');
 
-      // Move Universal Editor instrumentation from original tab to tabpanel
-      moveInstrumentation(tab, tabpanel);
-
       // build tab button
-      const button = createTabButton(block, tab, tabpanel, tablist, i, isInUniversalEditor);
+      const button = createTabButton(block, tab, tabpanel, tablist, i);
       tablist.append(button);
     });
   }
