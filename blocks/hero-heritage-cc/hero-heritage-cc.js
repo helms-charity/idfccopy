@@ -355,91 +355,61 @@ export default function decorate(block) {
     // Create a separate container for concept content (keeps original intact)
     let conceptContainer = null;
 
+    // Create div to hide/show the banner content
+    const bannerCurtain = document.createElement('div');
+    bannerCurtain.classList.add('hero-heritage-cc-banner-curtain');
+    bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
+    bannerCurtain.style.transition = 'clip-path 0.35s ease-out 0s forwards';
+    bannerInner.appendChild(bannerCurtain);
+
+    const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
+    const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
+    bannerCurtain.appendChild(bannerImage);
+    bannerCurtain.appendChild(bannerCtaGroup);
+
     // Function to show original banner, hide concept
     const showOriginalBanner = () => {
       if (!conceptContainer) return;
 
-      // Fade out concept with scale
+      // Show banner elements first (before concept slides down)
+      // Override the CSS animation on bannerInner to prevent 6s delay
+      bannerInner.style.animation = 'none';
+      bannerInner.style.opacity = '1';
+      bannerInner.style.visibility = 'visible';
+
+      // Slide down concept
+      conceptContainer.style.transform = 'translateY(100%)';
+      conceptContainer.style.visibility = 'hidden';
       conceptContainer.style.opacity = '0';
-      conceptContainer.style.transform = 'scale(0.97)';
+      bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
       setTimeout(() => {
         conceptContainer.style.display = 'none';
         conceptContainer.style.opacity = '';
         conceptContainer.style.transform = '';
-
-        // Find the specific elements to restore
-        const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-        const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
-
-        // Override the CSS animation on bannerInner to prevent 6s delay
-        bannerInner.style.animation = 'none';
-        bannerInner.style.opacity = '1';
-        bannerInner.style.visibility = 'visible';
-
-        // Show the hidden elements immediately (override animation)
-        if (bannerImage) {
-          bannerImage.style.display = '';
-          bannerImage.style.opacity = '0';
-          bannerImage.style.transform = 'scale(0.97)';
-        }
-        if (bannerCtaGroup) {
-          bannerCtaGroup.style.display = '';
-          bannerCtaGroup.style.opacity = '0';
-          bannerCtaGroup.style.transform = 'scale(0.97)';
-        }
-
-        // Force reflow
-        // eslint-disable-next-line no-unused-expressions
-        bannerInner.offsetHeight;
-
-        // Fade in with scale
-        if (bannerImage) {
-          bannerImage.style.opacity = '1';
-          bannerImage.style.transform = 'scale(1)';
-        }
-        if (bannerCtaGroup) {
-          bannerCtaGroup.style.opacity = '1';
-          bannerCtaGroup.style.transform = 'scale(1)';
-        }
         bannerDiv.classList.remove('hero-heritage-cc-banner-swapped');
       }, 350);
     };
 
     // Function to show concept, hide original banner
     const showConceptView = () => {
-      // Find the specific elements to hide
-      const bannerImage = bannerInner.querySelector('.hero-heritage-cc-banner-image');
-      const bannerCtaGroup = bannerInner.querySelector('.hero-heritage-cc-banner-cta-group');
+      // Show concept starting below (banner stays visible underneath)
+      conceptContainer.style.display = '';
+      conceptContainer.style.visibility = 'hidden';
+      conceptContainer.style.opacity = '0';
+      conceptContainer.style.transform = 'translateY(100%)';
+      bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
-      // Fade out only the image and CTA group with scale
-      if (bannerImage) {
-        bannerImage.style.opacity = '0';
-        bannerImage.style.transform = 'scale(0.97)';
-      }
-      if (bannerCtaGroup) {
-        bannerCtaGroup.style.opacity = '0';
-        bannerCtaGroup.style.transform = 'scale(0.97)';
-      }
+      // Force reflow
+      // eslint-disable-next-line no-unused-expressions
+      conceptContainer.offsetHeight;
 
-      setTimeout(() => {
-        if (bannerImage) bannerImage.style.display = 'none';
-        if (bannerCtaGroup) bannerCtaGroup.style.display = 'none';
-
-        // Show concept starting invisible and scaled down
-        conceptContainer.style.display = '';
-        conceptContainer.style.opacity = '0';
-        conceptContainer.style.transform = 'scale(0.97)';
-
-        // Force reflow
-        // eslint-disable-next-line no-unused-expressions
-        conceptContainer.offsetHeight;
-
-        // Fade in with scale
-        conceptContainer.style.opacity = '1';
-        conceptContainer.style.transform = 'scale(1)';
-        bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
-      }, 350);
+      // Slide up over the banner
+      conceptContainer.style.visibility = 'visible';
+      conceptContainer.style.opacity = '1';
+      conceptContainer.style.transform = 'translateY(0)';
+      bannerCurtain.style.clipPath = 'inset(0 0 100% 0)';
+      bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
     };
 
     bannerDiv.addEventListener('click', async (e) => {
