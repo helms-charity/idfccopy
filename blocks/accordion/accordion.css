@@ -30,6 +30,10 @@
   font-weight: 600;
 }
 
+.multi .accordion details summary {
+  padding: 20px 30px 20px var(--spacing-s);
+}
+
 .accordion details summary::after {
   content: '';
   position: absolute;

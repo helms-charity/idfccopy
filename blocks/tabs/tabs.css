@@ -3,6 +3,7 @@
   gap: var(--spacing-xs);
   max-width: 100%;
   overflow-x: auto;
+  padding: var(--spacing-xs) 0;
 }
 
 .tabs .tabs-tab {
@@ -45,7 +46,6 @@
 
 .tabs .tabs-panel {
   border: none;
-  padding: var(--spacing-s) 0;
   overflow: hidden; /* Needed for swiper cards inside tabs */
 }
 
@@ -53,36 +53,61 @@
   display: none;
 }
 
-.tabs.blue-white-text .tabs-tab {
+.tabs-container.blue-white-text .tabs-tab {
   background: var(--gradient-silver);
 }
 
-.tabs.silver-blue-text .tabs-tab {
+.tabs-container.silver-blue-text .tabs-tab {
   background: rgb(255 255 255 / 70%);
 }
 
-.tabs.silver-blue-text .tabs-list .tabs-tab p {
+.tabs-container.silver-blue-text .tabs-list .tabs-tab p {
   color: #08133C;
 }
 
-.tabs.blue-white-text .tabs-tab[aria-selected='true'] {
+.tabs-container.blue-white-text .tabs-tab[aria-selected='true'] {
   background: var(--gradient-blue);
   color: var(--color-white);
 }
 
-.tabs.silver-blue-text .tabs-list {
+.tabs-container.silver-blue-text .tabs-list {
   padding: 0;
   margin-bottom: 0;
 }
 
-.tabs.silver-blue-text .tabs-tab[aria-selected='true'] {
+.tabs-container.silver-blue-text .tabs-tab[aria-selected='true'] {
   background: linear-gradient(138deg, #999 -15.44%, #EFEFEF 0.15%, #CACACA 18.04%, #EFEFEF 37.09%, #CACACA 58.44%, #999 76.91%, #EFEFEF 87.3%);
   color: #08133C;
+}
+
+/* new tab-section styles */
+.section.tabs-container div.tabs-wrapper {
+
+  .tabs-list, .section-title {
+    max-width: var(--grid-container-width);
+    margin: 0 auto;
+    justify-content: center;
+  }
+
+  .tabs.vertical .tabs-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
 @media (width >= 900px) {
   .tabs .tabs-list .tabs-tab {
     font-size: var(--body-font-size-m);
+  }
+
+  .tabs-tab[aria-selected='true'] {
+    background: var(--gradient-silver);
+    color: var(--color-white);
+  }
+
+  .tabs-panel {
+    padding: 0;
   }
 
   .tabs.silver-blue-text .tabs-list {
@@ -92,4 +117,28 @@
   .tabs.silver-blue-text .tabs-tab {
     flex: 0 1 auto;
   }
+
+  /* new tab-section styles */
+.section.tabs-container div.tabs-wrapper {
+
+  .tabs.vertical {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--spacing-s);
+
+    > div {
+      flex: 0 0 100%;
+    }
+
+    .tabs-list {
+      flex: 0 0 150px;
+    }
+
+    .tabs-panel {
+      flex: 1 1 calc(100% - 200px);
+    }
+  }
+}
 }
