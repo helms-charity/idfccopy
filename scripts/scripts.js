@@ -24,6 +24,14 @@ const MEDIA_QUERIES = {
   desktop: window.matchMedia('(min-width: 990px)'),
 };
 
+const PROD_ORIGIN = 'https://www.idfcfirst.bank.in';
+
+function makeProdUrl(href) {
+  if (!href || href.startsWith('#')) return href;
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href)) return href;
+  return new URL(href, PROD_ORIGIN).toString();
+}
+
 /**
  * Open PDF links and my.idfcfirst links in a new tab
  * @param {Element} a the anchor element to process
@@ -1484,6 +1492,11 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
+
+  // Rewrite relative links to prod origin (avoid ww2 links)
+  doc.querySelectorAll('a[href]').forEach((a) => {
+    a.href = makeProdUrl(a.getAttribute('href'));
+  });
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
