@@ -518,7 +518,7 @@ function extractImageUrl(content) {
  * @param {string|null} mobileUrl the mobile background image URL (optional)
  * @param {Element} section the section element to add the background to
  */
-function handleBackgroundImages(desktopUrl, mobileUrl, section) {
+export function handleBackgroundImages(desktopUrl, mobileUrl, section) {
   if (!desktopUrl) return;
 
   const newPic = document.createElement('picture');
@@ -555,7 +555,7 @@ function handleBackgroundImages(desktopUrl, mobileUrl, section) {
   section.prepend(newPic);
 }
 
-function handleBackground(background, section) {
+export function handleBackground(background, section) {
   const color = background.text;
   // instead of typing "var(--color-name)" authors can use "color-token-name"
   if (color) {
