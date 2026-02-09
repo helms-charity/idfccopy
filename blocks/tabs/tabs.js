@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
 import { toClassName } from '../../scripts/aem.js';
-import { getBlockId, moveInstrumentation } from '../../scripts/scripts.js';
+import { getBlockId } from '../../scripts/scripts.js';
 
 function fetchTabName(tab) {
   const tabTextWrapper = document.createElement('div');
