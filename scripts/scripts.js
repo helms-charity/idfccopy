@@ -28,7 +28,15 @@ const PROD_ORIGIN = 'https://www.idfcfirst.bank.in';
 
 function makeProdUrl(href) {
   if (!href || href.startsWith('#')) return href;
-  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href)) return href;
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href)) {
+    try {
+      const url = new URL(href);
+      if (url.origin.toLowerCase().includes('ww2.idfcfirst.bank.in')) {
+        return new URL(url.pathname + url.search + url.hash, PROD_ORIGIN).toString();
+      }
+    } catch (e) { /* invalid URL */ }
+    return href;
+  }
   return new URL(href, PROD_ORIGIN).toString();
 }
 
