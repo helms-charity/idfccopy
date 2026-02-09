@@ -562,10 +562,8 @@ export default async function decorate(block) {
   swiperPagination.className = 'swiper-pagination';
   block.appendChild(swiperPagination);
 
-  const slideCount = cardsContainer.querySelectorAll('.cards-card').length;
   const isMobileView = window.innerWidth < 600;
   const initialSlideIndex = isMobileView ? 0 : startingCard;
-  const isMayuraTemplate = document.body.classList.contains('mayura');
 
   const swiperConfig = {
     loop: false,
@@ -577,8 +575,8 @@ export default async function decorate(block) {
     initialSlide: initialSlideIndex,
     pagination: {
       el: '.swiper-pagination',
-      type: isMayuraTemplate ? 'progressbar' : 'bullets',
-      clickable: !isMayuraTemplate,
+      type: 'bullets',
+      clickable: true,
       dynamicBullets: false,
     },
     breakpoints: {
@@ -623,100 +621,6 @@ export default async function decorate(block) {
   updateStarIcons();
   swiper.on('slideChange', updateStarIcons);
   swiper.on('slideChangeTransitionEnd', updateStarIcons);
-
-  if (isMayuraTemplate) {
-    const paginationEl = block.querySelector('.swiper-pagination');
-    if (paginationEl) {
-      if (!window.swiperHandleDragState) {
-        window.swiperHandleDragState = {
-          isDragging: false,
-          activeSwiper: null,
-          activePagination: null,
-          activeSlideCount: 0,
-        };
-        document.addEventListener('mousemove', (e) => {
-          const state = window.swiperHandleDragState;
-          if (!state.isDragging || !state.activePagination) return;
-          const handle = state.activePagination.querySelector('.swiper-pagination-handle');
-          if (!handle) return;
-          const { clientX } = e;
-          const rect = state.activePagination.getBoundingClientRect();
-          const percentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-          handle.style.left = `${percentage * 100}%`;
-          state.activeSwiper.slideTo(Math.round(percentage * (state.activeSlideCount - 1)), 0);
-        });
-        document.addEventListener('touchmove', (e) => {
-          const state = window.swiperHandleDragState;
-          if (!state.isDragging || !state.activePagination) return;
-          const handle = state.activePagination.querySelector('.swiper-pagination-handle');
-          if (!handle) return;
-          const { clientX } = e.touches[0];
-          const rect = state.activePagination.getBoundingClientRect();
-          const percentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-          handle.style.left = `${percentage * 100}%`;
-          state.activeSwiper.slideTo(Math.round(percentage * (state.activeSlideCount - 1)), 0);
-        }, { passive: true });
-        const handleGlobalDragEnd = () => {
-          const state = window.swiperHandleDragState;
-          if (!state.isDragging) return;
-          const handle = state.activePagination?.querySelector('.swiper-pagination-handle');
-          if (handle) {
-            handle.style.transition = 'left 0.3s ease';
-            handle.style.cursor = 'grab';
-          }
-          document.body.style.userSelect = '';
-          state.isDragging = false;
-          state.activeSwiper = null;
-          state.activePagination = null;
-          state.activeSlideCount = 0;
-        };
-        document.addEventListener('mouseup', handleGlobalDragEnd);
-        document.addEventListener('touchend', handleGlobalDragEnd);
-      }
-      const handleDragStart = (e) => {
-        const state = window.swiperHandleDragState;
-        state.isDragging = true;
-        state.activeSwiper = swiper;
-        state.activePagination = paginationEl;
-        state.activeSlideCount = slideCount;
-        const handle = e.currentTarget;
-        handle.style.transition = 'none';
-        handle.style.cursor = 'grabbing';
-        document.body.style.userSelect = 'none';
-        e.preventDefault();
-      };
-      const createHandle = () => {
-        const handle = document.createElement('div');
-        handle.className = 'swiper-pagination-handle';
-        handle.innerHTML = '<img src="/icons/scrollbar-handle.svg" alt="" width="28" height="8">';
-        handle.addEventListener('mousedown', handleDragStart);
-        handle.addEventListener('touchstart', handleDragStart, { passive: false });
-        return handle;
-      };
-      paginationEl.appendChild(createHandle());
-      const updateHandlePosition = () => {
-        let handle = paginationEl.querySelector('.swiper-pagination-handle');
-        if (!handle) {
-          handle = createHandle();
-          paginationEl.appendChild(handle);
-        }
-        const { progress } = swiper;
-        handle.style.left = `${Math.max(0, Math.min(1, progress)) * 100}%`;
-      };
-      updateHandlePosition();
-      swiper.on('progress', updateHandlePosition);
-      swiper.on('slideChange', updateHandlePosition);
-      swiper.on('resize', updateHandlePosition);
-      swiper.on('breakpoint', updateHandlePosition);
-      paginationEl.style.cursor = 'pointer';
-      paginationEl.addEventListener('click', (e) => {
-        if (e.target.closest('.swiper-pagination-handle')) return;
-        const rect = paginationEl.getBoundingClientRect();
-        const targetSlide = Math.round(((e.clientX - rect.left) / rect.width) * (slideCount - 1));
-        swiper.slideTo(targetSlide);
-      });
-    }
-  }
 
   injectSchema(generateTestimonialSchema(block));
 }
