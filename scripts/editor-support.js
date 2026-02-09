@@ -248,9 +248,9 @@ async function applyChanges(event) {
           decorateSections(parentElement);
 
           // added for multi-section blocks
-          // if (element.closest('.tabs')) {
-          //   moveAllAttributes(element, newSection);
-          // }
+          if (element.closest('.tabs')) {
+            moveAllAttributes(element, newSection);
+          }
           decorateBlocks(parentElement);
           await loadSections(parentElement);
           element.remove();
