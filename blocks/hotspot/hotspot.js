@@ -129,14 +129,12 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
   // Only calculate padding if not skipped (during transitions, fadeTransition handles this)
   if (!skipPaddingCalculation) {
     // Function to calculate and set padding position
-    const calculateInitialPadding = (withTransition = false) => {
+    const calculateInitialPadding = () => {
       const panelItem = tooltipContent.querySelector('.hotspot-panel-item');
       if (!panelItem || !firstHotspot) return;
 
-      if (!withTransition) {
-        // Disable transition for instant positioning
-        tooltipContent.style.transition = 'none';
-      }
+      // Disable transition for instant positioning
+      tooltipContent.style.transition = 'none';
 
       // Force layout to get accurate measurements
       tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
@@ -156,23 +154,37 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
       const desiredPadding = Math.max(0, hotspotCenterY - panelItemCenterYAtZero);
       tooltipContent.style.paddingTop = `${desiredPadding}px`;
 
-      if (!withTransition) {
-        // Force reflow then re-enable transition
-        tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
-        tooltipContent.style.transition = '';
+      // Force reflow then re-enable transition
+      tooltipContent.offsetHeight; // eslint-disable-line no-unused-expressions
+      tooltipContent.style.transition = '';
+    };
+
+    // Get the main image in the hotspot
+    const mainImage = imageSection.querySelector('img');
+
+    // Wait for image to be fully ready before calculating position
+    const waitForImageAndCalculate = () => {
+      if (mainImage && mainImage.naturalWidth === 0) {
+        // Image not yet decoded, wait for load event
+        mainImage.addEventListener('load', () => {
+          // Use double RAF to ensure layout is stable after image load
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              calculateInitialPadding();
+            });
+          });
+        }, { once: true });
+      } else {
+        // Image already loaded or no image, use double RAF for layout stability
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            calculateInitialPadding();
+          });
+        });
       }
     };
 
-    // Calculate initial position immediately
-    calculateInitialPadding(false);
-
-    // Also recalculate after images load (in case layout shifts)
-    const images = container.querySelectorAll('img');
-    images.forEach((img) => {
-      if (!img.complete) {
-        img.addEventListener('load', () => calculateInitialPadding(false), { once: true });
-      }
-    });
+    waitForImageAndCalculate();
   }
 
   // Set up the go-back behavior:
@@ -306,12 +318,17 @@ function fadeTransition(container, contentSwapCallback) {
         // Use double RAF to ensure browser has painted the new content
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
+            // Add brightness flash before fade-in starts
+            container.classList.add('brightness-flash');
+
             // Start fade in
             container.classList.remove('fade-out');
 
             // Wait for fade-in to complete
             const onFadeInEnd = () => {
               container.removeEventListener('transitionend', onFadeInEnd);
+              // Remove brightness flash - triggers 0.2s transition back to normal brightness
+              container.classList.remove('brightness-flash');
               resolve();
             };
             container.addEventListener('transitionend', onFadeInEnd, { once: true });

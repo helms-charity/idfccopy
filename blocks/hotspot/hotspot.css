@@ -12,7 +12,7 @@
   width: 100%;
   min-height: 400px;
   position: relative;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.1s ease;
 }
 
 /* SVG connector line styles (line drawn via JS) */
@@ -157,6 +157,14 @@
   width: 100%;
   height: auto;
   display: block;
+  filter: brightness(1);
+  transition: filter 0.6s ease;
+}
+
+/* Brightness flash effect during fade-in transition */
+.hotspot-container.brightness-flash .hotspot-image-wrapper img {
+  filter: brightness(1.5);
+  transition: filter 0s; /* Instant brightness boost at start */
 }
 
 /* Hotspot Marker - pulsing circle on the image */
@@ -205,11 +213,6 @@
   background-color: var(--text-color, #1a1a5e);
   transform: translate(-50%, -50%) scale(1.2);
   opacity: 1;
-}
-
-/* Link hotspot marker - same style */
-.hotspot-link-marker {
-  /* No border needed */
 }
 
 /* Responsive adjustments */
