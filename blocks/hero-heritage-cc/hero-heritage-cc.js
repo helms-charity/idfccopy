@@ -379,6 +379,8 @@ export default function decorate(block) {
 
       // Slide down concept
       conceptContainer.style.transform = 'translateY(100%)';
+      conceptContainer.style.visibility = 'hidden';
+      conceptContainer.style.opacity = '0';
       bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
       setTimeout(() => {
@@ -393,7 +395,8 @@ export default function decorate(block) {
     const showConceptView = () => {
       // Show concept starting below (banner stays visible underneath)
       conceptContainer.style.display = '';
-      conceptContainer.style.opacity = '1';
+      conceptContainer.style.visibility = 'hidden';
+      conceptContainer.style.opacity = '0';
       conceptContainer.style.transform = 'translateY(100%)';
       bannerCurtain.style.clipPath = 'inset(0 0 0 0)';
 
@@ -402,6 +405,8 @@ export default function decorate(block) {
       conceptContainer.offsetHeight;
 
       // Slide up over the banner
+      conceptContainer.style.visibility = 'visible';
+      conceptContainer.style.opacity = '1';
       conceptContainer.style.transform = 'translateY(0)';
       bannerCurtain.style.clipPath = 'inset(0 0 100% 0)';
       bannerDiv.classList.add('hero-heritage-cc-banner-swapped');
