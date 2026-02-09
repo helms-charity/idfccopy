@@ -787,7 +787,7 @@ export function decorateSections(parent, isDoc) {
 }
 
 /**
- * swapna: Observes .section.entrance-animation and adds .is-visible when section enters viewport.
+ * Observes .section.entrance-animation and adds .is-visible when section enters viewport.
  * @param {Element} container - Element to search for sections (e.g. main)
  */
 function initEntranceAnimationObserver(container) {
@@ -798,7 +798,7 @@ function initEntranceAnimationObserver(container) {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target); /* swapna: stop observing once animated */
+          observer.unobserve(entry.target); /* stop observing once animated */
         }
       });
     },
@@ -868,7 +868,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
-  /* swapna: Init entrance-animation observer (animate when in viewport) */
+  /* Init entrance-animation observer (animate when in viewport) */
   initEntranceAnimationObserver(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
