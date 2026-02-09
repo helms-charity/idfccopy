@@ -242,14 +242,16 @@ async function applyChanges(event) {
           const [newSection] = newElements;
           newSection.style.display = 'none';
           element.insertAdjacentElement('afterend', newSection);
+          decorateSections(parentElement);
+
+          // added for multi-section blocks
+          if (element.closest('.tabs')) {
+            moveAllAttributes(element, newSection);
+          }
+          decorateBlocks(newSection);
           decorateButtons(newSection);
           decorateIcons(newSection);
           decorateRichtext(newSection);
-          decorateSections(parentElement);
-          if (element.closest('.tabs') || element.closest('.accordion')) {
-            moveAllAttributes(element, newSection);
-          }
-          decorateBlocks(parentElement);
           await loadSections(parentElement);
           element.remove();
           newSection.style.display = null;
