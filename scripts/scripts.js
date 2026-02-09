@@ -786,6 +786,27 @@ export function decorateSections(parent, isDoc) {
   });
 }
 
+/**
+ * swapna: Observes .section.entrance-animation and adds .is-visible when section enters viewport.
+ * @param {Element} container - Element to search for sections (e.g. main)
+ */
+function initEntranceAnimationObserver(container) {
+  const sections = container?.querySelectorAll('.section.entrance-animation') || [];
+  if (sections.length === 0) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target); /* swapna: stop observing once animated */
+        }
+      });
+    },
+    { rootMargin: '0px 0px -50px 0px', threshold: 0 },
+  );
+  sections.forEach((section) => observer.observe(section));
+}
+
 export function buildTabSection(main) {
   const tabItems = main.querySelectorAll('div[data-tabSection]');
   if (tabItems.length > 0) {
@@ -847,6 +868,8 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  /* swapna: Init entrance-animation observer (animate when in viewport) */
+  initEntranceAnimationObserver(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);

@@ -967,6 +967,19 @@ body.is-framework-page .section.category-nav-section {
   overflow: visible !important;
 }
 
+/* swapna: Entrance animation - section starts off-screen and fades/slides in when in viewport */
+.section.entrance-animation {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 2s, transform 2s;
+}
+
+/* swapna: Visible state when section has entered viewport (triggered by IntersectionObserver) */
+.section.entrance-animation.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Base styles for sections with doodles */
 .section.has-doodles {
   position: relative;
