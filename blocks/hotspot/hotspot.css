@@ -1,0 +1,271 @@
+/* Hotspot Block Styles */
+
+.hotspot {
+  position: relative;
+  width: 100%;
+}
+
+/* Two-column layout */
+.hotspot-container {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  transition: opacity 0.1s ease;
+}
+
+/* SVG connector line styles (line drawn via JS) */
+.hotspot-connector-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* Fade animation for block transitions */
+.hotspot-container.fade-out {
+  opacity: 0;
+}
+
+.hotspot-container.fade-out .hotspot-connector-svg {
+  visibility: hidden;
+}
+
+.hotspot-container.fade-in {
+  opacity: 1;
+}
+
+/* Left panel for tooltip content */
+.hotspot-tooltip-panel {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 40px;
+  position: relative;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.hotspot-tooltip-panel.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Tooltip text content */
+.hotspot-tooltip-content {
+  max-width: 400px;
+  text-align: left;
+  color: var(--text-color, #1a1a5e);
+  font-size: 18px;
+  line-height: 1.6;
+  position: relative;
+  padding-right: 0;
+  transition: padding-top 0.5s ease-in-out;
+}
+
+.hotspot-panel-item {
+  margin-bottom: 16px;
+}
+
+.hotspot-panel-item:last-child {
+  margin-bottom: 0;
+}
+
+.hotspot-panel-item p {
+  margin: 0;
+  background: var(--primary, linear-gradient(308.18deg, #110140 4.16%, #1E2A8E 44.91%, #010740 88.8%));
+  background-clip: text;
+  -webkit-text-fill-color: rgb(0 0 0 / 0%);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.hotspot-panel-item p:last-child {
+  margin-bottom: 0;
+}
+
+.hotspot-panel-item > p > a.button {
+  color: rgb(0 0 0);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  text-decoration-line: underline;
+  margin-top: 8px;
+  padding: 0;
+}
+
+.hotspot-panel-item em {
+  font-style: italic;
+}
+
+/* Go back link */
+.hotspot-go-back {
+  margin-top: 20px;
+}
+
+.hotspot-go-back a {
+  color: var(--text-color, #1a1a5e);
+  text-decoration: underline;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.hotspot-go-back a:hover {
+  text-decoration: none;
+}
+
+.hotspot-connector-svg line {
+  stroke: #555;
+  stroke-width: 1;
+}
+
+.hotspot-connector-svg circle {
+  fill: #555;
+}
+
+/* Right section with image and hotspots */
+.hotspot-image-section {
+  flex: 0 0 60%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hotspot-image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  line-height: 0;
+}
+
+.hotspot-image-wrapper picture {
+  display: block;
+  width: 100%;
+}
+
+.hotspot-image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: brightness(1);
+  transition: filter 0.6s ease;
+}
+
+/* Brightness flash effect during fade-in transition */
+.hotspot-container.brightness-flash .hotspot-image-wrapper img {
+  filter: brightness(1.5);
+  transition: filter 0s; /* Instant brightness boost at start */
+}
+
+/* Hotspot Marker - pulsing circle on the image */
+@keyframes hotspot-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+.hotspot-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(255 255 255 / 80%);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  padding: 0;
+  box-shadow: none;
+  animation: hotspot-pulse 1500ms ease-in-out infinite;
+}
+
+.hotspot-marker::before {
+  content: none;
+}
+
+.hotspot-marker:focus {
+  outline: none;
+}
+
+.hotspot-marker.active {
+  animation-play-state: paused;
+  background-color: var(--text-color, #1a1a5e);
+  transform: translate(-50%, -50%) scale(1.2);
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (width <= 1024px) {
+  .hotspot-container {
+    min-height: 350px;
+  }
+
+  .hotspot-tooltip-panel {
+    flex: 0 0 35%;
+    padding: 30px;
+  }
+
+  .hotspot-tooltip-content {
+    font-size: 16px;
+  }
+
+  .hotspot-image-section {
+    flex: 0 0 65%;
+  }
+}
+
+@media (width <= 768px) {
+  .hotspot-container {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .hotspot-tooltip-panel {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+    justify-content: center;
+    order: 2;
+  }
+
+  .hotspot-tooltip-content {
+    padding-right: 0;
+    text-align: left;
+  }
+
+  .hotspot-image-section {
+    flex: none;
+    width: 100%;
+    order: 1;
+  }
+
+  .hotspot-image-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* Hide empty panel */
+.hotspot-tooltip-panel:not(.visible) {
+  pointer-events: none;
+}
