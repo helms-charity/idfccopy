@@ -322,6 +322,37 @@
         }
       },
       {
+        "component": "select",
+        "name": "category",
+        "label": "Grouped section type",
+        "condition": {
+          "==": [
+            {
+              "var": "is-multisection"
+            },
+            true
+          ]
+        },
+        "options": [
+          {
+            "name": "Tabs horizontal",
+            "value": "tabs-horizontal"
+          },
+          {
+            "name": "Tabs vertical",
+            "value": "tabs-vertical"
+          },
+          {
+            "name": "Accordion",
+            "value": "accordion"
+          },
+          {
+            "name": "none",
+            "value": ""
+          }
+        ]
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Style",
@@ -694,25 +725,6 @@
         "component": "text",
         "name": "tabname",
         "label": "Tab/Accordion heading label"
-      },
-      {
-        "component": "select",
-        "name": "category",
-        "label": "Grouped section type",
-        "options": [
-          {
-            "name": "Tabs horizontal (default)",
-            "value": "horizontal"
-          },
-          {
-            "name": "Tabs vertical",
-            "value": "vertical"
-          },
-          {
-            "name": "Accordion",
-            "value": "accordion"
-          }
-        ]
       },
       {
         "component": "multiselect",
