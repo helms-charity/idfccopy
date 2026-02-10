@@ -102,9 +102,6 @@ export default async function decorate(block) {
       tabpanel.setAttribute('role', 'tabpanel');
 
       moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
-      // Remove the label cell so the tab panel only shows content, not the tab text
-      tab.remove();
-
       const button = createTabButton(
         block,
         tabpanel,
@@ -114,6 +111,8 @@ export default async function decorate(block) {
         `tab-${id}`,
       );
       tablist.append(button);
+      tab.remove();
+      moveInstrumentation(button.querySelector('p'), null);
     });
 
     block.prepend(tablist);
