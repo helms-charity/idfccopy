@@ -74,11 +74,12 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: height 0.5s ease;
+  transition: height 0.5s ease, min-height 0.5s ease;
 }
 
 /* Collapsed state when "The Concept" link (#the-concept-hotspot) is clicked */
 .hero-heritage-cc.hero-heritage-cc-collapsed {
+  min-height: 87px;
   height: 87px;
 }
 
@@ -595,6 +596,7 @@ color: var(--color-pewter);
 }
 
   .hero-heritage-cc.hero-heritage-cc-collapsed {
+    min-height: 187px;
     height: 187px;
   }
 
