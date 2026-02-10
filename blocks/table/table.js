@@ -8,6 +8,7 @@ import {
   moveInstrumentation,
   handleBackgroundImages,
   handleBackground,
+  normalizeBackgroundColor,
 } from '../../scripts/scripts.js';
 
 /**
@@ -20,19 +21,6 @@ function extractImageUrl(element) {
   if (element.tagName === 'IMG') return element.src;
   if (element.tagName === 'PICTURE') return element.querySelector('img')?.src || null;
   return null;
-}
-
-/**
- * Normalizes color for shared handleBackground (Table: backgroundColor; Section: backgroundcolor).
- * Ensures bare hex (e.g. "fff") gets "#" prefix so CSS is valid.
- * @param {string} color - Raw color from table metadata
- * @returns {string} - Color string suitable for handleBackground
- */
-function normalizeBackgroundColor(color) {
-  if (!color || typeof color !== 'string') return color;
-  const trimmed = color.trim();
-  if (trimmed.match(/^[0-9a-fA-F]{3,6}$/)) return `#${trimmed}`;
-  return trimmed;
 }
 
 /**
