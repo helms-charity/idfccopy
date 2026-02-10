@@ -793,6 +793,27 @@ export function decorateSections(parent, isDoc) {
   });
 }
 
+/**
+ * Observes .section.entrance-animation and adds .is-visible when section enters viewport.
+ * @param {Element} container - Element to search for sections (e.g. main)
+ */
+function initEntranceAnimationObserver(container) {
+  const sections = container?.querySelectorAll('.section.entrance-animation') || [];
+  if (sections.length === 0) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target); /* stop observing once animated */
+        }
+      });
+    },
+    { rootMargin: '0px 0px -50px 0px', threshold: 0 },
+  );
+  sections.forEach((section) => observer.observe(section));
+}
+
 function groupItemsByMultisection(items) {
   const grouped = {};
   items.forEach((item) => {
@@ -917,6 +938,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   decorateSections(main); /* must be before buildAutoBlocks */
   buildAutoBlocks(main);
+  initEntranceAnimationObserver(main);
   decorateBlocks(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);
