@@ -935,7 +935,8 @@ export default async function decorate(block) {
       }
     } else if (isBlogPosts) {
       cardItem.classList.add('blog-post-card');
-    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks && !isAllAboutCard && !isImageAndTitle) {
+    } else if (!isTestimonial && !isEarnRewards && !isJoiningPerks
+      && !isAllAboutCard && !isImageAndTitle) {
       if (isExploreOtherCards) {
         cardItem.classList.add('explore-other-cards');
       } else {
