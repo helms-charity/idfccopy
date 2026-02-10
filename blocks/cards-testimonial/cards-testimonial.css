@@ -1,0 +1,364 @@
+/* stylelint-disable no-descending-specificity */
+
+/* =================================================================
+   TESTIMONIAL CARDS - aligned with old .cards.testimonial-card DOM
+   ================================================================= */
+
+.cards-testimonial > .grid-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cards-testimonial .grid-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Grid mode (no Swiper): same card look and dimensions as old testimonial cards */
+.cards-testimonial .grid-cards > .cards-card {
+  max-width: 326px;
+  background-color: var(--color-gray-300);
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
+  padding: 34px 20px;
+  box-sizing: border-box;
+  color: var(--color-white);
+}
+
+.cards-testimonial .grid-cards > .cards-card:first-child {
+  background-color: var(--color-purple-400);
+  box-shadow: 0 8px 16px 4px rgb(37 36 59 / 25%);
+}
+
+.cards-testimonial .cards-card-body {
+  margin: 0;
+  color: var(--color-white);
+}
+
+.cards-testimonial .cards-card-image {
+  line-height: 0;
+}
+
+.cards-testimonial .grid-cards > .cards-card img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Grid mode: card body text and icons (match Swiper slide styling) */
+.cards-testimonial .grid-cards .cards-card-body .testimonial-person-name,
+.cards-testimonial .grid-cards .cards-card-body .testimonial-date,
+.cards-testimonial .grid-cards .cards-card-body .testimonial-product-name,
+.cards-testimonial .grid-cards .cards-card-body h5,
+.cards-testimonial .grid-cards .cards-card-body h6,
+.cards-testimonial .grid-cards .cards-card-body p {
+  color: var(--color-white);
+}
+
+.cards-testimonial .grid-cards .cards-card-body .testimonial-person-name,
+.cards-testimonial .grid-cards .cards-card-body h5 {
+  font-size: var(--body-font-size-l);
+  font-weight: 500;
+  margin: 36px 0 11px;
+}
+
+.cards-testimonial .grid-cards .cards-card-body .testimonial-person-name + p,
+.cards-testimonial .grid-cards .cards-card-body h5 + p {
+  font-size: var(--body-font-size-s);
+  margin: 0 0 var(--spacing-xxs);
+}
+
+.cards-testimonial .grid-cards .cards-card-body .testimonial-product-name,
+.cards-testimonial .grid-cards .cards-card-body .testimonial-product-name u,
+.cards-testimonial .grid-cards .cards-card-body p u {
+  font-size: var(--body-font-size-s);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* Review text only; exclude person name, product, date */
+.cards-testimonial .grid-cards .cards-card-body p:not(
+  .testimonial-person-name,
+  .testimonial-product-name,
+  .testimonial-date,
+  :has(.icon-inverted-commas),
+  :has(.icon-star),
+  :has(u)
+) {
+  font-size: var(--body-font-size-m);
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+}
+
+/* Person name: match old cards testimonial h5 (cards.css:1667) */
+.cards-testimonial .grid-cards .cards-card-body .testimonial-person-name {
+  font-size: var(--body-font-size-l);
+  font-weight: 500;
+  margin: 36px 0 11px;
+}
+
+.cards-testimonial .grid-cards .cards-card-body p:has(.icon-inverted-commas) {
+  margin: 0 0 16px;
+  line-height: 0;
+}
+
+.cards-testimonial .grid-cards .icon-inverted-commas img {
+  width: 20px;
+  height: 16.75px;
+}
+
+.cards-testimonial .grid-cards .cards-card-body p:has(.icon-star) {
+  display: flex;
+  margin: 0 0 var(--spacing-xs);
+}
+
+.cards-testimonial .grid-cards .icon-star,
+.cards-testimonial .grid-cards .icon-star-white,
+.cards-testimonial .grid-cards .icon-star-yellow {
+  display: inline-block;
+  width: auto;
+  height: 12px;
+  padding-right: 4px;
+}
+
+.cards-testimonial .grid-cards .cards-card-body .testimonial-date,
+.cards-testimonial .grid-cards .cards-card-body h6 {
+  font-size: var(--body-font-size-xs);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.cards-testimonial .grid-cards .cards-card-body p:has(.icon-star) .icon-star:last-child,
+.cards-testimonial .grid-cards .cards-card-body h6:has(.icon-star) .icon-star:last-child {
+  padding-right: 16px;
+}
+
+/* Section: black background, white centered title (like old .cards-container) */
+.section:has(.cards-testimonial),
+.section:has(.testimonial-cards),
+.section.cards-testimonial-container {
+  background-color: var(--color-black);
+  margin: 0;
+  padding: 40px 0;
+}
+
+/* Center section content: use same container width as rest of site (main>.section>div) so section isn’t smaller and cards keep 326px. */
+.section:has(.cards-testimonial) .block-content.cards-testimonial-wrapper,
+.section:has(.testimonial-cards) .block-content.cards-testimonial-wrapper,
+.section.cards-testimonial-container .block-content.cards-testimonial-wrapper {
+  max-width: var(--grid-container-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--grid-gutter-width);
+  padding-right: var(--grid-gutter-width);
+}
+
+.section:has(.cards-testimonial) h2,
+.section:has(.testimonial-cards) h2,
+.section.cards-testimonial-container h2 {
+  color: var(--color-white);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* =================================================================
+   SWIPER - TESTIMONIAL
+   ================================================================= */
+
+.cards-testimonial.swiper {
+  width: 100%;
+  height: auto;
+  padding-bottom: var(--spacing-xl);
+  padding-top: var(--spacing-s);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Match old .cards.testimonial-card.swiper: 1050px at 900px (same as .cards.swiper in cards.css) */
+@media (width >= 900px) {
+  .cards-testimonial.swiper {
+    max-width: 1050px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cards-testimonial.swiper .swiper-slide {
+    max-width: 326px;
+  }
+}
+
+/* Match old .cards.testimonial-card.swiper wrapper/slide styling */
+.cards-testimonial.swiper .swiper-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: visible;
+  gap: 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  align-items: stretch;
+  cursor: grab;
+}
+
+/* Match old cards testimonial slide (no max-width on mobile; 326px only at 900px+) */
+.cards-testimonial.swiper .swiper-slide {
+  flex: 0 0 auto;
+  height: auto;
+  display: flex;
+  background-color: var(--color-gray-300);
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 2px rgb(37 36 59 / 15%);
+  padding: 34px 20px;
+  flex-direction: column;
+  margin-right: 0;
+  box-sizing: border-box;
+  overflow: visible;
+  transition: all 0.5s ease;
+  transform: scale(0.9);
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body {
+  margin: 0;
+  color: var(--color-white);
+  position: relative;
+  z-index: 10;
+}
+
+.cards-testimonial.swiper .swiper-slide-active {
+  background-color: var(--color-purple-400);
+  transform: scale(1);
+  z-index: 10;
+  box-shadow: 0 8px 16px 4px rgb(37 36 59 / 25%);
+  transition: all 0.5s ease;
+}
+
+.cards-testimonial .swiper-pagination {
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxs);
+}
+
+.cards-testimonial .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255 255 255 / 50%);
+  opacity: 1;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.cards-testimonial .swiper-pagination-bullet-active {
+  width: 14px;
+  height: 14px;
+  background: var(--color-white);
+  border-radius: 50%;
+}
+
+.cards-testimonial.swiper .swiper-slide-active .cards-card-body {
+  z-index: 10;
+}
+
+/* Testimonial card text */
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-person-name,
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-date,
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-product-name,
+.cards-testimonial.swiper .swiper-slide .cards-card-body h5,
+.cards-testimonial.swiper .swiper-slide .cards-card-body h6,
+.cards-testimonial.swiper .swiper-slide .cards-card-body p {
+  color: var(--color-white);
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-person-name,
+.cards-testimonial.swiper .swiper-slide .cards-card-body h5 {
+  font-size: var(--body-font-size-l);
+  font-weight: 500;
+  margin: 36px 0 11px;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-person-name + p,
+.cards-testimonial.swiper .swiper-slide .cards-card-body h5 + p {
+  font-size: var(--body-font-size-s);
+  margin: 0 0 var(--spacing-xxs);
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-product-name,
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-product-name u,
+.cards-testimonial.swiper .swiper-slide .cards-card-body p u {
+  font-size: var(--body-font-size-s);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* Review text paragraph only (exclude person name, product, date so their margins apply) */
+.cards-testimonial.swiper .swiper-slide .cards-card-body p:not(
+  .testimonial-person-name,
+  .testimonial-product-name,
+  .testimonial-date,
+  :has(.icon-inverted-commas),
+  :has(.icon-star),
+  :has(u)
+) {
+  font-size: var(--body-font-size-m);
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+}
+
+/* Person name: match old cards testimonial h5 (cards.css:1667) */
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-person-name {
+  font-size: var(--body-font-size-l);
+  font-weight: 500;
+  margin: 36px 0 11px;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body p:has(.icon-inverted-commas) {
+  margin: 0 0 16px;
+  line-height: 0;
+}
+
+.cards-testimonial.swiper .swiper-slide .icon-inverted-commas img {
+  width: 20px;
+  height: 16.75px;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body p:has(.icon-star) {
+  display: flex;
+  margin: 0 0 var(--spacing-xs);
+}
+
+.cards-testimonial.swiper .swiper-slide .icon-star,
+.cards-testimonial.swiper .swiper-slide .icon-star-white,
+.cards-testimonial.swiper .swiper-slide .icon-star-yellow {
+  display: inline-block;
+  width: auto;
+  height: 12px;
+  padding-right: 4px;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body .testimonial-date,
+.cards-testimonial.swiper .swiper-slide .cards-card-body h6 {
+  font-size: var(--body-font-size-xs);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body p:has(.icon-star) .icon-star:last-child,
+.cards-testimonial.swiper .swiper-slide h6:has(.icon-star) .icon-star:last-child {
+  padding-right: 16px;
+}
+
+.cards-testimonial.swiper .swiper-slide .cards-card-body:empty {
+  display: none;
+}
