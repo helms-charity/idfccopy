@@ -101,7 +101,7 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
       tabpanel.setAttribute('role', 'tabpanel');
 
-      moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
+   //   moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
       const button = createTabButton(
         block,
         tabpanel,
@@ -112,7 +112,7 @@ export default async function decorate(block) {
       );
       tablist.append(button);
       tab.remove();
-      moveInstrumentation(button.querySelector('p'), null);
+  //    moveInstrumentation(button.querySelector('p'), null);
     });
 
     block.prepend(tablist);
