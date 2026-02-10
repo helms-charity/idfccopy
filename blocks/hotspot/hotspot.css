@@ -5,11 +5,18 @@
   width: 100%;
 }
 
+/* Prevent CLS: hide until fully decorated, reserve space */
+.hotspot:not([data-block-status="loaded"]) {
+  visibility: hidden;
+  min-height: 400px;
+}
+
 /* Two-column layout */
-.hotspot-container {
+.hotspot.block > .hotspot-container {
   display: flex;
   align-items: stretch;
-  width: 100%;
+  justify-self: start;
+  margin: 0 auto;
   min-height: 400px;
   position: relative;
   transition: opacity 0.1s ease;
@@ -141,22 +148,26 @@
   justify-content: center;
 }
 
+/* Reserve space before image loads to prevent CLS */
 .hotspot-image-wrapper {
   position: relative;
   width: 100%;
   max-width: 600px;
   line-height: 0;
+  aspect-ratio: 16 / 10;
 }
 
 .hotspot-image-wrapper picture {
   display: block;
   width: 100%;
+  height: 100%;
 }
 
 .hotspot-image-wrapper img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: contain;
   filter: brightness(1);
   transition: filter 0.6s ease;
 }
@@ -217,6 +228,10 @@
 
 /* Responsive adjustments */
 @media (width <= 1024px) {
+  .hotspot:not([data-block-status="loaded"]) {
+    min-height: 350px;
+  }
+
   .hotspot-container {
     min-height: 350px;
   }
@@ -236,9 +251,13 @@
 }
 
 @media (width <= 768px) {
+  .hotspot:not([data-block-status="loaded"]) {
+    min-height: 350px;
+  }
+
   .hotspot-container {
     flex-direction: column;
-    min-height: auto;
+    min-height: 350px;
   }
 
   .hotspot-tooltip-panel {
