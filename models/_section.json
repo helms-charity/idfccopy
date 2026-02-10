@@ -96,7 +96,7 @@
         {
           "component": "container",
           "label": "Optional layout properties",
-          "name": "container",
+          "name": "layout-container",
           "valueType": "string",
           "collapsible": true,
           "fields": [
