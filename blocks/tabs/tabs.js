@@ -63,6 +63,7 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-hidden', !!i);
       tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
       tabpanel.setAttribute('role', 'tabpanel');
+      moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
 
       const tabTextWrapper = document.createElement('div');
       if (tabName) {
@@ -101,7 +102,6 @@ export default async function decorate(block) {
       tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
       tabpanel.setAttribute('role', 'tabpanel');
 
-   //   moveInstrumentation(tab.parentElement, tabpanel.lastElementChild);
       const button = createTabButton(
         block,
         tabpanel,
