@@ -311,7 +311,7 @@
         "component": "text",
         "name": "multisection",
         "label": "Section group identifier - give all sections the same value to group them in one section",
-        "value": "group1",
+        "value": "",
         "condition": {
           "==": [
             {
@@ -361,22 +361,82 @@
         ]
       },
       {
+        "component": "select",
+        "name": "spacing",
+        "label": "Spacing top and bottom of section",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "XXL",
+            "value": "size-xxl"
+          },
+          {
+            "name": "XL",
+            "value": "size-xl"
+          },
+          {
+            "name": "L",
+            "value": "size-l"
+          },
+          {
+            "name": "M",
+            "value": "size-m"
+          },
+          {
+            "name": "S",
+            "value": "size-s"
+          },
+          {
+            "name": "XS",
+            "value": "size-xs"
+          }
+        ]
+      },
+      {
         "component": "text",
         "name": "grid",
-        "label": "Grid (# of columns, 2-6)",
+        "label": "Grid layout(# of columns, 2-6)",
         "valueType": "string"
       },
       {
-        "component": "text",
+        "component": "select",
         "name": "gap",
-        "label": "Gap between blocks (xs, s, m, l, xl, xxl)",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "spacing",
-        "label": "Spacing top and bottom of section (xs, s, m, l, xl, xxl)",
-        "valueType": "string"
+        "label": "(grid layout) gap between blocks",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "XXL",
+            "value": "size-xxl"
+          },
+          {
+            "name": "XL",
+            "value": "size-xl"
+          },
+          {
+            "name": "L",
+            "value": "size-l"
+          },
+          {
+            "name": "M",
+            "value": "size-m"
+          },
+          {
+            "name": "S",
+            "value": "size-s"
+          },
+          {
+            "name": "XS",
+            "value": "size-xs"
+          }
+        ]
       },
       {
         "component": "text",
@@ -605,7 +665,7 @@
         "component": "text",
         "name": "multisection",
         "label": "Section group identifier - give all sections the same value to group them in one section",
-        "value": "group1"
+        "value": ""
       },
       {
         "component": "text",
@@ -659,10 +719,82 @@
         ]
       },
       {
-        "component": "text",
+        "component": "select",
         "name": "spacing",
-        "label": "Spacing top and bottom of section (xs, s, m, l, xl, xxl)",
+        "label": "Spacing top and bottom of section",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "XXL",
+            "value": "size-xxl"
+          },
+          {
+            "name": "XL",
+            "value": "size-xl"
+          },
+          {
+            "name": "L",
+            "value": "size-l"
+          },
+          {
+            "name": "M",
+            "value": "size-m"
+          },
+          {
+            "name": "S",
+            "value": "size-s"
+          },
+          {
+            "name": "XS",
+            "value": "size-xs"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "grid",
+        "label": "Grid layout(# of columns, 2-6)",
         "valueType": "string"
+      },
+      {
+        "component": "select",
+        "name": "gap",
+        "label": "(grid layout) gap between blocks",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "XXL",
+            "value": "size-xxl"
+          },
+          {
+            "name": "XL",
+            "value": "size-xl"
+          },
+          {
+            "name": "L",
+            "value": "size-l"
+          },
+          {
+            "name": "M",
+            "value": "size-m"
+          },
+          {
+            "name": "S",
+            "value": "size-s"
+          },
+          {
+            "name": "XS",
+            "value": "size-xs"
+          }
+        ]
       },
       {
         "component": "text",
