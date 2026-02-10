@@ -246,7 +246,9 @@ async function applyChanges(event) {
           decorateIcons(newSection);
           decorateRichtext(newSection);
           decorateSections(parentElement);
-          if (element.closest('.tabs') || element.closest('.accordion')) {
+
+          // added for multi-section blocks
+          if (element.closest('.tabs')) {
             moveAllAttributes(element, newSection);
           }
           decorateBlocks(parentElement);

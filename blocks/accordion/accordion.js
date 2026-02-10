@@ -1,6 +1,7 @@
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, getBlockId } from '../../scripts/scripts.js';
 
 export default function decorate(block) {
+  block.id = getBlockId('accordion');
   let noSchema = false;
   let ctaUrl = null;
   let ctaText = null;
@@ -8,106 +9,155 @@ export default function decorate(block) {
   let openItemConfig = null;
   let isInitialLoad = true;
 
-  // First pass: find if there's a CTA link to determine how to interpret numbers
-  let hasCtaLink = false;
-  [...block.children].forEach((row) => {
-    if (row.children.length === 1) {
-      const cell = row.children[0];
-      const link = cell.querySelector('a');
-      if (link) {
-        hasCtaLink = true;
+  // Check if this is a multisection accordion (items have data-multisection)
+  const isMultiSection = [...block.children].some((child) => child.hasAttribute('data-multisection'));
+
+  const accordionItems = [];
+
+  if (isMultiSection) {
+    // Multisection mode: treat each direct child as an accordion item
+    // Each item should have data-tabname for the label and content as children
+    // No schema.org attributes for multisection accordions
+
+    // Collect all section titles from accordion items before processing
+    const sectionTitles = [];
+    [...block.children].forEach((item) => {
+      const titles = item.querySelectorAll('.tab-section-title');
+      titles.forEach((title) => {
+        if (!sectionTitles.includes(title)) {
+          sectionTitles.push(title);
+        }
+      });
+    });
+
+    [...block.children].forEach((item) => {
+      const tabName = item.getAttribute('data-tabname') || '';
+      const summary = document.createElement('summary');
+      summary.className = 'accordion-item-label';
+      summary.textContent = tabName;
+
+      const body = document.createElement('div');
+      body.className = 'accordion-item-body';
+      // Move all children of the item to the body
+      while (item.firstChild) {
+        body.appendChild(item.firstChild);
       }
-    }
-  });
 
-  let foundLink = false;
+      const details = document.createElement('details');
+      moveInstrumentation(item, details);
+      details.className = 'accordion-item';
 
-  // Second pass: parse configuration rows
-  [...block.children].forEach((row) => {
-    if (row.children.length === 1) {
-      const cell = row.children[0];
-      const value = cell.textContent.trim();
-      const valueLower = value.toLowerCase();
+      details.append(summary, body);
+      item.replaceWith(details);
+      accordionItems.push(details);
+    });
 
-      // Check if this single cell indicates no-schema is enabled
-      if (valueLower === 'true' || valueLower === 'no-schema') {
-        noSchema = true;
-      } else {
-        // Check if it's a number
-        const numValue = parseInt(value, 10);
-        if (!Number.isNaN(numValue) && numValue >= 0) {
-          if (hasCtaLink) {
-            // If there's a CTA link, numbers before link are ctaLocation, after are openItem
-            if (!foundLink) {
-              ctaLocation = numValue;
+    // Prepend all sectionTitles to the block so they appear first
+    // Reverse order to maintain original DOM order when prepending
+    sectionTitles.reverse().forEach((sectionTitle) => {
+      block.prepend(sectionTitle);
+    });
+  } else {
+    // Standalone mode: original behavior with row-based structure
+    // First pass: find if there's a CTA link to determine how to interpret numbers
+    let hasCtaLink = false;
+    [...block.children].forEach((row) => {
+      if (row.children.length === 1) {
+        const cell = row.children[0];
+        const link = cell.querySelector('a');
+        if (link) {
+          hasCtaLink = true;
+        }
+      }
+    });
+
+    let foundLink = false;
+
+    // Second pass: parse configuration rows
+    [...block.children].forEach((row) => {
+      if (row.children.length === 1) {
+        const cell = row.children[0];
+        const value = cell.textContent.trim();
+        const valueLower = value.toLowerCase();
+
+        // Check if this single cell indicates no-schema is enabled
+        if (valueLower === 'true' || valueLower === 'no-schema') {
+          noSchema = true;
+        } else {
+          // Check if it's a number
+          const numValue = parseInt(value, 10);
+          if (!Number.isNaN(numValue) && numValue >= 0) {
+            if (hasCtaLink) {
+              // If there's a CTA link, numbers before link are ctaLocation, after are openItem
+              if (!foundLink) {
+                ctaLocation = numValue;
+              } else {
+                openItemConfig = numValue;
+              }
             } else {
+              // No CTA link, so any number is openItem
               openItemConfig = numValue;
             }
           } else {
-            // No CTA link, so any number is openItem
-            openItemConfig = numValue;
-          }
-        } else {
-          // Check if it's a link element (CTA)
-          const link = cell.querySelector('a');
-          if (link) {
-            ctaUrl = link.href;
-            ctaText = link.textContent.trim();
-            foundLink = true;
+            // Check if it's a link element (CTA)
+            const link = cell.querySelector('a');
+            if (link) {
+              ctaUrl = link.href;
+              ctaText = link.textContent.trim();
+              foundLink = true;
+            }
           }
         }
+
+        // Remove single-cell rows as they're configuration, not content
+        row.remove();
       }
+    });
 
-      // Remove single-cell rows as they're configuration, not content
-      row.remove();
-    }
-  });
+    // Process rows with exactly 2 children (question + answer)
+    [...block.children].forEach((row) => {
+      const children = [...row.children];
+      // only process rows with exactly 2 children (question + answer)
+      if (children.length === 2) {
+        const label = children[0];
+        const summary = document.createElement('summary');
+        summary.className = 'accordion-item-label';
 
-  // const isMobile = window.matchMedia('(max-width: 767px)').matches;
-  // if (!isMobile) return; // Skip accordion transformation on desktop
-  const accordionItems = [];
-  [...block.children].forEach((row) => {
-    const children = [...row.children];
-    // only process rows with exactly 2 children (question + answer)
-    if (children.length === 2) {
-      const label = children[0];
-      const summary = document.createElement('summary');
-      summary.className = 'accordion-item-label';
+        // Only add schema.org attributes if no-schema is not enabled
+        if (!noSchema) {
+          summary.setAttribute('itemscope', '');
+          summary.setAttribute('itemprop', 'mainEntity');
+          summary.setAttribute('itemtype', 'https://schema.org/Question');
+        }
 
-      // Only add schema.org attributes if no-schema is not enabled
-      if (!noSchema) {
-        summary.setAttribute('itemscope', '');
-        summary.setAttribute('itemprop', 'mainEntity');
-        summary.setAttribute('itemtype', 'https://schema.org/Question');
+        summary.append(...label.childNodes);
+
+        if (!noSchema && summary.firstElementChild) {
+          summary.firstElementChild.setAttribute('itemprop', 'name');
+        }
+
+        const body = children[1];
+        body.className = 'accordion-item-body';
+        const details = document.createElement('details');
+        moveInstrumentation(row, details);
+        details.className = 'accordion-item';
+
+        // Only add schema.org attributes if no-schema is not enabled
+        if (!noSchema) {
+          details.setAttribute('itemscope', '');
+          details.setAttribute('itemprop', 'acceptedAnswer');
+          details.setAttribute('itemtype', 'https://schema.org/Answer');
+        }
+
+        details.append(summary, body);
+        row.replaceWith(details);
+        accordionItems.push(details);
+      } else {
+        // remove or ignore malformed rows (like dummy divs)
+        row.remove();
       }
-
-      summary.append(...label.childNodes);
-
-      if (!noSchema && summary.firstElementChild) {
-        summary.firstElementChild.setAttribute('itemprop', 'name');
-      }
-
-      const body = children[1];
-      body.className = 'accordion-item-body';
-      const details = document.createElement('details');
-      moveInstrumentation(row, details);
-      details.className = 'accordion-item';
-
-      // Only add schema.org attributes if no-schema is not enabled
-      if (!noSchema) {
-        details.setAttribute('itemscope', '');
-        details.setAttribute('itemprop', 'acceptedAnswer');
-        details.setAttribute('itemtype', 'https://schema.org/Answer');
-      }
-
-      details.append(summary, body);
-      row.replaceWith(details);
-      accordionItems.push(details);
-    } else {
-      // remove or ignore malformed rows (like dummy divs)
-      row.remove();
-    }
-  });
+    });
+  }
 
   // Handle CTA "Show More/Less" functionality
   if (ctaLocation && ctaLocation < accordionItems.length && ctaUrl && ctaText) {
