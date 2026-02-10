@@ -6,10 +6,11 @@
 }
 
 /* Two-column layout */
-.hotspot-container {
+.hotspot.block > .hotspot-container {
   display: flex;
   align-items: stretch;
-  width: 100%;
+  justify-self: start;
+  margin: 0 auto;
   min-height: 400px;
   position: relative;
   transition: opacity 0.1s ease;
