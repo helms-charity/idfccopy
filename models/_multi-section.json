@@ -11,7 +11,6 @@
                 "name": "Multi Section",
                 "model": "multi-section",
                 "filter": "multi-section",
-                "multisection": "group1",
                 "tabname": "Item 1"
               }
             }
