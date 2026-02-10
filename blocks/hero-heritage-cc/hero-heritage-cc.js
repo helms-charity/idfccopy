@@ -71,6 +71,19 @@ export default function decorate(block) {
   const mainElement = document.querySelector('main');
   const hasAueResource = mainElement?.hasAttribute('data-aue-resource');
 
+  // Handle "The Concept" link (#the-concept-hotspot) - collapse hero height 100% -> 19%
+  if (!document.body.dataset.heroConceptLinkListener) {
+    document.body.dataset.heroConceptLinkListener = 'true';
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href="#the-concept-hotspot"]');
+      if (!link) return;
+      const hero = document.querySelector('.hero-heritage-cc');
+      if (hero) {
+        hero.classList.toggle('hero-heritage-cc-collapsed');
+      }
+    });
+  }
+
   // Set modal theme for any modal links within this block (e.g., fees link)
   // These match the styling used by the cards/key-benefits modals on Mayura pages
   block.dataset.modalTheme = 'modal-mayura-blue';

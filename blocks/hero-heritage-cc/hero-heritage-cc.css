@@ -69,11 +69,15 @@
   position: relative;
   padding: 0 0 40px;
   height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: height 0.5s ease;
+}
+
+/* Collapsed state when "The Concept" link (#the-concept-hotspot) is clicked */
+.hero-heritage-cc.hero-heritage-cc-collapsed {
+  height: 87px;
 }
 
 /* Hide block until fully decorated to prevent CLS from JS DOM changes */
@@ -592,6 +596,10 @@ color: var(--color-pewter);
 .hero-heritage-cc-banner-cta a.button.primary {
   font-size: var(--body-font-size-xs);
 }
+
+  .hero-heritage-cc.hero-heritage-cc-collapsed {
+    height: 187px;
+  }
 
   .hero-heritage-cc-container {
     min-height: calc(100vh - 120px);
