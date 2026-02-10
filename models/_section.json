@@ -68,9 +68,16 @@
           ]
         },
         {
+          "component": "container",
+          "label": "Optional layout properties",
+          "name": "container",
+          "valueType": "string",
+          "collapsible": true,
+          "fields": [
+        {
           "component": "text",
           "name": "grid",
-          "label": "Grid layout(# of columns, 2-6)",
+          "label": "Grid layout (enter # of columns, 2-6)",
           "valueType": "string"
         },
         {
@@ -85,11 +92,27 @@
           ]
         },
         {
-          "component": "text",
+          "component": "select",
           "name": "containerwidth",
-          "label": "Inner container width(2, 4, 6)",
+          "label": "Inner div width",
           "valueType": "string",
-          "description": "container = width of .section > div"
+          "description": "unrelated to grid layout",
+          "options": [
+            {
+              "name": "33%",
+              "value": "2"
+            },
+            {
+              "name": "66%",
+              "value": "4"
+            },
+            {
+              "name": "100%",
+              "value": "6"
+            }
+          ]
+        }
+        ]
         },
         {
           "component": "container",

@@ -397,53 +397,76 @@
         ]
       },
       {
-        "component": "text",
-        "name": "grid",
-        "label": "Grid layout(# of columns, 2-6)",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "name": "gap",
-        "label": "(grid layout) gap between blocks",
+        "component": "container",
+        "label": "Optional layout properties",
+        "name": "container",
         "valueType": "string",
-        "options": [
+        "collapsible": true,
+        "fields": [
           {
-            "name": "Default",
-            "value": ""
+            "component": "text",
+            "name": "grid",
+            "label": "Grid layout (enter # of columns, 2-6)",
+            "valueType": "string"
           },
           {
-            "name": "XXL",
-            "value": "size-xxl"
+            "component": "select",
+            "name": "gap",
+            "label": "(grid layout) gap between blocks",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default",
+                "value": ""
+              },
+              {
+                "name": "XXL",
+                "value": "size-xxl"
+              },
+              {
+                "name": "XL",
+                "value": "size-xl"
+              },
+              {
+                "name": "L",
+                "value": "size-l"
+              },
+              {
+                "name": "M",
+                "value": "size-m"
+              },
+              {
+                "name": "S",
+                "value": "size-s"
+              },
+              {
+                "name": "XS",
+                "value": "size-xs"
+              }
+            ]
           },
           {
-            "name": "XL",
-            "value": "size-xl"
-          },
-          {
-            "name": "L",
-            "value": "size-l"
-          },
-          {
-            "name": "M",
-            "value": "size-m"
-          },
-          {
-            "name": "S",
-            "value": "size-s"
-          },
-          {
-            "name": "XS",
-            "value": "size-xs"
+            "component": "select",
+            "name": "containerwidth",
+            "label": "Inner div width",
+            "valueType": "string",
+            "description": "unrelated to grid layout",
+            "options": [
+              {
+                "name": "33%",
+                "value": "2"
+              },
+              {
+                "name": "66%",
+                "value": "4"
+              },
+              {
+                "name": "100%",
+                "value": "6"
+              }
+            ]
           }
         ]
-      },
-      {
-        "component": "text",
-        "name": "containerwidth",
-        "label": "Inner container width(2, 4, 6)",
-        "valueType": "string",
-        "description": "container = width of .section > div"
       },
       {
         "component": "container",
@@ -755,52 +778,82 @@
         ]
       },
       {
-        "component": "text",
-        "name": "grid",
-        "label": "Grid layout(# of columns, 2-6)",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "name": "gap",
-        "label": "(grid layout) gap between blocks",
+        "component": "container",
+        "label": "Optional layout properties",
+        "name": "container",
         "valueType": "string",
-        "options": [
+        "collapsible": true,
+        "fields": [
           {
-            "name": "Default",
-            "value": ""
+            "component": "text",
+            "name": "grid",
+            "label": "Grid layout (enter # of columns, 2-6)",
+            "valueType": "string"
           },
           {
-            "name": "XXL",
-            "value": "size-xxl"
+            "component": "select",
+            "name": "gap",
+            "label": "(grid layout) gap between blocks",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default",
+                "value": ""
+              },
+              {
+                "name": "XXL",
+                "value": "size-xxl"
+              },
+              {
+                "name": "XL",
+                "value": "size-xl"
+              },
+              {
+                "name": "L",
+                "value": "size-l"
+              },
+              {
+                "name": "M",
+                "value": "size-m"
+              },
+              {
+                "name": "S",
+                "value": "size-s"
+              },
+              {
+                "name": "XS",
+                "value": "size-xs"
+              }
+            ]
           },
           {
-            "name": "XL",
-            "value": "size-xl"
+            "component": "text",
+            "name": "id",
+            "label": "ID",
+            "description": "Adds an ID value to the section"
           },
           {
-            "name": "L",
-            "value": "size-l"
-          },
-          {
-            "name": "M",
-            "value": "size-m"
-          },
-          {
-            "name": "S",
-            "value": "size-s"
-          },
-          {
-            "name": "XS",
-            "value": "size-xs"
+            "component": "select",
+            "name": "containerwidth",
+            "label": "Inner div width",
+            "valueType": "string",
+            "description": "unrelated to grid layout",
+            "options": [
+              {
+                "name": "33%",
+                "value": "2"
+              },
+              {
+                "name": "66%",
+                "value": "4"
+              },
+              {
+                "name": "100%",
+                "value": "6"
+              }
+            ]
           }
         ]
-      },
-      {
-        "component": "text",
-        "name": "id",
-        "label": "ID",
-        "description": "Adds an ID value to the section"
       },
       {
         "component": "container",

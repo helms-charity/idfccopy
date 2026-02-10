@@ -98,9 +98,16 @@
             ]
           },
           {
+            "component": "container",
+            "label": "Optional layout properties",
+            "name": "container",
+            "valueType": "string",
+            "collapsible": true,
+            "fields": [
+          {
             "component": "text",
             "name": "grid",
-            "label": "Grid layout(# of columns, 2-6)",
+            "label": "Grid layout (enter # of columns, 2-6)",
             "valueType": "string"
           },
           {
@@ -119,6 +126,29 @@
             "name": "id",
             "label": "ID",
             "description": "Adds an ID value to the section"
+          },
+          {
+            "component": "select",
+            "name": "containerwidth",
+            "label": "Inner div width",
+            "valueType": "string",
+            "description": "unrelated to grid layout",
+            "options": [
+              {
+                "name": "33%",
+                "value": "2"
+              },
+              {
+                "name": "66%",
+                "value": "4"
+              },
+              {
+                "name": "100%",
+                "value": "6"
+              }
+            ]
+          }
+          ]
           },
           {
             "component": "container",
