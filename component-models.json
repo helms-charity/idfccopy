@@ -302,6 +302,26 @@
         "description": "Adds an ID value to the section"
       },
       {
+        "component": "boolean",
+        "name": "is-multisection",
+        "label": "This is a multi-section configuration section",
+        "value": false
+      },
+      {
+        "component": "text",
+        "name": "multisection",
+        "label": "Section group identifier - give all sections the same value to group them in one section",
+        "value": "group1",
+        "condition": {
+          "==": [
+            {
+              "var": "is-multisection"
+            },
+            true
+          ]
+        }
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Style",
@@ -327,12 +347,16 @@
             "value": "hide-desktop"
           },
           {
-            "name": "UPI steps red background",
-            "value": "upi-steps-red-bg"
-          },
-          {
             "name": "Entrance Animation",
             "value": "entrance-animation"
+          },
+          {
+            "name": "(Tabs) Blue with White Text",
+            "value": "blue-white-text"
+          },
+          {
+            "name": "(Tabs) Silver with Blue Text",
+            "value": "silver-blue-text"
           }
         ]
       },
@@ -631,18 +655,6 @@
           {
             "name": "Hide in desktop",
             "value": "hide-desktop"
-          },
-          {
-            "name": "Entrance Animation",
-            "value": "entrance-animation"
-          },
-          {
-            "name": "(Tabs) Blue with White Text",
-            "value": "blue-white-text"
-          },
-          {
-            "name": "(Tabs) Silver with Blue Text",
-            "value": "silver-blue-text"
           }
         ]
       },
@@ -1967,10 +1979,6 @@
           {
             "name": "Right",
             "value": "right"
-          },
-          {
-            "name": "Tab section: above tabs",
-            "value": "tab-section-title"
           }
         ]
       }

@@ -32,6 +32,21 @@
           "description": "Adds an ID value to the section"
         },
         {
+          "component": "boolean",
+          "name": "is-multisection",
+          "label": "This is a multi-section configuration section",
+          "value": false
+        },
+        {
+          "component": "text",
+          "name": "multisection",
+          "label": "Section group identifier - give all sections the same value to group them in one section",
+          "value": "group1",
+          "condition": {
+            "==": [{ "var": "is-multisection" }, true]
+          }
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",

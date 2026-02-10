@@ -83,18 +83,6 @@
               {
                 "name": "Hide in desktop",
                 "value": "hide-desktop"
-              },
-              {
-                "name": "Entrance Animation",
-                "value": "entrance-animation"
-              },
-              {
-                "name": "(Tabs) Blue with White Text",
-                "value": "blue-white-text"
-              },
-              {
-                "name": "(Tabs) Silver with Blue Text",
-                "value": "silver-blue-text"
               }
             ]
           },
