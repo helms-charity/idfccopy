@@ -214,24 +214,24 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "doodle-image-top",
-          "label": "Background accessory image - top",
+          "name": "decoration-image-top",
+          "label": "Background decoration image - top",
           "description": "Displayed at top left of the section",
           "multi": false
         },
         {
           "component": "reference",
           "valueType": "string",
-          "name": "doodle-image-bottom",
-          "label": "Background accessory image - bottom",
+          "name": "decoration-image-bottom",
+          "label": "Background decoration image - bottom",
           "description": "Displayed at bottom right of the section",
           "multi": false
         },
         {
           "component": "boolean",
           "valueType": "boolean",
-          "name": "doodle-reverse",
-          "label": "Reverse background accessory images",
+          "name": "decoration-reverse",
+          "label": "Reverse background decoration images",
           "description": "Display at top right and bottom left of the section"
         }
           ]
