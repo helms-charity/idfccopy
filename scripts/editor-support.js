@@ -319,7 +319,7 @@ function attachEventListners(main) {
     if (!applied) window.location.reload();
   }));
 
-  main?.addEventListener('aue:ui-select', handleSelection);
+  window.addEventListener('aue:ui-select', handleSelection);
 }
 
 attachEventListners(document.querySelector('main'));
