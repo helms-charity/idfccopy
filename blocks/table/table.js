@@ -4,7 +4,13 @@
  * https://www.hlx.live/developer/block-collection/table
  */
 
-import { moveInstrumentation, createSource } from '../../scripts/scripts.js';
+import {
+  moveInstrumentation,
+  handleBackgroundImages,
+  handleBackground,
+  normalizeBackgroundColor,
+  getColorScheme,
+} from '../../scripts/scripts.js';
 
 /**
  * Extracts image URL from picture or img element
@@ -16,35 +22,6 @@ function extractImageUrl(element) {
   if (element.tagName === 'IMG') return element.src;
   if (element.tagName === 'PICTURE') return element.querySelector('img')?.src || null;
   return null;
-}
-
-/**
- * Creates a responsive picture element with optimized sources
- * @param {string} desktopUrl - Desktop image URL
- * @param {string|null} mobileUrl - Mobile image URL (optional)
- * @param {string} alt - Alt text for the image
- * @returns {Element} - Picture element with optimized sources
- */
-function createResponsivePicture(desktopUrl, mobileUrl = null, alt = '') {
-  const picture = document.createElement('picture');
-  const defaultImgUrl = mobileUrl || desktopUrl;
-
-  if (desktopUrl) {
-    picture.appendChild(createSource(desktopUrl, 1920, '(min-width: 900px)'));
-    picture.appendChild(createSource(desktopUrl, 899, '(min-width: 600px) and (max-width: 899px)'));
-  }
-
-  if (mobileUrl) {
-    picture.appendChild(createSource(mobileUrl, 600, '(max-width: 599px)'));
-  }
-
-  const img = document.createElement('img');
-  img.alt = alt;
-  img.loading = 'lazy';
-  if (defaultImgUrl) img.src = defaultImgUrl;
-
-  picture.appendChild(img);
-  return picture;
 }
 
 /**
@@ -214,20 +191,31 @@ export default async function decorate(block) {
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'table-background-image';
 
+    // Same logic as Section: handleBackground + handleBackgroundImages.
+    // Table: backgroundColor, image, imageMobile. Section: backgroundcolor,
+    // sectionBackgroundImage, sectionBackgroundImageMobile.
     if (backgroundColor) {
-      const isHex = backgroundColor.match(/^[0-9a-fA-F]{3,6}$/);
-      const isGradient = backgroundColor.startsWith('var(') || backgroundColor.includes('gradient');
-      const prop = isGradient ? 'background-image' : 'background';
-      const value = isHex ? `#${backgroundColor}` : backgroundColor;
-      imageWrapper.style.setProperty(prop, value, 'important');
+      const normalizedColor = normalizeBackgroundColor(backgroundColor);
+      handleBackground({ text: normalizedColor }, imageWrapper);
     }
 
     if (desktopImageUrl || mobileImageUrl) {
-      const responsivePicture = createResponsivePicture(desktopImageUrl, mobileImageUrl, imageAlt);
-      imageWrapper.append(responsivePicture);
+      // desktopUrl required; use mobile as fallback when only mobile image set
+      const desktopUrl = desktopImageUrl || mobileImageUrl;
+      const mobileUrl = mobileImageUrl || null;
+      handleBackgroundImages(desktopUrl, mobileUrl, imageWrapper);
     }
 
+    if (imageAlt) imageWrapper.dataset.imageAlt = imageAlt;
     block.append(imageWrapper);
+
+    // setColorScheme(imageWrapper) only applies to imageWrapper's direct children (the picture).
+    // The table is a sibling, not a child, so apply scheme to block and table so content gets it.
+    const scheme = getColorScheme(imageWrapper);
+    if (scheme) {
+      block.classList.add(scheme);
+      table.classList.add(scheme);
+    }
   }
 
   if (thead) table.append(thead);
