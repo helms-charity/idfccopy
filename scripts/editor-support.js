@@ -298,9 +298,10 @@ function activateTabFromElement(tabRoot, element) {
 
   const panel = element.closest('.tab-panel') || element.closest('.accordion-item');
   if (!panel) return;
-
+  console.log('panel', panel);
   const { tabId } = panel.dataset;
   if (!tabId) return;
+  console.log('tabId', tabId);
 
   // Deactivate all panels/titles
   tabRoot.querySelectorAll('.tab-panel, .accordion-panel').forEach((p) => {
