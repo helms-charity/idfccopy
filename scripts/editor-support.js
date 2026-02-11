@@ -330,13 +330,14 @@ function openTabOrAccordionForElement(element) {
   // Walk up to the nearest tabs/accordion root in your DOM
   const tabRoot = element.closest('.my-tabs, .my-accordion');
   if (!tabRoot) return;
-
+  console.log('tabRoot', tabRoot);
   // Decide if element is a header, body, or child inside a body
   // and then activate the corresponding tab index/id
   activateTabFromElement(tabRoot, element);
 }
 
 function handleSelection(event) {
+  console.log('handleSelection', event);
   const { detail } = event;
   if (!detail || !detail.selection || !detail.selection.length) return;
 
@@ -347,6 +348,8 @@ function handleSelection(event) {
   const targetEl = selected.element || document.querySelector(`[data-aue-resource="${selected.id}"]`);
 
   if (!targetEl) return;
+
+  console.log('targetEl', targetEl);
 
   // If this is inside tabs/accordion, open the right panel/tab
   openTabOrAccordionForElement(targetEl);
