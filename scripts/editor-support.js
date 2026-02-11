@@ -343,8 +343,8 @@ function handleSelection(event) {
   console.log('detail', detail);
 
   // UE gives you the selected editable(s)
-  const selected = detail.selection[0];
-  console.log('selected', selected);
+  // const selected = detail.selection[0];
+  // console.log('selected', selected);
   // Typically: selected.id is the URN, selected.element is the DOM node (if exposed)
   // const targetEl = selected.element || document.querySelector(`[data-aue-resource="${selected.id}"]`);
   const targetEl = event.target;
