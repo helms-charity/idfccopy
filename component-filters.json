@@ -27,7 +27,6 @@
       "anchor-nav",
       "steps",
       "tabs-upi-link",
-      "tabs-cc-concept",
       "link-to-upi",
       "table",
       "cc-hero-slider",
@@ -168,12 +167,6 @@
     "id": "table-4-columns",
     "components": [
       "table-col-4"
-    ]
-  },
-  {
-    "id": "tabs-cc-concept",
-    "components": [
-      "tabs-cc-concept-item"
     ]
   },
   {

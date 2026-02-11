@@ -1064,6 +1064,10 @@
           {
             "name": "Explore Other Cards",
             "value": "explore-other-cards"
+          },
+          {
+            "name": "Image and Title",
+            "value": "image-and-title"
           }
         ]
       },
@@ -2195,44 +2199,6 @@
         "valueType": "string",
         "name": "column4text",
         "label": "Column4"
-      }
-    ]
-  },
-  {
-    "id": "tabs-cc-concept",
-    "fields": [
-      {
-        "component": "text",
-        "name": "classes",
-        "label": "Style",
-        "valueType": "string",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "tabs-cc-concept-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "tabName",
-        "value": "",
-        "label": "Tab Name"
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "content",
-        "value": "",
-        "label": "Content",
-        "valueType": "string"
       }
     ]
   },

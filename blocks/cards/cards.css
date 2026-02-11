@@ -535,6 +535,103 @@
   background-size: 24px 24px;
 }
 
+/* === IMAGE AND TITLE CARD VARIANT === */
+
+.cards.image-and-title .grid-cards {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+  margin: 0;
+  gap: 0;
+}
+
+.cards.image-and-title .view-toggle {
+  display: none;
+}
+
+/* Card base - vertical on mobile */
+.cards.image-and-title .cards-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px;
+  cursor: pointer;
+  gap: 8px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cards.image-and-title .cards-card:hover {
+  box-shadow: none;
+  background: transparent;
+}
+
+.cards.image-and-title .cards-card-image {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cards.image-and-title .cards-card-image img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.cards.image-and-title .cards-card-body {
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cards.image-and-title .cards-card-body h3,
+.cards.image-and-title .cards-card-body p {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 130%;
+  margin: 0;
+  color: var(--color-blue-800);
+}
+
+/* Link styling - make entire card clickable */
+.cards.image-and-title .cards-card a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 16px;
+}
+
+.cards.image-and-title .cards-card a:hover {
+  text-decoration: none;
+}
+
+/* Hide button containers if present */
+.cards.image-and-title .button-container {
+  display: none;
+}
+
+/* Override card-clickable hover effects for image-and-title */
+.cards.image-and-title .card-clickable {
+  box-shadow: none;
+  background: transparent;
+  transition: none; /* Remove transition to allow animation to work */
+}
+
+.cards.image-and-title .card-clickable:hover {
+  box-shadow: none;
+  background: transparent;
+  transform: none;
+}
+
 /* === KEY BENEFITS CARD VARIANT === */
 .section:has(.cards.key-benefits) {
   padding: 40px 0 var(--spacing-xl);
@@ -1210,6 +1307,34 @@
   .cards.related-search .benefit-cards .cards-card-body h3 {
     font-size: var(--body-font-size-s);
   }
+  
+  .cards.image-and-title .cards-card {
+    gap: 12px;
+    padding: 16px 12px;
+  }
+
+}
+
+/* Desktop - horizontal layout at 768px+ */
+@media (width >= 768px) {
+  .cards.image-and-title .cards-card {
+    flex-direction: row;
+    text-align: left;
+    gap: 16px;
+    padding: 16px;
+    align-items: center;
+  }
+  
+  .cards.image-and-title .cards-card-image img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cards.image-and-title .cards-card-body h3,
+  .cards.image-and-title .cards-card-body p {
+    font-size: 16px;
+  }
+
 }
 
 
@@ -1925,4 +2050,5 @@
   .explore-other-cards .swiper-wrapper {
     justify-content: center;
   }
+
 }

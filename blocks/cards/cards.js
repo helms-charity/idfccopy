@@ -565,6 +565,7 @@ export default async function decorate(block) {
   const isBlogPosts = classList.contains('blog-posts');
   const isEarnRewards = classList.contains('earn-rewards');
   const isJoiningPerks = classList.contains('joining-perks');
+  const isImageAndTitle = classList.contains('image-and-title');
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
     || classList.contains('reward-points');

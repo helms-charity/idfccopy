@@ -203,17 +203,11 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
       const targetId = href.substring(1); // Remove the # prefix
 
       if (!targetId) {
-        // href is just "#" - hide the entire hotspot section
-        container.classList.add('fade-out');
-        container.addEventListener('transitionend', () => {
-          if (sectionWrapper) {
-            sectionWrapper.style.display = 'none';
-            sectionWrapper.setAttribute('aria-hidden', 'true');
-          } else if (sectionData.firstBlockElement) {
-            sectionData.firstBlockElement.style.display = 'none';
-            sectionData.firstBlockElement.setAttribute('aria-hidden', 'true');
-          }
-        }, { once: true });
+        // href is just "#" - expand the hero back to 100% (reverse of #the-concept-hotspot)
+        const hero = document.querySelector('.hero-heritage-cc');
+        if (hero) {
+          hero.classList.remove('hero-heritage-cc-collapsed');
+        }
       } else {
         // Navigate to the specified block (within this section)
         const targetContent = sectionData.contentMap.get(targetId);
@@ -768,17 +762,11 @@ export default function decorate(block) {
               const targetId = href.substring(1);
 
               if (!targetId) {
-                // href is just "#" - hide the entire section
-                container.classList.add('fade-out');
-                container.addEventListener('transitionend', () => {
-                  if (sectionWrapper) {
-                    sectionWrapper.style.display = 'none';
-                    sectionWrapper.setAttribute('aria-hidden', 'true');
-                  } else if (sectionData.firstBlockElement) {
-                    sectionData.firstBlockElement.style.display = 'none';
-                    sectionData.firstBlockElement.setAttribute('aria-hidden', 'true');
-                  }
-                }, { once: true });
+                // href is just "#" - expand the hero back to 100% (reverse of #the-concept-hotspot)
+                const hero = document.querySelector('.hero-heritage-cc');
+                if (hero) {
+                  hero.classList.remove('hero-heritage-cc-collapsed');
+                }
               } else {
                 // Navigate to the specified block (within this section)
                 const targetContent = sectionData.contentMap.get(targetId);
@@ -967,17 +955,11 @@ function reattachHotspotListeners(container, blockId) {
               const goBackId = href.substring(1);
 
               if (!goBackId) {
-                // href is just "#" - hide the entire section
-                container.classList.add('fade-out');
-                container.addEventListener('transitionend', () => {
-                  if (sectionWrapper) {
-                    sectionWrapper.style.display = 'none';
-                    sectionWrapper.setAttribute('aria-hidden', 'true');
-                  } else if (sectionData.firstBlockElement) {
-                    sectionData.firstBlockElement.style.display = 'none';
-                    sectionData.firstBlockElement.setAttribute('aria-hidden', 'true');
-                  }
-                }, { once: true });
+                // href is just "#" - expand the hero back to 100% (reverse of #the-concept-hotspot)
+                const hero = document.querySelector('.hero-heritage-cc');
+                if (hero) {
+                  hero.classList.remove('hero-heritage-cc-collapsed');
+                }
               } else {
                 // Navigate to the specified block (within this section)
                 const goBackContent = sectionData.contentMap.get(goBackId);

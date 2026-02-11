@@ -443,14 +443,18 @@ async function loadTemplate(doc, templateName) {
 /** SECTIONS */
 
 /**
- * Converts a CSS color value to RGB values
- * @param {string} color - CSS color value (hex, rgb, rgba, hsl, hsla, or named color)
- * @returns {Object|null} Object with r, g, b values (0-255) or null if invalid
+ * Converts the computed background color of an element to RGB values.
+ * Used for section or table background containers to drive light-scheme/dark-scheme.
+ * @param {Element} element - Section or table bg wrapper (.section, .table-background-image)
+ * @returns {Object|null} Object with r, g, b values (0-255) or null if invalid/unavailable
  */
-function parseColor(section) {
-  if (!section) return null; // for now, only using on sections
+function parseColor(element) {
+  // Only run for section or table background wrapper; ignore other element types for now.
+  const isSection = element?.classList?.contains('section');
+  const isTableBg = element?.classList?.contains('table-background-image');
+  if (!isSection && !isTableBg) return null;
 
-  const computedBg = getComputedStyle(section).background;
+  const computedBg = getComputedStyle(element).background;
   const rgbMatch = computedBg.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   if (!rgbMatch) return null;
   return {
@@ -476,28 +480,43 @@ function getRelativeLuminance({ r, g, b }) {
 }
 
 /**
- * The color scheme detection uses the WCAG relative luminance formula to determine if a bg color
- * is light or dark, ensuring accessible and appropriate styling for content within the section.
- * Determines if a CSS color value is light or dark
- * @param {string} color - CSS color value
- * @param {number} threshold - Luminance threshold (default: 0.5)
- * @returns {boolean} true if light, false if dark, null if invalid color
+ * Uses WCAG relative luminance on the element's computed background to determine light or dark
+ * scheme for accessible styling. Works for section or table background containers.
+ * @param {Element} element - Section or table background wrapper with a set background
+ * @returns {string|null} 'light-scheme' | 'dark-scheme' or null if color cannot be determined
  */
-export function getColorScheme(section) {
-  const rgb = parseColor(section);
+export function getColorScheme(element) {
+  const rgb = parseColor(element);
   if (!rgb) return null;
 
   return getRelativeLuminance(rgb) > 0.5 ? 'light-scheme' : 'dark-scheme';
 }
 
-export function setColorScheme(section) {
-  const scheme = getColorScheme(section);
+/**
+ * Applies light-scheme or dark-scheme to direct children based on element's background luminance.
+ * Use with section or table background wrapper (e.g. .section, .table-background-image).
+ * @param {Element} element - Section or table background wrapper
+ */
+export function setColorScheme(element) {
+  const scheme = getColorScheme(element);
   if (!scheme) return;
-  section.querySelectorAll(':scope > *').forEach((el) => {
-    // Reset any pre-made color schemes
+  element.querySelectorAll(':scope > *').forEach((el) => {
     el.classList.remove('light-scheme', 'dark-scheme');
     el.classList.add(scheme);
   });
+}
+
+/**
+ * Normalizes a background color string for use with handleBackground (e.g. Table backgroundColor,
+ * Section backgroundcolor). Ensures bare hex (e.g. "fff") gets "#" prefix so CSS is valid.
+ * @param {string} color - Raw color from block/section metadata
+ * @returns {string} - Color string suitable for handleBackground
+ */
+export function normalizeBackgroundColor(color) {
+  if (!color || typeof color !== 'string') return color;
+  const trimmed = color.trim();
+  if (trimmed.match(/^[0-9a-fA-F]{3,6}$/)) return `#${trimmed}`;
+  return trimmed;
 }
 
 /**
@@ -534,7 +553,7 @@ function extractImageUrl(content) {
  * @param {string|null} mobileUrl the mobile background image URL (optional)
  * @param {Element} section the section element to add the background to
  */
-function handleBackgroundImages(desktopUrl, mobileUrl, section) {
+export function handleBackgroundImages(desktopUrl, mobileUrl, section) {
   if (!desktopUrl) return;
 
   const newPic = document.createElement('picture');
@@ -571,7 +590,7 @@ function handleBackgroundImages(desktopUrl, mobileUrl, section) {
   section.prepend(newPic);
 }
 
-function handleBackground(background, section) {
+export function handleBackground(background, section) {
   const color = background.text;
   // instead of typing "var(--color-name)" authors can use "color-token-name"
   if (color) {
