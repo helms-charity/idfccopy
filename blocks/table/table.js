@@ -9,6 +9,7 @@ import {
   handleBackgroundImages,
   handleBackground,
   normalizeBackgroundColor,
+  getColorScheme,
 } from '../../scripts/scripts.js';
 
 /**
@@ -207,6 +208,14 @@ export default async function decorate(block) {
 
     if (imageAlt) imageWrapper.dataset.imageAlt = imageAlt;
     block.append(imageWrapper);
+
+    // setColorScheme(imageWrapper) only applies to imageWrapper's direct children (the picture).
+    // The table is a sibling, not a child, so apply scheme to block and table so content gets it.
+    const scheme = getColorScheme(imageWrapper);
+    if (scheme) {
+      block.classList.add(scheme);
+      table.classList.add(scheme);
+    }
   }
 
   if (thead) table.append(thead);
