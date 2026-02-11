@@ -84,7 +84,7 @@
               "page": {
                 "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
-                  "name": "Multi Section",
+                  "name": "--Multi Section",
                   "model": "multi-section",
                   "filter": "multi-section",
                   "tabname": "Item 1"
