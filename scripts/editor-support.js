@@ -280,6 +280,28 @@ async function applyChanges(event) {
   return false;
 }
 
+/**
+ * Handle selection of a UI element in the Universal Editor
+ * @param {Event} event - The selection event
+ */
+function handleSelection(event) {
+  const { detail } = event;
+  const resource = detail?.resource;
+
+  if (resource) {
+    const element = document.querySelector(`[data-aue-resource="${resource}"]`);
+    const block = element.parentElement?.closest('.block[data-aue-resource]') || element?.closest('.block[data-aue-resource]');
+
+    if (block && block.matches('.tabs')) {
+      const tabs = [...block.querySelectorAll('.tabs-panel > div')];
+      const index = tabs.findIndex((tab) => tab.dataset.aueResource === resource);
+      if (index !== -1) {
+        block.querySelectorAll('.tabs-list button')[index]?.click();
+      }
+    }
+  }
+}
+
 function attachEventListners(main) {
   [
     'aue:content-patch',
@@ -293,6 +315,8 @@ function attachEventListners(main) {
     const applied = await applyChanges(event);
     if (!applied) window.location.reload();
   }));
+
+  main?.addEventListener('aue:ui-select', handleSelection);
 }
 
 attachEventListners(document.querySelector('main'));
