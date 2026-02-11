@@ -84,6 +84,10 @@
             {
               "name": "Explore Other Cards",
               "value": "explore-other-cards"
+            },
+            {
+              "name": "Image and Title",
+              "value": "image-and-title"
             }
           ]
         },
