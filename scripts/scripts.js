@@ -1071,9 +1071,15 @@ async function loadEager(doc) {
 
   const getAppBanner = sessionStorage.getItem('getAppBanner');
   const header = doc.querySelector('header');
-  // we are starting out assuming the app banner is open
-  if (getAppBanner && header && !MEDIA_QUERIES.desktop.matches) {
-    header.style.height = 'var(--nav-height)';
+  if (header && !MEDIA_QUERIES.desktop.matches) {
+    if (getAppBanner) {
+      // Banner was closed previously: use nav-height only (avoids gap on mobile)
+      header.style.height = 'var(--nav-height)';
+      document.body.classList.add('app-banner-closed');
+    } else {
+      // Reserve space for banner before it loads (minimizes CLS when banner injects in loadLazy)
+      document.body.classList.add('expect-app-banner');
+    }
   }
 
   const templateName = getMetadata('template');
@@ -1140,6 +1146,7 @@ function decorateGetAppBanner(container) {
     closeBtn.addEventListener('click', () => {
       getAppBanner.classList.add('d-none');
       sessionStorage.setItem('getAppBanner', 'true');
+      document.body.classList.add('app-banner-closed');
       // Reset height style on header when banner is closed
       const header = document.querySelector('header');
       if (header) {
