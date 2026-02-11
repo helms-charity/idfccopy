@@ -339,7 +339,7 @@ function openTabOrAccordionForElement(element) {
 function handleSelection(event) {
   console.log('handleSelection', event);
   const { detail } = event;
-  if (!detail || !detail.selection || !detail.selection.length) return;
+  // if (!detail || !detail.selection || !detail.selection.length) return;
   console.log('detail', detail);
 
   // UE gives you the selected editable(s)
