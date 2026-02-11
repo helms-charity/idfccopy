@@ -944,10 +944,15 @@ async function loadEager(doc) {
 
   const getAppBanner = sessionStorage.getItem('getAppBanner');
   const header = doc.querySelector('header');
-  // When app banner was closed previously, use nav-height only (avoids space on mobile)
-  if (getAppBanner && header && !MEDIA_QUERIES.desktop.matches) {
-    header.style.height = 'var(--nav-height)';
-    document.body.classList.add('app-banner-closed');
+  if (header && !MEDIA_QUERIES.desktop.matches) {
+    if (getAppBanner) {
+      // Banner was closed previously: use nav-height only (avoids gap on mobile)
+      header.style.height = 'var(--nav-height)';
+      document.body.classList.add('app-banner-closed');
+    } else {
+      // Reserve space for banner before it loads (minimizes CLS when banner injects in loadLazy)
+      document.body.classList.add('expect-app-banner');
+    }
   }
 
   const templateName = getMetadata('template');

@@ -159,9 +159,9 @@ header {
   background-color: var(--background-color); /* Header always white to prevent black flash on nav */
 }
 
-/* Mobile: only reserve banner space when the banner is actually in the header (avoids gap when banner not yet loaded or hidden) */
+/* Mobile: reserve space for app banner from first paint when we expect to show it (minimizes CLS when banner loads in loadLazy) */
 @media (width < 990px) {
-  header:has(#grnt-app-mob) {
+  body.expect-app-banner header {
     height: calc(var(--get-app-banner-height) + var(--nav-height));
   }
 }
