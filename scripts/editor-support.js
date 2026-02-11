@@ -285,6 +285,7 @@ async function applyChanges(event) {
  * @param {Event} event - The selection event
  */
 function handleSelection(event) {
+  console.log('handleSelection', event);
   const { detail } = event;
   const resource = detail?.resource;
 
@@ -293,9 +294,11 @@ function handleSelection(event) {
     const block = element.parentElement?.closest('.block[data-aue-resource]') || element?.closest('.block[data-aue-resource]');
 
     if (block && block.matches('.tabs')) {
+      console.log('block is tabs');
       const tabs = [...block.querySelectorAll('.tabs-panel > div')];
       const index = tabs.findIndex((tab) => tab.dataset.aueResource === resource);
       if (index !== -1) {
+        console.log('click tab', index);
         block.querySelectorAll('.tabs-list button')[index]?.click();
       }
     }
