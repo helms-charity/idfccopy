@@ -340,16 +340,16 @@ function handleSelection(event) {
   console.log('handleSelection', event);
   const { detail } = event;
   if (!detail || !detail.selection || !detail.selection.length) return;
+  console.log('detail', detail);
 
   // UE gives you the selected editable(s)
   const selected = detail.selection[0];
-
+  console.log('selected', selected);
   // Typically: selected.id is the URN, selected.element is the DOM node (if exposed)
   const targetEl = selected.element || document.querySelector(`[data-aue-resource="${selected.id}"]`);
+  console.log('targetEl', targetEl);
 
   if (!targetEl) return;
-
-  console.log('targetEl', targetEl);
 
   // If this is inside tabs/accordion, open the right panel/tab
   openTabOrAccordionForElement(targetEl);
