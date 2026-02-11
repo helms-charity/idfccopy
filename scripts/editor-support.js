@@ -281,11 +281,83 @@ async function applyChanges(event) {
 }
 
 /**
+ * Activate a tab from an element
+ * @param {Element} tabRoot - The root element of the tabs
+ * @param {Element} element - The element to activate the tab from
+ */
+function activateTabFromElement(tabRoot, element) {
+  console.log('activateTabFromElement', tabRoot, element);
+  // Example for a classic tab structure:
+  // <div class="my-tabs">
+  //   <button class="tab-title" data-tab-id="tab1">...</button>
+  //   <button class="tab-title" data-tab-id="tab2">...</button>
+  //   ...
+  //   <div class="tab-panel" data-tab-id="tab1">...</div>
+  //   <div class="tab-panel" data-tab-id="tab2">...</div>
+  // </div>
+
+  const panel = element.closest('.tab-panel') || element.closest('.accordion-item');
+  if (!panel) return;
+
+  const { tabId } = panel.dataset;
+  if (!tabId) return;
+
+  // Deactivate all panels/titles
+  tabRoot.querySelectorAll('.tab-panel, .accordion-panel').forEach((p) => {
+    p.classList.remove('is-active');
+    p.hidden = true;
+  });
+  tabRoot.querySelectorAll('.tab-title, .accordion-header').forEach((btn) => {
+    btn.classList.remove('is-active');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+
+  // Activate current
+  const activePanel = tabRoot.querySelector(`.tab-panel[data-tab-id="${tabId}"], .accordion-panel[data-tab-id="${tabId}"]`);
+  const activeTitle = tabRoot.querySelector(`.tab-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
+
+  if (activePanel) {
+    activePanel.classList.add('is-active');
+    activePanel.hidden = false;
+  }
+  if (activeTitle) {
+    activeTitle.classList.add('is-active');
+    activeTitle.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function openTabOrAccordionForElement(element) {
+  // Walk up to the nearest tabs/accordion root in your DOM
+  const tabRoot = element.closest('.my-tabs, .my-accordion');
+  if (!tabRoot) return;
+
+  // Decide if element is a header, body, or child inside a body
+  // and then activate the corresponding tab index/id
+  activateTabFromElement(tabRoot, element);
+}
+
+function handleSelection(event) {
+  const { detail } = event;
+  if (!detail || !detail.selection || !detail.selection.length) return;
+
+  // UE gives you the selected editable(s)
+  const selected = detail.selection[0];
+
+  // Typically: selected.id is the URN, selected.element is the DOM node (if exposed)
+  const targetEl = selected.element || document.querySelector(`[data-aue-resource="${selected.id}"]`);
+
+  if (!targetEl) return;
+
+  // If this is inside tabs/accordion, open the right panel/tab
+  openTabOrAccordionForElement(targetEl);
+}
+
+/**
  * Handle selection of a UI element in the Universal Editor
  * @param {Event} event - The selection event
  */
-function handleSelection(event) {
-  console.log('handleSelection', event);
+function handleSelectionOld(event) {
+  console.log('handleSelectionOld', event);
   const { detail } = event;
   const resource = detail?.resource;
 
@@ -319,7 +391,7 @@ function attachEventListners(main) {
     if (!applied) window.location.reload();
   }));
 
-  window.addEventListener('aue:ui-select', handleSelection);
+  main?.addEventListener('aue:ui-select', handleSelection);
 }
 
 attachEventListners(document.querySelector('main'));
