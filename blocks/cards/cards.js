@@ -1,5 +1,5 @@
 import {
-  createOptimizedPicture, loadScript, loadCSS, getMetadata,
+  createOptimizedPicture, loadScript, loadCSS,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
