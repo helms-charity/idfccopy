@@ -328,7 +328,7 @@ function activateTabFromElement(tabRoot, element) {
 
 function openTabOrAccordionForElement(element) {
   // Walk up to the nearest tabs/accordion root in your DOM
-  const tabRoot = element.closest('.my-tabs, .my-accordion');
+  const tabRoot = element.closest('.tabs-wrapper');
   if (!tabRoot) return;
   console.log('tabRoot', tabRoot);
   // Decide if element is a header, body, or child inside a body
