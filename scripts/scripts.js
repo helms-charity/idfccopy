@@ -1543,38 +1543,113 @@ async function loadBreadcrumbs(main) {
 /** End Breadcrumbs */
 
 /**
- * Timed whole page popup (modal)
- * Loads a timed modal based on page metadata
- * Reads 'modal-timer' (milliseconds) and 'modal-content' (path) metadata
- * If both exist, opens the modal after the specified timer
+ * Exit intent whole page popup (modal)
+ * Loads a modal based on page metadata when exit intent conditions are met.
+ * Reads 'modal-content' (path) and optionally 'modal-idle-time' (ms for idle-after-scroll).
+ *
+ * Triggers (show popup immediately when any is detected):
+ * - Mouse leaves top of page (cursor goes above viewport, clientY < 10)
+ * - Back button (popstate)
+ * - Alt + Left Arrow (keyboard back shortcut)
+ * - Backspace (when focus is not in input/textarea)
+ * - Fast scroll up (> 100px in one go)
+ * - Tab focus (user returns to tab via visibilitychange)
+ *
+ * Delayed trigger:
+ * - Idle after scroll: user stops scrolling for modal-idle-time ms (default 5000)
  */
-function loadTimedModal() {
-  // Suppress timed modals in Universal Editor to avoid disrupting content editing
+function loadExitIntentModal() {
+  // Suppress exit intent modals in Universal Editor to avoid disrupting content editing
   if (window.hlx?.isEditor) {
     return;
   }
 
-  const modalTimer = getMetadata('modal-timer');
   const modalContent = getMetadata('modal-content');
-
-  if (!modalTimer || !modalContent) {
+  if (!modalContent) {
     return;
   }
 
-  const timerMs = parseInt(modalTimer, 10);
-  if (Number.isNaN(timerMs) || timerMs < 0) {
-    return;
+  const idleTimeMs = parseInt(getMetadata('modal-idle-time'), 10);
+  const idleAfterScrollMs = (Number.isNaN(idleTimeMs) || idleTimeMs < 0) ? 5000 : idleTimeMs;
+
+  let showPopup = true;
+  let lastScrollY = window.scrollY;
+  let idleTimeout = null;
+  const listeners = [];
+
+  function removeListeners() {
+    listeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    listeners.length = 0;
+    if (idleTimeout) {
+      clearTimeout(idleTimeout);
+      idleTimeout = null;
+    }
   }
 
-  setTimeout(async () => {
+  async function showExitIntentPopup() {
+    if (!showPopup) return;
+
+    showPopup = false;
+    removeListeners();
+
     try {
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
       openModal(modalContent, { isAutoPopup: true });
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Failed to load timed modal:', error);
+      console.error('Failed to load exit intent modal:', error);
+      showPopup = true; // Allow retry on error
     }
-  }, timerMs);
+  }
+
+  function addListener(element, event, handler) {
+    element.addEventListener(event, handler);
+    listeners.push({ element, event, handler });
+  }
+
+  // Mouse leaves top of page (desktop exit intent)
+  addListener(document, 'mouseleave', (e) => {
+    if (e.clientY < 10) showExitIntentPopup();
+  });
+
+  // Back button (popstate)
+  addListener(window, 'popstate', showExitIntentPopup);
+
+  // Alt + Left Arrow (keyboard back)
+  addListener(window, 'keydown', (e) => {
+    if (e.altKey && e.key === 'ArrowLeft') {
+      showExitIntentPopup();
+      window.history.pushState(null, null, window.location.href);
+    }
+  });
+
+  // Backspace (when focus not in input/textarea)
+  addListener(window, 'keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.matches('input, textarea')) {
+      e.preventDefault();
+      showExitIntentPopup();
+    }
+  });
+
+  // Fast scroll up + idle after scroll
+  addListener(window, 'scroll', () => {
+    const scrollDiff = lastScrollY - window.scrollY;
+    if (scrollDiff > 100) {
+      showExitIntentPopup();
+      return;
+    }
+    lastScrollY = window.scrollY;
+
+    if (idleTimeout) clearTimeout(idleTimeout);
+    idleTimeout = setTimeout(showExitIntentPopup, idleAfterScrollMs);
+  });
+
+  // Tab focus (user returns to tab)
+  addListener(document, 'visibilitychange', () => {
+    if (!document.hidden) showExitIntentPopup();
+  });
 }
 
 /**
@@ -1621,8 +1696,8 @@ async function loadLazy(doc) {
   loadFonts();
   loadAutoBlock(doc);
 
-  // Start timed modal if configured in page metadata
-  loadTimedModal();
+  // Start exit intent modal if configured in page metadata
+  loadExitIntentModal();
 }
 
 /**
