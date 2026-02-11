@@ -1,0 +1,32 @@
+{
+    "options": [
+        {
+          "name": "Default",
+          "value": ""
+        },
+        {
+          "name": "XXL",
+          "value": "size-xxl"
+        },
+        {
+          "name": "XL",
+          "value": "size-xl"
+        },
+        {
+          "name": "L",
+          "value": "size-l"
+        },
+        {
+          "name": "M",
+          "value": "size-m"
+        },
+        {
+          "name": "S",
+          "value": "size-s"
+        },
+        {
+          "name": "XS",
+          "value": "size-xs"
+        }
+      ]
+}
