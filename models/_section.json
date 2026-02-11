@@ -29,7 +29,28 @@
           "component": "text",
           "name": "id",
           "label": "ID",
-          "description": "Adds an ID value to the section"
+          "description": "Adds an HTML ID value to the section"
+        },
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style",
+          "options": [
+            {
+              "...": "./partials/_section-style.json#/options"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "spacing",
+          "label": "Spacing top and bottom of section",
+          "valueType": "string",
+          "options": [
+            {
+              "...": "./partials/_sizes.json#/options"
+            }
+          ]
         },
         {
           "component": "boolean",
@@ -69,27 +90,6 @@
               {
                 "name": "none",
                 "value": ""
-            }
-          ]
-        },
-        {
-          "component": "multiselect",
-          "name": "style",
-          "label": "Style",
-          "options": [
-            {
-              "...": "./partials/_section-style.json#/options"
-            }
-          ]
-        },
-        {
-          "component": "select",
-          "name": "spacing",
-          "label": "Spacing top and bottom of section",
-          "valueType": "string",
-          "options": [
-            {
-              "...": "./partials/_sizes.json#/options"
             }
           ]
         },

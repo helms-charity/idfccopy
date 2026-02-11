@@ -40,6 +40,12 @@
             "label": "Tab/Accordion heading label"
           },
           {
+            "component": "text",
+            "name": "id",
+            "label": "ID",
+            "description": "Adds an HTML ID value to the section"
+          },
+          {
             "component": "multiselect",
             "name": "style",
             "label": "Style",
@@ -100,12 +106,6 @@
                 "...": "./partials/_sizes.json#/options"
               }
             ]
-          },
-          {
-            "component": "text",
-            "name": "id",
-            "label": "ID",
-            "description": "Adds an ID value to the section"
           },
           {
             "component": "select",

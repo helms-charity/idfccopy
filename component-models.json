@@ -299,58 +299,7 @@
         "component": "text",
         "name": "id",
         "label": "ID",
-        "description": "Adds an ID value to the section"
-      },
-      {
-        "component": "boolean",
-        "name": "is-multisection",
-        "label": "This is a multi-section configuration section",
-        "value": false
-      },
-      {
-        "component": "text",
-        "name": "multisection",
-        "label": "Section group identifier - give all sections the same value to group them in one section",
-        "value": "",
-        "condition": {
-          "==": [
-            {
-              "var": "is-multisection"
-            },
-            true
-          ]
-        }
-      },
-      {
-        "component": "select",
-        "name": "category",
-        "label": "Grouped section type",
-        "condition": {
-          "==": [
-            {
-              "var": "is-multisection"
-            },
-            true
-          ]
-        },
-        "options": [
-          {
-            "name": "Tabs horizontal",
-            "value": "tabs-horizontal"
-          },
-          {
-            "name": "Tabs vertical",
-            "value": "tabs-vertical"
-          },
-          {
-            "name": "Accordion",
-            "value": "accordion"
-          },
-          {
-            "name": "none",
-            "value": ""
-          }
-        ]
+        "description": "Adds an HTML ID value to the section"
       },
       {
         "component": "multiselect",
@@ -424,6 +373,57 @@
           {
             "name": "XS",
             "value": "size-xs"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "name": "is-multisection",
+        "label": "This is a multi-section configuration section",
+        "value": false
+      },
+      {
+        "component": "text",
+        "name": "multisection",
+        "label": "Section group identifier - give all sections the same value to group them in one section",
+        "value": "",
+        "condition": {
+          "==": [
+            {
+              "var": "is-multisection"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "category",
+        "label": "Grouped section type",
+        "condition": {
+          "==": [
+            {
+              "var": "is-multisection"
+            },
+            true
+          ]
+        },
+        "options": [
+          {
+            "name": "Tabs horizontal",
+            "value": "tabs-horizontal"
+          },
+          {
+            "name": "Tabs vertical",
+            "value": "tabs-vertical"
+          },
+          {
+            "name": "Accordion",
+            "value": "accordion"
+          },
+          {
+            "name": "none",
+            "value": ""
           }
         ]
       },
@@ -727,6 +727,12 @@
         "label": "Tab/Accordion heading label"
       },
       {
+        "component": "text",
+        "name": "id",
+        "label": "ID",
+        "description": "Adds an HTML ID value to the section"
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Style",
@@ -837,12 +843,6 @@
                 "value": "size-xs"
               }
             ]
-          },
-          {
-            "component": "text",
-            "name": "id",
-            "label": "ID",
-            "description": "Adds an ID value to the section"
           },
           {
             "component": "select",
