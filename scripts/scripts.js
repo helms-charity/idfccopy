@@ -720,7 +720,7 @@ export function handleSectionMetadata(el) {
     handleBackgroundImages(desktopBgImg, mobileBgImg, section);
   }
 
-  // Handle decoration images (background accessory images for ::before and ::after) - previously 'doodles'
+  // Handle decoration images (background accessory images (aka doodles) for ::before and ::after)
   const decorationImageTop = (metadata['decoration-image-top'] ?? metadata['doodle-image-top'])?.content
     ? extractImageUrl((metadata['decoration-image-top'] ?? metadata['doodle-image-top']).content)
     : null;
