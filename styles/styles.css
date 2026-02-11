@@ -992,22 +992,22 @@ body.is-framework-page .section.category-nav-section {
   transform: translateY(0);
 }
 
-/* Base styles for sections with doodles */
-.section.has-doodles {
+/* Base styles for sections with decorations (previously 'doodles') */
+.section.has-decorations {
   position: relative;
-  overflow: hidden; /* Optional: prevents doodles from overflowing */
+  overflow: hidden; /* Optional: prevents decorations from overflowing (previously 'doodles') */
 }
 
-/* Top doodle image (top-left by default)
-The height and width are set to 200 assuming the doodles won't be larger. */
-.section.has-doodles::before {
+/* Top decoration image (top-left by default) - previously 'doodles'
+The height and width are set to 200 assuming the decorations won't be larger. */
+.section.has-decorations::before {
   content: '';
   position: absolute;
   top: -50px;
   left: 0;
   width: 200px;
   height: 200px;
-  background-image: var(--doodle-before-image);
+  background-image: var(--decoration-before-image);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top left;
@@ -1015,15 +1015,15 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   pointer-events: none;
 }
 
-/* Bottom doodle image (bottom-right by default) */
-.section.has-doodles::after {
+/* Bottom decoration image (bottom-right by default) - previously 'doodles' */
+.section.has-decorations::after {
   content: '';
   position: absolute;
   bottom: -80px;
   right: 0;
   width: 200px;
   height: 200px;
-  background-image: var(--doodle-after-image);
+  background-image: var(--decoration-after-image);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom right;
@@ -1031,14 +1031,14 @@ The height and width are set to 200 assuming the doodles won't be larger. */
   pointer-events: none;
 }
 
-/* Reversed positioning (top-right and bottom-left) */
-.section.has-doodles.doodles-reversed::before {
+/* Reversed positioning (top-right and bottom-left) - previously 'doodles' */
+.section.has-decorations.decorations-reversed::before {
   left: auto;
   right: 0;
   background-position: top right;
 }
 
-.section.has-doodles.doodles-reversed::after {
+.section.has-decorations.decorations-reversed::after {
   right: auto;
   left: 0;
   background-position: bottom left;

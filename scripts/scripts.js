@@ -687,7 +687,7 @@ export function handleSectionMetadata(el) {
   }
 
   // Define which keys are handled specially for section or block-content
-  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'doodle-image-top', 'doodle-image-bottom', 'doodle-reverse'];
+  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'decoration-image-top', 'decoration-image-bottom', 'decoration-reverse'];
 
   // Keys that should preserve original case (not lowercased)
   const preserveCaseKeys = ['tabname', 'multisection'];
@@ -720,28 +720,28 @@ export function handleSectionMetadata(el) {
     handleBackgroundImages(desktopBgImg, mobileBgImg, section);
   }
 
-  // Handle doodle images (background accessory images for ::before and ::after)
-  const doodleImageTop = metadata['doodle-image-top']?.content
-    ? extractImageUrl(metadata['doodle-image-top'].content)
+  // Handle decoration images (background accessory images for ::before and ::after) - previously 'doodles'
+  const decorationImageTop = (metadata['decoration-image-top'] ?? metadata['doodle-image-top'])?.content
+    ? extractImageUrl((metadata['decoration-image-top'] ?? metadata['doodle-image-top']).content)
     : null;
-  const doodleImageBottom = metadata['doodle-image-bottom']?.content
-    ? extractImageUrl(metadata['doodle-image-bottom'].content)
+  const decorationImageBottom = (metadata['decoration-image-bottom'] ?? metadata['doodle-image-bottom'])?.content
+    ? extractImageUrl((metadata['decoration-image-bottom'] ?? metadata['doodle-image-bottom']).content)
     : null;
-  const doodleReverse = metadata['doodle-reverse']?.text === 'true';
+  const decorationReverse = (metadata['decoration-reverse'] ?? metadata['doodle-reverse'])?.text === 'true';
 
-  if (doodleImageTop || doodleImageBottom) {
-    // Set CSS custom properties for the doodle images
+  if (decorationImageTop || decorationImageBottom) {
+    // Set CSS custom properties for the decoration images (previously 'doodles')
     // If reversed, swap top and bottom
-    if (doodleReverse) {
-      if (doodleImageBottom) section.style.setProperty('--doodle-before-image', `url(${doodleImageBottom})`);
-      if (doodleImageTop) section.style.setProperty('--doodle-after-image', `url(${doodleImageTop})`);
+    if (decorationReverse) {
+      if (decorationImageBottom) section.style.setProperty('--decoration-before-image', `url(${decorationImageBottom})`);
+      if (decorationImageTop) section.style.setProperty('--decoration-after-image', `url(${decorationImageTop})`);
     } else {
-      if (doodleImageTop) section.style.setProperty('--doodle-before-image', `url(${doodleImageTop})`);
-      if (doodleImageBottom) section.style.setProperty('--doodle-after-image', `url(${doodleImageBottom})`);
+      if (decorationImageTop) section.style.setProperty('--decoration-before-image', `url(${decorationImageTop})`);
+      if (decorationImageBottom) section.style.setProperty('--decoration-after-image', `url(${decorationImageBottom})`);
     }
-    // Add a class to indicate doodle images are present
-    section.classList.add('has-doodles');
-    if (doodleReverse) section.classList.add('doodles-reversed');
+    // Add a class to indicate decoration images are present (previously 'doodles')
+    section.classList.add('has-decorations');
+    if (decorationReverse) section.classList.add('decorations-reversed');
   }
 
   // Handle BLOCK-CONTENT specific properties
