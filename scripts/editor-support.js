@@ -286,105 +286,39 @@ async function applyChanges(event) {
  * @param {Element} element - The element to activate the tab from
  */
 function activateTabFromElement(tabRoot, element) {
-  console.log('activateTabFromElement', tabRoot, element);
-  // Example for a classic tab structure:
-  // <div class="my-tabs">
-  //   <button class="tab-title" data-tab-id="tab1">...</button>
-  //   <button class="tab-title" data-tab-id="tab2">...</button>
-  //   ...
-  //   <div class="tab-panel" data-tab-id="tab1">...</div>
-  //   <div class="tab-panel" data-tab-id="tab2">...</div>
-  // </div>
-
-  // const panel = element.closest('.tab-panel') || element.closest('.accordion-item');
-  // if (!panel) return;
-  // console.log('panel', panel);
-  // const { tabId } = panel.dataset;
-  // if (!tabId) return;
   const tabId = element.id;
-  console.log('tabId', tabId);
 
-  // Deactivate all panels/titles
-  tabRoot.querySelectorAll('.tabs-panel, .accordion-panel').forEach((p) => {
+  // Deactivate all panels
+  tabRoot.querySelectorAll('.tabs-panel').forEach((p) => {
     p.classList.remove('is-active');
     p.hidden = true;
     p.setAttribute('aria-hidden', 'true');
   });
-  tabRoot.querySelectorAll('.tabs-title, .accordion-header').forEach((btn) => {
-    btn.classList.remove('is-active');
-    btn.setAttribute('aria-expanded', 'false');
-  });
 
-  // Activate current
+  // Activate selected panel
   const activePanel = tabRoot.querySelector(`.tabs-panel[id="${tabId}"]`);
-  const activeTitle = tabRoot.querySelector(`.tabs-title[id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
-  console.log('activePanel', activePanel);
-  console.log('activeTitle', activeTitle);
 
   if (activePanel) {
     activePanel.classList.add('is-active');
     activePanel.setAttribute('aria-hidden', 'false');
     activePanel.hidden = false;
   }
-  if (activeTitle) {
-    activeTitle.classList.add('is-active');
-    activeTitle.setAttribute('aria-expanded', 'true');
-  }
 }
 
-function openTabOrAccordionForElement(element) {
+function openTabForElement(element) {
   // Walk up to the nearest tabs/accordion root in your DOM
   const tabRoot = element.closest('.tabs-wrapper');
   if (!tabRoot) return;
-  console.log('tabRoot', tabRoot);
-  // Decide if element is a header, body, or child inside a body
-  // and then activate the corresponding tab index/id
   activateTabFromElement(tabRoot, element);
 }
 
 function handleSelection(event) {
-  console.log('handleSelection', event);
-  const { detail } = event;
-  // if (!detail || !detail.selection || !detail.selection.length) return;
-  console.log('detail', detail);
-
-  // UE gives you the selected editable(s)
-  // const selected = detail.selection[0];
-  // console.log('selected', selected);
-  // Typically: selected.id is the URN, selected.element is the DOM node (if exposed)
-  // const targetEl = selected.element || document.querySelector(`[data-aue-resource="${selected.id}"]`);
   const targetEl = event.target;
-  console.log('targetEl', targetEl);
 
   if (!targetEl) return;
 
   // If this is inside tabs/accordion, open the right panel/tab
-  openTabOrAccordionForElement(targetEl);
-}
-
-/**
- * Handle selection of a UI element in the Universal Editor
- * @param {Event} event - The selection event
- */
-function handleSelectionOld(event) {
-  console.log('handleSelectionOld', event);
-  const { detail } = event;
-  const resource = detail?.resource;
-
-  if (resource) {
-    const element = document.querySelector(`[data-aue-resource="${resource}"]`);
-    const block = element.parentElement?.closest('.block[data-aue-resource]') || element?.closest('.block[data-aue-resource]');
-
-    if (block && block.matches('.tabs')) {
-      console.log('block is tabs');
-      const tabs = [...block.querySelectorAll('.tabs-panel > div')];
-      const index = tabs.findIndex((tab) => tab.dataset.aueResource === resource);
-      if (index !== -1) {
-        console.log('click tab', index);
-        block.querySelectorAll('.tabs-list button')[index]?.click();
-      }
-    }
-  }
+  openTabForElement(targetEl);
 }
 
 function attachEventListners(main) {
