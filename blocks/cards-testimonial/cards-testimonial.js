@@ -587,7 +587,7 @@ export default async function decorate(block) {
     watchSlidesProgress: true,
     watchSlidesVisibility: true,
     slidesPerView: 1.3,
-    spaceBetween: 16,
+    spaceBetween: 0,
     centeredSlides: true,
     initialSlide: initialSlideIndex,
     pagination: {
@@ -597,8 +597,8 @@ export default async function decorate(block) {
       dynamicBullets: false,
     },
     breakpoints: {
-      600: { slidesPerView: 1.5, spaceBetween: 20, centeredSlides: true },
-      900: { slidesPerView: 3, spaceBetween: 36, centeredSlides: true },
+      600: { slidesPerView: 1.5, spaceBetween: 0, centeredSlides: true },
+      900: { slidesPerView: 3, spaceBetween: 16, centeredSlides: true },
     },
   };
   if (isAutoplayEnabled) {
