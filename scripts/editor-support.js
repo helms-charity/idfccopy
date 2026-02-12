@@ -294,7 +294,9 @@ function activateTabFromElement(tabRoot, element) {
   //   <div class="tab-panel" data-tab-id="tab1">...</div>
   //   <div class="tab-panel" data-tab-id="tab2">...</div>
   // </div>
+  console.log('activateTabFromElement', tabRoot, element);
   const tabId = element.id;
+  console.log('tabId', tabId);
 
   // Deactivate all panels
   tabRoot.querySelectorAll('.tabs-panel').forEach((p) => {
@@ -321,6 +323,7 @@ function openTabForElement(element) {
 }
 
 function handleSelection(event) {
+  console.log('handleSelection', event);
   const targetEl = event.target;
 
   if (!targetEl) return;
