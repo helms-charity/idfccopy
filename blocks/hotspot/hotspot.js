@@ -837,9 +837,10 @@ export default function decorate(block) {
     }
   }
 
-  // Hide non-first blocks in this section (only show the first hotspot block initially)
+  // Hide all blocks initially (including first) to prevent CLS
+  // First block is shown only when user clicks "The Concept" button (see hero-heritage-cc)
+  block.style.display = 'none';
   if (blockId !== sectionData.firstBlockId) {
-    block.style.display = 'none';
     block.setAttribute('aria-hidden', 'true');
   }
 

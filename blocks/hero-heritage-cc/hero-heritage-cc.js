@@ -71,16 +71,27 @@ export default function decorate(block) {
   const mainElement = document.querySelector('main');
   const hasAueResource = mainElement?.hasAttribute('data-aue-resource');
 
-  // Handle "The Concept" link (#the-concept-hotspot) - collapse hero height 100% -> 19%
+  // Helper: collapse hero and show first hotspot block (when "The Concept" is clicked)
+  function showConceptHotspotBlock() {
+    const hero = document.querySelector('.hero-heritage-cc');
+    if (hero) hero.classList.toggle('hero-heritage-cc-collapsed');
+    const firstBlock = document.getElementById('the-concept-hotspot')
+      || document.querySelector('.hotspot-container .hotspot');
+    if (firstBlock?.classList.contains('hotspot')) {
+      firstBlock.style.display = '';
+    }
+  }
+
+  // Handle "The Concept" link (hash anchor): collapse hero, show first hotspot block
   if (!document.body.dataset.heroConceptLinkListener) {
     document.body.dataset.heroConceptLinkListener = 'true';
     document.addEventListener('click', (e) => {
-      const link = e.target.closest('a[href="#the-concept-hotspot"]');
+      const link = e.target.closest('a[href*="the-concept-hotspot"]');
       if (!link) return;
-      const hero = document.querySelector('.hero-heritage-cc');
-      if (hero) {
-        hero.classList.toggle('hero-heritage-cc-collapsed');
-      }
+      const isHashLink = link.hash === '#the-concept-hotspot'
+        || link.getAttribute('href')?.includes('the-concept-hotspot');
+      if (!isHashLink) return;
+      showConceptHotspotBlock();
     });
   }
 
@@ -445,6 +456,9 @@ export default function decorate(block) {
 
       e.preventDefault();
       e.stopPropagation();
+
+      // Collapse hero and show first hotspot block (hidden initially to prevent CLS)
+      showConceptHotspotBlock();
 
       // If concept is already loaded, just show it
       if (conceptContainer) {
