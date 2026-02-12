@@ -44,6 +44,32 @@ function getVideoOnlyPath(tabPanel) {
 const tabVideoMap = new Map();
 
 /**
+ * Extracts phone video URL from a block-level div (phone group: picture + video reference).
+ * Removes the video link so it does not display. Supports reference (a[href]) and legacy temp URL.
+ * @param {HTMLElement} phoneGroupDiv - Direct child of block that has picture and video link
+ * @returns {string|null} Absolute video URL or null
+ */
+function getPhoneVideoUrlFromPhoneGroup(phoneGroupDiv) {
+  const link = phoneGroupDiv.querySelector('a[href*=".mp4"]');
+  if (link && link.href) {
+    const url = link.href;
+    const p = link.closest('p');
+    if (p) p.remove();
+    else link.remove();
+    return url;
+  }
+  const p = phoneGroupDiv.querySelector('p');
+  if (p) {
+    const text = p.textContent.trim();
+    if (text.endsWith('.mp4') && (text.startsWith('http://') || text.startsWith('https://'))) {
+      p.remove();
+      return text;
+    }
+  }
+  return null;
+}
+
+/**
  * TEMPORARY: Checks if the first tab has an HTTP video URL
  * If the first child of .tabs-list has an ID starting with 'tab-http' and ending with 'mp4',
  * extract the URL from the p element and remove that tab
@@ -85,13 +111,27 @@ export default async function decorate(block) {
   // Get all children
   const children = [...block.children];
 
-  // Extract title (H2) and main image (picture only, no other content)
+  // Title: child with h2
   const titleDiv = children.find((child) => child.querySelector('h2'));
+
+  // Image: old model = child with only picture; new model = phone group (picture + video link)
   const imageDiv = children.find((child) => {
     const hasPicture = child.querySelector('picture');
     const hasOtherContent = child.querySelector('h2, h3, p');
     return hasPicture && !hasOtherContent;
   });
+  const phoneGroupDiv = !imageDiv && titleDiv
+    ? children.find((child) => child !== titleDiv && child.querySelector('picture') && child.querySelector('a[href*=".mp4"]'))
+    : null;
+
+  // Single source for picture: prefer image-only cell (old), else phone group (new)
+  const pictureSourceDiv = imageDiv || phoneGroupDiv;
+
+  // Extract video URL from phone group (new model) and remove the link from DOM
+  if (phoneGroupDiv) {
+    const videoUrl = getPhoneVideoUrlFromPhoneGroup(phoneGroupDiv);
+    if (videoUrl) block.dataset.phoneVideoUrl = videoUrl;
+  }
 
   // Reset any partially processed panels (remove tabs-panel class and attributes)
   children.forEach((child) => {
@@ -104,12 +144,8 @@ export default async function decorate(block) {
     }
   });
 
-  // Filter to get only tab panels (skip image and title divs)
-  const tabPanels = children.filter((child) => {
-    const hasOnlyPicture = child.querySelector('picture') && !child.querySelector('h2, h3, p');
-    const hasTitle = child.querySelector('h2');
-    return !hasOnlyPicture && !hasTitle;
-  });
+  // Tab panels: exclude title and picture source (image-only cell or phone group)
+  const tabPanels = children.filter((child) => child !== titleDiv && child !== pictureSourceDiv);
 
   // Build tablist
   const tablist = document.createElement('div');
@@ -211,11 +247,11 @@ export default async function decorate(block) {
   tabsWrapper.className = 'tabs-upi-link-content';
 
   // Add image to wrapper (for desktop - outside tabs)
-  if (imageDiv) {
+  if (pictureSourceDiv) {
     const imageWrapper = document.createElement('div');
     imageWrapper.className = 'tabs-upi-link-image';
     // Clone the picture element (we'll use original for desktop, clones for mobile)
-    const picture = imageDiv.querySelector('picture');
+    const picture = pictureSourceDiv.querySelector('picture');
     if (picture) {
       // Clone for desktop (outside tabs)
       const desktopPicture = picture.cloneNode(true);
@@ -276,8 +312,10 @@ export default async function decorate(block) {
   if (tablist.children.length > 0) {
     tabsContainer.appendChild(tablist);
 
-    // TEMPORARY: Check for HTTP video URL in first tab and remove it if found
-    const httpVideoResult = getHttpVideoUrlFromFirstTab(tablist);
+    // TEMPORARY: Fallback for legacy content where video URL was in first tab
+    const httpVideoResult = !block.dataset.phoneVideoUrl
+      ? getHttpVideoUrlFromFirstTab(tablist)
+      : null;
     if (httpVideoResult) {
       const { url: httpVideoUrl, panelId } = httpVideoResult;
 

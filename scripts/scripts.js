@@ -675,8 +675,14 @@ export function handleSectionMetadata(el) {
   if (metadata.style?.text) handleStyle(metadata.style.text, section);
   if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
   if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
-  if (metadata.gap?.text) handleLayout(metadata.gap.text, section, 'gap');
-  if (metadata.spacing?.text) handleLayout(metadata.spacing.text, section, 'spacing');
+  if (metadata.gap?.text) {
+    const gapText = metadata.gap.text.replace(/^size-/, '');
+    if (gapText) handleLayout(gapText, section, 'gap');
+  }
+  if (metadata.spacing?.text) {
+    const spacingText = metadata.spacing.text.replace(/^size-/, '');
+    if (spacingText) handleLayout(spacingText, section, 'spacing');
+  }
   if (metadata.containerwidth?.text) handleLayout(metadata.containerwidth.text, section, 'container');
 
   // Handle section height (desktop and mobile)
