@@ -297,6 +297,7 @@ function activateTabFromElement(tabRoot, element) {
   console.log('activateTabFromElement', tabRoot, element);
   const tabId = element.id;
   console.log('tabId', tabId);
+  if (!tabId) return;
 
   // Deactivate all panels
   tabRoot.querySelectorAll('.tabs-panel').forEach((p) => {
