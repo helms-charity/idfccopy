@@ -317,6 +317,8 @@ function activateTabFromElement(tabRoot, element) {
   // Activate current
   const activePanel = tabRoot.querySelector(`.tab-panel[data-tab-id="${tabId}"], .accordion-panel[data-tab-id="${tabId}"]`);
   const activeTitle = tabRoot.querySelector(`.tab-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
+  console.log('activePanel', activePanel);
+  console.log('activeTitle', activeTitle);
 
   if (activePanel) {
     activePanel.classList.add('is-active');
