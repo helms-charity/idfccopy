@@ -831,9 +831,13 @@ export default function decorate(block) {
   const blockHeight = block.offsetHeight;
   if (blockHeight > sectionData.maxHeight) {
     sectionData.maxHeight = blockHeight;
-    // Update section min-height to accommodate the tallest block
     if (sectionWrapper) {
       sectionWrapper.style.minHeight = `${sectionData.maxHeight}px`;
+      // Reserve space on block-content too to prevent wrapper CLS
+      const blockContent = block.closest('.block-content');
+      if (blockContent) {
+        blockContent.style.minHeight = `${sectionData.maxHeight}px`;
+      }
     }
   }
 

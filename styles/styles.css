@@ -238,6 +238,11 @@ main > h1:first-of-type {
   display: none;
 }
 
+/* Prevent CLS: hide hotspot block from first paint when in hero+hotspot section */
+.block-content:has(.hero-heritage-cc):has(.hotspot) .hotspot {
+  display: none;
+}
+
 main>div {
   margin: 40px 16px;
 }

@@ -78,7 +78,7 @@ export default function decorate(block) {
     const firstBlock = document.getElementById('the-concept-hotspot')
       || document.querySelector('.hotspot-container .hotspot');
     if (firstBlock?.classList.contains('hotspot')) {
-      firstBlock.style.display = '';
+      firstBlock.style.display = 'block';
     }
   }
 
