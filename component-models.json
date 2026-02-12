@@ -1208,6 +1208,8 @@
         "valueType": "date",
         "description": "Review date. Shown on page in readable format.",
         "placeholder": "YYYY-MM-DD",
+        "displayFormat": "YYYY-MM-DD",
+        "valueFormat": "YYYY-MM-DD",
         "validation": {
           "customErrorMsg": "Required format: YYYY-MM-DD (e.g. 2025-03-26)"
         }
