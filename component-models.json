@@ -711,6 +711,11 @@
     "id": "multi-section",
     "fields": [
       {
+        "component": "tab",
+        "label": "Section Configs",
+        "name": "tab1"
+      },
+      {
         "component": "text",
         "name": "name",
         "label": "Section Name",
@@ -869,103 +874,99 @@
         ]
       },
       {
-        "component": "container",
-        "label": "Optional outer background properties",
-        "name": "container",
+        "component": "tab",
+        "label": "Background Properties",
+        "name": "tab2"
+      },
+      {
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color/gradient",
+        "value": "",
         "valueType": "string",
-        "collapsible": true,
-        "fields": [
+        "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImage",
+        "label": "Background Image",
+        "description": "Background image of the section, displayed on top of the background color if specified",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImageMobile",
+        "label": "Background Image Mobile",
+        "description": "Background image for mobile",
+        "multi": false
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-fit",
+        "label": "Background Fit",
+        "value": "cover",
+        "options": [
           {
-            "component": "text",
-            "name": "backgroundColor",
-            "label": "Background Color/gradient",
-            "value": "",
-            "valueType": "string",
-            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+            "name": "cover",
+            "value": "cover"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImage",
-            "label": "Background Image",
-            "description": "Background image of the section, displayed on top of the background color if specified",
-            "multi": false
+            "name": "contain",
+            "value": "contain"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImageMobile",
-            "label": "Background Image Mobile",
-            "description": "Background image for mobile",
-            "multi": false
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-fit",
-            "label": "Background Fit",
-            "value": "cover",
-            "options": [
-              {
-                "name": "cover",
-                "value": "cover"
-              },
-              {
-                "name": "contain",
-                "value": "contain"
-              },
-              {
-                "name": "none",
-                "value": "none"
-              }
-            ]
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-position",
-            "label": "Background Image Position",
-            "value": "center",
-            "options": [
-              {
-                "name": "center",
-                "value": "center"
-              },
-              {
-                "name": "top left",
-                "value": "top left"
-              },
-              {
-                "name": "top right",
-                "value": "top right"
-              },
-              {
-                "name": "bottom left",
-                "value": "bottom left"
-              },
-              {
-                "name": "bottom right",
-                "value": "bottom right"
-              }
-            ]
-          },
-          {
-            "component": "text",
-            "name": "height",
-            "label": "Desktop Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in desktop, e.g. 400px"
-          },
-          {
-            "component": "text",
-            "name": "heightmobile",
-            "label": "Mobile Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in mobile, e.g. 400px"
+            "name": "none",
+            "value": "none"
           }
         ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-position",
+        "label": "Background Image Position",
+        "value": "center",
+        "options": [
+          {
+            "name": "center",
+            "value": "center"
+          },
+          {
+            "name": "top left",
+            "value": "top left"
+          },
+          {
+            "name": "top right",
+            "value": "top right"
+          },
+          {
+            "name": "bottom left",
+            "value": "bottom left"
+          },
+          {
+            "name": "bottom right",
+            "value": "bottom right"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "height",
+        "label": "Desktop Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in desktop, e.g. 400px"
+      },
+      {
+        "component": "text",
+        "name": "heightmobile",
+        "label": "Mobile Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in mobile, e.g. 400px"
       }
     ]
   },

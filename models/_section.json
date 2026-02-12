@@ -20,6 +20,11 @@
       "id": "section",
       "fields": [
         {
+          "component": "tab",
+          "label": "Section Configs",
+          "name": "section-configs"
+        },
+        {
           "component": "text",
           "name": "name",
           "label": "Section Name",
@@ -37,7 +42,36 @@
           "label": "Style",
           "options": [
             {
-              "...": "./partials/_section-style.json#/options"
+              "name": "Center",
+              "value": "center"
+            },
+            {
+              "name": "Light scheme",
+              "value": "light-scheme"
+            },
+            {
+              "name": "Dark scheme",
+              "value": "dark-scheme"
+            },
+            {
+              "name": "Hide in mobile",
+              "value": "hide-mobile"
+            },
+            {
+              "name": "Hide in desktop",
+              "value": "hide-desktop"
+            },
+            {
+              "name": "Entrance Animation",
+              "value": "entrance-animation"
+            },
+            {
+              "name": "(Tabs) Blue with White Text",
+              "value": "blue-white-text"
+            },
+            {
+              "name": "(Tabs) Silver with Blue Text",
+              "value": "silver-blue-text"
             }
           ]
         },
@@ -48,7 +82,32 @@
           "valueType": "string",
           "options": [
             {
-              "...": "./partials/_sizes.json#/options"
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "XXL",
+              "value": "size-xxl"
+            },
+            {
+              "name": "XL",
+              "value": "size-xl"
+            },
+            {
+              "name": "L",
+              "value": "size-l"
+            },
+            {
+              "name": "M",
+              "value": "size-m"
+            },
+            {
+              "name": "S",
+              "value": "size-s"
+            },
+            {
+              "name": "XS",
+              "value": "size-xs"
             }
           ]
         },
@@ -64,7 +123,12 @@
           "label": "Section group identifier - give all sections the same value to group them in one section",
           "value": "",
           "condition": {
-            "==": [{ "var": "is-multisection" }, true]
+            "==": [
+              {
+                "var": "is-multisection"
+              },
+              true
+            ]
           }
         },
         {
@@ -72,24 +136,29 @@
           "name": "category",
           "label": "Grouped section type",
           "condition": {
-            "==": [{ "var": "is-multisection" }, true]
+            "==": [
+              {
+                "var": "is-multisection"
+              },
+              true
+            ]
           },
           "options": [
-              {
-                  "name": "Tabs horizontal",
-                  "value": "tabs-horizontal"
-              },
-              {
-                  "name": "Tabs vertical",
-                  "value": "tabs-vertical"
-              },
-              {
-                  "name": "Accordion",
-                  "value": "accordion"
-              },
-              {
-                "name": "none",
-                "value": ""
+            {
+              "name": "Tabs horizontal",
+              "value": "tabs-horizontal"
+            },
+            {
+              "name": "Tabs vertical",
+              "value": "tabs-vertical"
+            },
+            {
+              "name": "Accordion",
+              "value": "accordion"
+            },
+            {
+              "name": "none",
+              "value": ""
             }
           ]
         },
@@ -100,53 +169,76 @@
           "valueType": "string",
           "collapsible": true,
           "fields": [
-        {
-          "component": "text",
-          "name": "grid",
-          "label": "Grid layout (enter # of columns, 2-6)",
-          "valueType": "string"
-        },
-        {
-          "component": "select",
-          "name": "gap",
-          "label": "(grid layout) gap between blocks",
-          "valueType": "string",
-          "options": [
             {
-              "...": "./partials/_sizes.json#/options"
+              "component": "text",
+              "name": "grid",
+              "label": "Grid layout (enter # of columns, 2-6)",
+              "valueType": "string"
+            },
+            {
+              "component": "select",
+              "name": "gap",
+              "label": "(grid layout) gap between blocks",
+              "valueType": "string",
+              "options": [
+                {
+                  "name": "Default",
+                  "value": ""
+                },
+                {
+                  "name": "XXL",
+                  "value": "size-xxl"
+                },
+                {
+                  "name": "XL",
+                  "value": "size-xl"
+                },
+                {
+                  "name": "L",
+                  "value": "size-l"
+                },
+                {
+                  "name": "M",
+                  "value": "size-m"
+                },
+                {
+                  "name": "S",
+                  "value": "size-s"
+                },
+                {
+                  "name": "XS",
+                  "value": "size-xs"
+                }
+              ]
+            },
+            {
+              "component": "select",
+              "name": "containerwidth",
+              "label": "Inner div width",
+              "valueType": "string",
+              "description": "unrelated to grid layout",
+              "options": [
+                {
+                  "name": "33%",
+                  "value": "2"
+                },
+                {
+                  "name": "66%",
+                  "value": "4"
+                },
+                {
+                  "name": "100%",
+                  "value": "6"
+                }
+              ]
             }
           ]
         },
         {
-          "component": "select",
-          "name": "containerwidth",
-          "label": "Inner div width",
-          "valueType": "string",
-          "description": "unrelated to grid layout",
-          "options": [
-            {
-              "name": "33%",
-              "value": "2"
-            },
-            {
-              "name": "66%",
-              "value": "4"
-            },
-            {
-              "name": "100%",
-              "value": "6"
-            }
-          ]
-        }
-        ]
+          "component": "tab",
+          "label": "Background Properties",
+          "name": "background-properties"
         },
-        {
-          "component": "container",
-          "label": "Optional outer background properties",
-          "name": "container",
-          "valueType": "string",
-          "collapsible": true,
-          "fields": [
         {
           "component": "text",
           "name": "backgroundColor",
@@ -179,7 +271,16 @@
           "value": "cover",
           "options": [
             {
-              "...": "./partials/_bg-fit.json#/options"
+              "name": "cover",
+              "value": "cover"
+            },
+            {
+              "name": "contain",
+              "value": "contain"
+            },
+            {
+              "name": "none",
+              "value": "none"
             }
           ]
         },
@@ -191,7 +292,24 @@
           "value": "center",
           "options": [
             {
-              "...": "./partials/_bg-position.json#/options"
+              "name": "center",
+              "value": "center"
+            },
+            {
+              "name": "top left",
+              "value": "top left"
+            },
+            {
+              "name": "top right",
+              "value": "top right"
+            },
+            {
+              "name": "bottom left",
+              "value": "bottom left"
+            },
+            {
+              "name": "bottom right",
+              "value": "bottom right"
             }
           ]
         },
@@ -233,8 +351,6 @@
           "name": "doodle-reverse",
           "label": "Reverse background accessory images",
           "description": "Display at top right and bottom left of the section"
-        }
-          ]
         },
         {
           "component": "container",
@@ -275,7 +391,16 @@
               "value": "cover",
               "options": [
                 {
-                  "...": "./partials/_bg-fit.json#/options"
+                  "name": "cover",
+                  "value": "cover"
+                },
+                {
+                  "name": "contain",
+                  "value": "contain"
+                },
+                {
+                  "name": "none",
+                  "value": "none"
                 }
               ]
             },
@@ -287,7 +412,24 @@
               "value": "center",
               "options": [
                 {
-                  "...": "./partials/_bg-position.json#/options"
+                  "name": "center",
+                  "value": "center"
+                },
+                {
+                  "name": "top left",
+                  "value": "top left"
+                },
+                {
+                  "name": "top right",
+                  "value": "top right"
+                },
+                {
+                  "name": "bottom left",
+                  "value": "bottom left"
+                },
+                {
+                  "name": "bottom right",
+                  "value": "bottom right"
                 }
               ]
             }
