@@ -802,6 +802,11 @@
         ]
       },
       {
+        "component": "tab",
+        "label": "Background Properties",
+        "name": "tab2"
+      },
+      {
         "component": "container",
         "label": "Optional layout properties",
         "name": "layout-container",
@@ -872,11 +877,6 @@
             ]
           }
         ]
-      },
-      {
-        "component": "tab",
-        "label": "Background Properties",
-        "name": "tab2"
       },
       {
         "component": "text",
