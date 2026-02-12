@@ -1714,7 +1714,7 @@
       {
         "component": "richtext",
         "valueType": "string",
-        "name": "ctaText",
+        "name": "ctaTextDesktop",
         "label": "CTA Text",
         "value": "",
         "description": "Only visible on desktop"
