@@ -182,9 +182,6 @@ function parsePropertyValue(fieldName, text) {
   return null;
 }
 
-/**
- * Extracts block-level Swiper settings from placeholder cards (config rows).
- */
 function extractBlockProperties(block, cardsContainer) {
   const propertyValues = {};
   const itemsToRemove = [];
@@ -287,8 +284,18 @@ const looksLikeQuoteColumn = (text) => {
   return t === '' || t === 'inverted-commas' || t === 'none';
 };
 
-/** Layout configs for 7/6/5 body-div structures. Indices into bodyDivs. */
 const STRUCTURED_LAYOUTS = [
+  {
+    length: 3,
+    hasContent: (d) => {
+      const hasReview = d[1] && d[1].textContent.trim().length > 0;
+      const hasDetails = d[2] && d[2].querySelectorAll('p').length >= 4;
+      return hasReview || hasDetails;
+    },
+    quoteIdx: 0,
+    reviewIdx: 1,
+    quotedetailsIdx: 2,
+  },
   {
     length: 7,
     hasContent: (d) => d[1].textContent.trim() || d[2].textContent.trim()
@@ -372,9 +379,6 @@ function applyLegacyNormalization(cardItem, mainBody) {
   }
 }
 
-/**
- * Normalizes testimonial card structure to match old .cards.testimonial-card DOM.
- */
 function normalizeTestimonialCard(cardItem) {
   const bodyDivs = [...cardItem.querySelectorAll('.cards-card-body')];
   if (bodyDivs.length === 0) return;
@@ -397,10 +401,23 @@ function normalizeTestimonialCard(cardItem) {
     quoteIconVal = bodyDivs[layout.quoteIdx].textContent.trim().toLowerCase();
   }
   const reviewHtml = layout.reviewIdx != null ? bodyDivs[layout.reviewIdx].innerHTML : '';
-  const personName = sanitizeText(bodyDivs[layout.personIdx].textContent);
-  const productName = sanitizeText(bodyDivs[layout.productIdx].textContent) || DEFAULT_PRODUCT;
-  const ratingRaw = bodyDivs[layout.ratingIdx].textContent.trim();
-  const dateText = bodyDivs[layout.dateIdx].textContent.trim();
+  let personName;
+  let productName;
+  let ratingRaw;
+  let dateText;
+  if (layout.quotedetailsIdx !== undefined) {
+    const detailsBody = bodyDivs[layout.quotedetailsIdx];
+    const detailsParas = [...detailsBody.querySelectorAll('p')];
+    personName = sanitizeText(detailsParas[0]?.textContent ?? '');
+    productName = sanitizeText(detailsParas[1]?.textContent ?? '') || DEFAULT_PRODUCT;
+    ratingRaw = detailsParas[2]?.textContent?.trim() ?? '';
+    dateText = detailsParas[3]?.textContent?.trim() ?? '';
+  } else {
+    personName = sanitizeText(bodyDivs[layout.personIdx].textContent);
+    productName = sanitizeText(bodyDivs[layout.productIdx].textContent) || DEFAULT_PRODUCT;
+    ratingRaw = bodyDivs[layout.ratingIdx].textContent.trim();
+    dateText = bodyDivs[layout.dateIdx].textContent.trim();
+  }
 
   const quoteIcon = (quoteIconVal === 'inverted-commas') ? 'inverted-commas' : 'none';
   const ratingNum = parseInt(ratingRaw, 10);

@@ -831,15 +831,20 @@ export default function decorate(block) {
   const blockHeight = block.offsetHeight;
   if (blockHeight > sectionData.maxHeight) {
     sectionData.maxHeight = blockHeight;
-    // Update section min-height to accommodate the tallest block
     if (sectionWrapper) {
       sectionWrapper.style.minHeight = `${sectionData.maxHeight}px`;
+      // Reserve space on block-content too to prevent wrapper CLS
+      const blockContent = block.closest('.block-content');
+      if (blockContent) {
+        blockContent.style.minHeight = `${sectionData.maxHeight}px`;
+      }
     }
   }
 
-  // Hide non-first blocks in this section (only show the first hotspot block initially)
+  // Hide all blocks initially (including first) to prevent CLS
+  // First block is shown only when user clicks "The Concept" button (see hero-heritage-cc)
+  block.style.display = 'none';
   if (blockId !== sectionData.firstBlockId) {
-    block.style.display = 'none';
     block.setAttribute('aria-hidden', 'true');
   }
 
