@@ -50,7 +50,6 @@
 }
 
 .cards-testimonial .cards-card-body .testimonial-person-name,
-.cards-testimonial .cards-card-body .testimonial-date,
 .cards-testimonial .cards-card-body .testimonial-product-name,
 .cards-testimonial .cards-card-body p {
   color: var(--color-white);
@@ -78,7 +77,6 @@
 .cards-testimonial .cards-card-body p:not(
   .testimonial-person-name,
   .testimonial-product-name,
-  .testimonial-date,
   :has(.icon-inverted-commas),
   :has(.icon-star),
   :has(u)
@@ -113,12 +111,6 @@
   width: auto;
   height: 12px;
   padding-right: 4px;
-}
-
-.cards-testimonial .cards-card-body .testimonial-date {
-  font-size: var(--body-font-size-xxs);
-  line-height: 1.5;
-  text-align: left;
 }
 
 .cards-testimonial .cards-card-body p:has(.icon-star) .icon-star:last-child {
