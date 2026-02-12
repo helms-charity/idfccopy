@@ -127,7 +127,7 @@
         "name": "modal-timer",
         "valueType": "string",
         "label": "Modal Timer (ms)",
-        "description": "Deprecated. Use exit intent modal with modal-content."
+        "description": "Idle-after-scroll delay in ms. Default: 5000"
       },
       {
         "component": "aem-content",
@@ -135,13 +135,6 @@
         "label": "Modal Content",
         "description": "Load this modal when exit intent is detected (mouse leaves top, back button, etc.)",
         "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "modal-idle-time",
-        "valueType": "string",
-        "label": "Modal Idle Time (ms)",
-        "description": "Idle-after-scroll delay in ms. Default: 5000"
       },
       {
         "component": "tab",

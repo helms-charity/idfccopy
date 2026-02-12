@@ -1545,7 +1545,7 @@ async function loadBreadcrumbs(main) {
 /**
  * Exit intent whole page popup (modal)
  * Loads a modal based on page metadata when exit intent conditions are met.
- * Reads 'modal-content' (path) and optionally 'modal-idle-time' (ms for idle-after-scroll).
+ * Reads 'modal-content' (path) and optionally 'modal-timer' (ms for idle-after-scroll).
  *
  * Triggers (show popup immediately when any is detected):
  * - Mouse leaves top of page (cursor goes above viewport, clientY < 10)
@@ -1556,7 +1556,7 @@ async function loadBreadcrumbs(main) {
  * - Tab focus (user returns to tab via visibilitychange)
  *
  * Delayed trigger:
- * - Idle after scroll: user stops scrolling for modal-idle-time ms (default 5000)
+ * - Idle after scroll: user stops scrolling for modal-timer ms (default 5000)
  */
 function loadExitIntentModal() {
   // Suppress exit intent modals in Universal Editor to avoid disrupting content editing
@@ -1569,7 +1569,7 @@ function loadExitIntentModal() {
     return;
   }
 
-  const idleTimeMs = parseInt(getMetadata('modal-idle-time'), 10);
+  const idleTimeMs = parseInt(getMetadata('modal-timer'), 10);
   const idleAfterScrollMs = (Number.isNaN(idleTimeMs) || idleTimeMs < 0) ? 5000 : idleTimeMs;
 
   let showPopup = true;
