@@ -296,11 +296,12 @@ function activateTabFromElement(tabRoot, element) {
   //   <div class="tab-panel" data-tab-id="tab2">...</div>
   // </div>
 
-  const panel = element.closest('.tab-panel') || element.closest('.accordion-item');
-  if (!panel) return;
-  console.log('panel', panel);
-  const { tabId } = panel.dataset;
-  if (!tabId) return;
+  // const panel = element.closest('.tab-panel') || element.closest('.accordion-item');
+  // if (!panel) return;
+  // console.log('panel', panel);
+  // const { tabId } = panel.dataset;
+  // if (!tabId) return;
+  const tabId = element.id;
   console.log('tabId', tabId);
 
   // Deactivate all panels/titles
