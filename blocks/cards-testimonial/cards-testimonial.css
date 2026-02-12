@@ -102,6 +102,8 @@
 .cards-testimonial .cards-card-body p:has(.icon-star) {
   display: flex;
   margin: 0 0 var(--spacing-xs);
+  font-size: var(--body-font-size-xs);
+
 }
 
 .cards-testimonial .cards-card-body .icon-star,
@@ -165,8 +167,9 @@
     margin-right: auto;
   }
 
-  .cards-testimonial.swiper .swiper-slide {
+  .cards-testimonial.swiper .swiper-slide { to 
     max-width: 350px;
+    min-height: 350px;
   }
 }
 
