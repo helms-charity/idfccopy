@@ -2408,11 +2408,10 @@
     "id": "tabs-upi-link",
     "fields": [
       {
-        "component": "reference",
+        "component": "text",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "classes",
+        "label": "Style"
       },
       {
         "component": "richtext",
@@ -2422,15 +2421,16 @@
         "valueType": "string"
       },
       {
-        "component": "text",
+        "component": "reference",
         "valueType": "string",
-        "name": "classes",
-        "label": "Style"
+        "name": "phone_image",
+        "label": "Image",
+        "multi": false
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "phone-video",
+        "name": "phone_video",
         "label": "Phone Video",
         "multi": false,
         "filter": {
@@ -2438,13 +2438,6 @@
             "video/mp4"
           ]
         }
-      },
-      {
-        "component": "richtext",
-        "name": "temp-video-url",
-        "value": "",
-        "label": "Temporary External Phone Video URL",
-        "valueType": "string"
       }
     ]
   },
