@@ -316,8 +316,8 @@ function activateTabFromElement(tabRoot, element) {
   });
 
   // Activate current
-  const activePanel = tabRoot.querySelector(`.tab-panel[id="${tabId}"]`);
-  const activeTitle = tabRoot.querySelector(`.tab-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
+  const activePanel = tabRoot.querySelector(`.tabs-panel[id="${tabId}"]`);
+  const activeTitle = tabRoot.querySelector(`.tabs-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
   console.log('activePanel', activePanel);
   console.log('activeTitle', activeTitle);
 
