@@ -23,6 +23,11 @@
         "id": "multi-section",
         "fields": [
             {
+                "component": "tab",
+                "label": "Section Configs",
+                "name": "tab1"
+            },
+            {
                 "component": "text",
                 "name": "name",
                 "label": "Section Name",
@@ -131,12 +136,10 @@
           ]
           },
           {
-            "component": "container",
-            "label": "Optional outer background properties",
-            "name": "container",
-            "valueType": "string",
-            "collapsible": true,
-            "fields": [
+            "component": "tab",
+            "label": "Background Properties",
+            "name": "tab2"
+          },
           {
             "component": "text",
             "name": "backgroundColor",
@@ -200,8 +203,6 @@
             "value": "",
             "valueType": "string",
             "description": "optional minimum height when in mobile, e.g. 400px"
-          }
-            ]
           }
         ]
       }
