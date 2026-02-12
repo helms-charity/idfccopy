@@ -305,19 +305,19 @@ function activateTabFromElement(tabRoot, element) {
   console.log('tabId', tabId);
 
   // Deactivate all panels/titles
-  tabRoot.querySelectorAll('.tab-panel, .accordion-panel').forEach((p) => {
+  tabRoot.querySelectorAll('.tabs-panel, .accordion-panel').forEach((p) => {
     p.classList.remove('is-active');
     p.hidden = true;
     p.setAttribute('aria-hidden', 'true');
   });
-  tabRoot.querySelectorAll('.tab-title, .accordion-header').forEach((btn) => {
+  tabRoot.querySelectorAll('.tabs-title, .accordion-header').forEach((btn) => {
     btn.classList.remove('is-active');
     btn.setAttribute('aria-expanded', 'false');
   });
 
   // Activate current
   const activePanel = tabRoot.querySelector(`.tabs-panel[id="${tabId}"]`);
-  const activeTitle = tabRoot.querySelector(`.tabs-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
+  const activeTitle = tabRoot.querySelector(`.tabs-title[id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
   console.log('activePanel', activePanel);
   console.log('activeTitle', activeTitle);
 
