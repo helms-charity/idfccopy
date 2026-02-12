@@ -286,6 +286,14 @@ async function applyChanges(event) {
  * @param {Element} element - The element to activate the tab from
  */
 function activateTabFromElement(tabRoot, element) {
+  // Example for a classic tab structure:
+  // <div class="my-tabs">
+  //   <button class="tab-title" data-tab-id="tab1">...</button>
+  //   <button class="tab-title" data-tab-id="tab2">...</button>
+  //   ...
+  //   <div class="tab-panel" data-tab-id="tab1">...</div>
+  //   <div class="tab-panel" data-tab-id="tab2">...</div>
+  // </div>
   const tabId = element.id;
 
   // Deactivate all panels
