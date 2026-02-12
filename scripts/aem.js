@@ -628,10 +628,12 @@ function decorateBlock(block) {
 
 /**
  * Decorates all blocks in a container element.
+ * Section elements (e.g. nested sections inside tabs/accordion) must not be
+ * treated as blocks; only actual content blocks are decorated.
  * @param {Element} main The container element
  */
 function decorateBlocks(main) {
-  main.querySelectorAll('div.section > div > div').forEach(decorateBlock);
+  main.querySelectorAll('div.section > div > div:not(.section)').forEach(decorateBlock);
 }
 
 /**
