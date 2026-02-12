@@ -1152,20 +1152,8 @@
     "id": "card-testimonial",
     "fields": [
       {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "name": "imageAlt",
-        "label": "Alt Text"
-      },
-      {
         "component": "select",
-        "name": "quote-icon",
+        "name": "classes_quote-icon",
         "label": "Quote Icon",
         "valueType": "string",
         "description": "Icon shown at top of this testimonial card.",
@@ -1182,7 +1170,7 @@
       },
       {
         "component": "richtext",
-        "name": "text",
+        "name": "quote_text",
         "value": "",
         "label": "Text",
         "valueType": "string",
@@ -1190,21 +1178,21 @@
       },
       {
         "component": "text",
-        "name": "person-name",
+        "name": "quotedetails_person-name",
         "label": "Person Name",
         "valueType": "string",
         "description": "Author or reviewer name"
       },
       {
         "component": "text",
-        "name": "product-name",
+        "name": "quotedetails_product-name",
         "label": "Product Name",
         "valueType": "string",
         "description": "Product being reviewed (e.g. card name)"
       },
       {
         "component": "number",
-        "name": "author-rating",
+        "name": "quotedetails_author-rating",
         "label": "Author Rating",
         "valueType": "number",
         "description": "Star rating 1-5 (displayed as stars)",
@@ -1214,11 +1202,15 @@
         }
       },
       {
-        "component": "text",
-        "name": "review-date",
+        "component": "date-time",
+        "name": "quotedetails_review-date",
         "label": "Date",
-        "valueType": "string",
-        "description": "Review date. Required format: YYYY-MM-DD (e.g. 2025-03-26). Shown on page in readable format."
+        "valueType": "date",
+        "description": "Review date. Shown on page in readable format.",
+        "placeholder": "YYYY-MM-DD",
+        "validation": {
+          "customErrorMsg": "Required format: YYYY-MM-DD (e.g. 2025-03-26)"
+        }
       }
     ]
   },
