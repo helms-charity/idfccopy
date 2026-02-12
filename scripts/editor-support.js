@@ -308,6 +308,7 @@ function activateTabFromElement(tabRoot, element) {
   tabRoot.querySelectorAll('.tab-panel, .accordion-panel').forEach((p) => {
     p.classList.remove('is-active');
     p.hidden = true;
+    p.setAttribute('aria-hidden', 'true');
   });
   tabRoot.querySelectorAll('.tab-title, .accordion-header').forEach((btn) => {
     btn.classList.remove('is-active');
@@ -315,13 +316,14 @@ function activateTabFromElement(tabRoot, element) {
   });
 
   // Activate current
-  const activePanel = tabRoot.querySelector(`.tab-panel[data-tab-id="${tabId}"], .accordion-panel[data-tab-id="${tabId}"]`);
+  const activePanel = tabRoot.querySelector(`.tab-panel[id="${tabId}"], .accordion-panel[data-tab-id="${tabId}"]`);
   const activeTitle = tabRoot.querySelector(`.tab-title[data-tab-id="${tabId}"], .accordion-header[data-tab-id="${tabId}"]`);
   console.log('activePanel', activePanel);
   console.log('activeTitle', activeTitle);
 
   if (activePanel) {
     activePanel.classList.add('is-active');
+    activePanel.setAttribute('aria-hidden', 'false');
     activePanel.hidden = false;
   }
   if (activeTitle) {
