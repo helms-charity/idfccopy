@@ -656,12 +656,6 @@ main not:dialog.section.columns-container[data-section-status="loaded"] {
   overflow: visible;
 }
 
-/* 4. Sections with dark-scheme children should have dark backgrounds to prevent flash.
-      This catches cases where inline styles haven't applied yet. */
-main > .section:has(.dark-scheme) {
-  background-color: var(--color-black);
-}
-
 /* sections */
 main>.section {
   margin: 0;

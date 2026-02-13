@@ -358,27 +358,27 @@
           },
           {
             "name": "XXL",
-            "value": "size-xxl"
+            "value": "xxl"
           },
           {
             "name": "XL",
-            "value": "size-xl"
+            "value": "xl"
           },
           {
             "name": "L",
-            "value": "size-l"
+            "value": "l"
           },
           {
             "name": "M",
-            "value": "size-m"
+            "value": "m"
           },
           {
             "name": "S",
-            "value": "size-s"
+            "value": "s"
           },
           {
             "name": "XS",
-            "value": "size-xs"
+            "value": "xs"
           }
         ]
       },
@@ -458,27 +458,27 @@
               },
               {
                 "name": "XXL",
-                "value": "size-xxl"
+                "value": "xxl"
               },
               {
                 "name": "XL",
-                "value": "size-xl"
+                "value": "xl"
               },
               {
                 "name": "L",
-                "value": "size-l"
+                "value": "l"
               },
               {
                 "name": "M",
-                "value": "size-m"
+                "value": "m"
               },
               {
                 "name": "S",
-                "value": "size-s"
+                "value": "s"
               },
               {
                 "name": "XS",
-                "value": "size-xs"
+                "value": "xs"
               }
             ]
           },
@@ -767,42 +767,6 @@
         ]
       },
       {
-        "component": "select",
-        "name": "spacing",
-        "label": "Spacing top and bottom of section",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Default",
-            "value": ""
-          },
-          {
-            "name": "XXL",
-            "value": "size-xxl"
-          },
-          {
-            "name": "XL",
-            "value": "size-xl"
-          },
-          {
-            "name": "L",
-            "value": "size-l"
-          },
-          {
-            "name": "M",
-            "value": "size-m"
-          },
-          {
-            "name": "S",
-            "value": "size-s"
-          },
-          {
-            "name": "XS",
-            "value": "size-xs"
-          }
-        ]
-      },
-      {
         "component": "container",
         "label": "Optional layout properties",
         "name": "layout-container",
@@ -827,27 +791,27 @@
               },
               {
                 "name": "XXL",
-                "value": "size-xxl"
+                "value": "xxl"
               },
               {
                 "name": "XL",
-                "value": "size-xl"
+                "value": "xl"
               },
               {
                 "name": "L",
-                "value": "size-l"
+                "value": "l"
               },
               {
                 "name": "M",
-                "value": "size-m"
+                "value": "m"
               },
               {
                 "name": "S",
-                "value": "size-s"
+                "value": "s"
               },
               {
                 "name": "XS",
-                "value": "size-xs"
+                "value": "xs"
               }
             ]
           },

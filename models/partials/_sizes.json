@@ -6,27 +6,27 @@
         },
         {
           "name": "XXL",
-          "value": "size-xxl"
+          "value": "xxl"
         },
         {
           "name": "XL",
-          "value": "size-xl"
+          "value": "xl"
         },
         {
           "name": "L",
-          "value": "size-l"
+          "value": "l"
         },
         {
           "name": "M",
-          "value": "size-m"
+          "value": "m"
         },
         {
           "name": "S",
-          "value": "size-s"
+          "value": "s"
         },
         {
           "name": "XS",
-          "value": "size-xs"
+          "value": "xs"
         }
       ]
 }
