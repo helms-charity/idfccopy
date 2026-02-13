@@ -280,6 +280,59 @@ async function applyChanges(event) {
   return false;
 }
 
+/**
+ * Activate a tab from an element
+ * @param {Element} tabRoot - The root element of the tabs
+ * @param {Element} element - The element to activate the tab from
+ */
+function activateTabFromElement(tabRoot, element) {
+  // Example for a classic tab structure:
+  // <div class="my-tabs">
+  //   <button class="tab-title" data-tab-id="tab1">...</button>
+  //   <button class="tab-title" data-tab-id="tab2">...</button>
+  //   ...
+  //   <div class="tab-panel" data-tab-id="tab1">...</div>
+  //   <div class="tab-panel" data-tab-id="tab2">...</div>
+  // </div>
+  const tabId = element.id;
+  if (!tabId) return;
+  if (!tabId.includes('tabPane')) {
+    return;
+  }
+
+  // Deactivate all panels
+  tabRoot.querySelectorAll('.tabs-panel').forEach((p) => {
+    p.classList.remove('is-active');
+    p.hidden = true;
+    p.setAttribute('aria-hidden', 'true');
+  });
+
+  // Activate selected panel
+  const activePanel = tabRoot.querySelector(`.tabs-panel[id="${tabId}"]`);
+
+  if (activePanel) {
+    activePanel.classList.add('is-active');
+    activePanel.setAttribute('aria-hidden', 'false');
+    activePanel.hidden = false;
+  }
+}
+
+function openTabForElement(element) {
+  // Walk up to the nearest tabs/accordion root in your DOM
+  const tabRoot = element.closest('.tabs-wrapper');
+  if (!tabRoot) return;
+  activateTabFromElement(tabRoot, element);
+}
+
+function handleSelection(event) {
+  const targetEl = event.target;
+
+  if (!targetEl) return;
+
+  // If this is inside tabs/accordion, open the right panel/tab
+  openTabForElement(targetEl);
+}
+
 function attachEventListners(main) {
   [
     'aue:content-patch',
@@ -293,6 +346,8 @@ function attachEventListners(main) {
     const applied = await applyChanges(event);
     if (!applied) window.location.reload();
   }));
+
+  main?.addEventListener('aue:ui-select', handleSelection);
 }
 
 attachEventListners(document.querySelector('main'));
