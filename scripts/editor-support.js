@@ -298,6 +298,9 @@ function activateTabFromElement(tabRoot, element) {
   const tabId = element.id;
   console.log('tabId', tabId);
   if (!tabId) return;
+  if (!tabId.contains('tabPane')) {
+    return;
+  }
 
   // Deactivate all panels
   tabRoot.querySelectorAll('.tabs-panel').forEach((p) => {
