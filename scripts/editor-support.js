@@ -298,7 +298,7 @@ function activateTabFromElement(tabRoot, element) {
   const tabId = element.id;
   console.log('tabId', tabId);
   if (!tabId) return;
-  if (!tabId.contains('tabPane')) {
+  if (!tabId.includes('tabPane')) {
     return;
   }
 
