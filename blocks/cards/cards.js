@@ -272,6 +272,8 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
 
 /**
  * Splits the cardContent cell into cardTag, cards-card-body, and cards-modal-content divs.
+ * With headings: tag before first, body first→second, modal second onward.
+ * Without headings: first=tag, middle=body, last=modal (if 3+ nodes).
  * @param {HTMLElement} cardItem The card element to append to
  * @param {HTMLElement} contentCell The third cell (cardContent group)
  */
@@ -283,12 +285,33 @@ function splitCardContentCell(cardItem, contentCell) {
     if (el.matches?.('h1, h2, h3, h4, h5, h6')) headingIndices.push(i);
   });
 
-  const firstHeadingIdx = headingIndices[0] ?? nodes.length;
-  const secondHeadingIdx = headingIndices[1] ?? nodes.length;
+  let tagNodes;
+  let bodyNodes;
+  let modalNodes;
 
-  const tagNodes = firstHeadingIdx > 0 ? nodes.slice(0, firstHeadingIdx) : [];
-  const bodyNodes = nodes.slice(firstHeadingIdx, secondHeadingIdx);
-  const modalNodes = secondHeadingIdx < nodes.length ? nodes.slice(secondHeadingIdx) : [];
+  if (headingIndices.length > 0) {
+    const firstHeadingIdx = headingIndices[0];
+    const secondHeadingIdx = headingIndices[1] ?? nodes.length;
+    tagNodes = firstHeadingIdx > 0 ? nodes.slice(0, firstHeadingIdx) : [];
+    bodyNodes = nodes.slice(firstHeadingIdx, secondHeadingIdx);
+    modalNodes = secondHeadingIdx < nodes.length ? nodes.slice(secondHeadingIdx) : [];
+  } else {
+    // No headings: first node = tag, last node = modal (if 3+), middle = body
+    if (nodes.length === 0) return;
+    if (nodes.length === 1) {
+      tagNodes = [];
+      bodyNodes = nodes;
+      modalNodes = [];
+    } else if (nodes.length === 2) {
+      tagNodes = [nodes[0]];
+      bodyNodes = [nodes[1]];
+      modalNodes = [];
+    } else {
+      tagNodes = [nodes[0]];
+      bodyNodes = nodes.slice(1, -1);
+      modalNodes = [nodes[nodes.length - 1]];
+    }
+  }
 
   if (tagNodes.length > 0) {
     const tagDiv = document.createElement('div');
@@ -563,33 +586,22 @@ export default async function decorate(block) {
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
 
-  cardRows.forEach((row) => {
+  cardRows.forEach((row, rowIndex) => {
     const numCells = row.querySelectorAll(':scope > div').length || row.children.length;
-    let cardItem;
     if (numCells === 3) {
-      cardItem = buildCardFromThreeCells(row);
+      const cardItem = buildCardFromThreeCells(row);
+      cardsContainer.append(cardItem);
     } else {
-      // Legacy: 8-cell (or other) structure — move row content into card and classify by content
-      cardItem = document.createElement('div');
-      cardItem.classList.add('cards-card');
-      moveInstrumentation(row, cardItem);
-      while (row.firstElementChild) cardItem.append(row.firstElementChild);
-      const divsToRemove = [];
-      [...cardItem.children].forEach((div) => {
-        if (div.children.length === 1 && div.querySelector('picture')) {
-          div.className = 'cards-card-image';
-        } else if (div.children.length > 0 || div.textContent.trim().length > 0) {
-          div.className = 'cards-card-body';
-        } else {
-          divsToRemove.push(div);
-        }
-      });
-      divsToRemove.forEach((div) => div.remove());
+      // eslint-disable-next-line no-console
+      console.error(
+        'Cards block: card row has unexpected number of cells (expected 3, got %d). Row index: %d.',
+        numCells,
+        rowIndex,
+      );
     }
-    cardsContainer.append(cardItem);
   });
 
-  // Identify semantic elements for legacy cards (divider/texture by size, cardTag by heading)
+  // Identify semantic elements (divider/texture by size, cardTag by heading)
   if (supportsSemanticElements) {
     cardsContainer.querySelectorAll('.cards-card').forEach((cardItem) => {
       identifySemanticCardElements(cardItem);
