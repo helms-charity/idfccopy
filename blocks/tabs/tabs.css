@@ -90,7 +90,7 @@
 .section.multi.tabs-container .tabs-list {
     max-width: var(--grid-container-width);
     width: fit-content;
-    margin: 0 auto;
+    margin: 0 auto var(--spacing-s) auto;
 }
 
 .section[data-category="tabs-vertical"].multi.tabs-container .tabs-list {
