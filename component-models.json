@@ -760,42 +760,6 @@
         ]
       },
       {
-        "component": "select",
-        "name": "spacing",
-        "label": "Spacing top and bottom of section",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Default",
-            "value": ""
-          },
-          {
-            "name": "XXL",
-            "value": "xxl"
-          },
-          {
-            "name": "XL",
-            "value": "xl"
-          },
-          {
-            "name": "L",
-            "value": "l"
-          },
-          {
-            "name": "M",
-            "value": "m"
-          },
-          {
-            "name": "S",
-            "value": "s"
-          },
-          {
-            "name": "XS",
-            "value": "xs"
-          }
-        ]
-      },
-      {
         "component": "container",
         "label": "Optional layout properties",
         "name": "layout-container",
