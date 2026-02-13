@@ -3,60 +3,67 @@ import { toClassName } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
- * Creates a video element for the phone animation
+ * Creates a video element for the phone animation (loop, muted, autoplay).
+ * Uses <source> + setAttribute for reliable playback across browsers.
  * @param {string} videoSrc - The video source URL
  * @returns {HTMLVideoElement} The video element
  */
 function createVideoElement(videoSrc) {
   const video = document.createElement('video');
   video.className = 'phone-animation-video';
-  video.src = videoSrc;
-  video.autoplay = true;
-  video.loop = true;
-  video.muted = true;
-  video.playsInline = true;
-  video.setAttribute('playsinline', ''); // iOS support
-  video.setAttribute('webkit-playsinline', ''); // Older iOS support
+  video.setAttribute('loop', '');
+  video.setAttribute('muted', '');
+  video.setAttribute('autoplay', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', ''); // Older iOS
+  video.setAttribute('preload', 'auto');
+  video.muted = true; // Required for autoplay policy
+  const source = document.createElement('source');
+  source.src = videoSrc;
+  source.type = 'video/mp4';
+  video.appendChild(source);
   return video;
 }
 
-/**
- * Checks if a tab panel contains only a video link (no other content like icons)
- * @param {HTMLElement} tabPanel - The tab panel element
- * @returns {string|null} The video path or null if not a video-only tab
- */
-function getVideoOnlyPath(tabPanel) {
-  const firstChild = tabPanel.querySelector(':scope > div:first-child');
-  if (!firstChild) return null;
+/** Debug: set ?tabs-upi-video-debug=1 in URL to log video events to console */
+const VIDEO_DEBUG = typeof window !== 'undefined' && window.location?.search?.includes('tabs-upi-video-debug=1');
 
-  const link = firstChild.querySelector('a');
-  if (link && link.href && link.href.endsWith('.mp4')) {
-    // Check if this is a video-only tab (no icon)
-    const hasIcon = firstChild.querySelector('.icon, picture');
-    if (!hasIcon) {
-      return link.href;
+function tryPlayVideo(video) {
+  video.play().catch((err) => {
+    if (VIDEO_DEBUG) {
+      // eslint-disable-next-line no-console
+      console.warn('[tabs-upi-link] video.play() failed:', err?.message || err);
     }
-  }
-  return null;
+  });
 }
-
-// Store video paths mapped to their corresponding tabs
-const tabVideoMap = new Map();
 
 /**
  * Extracts phone video URL from a block-level div (phone group: picture + video reference).
- * Removes the video link so it does not display. Supports reference (a[href]) and legacy temp URL.
- * @param {HTMLElement} phoneGroupDiv - Direct child of block that has picture and video link
+ * Removes the video link from DOM. Supports AEM picker (a[href]) and legacy HTTP URL in p.
+ * Resolves relative paths (e.g. /content/dam/.../file.mp4) to a playable absolute URL.
+ * @param {HTMLElement} phoneGroupDiv - Block child with picture and video link
  * @returns {string|null} Absolute video URL or null
  */
 function getPhoneVideoUrlFromPhoneGroup(phoneGroupDiv) {
   const link = phoneGroupDiv.querySelector('a[href*=".mp4"]');
-  if (link && link.href) {
-    const url = link.href;
-    const p = link.closest('p');
-    if (p) p.remove();
-    else link.remove();
-    return url;
+  if (link) {
+    const raw = link.getAttribute('href');
+    if (raw) {
+      try {
+        const url = new URL(raw, window.location.href).href;
+        const p = link.closest('p');
+        if (p) p.remove();
+        else link.remove();
+        return url;
+      } catch {
+        if (link.href) {
+          const p = link.closest('p');
+          if (p) p.remove();
+          else link.remove();
+          return link.href;
+        }
+      }
+    }
   }
   const p = phoneGroupDiv.querySelector('p');
   if (p) {
@@ -64,39 +71,6 @@ function getPhoneVideoUrlFromPhoneGroup(phoneGroupDiv) {
     if (text.endsWith('.mp4') && (text.startsWith('http://') || text.startsWith('https://'))) {
       p.remove();
       return text;
-    }
-  }
-  return null;
-}
-
-/**
- * TEMPORARY: Checks if the first tab has an HTTP video URL
- * If the first child of .tabs-list has an ID starting with 'tab-http' and ending with 'mp4',
- * extract the URL from the p element and remove that tab
- * @param {HTMLElement} tablist - The tablist element (with class .tabs-list)
- * @returns {{url: string, panelId: string}|null} The video URL and panel ID, or null if not found
- */
-function getHttpVideoUrlFromFirstTab(tablist) {
-  const firstTab = tablist.firstElementChild;
-  if (!firstTab || !firstTab.id) return null;
-
-  const tabId = firstTab.id;
-  // Check if ID starts with 'tab-http' and ends with 'mp4'
-  if (tabId.startsWith('tab-http') && tabId.endsWith('mp4')) {
-    // Get the URL from the p element inside the first tab
-    const pElement = firstTab.querySelector('p');
-    if (pElement) {
-      // The URL might be in a link or as text content
-      const link = pElement.querySelector('a');
-      const videoUrl = link ? link.href : pElement.textContent.trim();
-
-      if (videoUrl && videoUrl.endsWith('.mp4')) {
-        // Get the associated panel ID before removing
-        const panelId = firstTab.getAttribute('aria-controls');
-        // Remove this tab from the tablist
-        firstTab.remove();
-        return { url: videoUrl, panelId };
-      }
     }
   }
   return null;
@@ -155,26 +129,9 @@ export default async function decorate(block) {
   // Store tab names for later use
   const tabNames = [];
 
-  // First pass: identify video-only tabs and extract video paths
-  let pendingVideoPath = null;
-  const processableTabs = [];
-
-  tabPanels.forEach((tabpanel) => {
-    const videoPath = getVideoOnlyPath(tabpanel);
-    if (videoPath) {
-      // This is a video-only tab, store the path for the next tab
-      pendingVideoPath = videoPath;
-      // Mark this tab for removal (don't add to processable tabs)
-      tabpanel.dataset.videoOnly = 'true';
-    } else {
-      // This is a regular tab
-      processableTabs.push({ tabpanel, videoPath: pendingVideoPath });
-      pendingVideoPath = null; // Reset for next iteration
-    }
-  });
-
-  // Process each regular tab panel
-  processableTabs.forEach(({ tabpanel, videoPath }, i) => {
+  // Process each tab panel
+  const processableTabs = tabPanels.map((tabpanel) => ({ tabpanel }));
+  processableTabs.forEach(({ tabpanel }, i) => {
     // Find the tab name element - it's in the first child div's p element
     const firstChildDiv = tabpanel.querySelector(':scope > div:first-child');
     if (!firstChildDiv) return; // Skip if no first child div
@@ -189,11 +146,6 @@ export default async function decorate(block) {
     tabNames.push(i === 0 ? 'the app' : tabName);
 
     const id = toClassName(tabName);
-
-    // Store video path for this tab if one was provided
-    if (videoPath) {
-      tabVideoMap.set(id, videoPath);
-    }
 
     // Decorate tabpanel
     tabpanel.className = 'tabs-panel';
@@ -311,54 +263,11 @@ export default async function decorate(block) {
   // Add tabs-list to tabs container
   if (tablist.children.length > 0) {
     tabsContainer.appendChild(tablist);
-
-    // TEMPORARY: Fallback for legacy content where video URL was in first tab
-    const httpVideoResult = !block.dataset.phoneVideoUrl
-      ? getHttpVideoUrlFromFirstTab(tablist)
-      : null;
-    if (httpVideoResult) {
-      const { url: httpVideoUrl, panelId } = httpVideoResult;
-
-      // Store video URL on the block for easy access
-      block.dataset.phoneVideoUrl = httpVideoUrl;
-
-      // Remove the corresponding tab panel
-      if (panelId) {
-        const panelToRemove = tabPanels.find((p) => p.id === panelId);
-        if (panelToRemove) {
-          panelToRemove.dataset.videoOnly = 'true'; // Mark for removal in the next loop
-        }
-      }
-
-      // Store for the first remaining tab (which will become the active one)
-      const firstRemainingTab = tablist.firstElementChild;
-      if (firstRemainingTab) {
-        // Store the first tab's ID for comparison
-        block.dataset.phoneVideoTabId = firstRemainingTab.id;
-        // Make sure first remaining tab is selected
-        firstRemainingTab.setAttribute('aria-selected', 'true');
-
-        // Show the corresponding panel for the first remaining tab
-        const firstRemainingPanelId = firstRemainingTab.getAttribute('aria-controls');
-        if (firstRemainingPanelId) {
-          const firstRemainingPanel = tabPanels.find((p) => p.id === firstRemainingPanelId);
-          if (firstRemainingPanel) {
-            firstRemainingPanel.setAttribute('aria-hidden', 'false');
-          }
-        }
-      }
-    }
   }
 
-  // Move all tab panels to tabs container and add QR code text (skip video-only tabs)
+  // Move all tab panels to tabs container and add QR code text
   let tabIndex = 0;
   tabPanels.forEach((tabpanel) => {
-    // Skip video-only tabs - they were already processed and their video paths stored
-    if (tabpanel.dataset.videoOnly === 'true') {
-      tabpanel.remove(); // Remove from DOM
-      return;
-    }
-
     tabsContainer.appendChild(tabpanel);
 
     // Find the QR code picture in this tab panel
@@ -431,10 +340,30 @@ export default async function decorate(block) {
   // Initialize phone video in all containers (desktop and mobile)
   const videoPath = block.dataset.phoneVideoUrl;
   if (videoPath) {
+    if (VIDEO_DEBUG) {
+      // eslint-disable-next-line no-console
+      console.log('[tabs-upi-link] video URL:', videoPath);
+    }
     const allVideoContainers = block.querySelectorAll('.phone-animation-video-container');
     allVideoContainers.forEach((container) => {
       const video = createVideoElement(videoPath);
       container.appendChild(video);
+      tryPlayVideo(video);
+      // Retry play when enough data has loaded (autoplay can fail if called too early)
+      video.addEventListener('loadeddata', () => tryPlayVideo(video), { once: true });
+      video.addEventListener('canplay', () => tryPlayVideo(video), { once: true });
+      if (VIDEO_DEBUG) {
+        video.addEventListener('playing', () => {
+          // eslint-disable-next-line no-console
+          console.log('[tabs-upi-link] video playing');
+        });
+        video.addEventListener('error', () => {
+          const e = video.error;
+          const src = video.querySelector('source')?.src || video.src;
+          // eslint-disable-next-line no-console
+          console.warn('[tabs-upi-link] video error:', e?.message || e?.code, src);
+        });
+      }
     });
   }
 }
