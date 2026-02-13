@@ -868,7 +868,7 @@
 .cards.experience-life > .grid-cards > .cards-card,
 .cards.experience-life > .swiper-wrapper > .cards-card,
 .cards.experience-life .benefit-cards {
-  padding-top: 140px;
+  padding-top: 160px;
 }
 
 /* Experience Life - Gray/silver gradient with image as background */
@@ -910,7 +910,7 @@
   border: 1px solid rgba(255 255 255 / 60%);
   border-radius: 4px;
   color: #2E3E79;
-  font-size: var(--body-font-size-xxs);
+  font-size: var(--body-font-size-xxs) !important;
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
