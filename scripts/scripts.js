@@ -966,15 +966,6 @@ function decorateLinkedPictures(main) {
   });
 }
 
-export function mergeSiblingButtons(container) {
-  const mergeTarget = container.querySelector('.button-group + .button-group');
-  while (container.querySelector('.button-group + .button-group')) {
-    const previous = mergeTarget.previousElementSibling;
-    previous.append(...mergeTarget.children);
-     mergeTarget.remove();
-  }
-}
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -991,7 +982,6 @@ export function decorateMain(main) {
   decorateBlocks(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);
- // mergeSiblingButtons(main);
 }
 
 function addOverlayRule(ruleSet, selector, property, value) {
