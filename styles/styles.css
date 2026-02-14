@@ -62,6 +62,8 @@
 
   --background-color: var(--color-white);
   --text-color: var(--color-gray-700);
+  --text-link-color: var(--text-color);
+  --text-link-hover-color: var(--color-red-400);
   --text-red-color: var(--color-red-400);
   --footer-red-color: var(--color-red-400);
   --btn-color-red: var(--color-red-500);
@@ -133,21 +135,14 @@ html {
 body {
   display: none;
   margin: 0;
-  background-color: var(--color-black); /* Start with black to prevent white flash on dark-themed pages */
 }
 
 /* In Universal Editor, use default background immediately */
 body:has(main[data-aue-resource]) {
-  background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
   line-height: 1.6;
-}
-
-/* Restore default background after page is fully loaded */
-body.page-loaded {
-  background-color: var(--background-color);
 }
 
 body.appear {
@@ -267,26 +262,16 @@ button {
 }
 
 /* links */
-a {
-  text-decoration: none;
-  color: var(--text-red-color);
-}
 
-a:any-link {
-  color: var(--text-color);
-  text-decoration: none;
+a {
+  color: var(--text-link-color);
+  text-decoration: underline;
   word-break: break-word;
 }
 
 a:hover {
   text-decoration: none;
-  color: var(--text-red-color);
-}
-
-a:focus {
-  text-decoration: none;
-  color: #54565B;
-  outline: none;
+  color: var(--text-link-hover-color);
 }
 
 ul {
@@ -303,20 +288,32 @@ strong {
   font-weight: 700;
 }
 
-/* buttons - base styles */
-a.button:any-link,
-button.button {
+.button-container + .button-container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-xs);
+}
+
+.button {
+  font-weight: 600;
   box-sizing: border-box;
   display: inline-block;
-  max-width: 100%;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.5em 1.2em 0.5em 0;
+  font-size: var(--body-font-size-s);
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* buttons - base styles */
+.button.primary, .button.secondary, .button.tertiary {  max-width: 100%;
   margin: 12px 0;
   border: 2px solid transparent;
   border-radius: 2.4em;
   padding: 0.5em 1.2em;
   font-style: normal;
   font-weight: 700;
-  line-height: 1.25;
-  text-align: center;
   text-decoration: none;
   cursor: pointer;
   overflow: hidden;
@@ -325,18 +322,15 @@ button.button {
 }
 
 /* Primary button */
-a.button.primary:any-link,
-button.primary {
+.button.primary {
   background-color: var(--btn-color-red);
   color: var(--color-white);
   border-color: transparent;
   transition: background-color 0.2s ease;
 }
 
-a.button.primary:hover,
-a.button.primary:focus,
-button.primary:hover,
-button.primary:focus {
+.button.primary:hover,
+.button.primary:focus {
   background-color: var(--color-white);
   border-color: var(--btn-color-red);
   color: var(--btn-color-red);
@@ -344,23 +338,21 @@ button.primary:focus {
 }
 
 /* Secondary button */
-a.button.secondary:any-link,
-button.secondary {
+.button.secondary {
   background-color: transparent;
   border: 2px solid var(--btn-color-red);
   color: var(--btn-color-red);
 }
 
-a.button.secondary:hover,
-a.button.secondary:focus,
-button.secondary:hover,
-button.secondary:focus {
+.button.secondary:hover,
+.button.secondary:focus {
   background-color: var(--color-white);
 }
 
 /* Button block styles (Universal Editor component) - base states */
-.button.block.primary a,
-.button.block.secondary a {
+/*
+.button.primary a,
+.button.secondary a {
   box-sizing: border-box;
   display: inline-block;
   margin: 12px 0;
@@ -387,7 +379,6 @@ button.secondary:focus {
   color: var(--btn-color-red);
 }
 
-/* Button block scheme variants - base states */
 .light-scheme .button.block.primary a {
   background-color: var(--btn-color-red);
   color: var(--color-white);
@@ -410,7 +401,6 @@ button.secondary:focus {
   color: var(--color-white);
 }
 
-/* Button block hover/focus states */
 .button.block.primary a:hover,
 .button.block.primary a:focus {
   background-color: var(--color-white);
@@ -454,6 +444,7 @@ button.secondary:focus {
 }
 
 /* Scheme button base states */
+/*
 .light-scheme a.button.primary:any-link,
 .light-scheme button.primary {
   background-color: var(--btn-color-red);
@@ -482,14 +473,12 @@ button.secondary:focus {
   color: var(--color-white);
 }
 
-/* Disabled button states */
 button.primary:disabled,
 button.primary:disabled:hover {
   background-color: var(--color-white);
   cursor: unset;
 }
 
-/* Scheme button hover/focus states */
 .light-scheme a.button.primary:hover,
 .light-scheme a.button.primary:focus,
 .light-scheme button.primary:hover,
@@ -522,6 +511,7 @@ button.primary:disabled:hover {
   border-color: var(--color-white);
   color: var(--btn-color-red);
 }
+*/
 
 .button > span.icon {
   vertical-align: bottom;
@@ -542,6 +532,8 @@ h3:has(span.icon) {
 }
 
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */
+
+
 .button-group {
   display: flex;
   flex-direction: column;
@@ -592,6 +584,10 @@ main img {
 
 .dark-scheme {
   color: var(--color-white);
+
+  a {
+    color: var(--color-white);
+  }
 
   .swiper-pagination-bullet {
     background: rgba(255 255 255 / 50%);

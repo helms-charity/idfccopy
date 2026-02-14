@@ -204,6 +204,7 @@ footer .footer>div .section>div {
   font: 14px "Inter", sans-serif;
   font-weight: 300;
   word-break: unset;
+  text-decoration: none;
 }
 
 .footer>div>div:nth-child(2),
