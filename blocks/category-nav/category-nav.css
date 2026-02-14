@@ -183,6 +183,10 @@ body.is-framework-page .section#bell-outline {
 .category-nav-item {
   cursor: pointer;
   position: relative;
+  
+  a {
+    text-decoration: none;
+  }
 }
 
 .category-nav-dropdown {

@@ -193,6 +193,10 @@ body.modal-open {
   color: black;
   line-height: 0;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: rgb(0 0 0 / 50%) auto 1px;
+  }
 }
 
 .modal .close-button .icon.icon-close {

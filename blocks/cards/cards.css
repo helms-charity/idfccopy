@@ -1138,7 +1138,7 @@
 .cards.blog-posts .blog-post-card .cards-card-image {
   width: 100%;
   margin: 0 0 16px;
-  border-radius: 0;
+  border-radius: 20px;
   overflow: hidden;
 }
 
@@ -1176,38 +1176,16 @@
 
 /* Blog Post Card - Button */
 .cards.blog-posts .blog-post-card .cards-card-body .button-container {
-  text-align: center;
-  margin: 16px auto;
-}
+  margin: var(--spacing-xs) auto 0 auto;
 
-.cards.blog-posts .blog-post-card .cards-card-body .button-container a,
-.cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary {
-  display: inline-flex;
-  align-items: center;
-  background: var(--btn-color-red);
-  color: var(--color-white);
-  font-size: var(--body-font-size-s);
-  font-weight: 700;
-  padding: var(--spacing-xxs) 30px;
-  border-radius: 36px;
-  border-color: transparent;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.cards.blog-posts .blog-post-card .cards-card-body .button-container a.button.primary:hover {
-  background: #7a151b;
-  text-decoration: none;
-}
-
-.cards.blog-posts .blog-post-card .cards-card-body .button-container .icon-arrow-right-white {
-  position: relative;
-  left: 10px;
-}
-
-.cards.blog-posts .blog-post-card .cards-card-body .button-container .icon-arrow-right-white img {
-  width: 24px;
-  height: 24px;
+  .button.primary {
+ font-size: var(--body-font-size-xs);
+ padding:  var(--spacing-xxs) var(--spacing-m);
+ /* override dark scheme button colors */
+ background-color: var(--color-red-500) !important;
+ border: 1px solid var(--color-red-500) !important;
+ color: var(--color-white) !important;
+  }
 }
 
 /* Desktop styles for benefit cards */
