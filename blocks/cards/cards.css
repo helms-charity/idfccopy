@@ -1627,11 +1627,6 @@
 
 /* === ALL ABOUT CARD VARIANT === */
 
-/* Ensure cards are visible in Universal Editor (override JS visibility: hidden) */
-html.adobe-ue-edit .cards.all-about-card {
-  visibility: visible !important;
-}
-
 .cards.all-about-card.swiper {
   width: 100%;
   max-width: 1005px;
