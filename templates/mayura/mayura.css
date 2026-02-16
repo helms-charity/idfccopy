@@ -1,5 +1,9 @@
 /* stylelint-disable property-no-vendor-prefix */
-
+:root {
+  --btn-tertiary-bg: var(--gradient-silver);
+  --btn-tertiary-border: var(--color-transparent);
+  --btn-tertiary-text: var(--text-color);
+}
 /*
  * Scrollbar with custom handle (mayura template only).
  * Uses native Swiper scrollbar; handle image via scrollbar-handle.svg.

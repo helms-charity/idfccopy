@@ -363,22 +363,8 @@
   line-height: 1.4;
 }
 
-.cards.important-documents .cards-card-body p {
+.cards.important-documents p {
   margin: 0;
-}
-
-/* Link text styling (when link wraps card) */
-.cards.important-documents .cards-card-body strong,
-.cards.important-documents .cards-card-body .button-container,
-.cards.important-documents .cards-card-body a,
-.cards.important-documents .cards-card-body a.button.primary {
-  color: var(--color-black);
-  font-size: var(--body-font-size-s);
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 .cards.important-documents .cards-card-body .button-container {
@@ -386,7 +372,7 @@
 }
 
 .cards.important-documents .cards-card-body a,
-.cards.important-documents .cards-card-body a.button.primary {
+.cards.important-documents .cards-card-body .button.primary {
   text-decoration: none;
   display: block;
   background: transparent;

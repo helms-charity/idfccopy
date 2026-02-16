@@ -439,7 +439,7 @@
 }
 
 .hero-heritage-cc-banner-cta a.button.primary {
-  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+  background: var(--gradient-pewter);
   font-size: var(--body-font-size-s);
   border: none;
 
@@ -536,7 +536,7 @@ color: var(--color-pewter);
   }
 
   .hero-heritage-cc .hero-heritage-cc-banner-cta-group {
-    margin-top: 40px;
+    margin-top: var(--spacing-l);
   }
 
   .hero-heritage-cc-header-cta .hero-heritage-cc-header-cta-fees-link {
