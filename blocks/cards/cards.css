@@ -367,26 +367,6 @@
   margin: 0;
 }
 
-.cards.important-documents .cards-card-body .button-container {
-  margin: 0;
-}
-
-.cards.important-documents .cards-card-body a,
-.cards.important-documents .cards-card-body .button.primary {
-  text-decoration: none;
-  display: block;
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cards.important-documents .cards-card-body a:hover,
-.cards.important-documents .cards-card-body a.button.primary:hover {
-  text-decoration: none;
-}
-
-
 /* Important Documents Section Title */
 .section:has(.cards.all-about-card) h3 {
   margin: 20px auto 0;

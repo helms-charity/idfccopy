@@ -429,7 +429,7 @@
   transition: opacity 0.35s ease-out, transform 0.35s ease-out;
 }
 
-.hero-heritage-cc-banner-cta a.button {
+.hero-heritage-cc-banner-cta .button {
   font-size: var(--body-font-size-m);
   font-weight: 500;
 }
@@ -438,7 +438,7 @@
   margin: 0;
 }
 
-.hero-heritage-cc-banner-cta a.button.primary {
+.hero-heritage-cc-banner-cta .button.primary {
   background: var(--gradient-pewter);
   font-size: var(--body-font-size-s);
   border: none;
@@ -543,11 +543,11 @@ color: var(--color-pewter);
     font-size: var(--body-font-size-s);
   }
 
-  .hero-heritage-cc-banner-cta a.button {
+  .hero-heritage-cc-banner-cta .button {
     font-size: var(--body-font-size-l);
   }
 
-.hero-heritage-cc-banner-cta a.button.primary {
+.hero-heritage-cc-banner-cta .button.primary {
   font-size: var(--body-font-size-xs);
 }
 

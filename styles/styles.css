@@ -655,11 +655,11 @@ main>.section:first-of-type {
         height: 60px;
       }
       
-      a.button:has(span.icon-icon-plus) {
+      .button:has(span.icon-icon-plus) {
         padding: var(--spacing-xs);
       }
 
-      a.button.primary {
+      .button.primary {
         font-weight: 300;
         font-size: var(--body-font-size-s);
         padding: var(--spacing-xs) var(--spacing-s);

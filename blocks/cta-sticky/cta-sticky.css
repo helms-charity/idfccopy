@@ -62,7 +62,6 @@ p + p {
   margin: 0;
   min-width: 234px;
   justify-content: center;
-  padding: calc(var(--spacing-m) / 2);
   }
 }
 
@@ -96,6 +95,11 @@ div:empty {
 
   .cta-sticky-desktop-content {
     display: block;
+      margin: var(--spacing-xxs) 0;
+    
+      .button {
+      padding: calc(var(--spacing-m) / 2);
+      }
 
     > div {
       margin: var(--spacing-xs) 0;

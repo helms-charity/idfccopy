@@ -2277,7 +2277,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   /* Override global button weight for nav-primary-links - make them lighter by default */
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container a.button {
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container .button {
     font-weight: 400;
   }
 
@@ -2290,7 +2290,7 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
   }
 
   /* Override global button weight for nav-primary-links on hover */
-  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container:hover a.button {
+  header nav .nav-sections .default-content-wrapper>ul>li .nav-fragment-section-content .nav-primary-links p.button-container:hover .button {
     font-weight: 500;
     color: #bd3e46;
   }
@@ -2949,13 +2949,11 @@ border-radius: 0;
     padding: 16px;
   }
 
-  /* Search bar - wider and flexible on desktop */
-  .nav-tools .default-content-wrapper>p:first-child {
-    min-width: 200px;
-    max-width: none;
+  /* Search bar on desktop */
+
+  header nav .nav-tools .default-content-wrapper>#search-box {
+    width: 230px;
     padding: var(--spacing-xxs) 16px;
-    flex-grow: 1;
-    flex-shrink: 0;
   }
 
   /* Search dropdown adjustments */
