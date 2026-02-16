@@ -96,6 +96,10 @@ div:empty {
   .cta-sticky-desktop-content {
     display: block;
       margin: var(--spacing-xxs) 0;
+
+      &:has(div:empty) {
+        margin: 0;
+      }
     
       .button {
       padding: calc(var(--spacing-m) / 2);
