@@ -128,12 +128,6 @@
     "components": []
   },
   {
-    "id": "nav-list",
-    "components": [
-      "nav-item"
-    ]
-  },
-  {
     "id": "overview-rte",
     "components": [
       "overview-rte-item"
