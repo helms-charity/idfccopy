@@ -2,8 +2,8 @@
  * Section Title block: apply author-selected text size and alignment as block classes.
  * Title and subtitle share the same alignment (row3). Subtitle size uses block class
  * (subtitle-size-*) so CSS can reuse the same pattern as title (size on block).
- * EDS DOM order: row0=title, row1=title_type, row2=title_size, row3=classes;
- * optional subtitle: row4=subtitle, row5=subtitle_type, row6=subtitle_size.
+ * EDS DOM order: row0=title, row1=titleType, row2=title_size, row3=classes;
+ * optional subtitle: row4=subtitle, row5=subtitleType, row6=subtitle_size.
  */
 const SIZE_CLASSES = {
   xxl: 'size-xxl',
