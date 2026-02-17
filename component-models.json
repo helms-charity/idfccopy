@@ -2086,10 +2086,6 @@
           {
             "name": "XS",
             "value": "size-xs"
-          },
-          {
-            "name": "TEST",
-            "value": "size-name"
           }
         ]
       },
