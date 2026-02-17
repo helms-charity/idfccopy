@@ -1,0 +1,5 @@
+mountpoints:
+  /:
+    url: "https://author-weretail-global-dev.adobecqms.net//bin/franklin.delivery/helms-charity/idfccopy/main"
+    type: "markup"
+    suffix: ".html"

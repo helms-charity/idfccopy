@@ -1,5 +1,0 @@
-mountpoints:
-  /:
-    url: "https://author-idfc-stage-65.adobecqms.net/bin/franklin.delivery/aemsites/idfc/main"
-    type: "markup"
-    suffix: ".html"
