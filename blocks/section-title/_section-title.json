@@ -23,7 +23,7 @@
       "fields": [
         {
           "component": "text",
-          "name": "title_text",
+          "name": "title",
           "label": "Title Text",
           "valueType": "string"
         },
@@ -79,7 +79,7 @@
           "fields": [
             {
               "component": "text",
-              "name": "subtitle_text",
+              "name": "subtitle",
               "label": "Subtitle Text",
               "valueType": "string"
             },
