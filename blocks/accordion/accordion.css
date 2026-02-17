@@ -55,7 +55,7 @@
   border-bottom: 1px solid;
   border-radius: 5px;
 
-  a:any-link {
+  a {
     color: var(--color-gray-100);
     }
 }
@@ -139,9 +139,8 @@
 
 .dark-scheme {
 
-  .accordion details[open] a:any-link {
+  .accordion details[open] a {
     color: var(--text-color);
-
   }
   
   .accordion details[open], .accordion details[open] summary {
@@ -153,7 +152,7 @@
     }
   }
   
-  a.accordion-cta.button {
+  .accordion-cta.button {
     color: var(--color-white);
     display: block;
     text-align: right;

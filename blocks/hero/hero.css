@@ -57,24 +57,6 @@
   aspect-ratio: 16 / 9;
 }
 
-.dark-scheme .hero a.button.primary:any-link,
-.dark-scheme .hero a.button.primary:any-link:hover,
- .dark-scheme button.primary,
- .dark-scheme button.primary:hover {
-background-color: var(--color-red-300);
-color: var(--color-white);
-border-color: transparent;
-}
-
-.dark-scheme .hero a.button.secondary:any-link,
-.dark-scheme .hero a.button.secondary:any-link:hover,
- .dark-scheme button.secondary,
- .dark-scheme button.secondary:hover {
-background-color: transparent;
-color: var(--color-white);
-border-color: var(--color-white);
-}
-
 /* Button groups wrapper */
 .hero .button-groups-wrapper {
   display: flex;

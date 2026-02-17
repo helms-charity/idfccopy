@@ -1,5 +1,9 @@
 /* stylelint-disable property-no-vendor-prefix */
-
+:root {
+  --btn-tertiary-bg: var(--gradient-silver);
+  --btn-tertiary-border: var(--color-transparent);
+  --btn-tertiary-text: var(--text-color);
+}
 /*
  * Scrollbar with custom handle (mayura template only).
  * Uses native Swiper scrollbar; handle image via scrollbar-handle.svg.
@@ -173,9 +177,9 @@ color: var(--dark-red-color);
   font-size: var(--body-font-size-s);
 }
 
-.mayura .sticky-cta-container .sticky-cta-content a.button,
-.mayura .cta-sticky-container .cta-sticky.block a.button {
-  background: linear-gradient(270deg, #332B28 0%, #514A44 21.11%, #8B837D 50.14%, #625A50 71.74%, #7A766D 90.18%, #433C32 100%);
+.mayura .sticky-cta-container .sticky-cta-content .button,
+.mayura .cta-sticky-container .cta-sticky.block .button {
+  background: var(--gradient-pewter);
   border: none;
 }
 

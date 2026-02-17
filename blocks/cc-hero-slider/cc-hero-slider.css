@@ -105,43 +105,9 @@ main>div.section > .cc-hero-slider-wrapper {
   margin: 0;
 }
 
-.cc-hero-slider-content a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--color-white);
-  color: var(--text-color);
-  
-  font-size: var(--body-font-size-m);
-  font-weight: 700;
-  padding: 10px 20px;
-  border-radius: 30px;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.cc-hero-slider-content a:hover {
-  background: #8a1515;
-  transform: translateY(-2px);
-}
-
-.cc-hero-slider-content a.button {
-  background: var(--gradient-silver);
-}
-
-/* Arrow icon in button - display in black and align properly */
-.cc-hero-slider-content a.button span.icon {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-  margin-left: var(--spacing-xxs);
-}
-
-.cc-hero-slider-content a .icon-arrow-right-white img {
-  filter: invert(1);
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
+.cc-hero-slider-content .button.tertiary .icon-arrow-right-white {
+    filter: invert(1);
+    opacity: 0.8;
 }
 
 /* Pop-up trigger styling */

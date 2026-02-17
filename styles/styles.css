@@ -20,6 +20,7 @@
 
 :root {
   /* colors */
+  --color-transparent: transparent;
   --color-red-300: #d13d3f;
   --color-red-400: #9c1d26;
   --color-red-500: #902a2b; /* arrow-right-red.svg */
@@ -41,6 +42,8 @@
   --color-gray-900: #222;
   --color-pewter: #7A766D;
   --color-black: #000;
+  --color-boxshadow-10: 0 0 10px 0 rgb(0 0 0 / 25%);
+  --color-boxshadow-20: 0 0 20px 0 rgb(0 0 0 / 25%);
 
   --gradient-translucent: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.24) 100%);
   --gradient-pearl: linear-gradient(73deg, #C7C6C6 -74.4%, #F1F1F1 23.15%);
@@ -62,13 +65,28 @@
 
   --background-color: var(--color-white);
   --text-color: var(--color-gray-700);
+  --text-link-color: var(--text-color);
+  --text-link-hover-color: var(--color-red-400);
   --text-red-color: var(--color-red-400);
   --footer-red-color: var(--color-red-400);
+
+  /* button styles */
+  --btn-radius: 2.4em;
   --btn-color-red: var(--color-red-500);
+  --btn-primary-bg: var(--color-red-500);
+  --btn-primary-text: var(--color-white);
+  --btn-primary-border: var(--btn-primary-bg);
+  --btn-secondary-bg: var(--color-white);
+  --btn-secondary-border: var(--color-red-500);
+  --btn-secondary-text: var(--color-red-500);
+  --btn-tertiary-bg: var(--color-red-300);
+  --btn-tertiary-border: var(--color-red-300);
+  --btn-tertiary-text: var(--color-white);
+  --btn-shadow: var(--color-boxshadow-20);
+
   /* metal card specific */
   --gradient-heritage-cc-mayura-intro: var(--gradient-indigo); /* change to --gradient-heritage-cc-intro */
   --text-color-hero-heritage-cc: var(--color-blue-800);
-
 
   /* fonts */
   --body-font-family: 'Inter', 'inter-fallback', sans-serif;
@@ -92,7 +110,7 @@
 
   /* nav height */
   --nav-height: 80px;
-  --category-nav-height: 52px;
+  --category-nav-height: 46px;
   --get-app-banner-height: 77px;
 
   /* grid */
@@ -133,21 +151,6 @@ html {
 body {
   display: none;
   margin: 0;
-  background-color: var(--color-black); /* Start with black to prevent white flash on dark-themed pages */
-}
-
-/* In Universal Editor, use default background immediately */
-body:has(main[data-aue-resource]) {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: var(--body-font-size-s);
-  line-height: 1.6;
-}
-
-/* Restore default background after page is fully loaded */
-body.page-loaded {
-  background-color: var(--background-color);
 }
 
 body.appear {
@@ -229,10 +232,6 @@ blockquote {
   margin-bottom: 0.25em;
 }
 
-p.button, p.button-container {
-  margin: 0;
-}
-
 code,
 pre {
   font-size: var(--body-font-size-s);
@@ -247,6 +246,14 @@ pre {
 }
 
 main > h1:first-of-type {
+  display: none;
+}
+
+.center {
+  text-align: center;
+}
+
+.hide-mobile {
   display: none;
 }
 
@@ -267,26 +274,15 @@ button {
 }
 
 /* links */
-a {
-  text-decoration: none;
-  color: var(--text-red-color);
-}
 
-a:any-link {
-  color: var(--text-color);
-  text-decoration: none;
+a {
+  color: var(--text-link-color);
+  text-decoration: underline;
   word-break: break-word;
 }
 
 a:hover {
   text-decoration: none;
-  color: var(--text-red-color);
-}
-
-a:focus {
-  text-decoration: none;
-  color: #54565B;
-  outline: none;
 }
 
 ul {
@@ -303,262 +299,93 @@ strong {
   font-weight: 700;
 }
 
-/* buttons - base styles */
-a.button:any-link,
-button.button {
+.button-container {
+  margin: var(--spacing-s) 0;
+}
+
+.button {
+  font-weight: 600;
   box-sizing: border-box;
   display: inline-block;
-  max-width: 100%;
-  margin: 12px 0;
-  border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
+  text-decoration: none;
+  vertical-align: middle;
+  text-align: center;
+  font-size: var(--body-font-size-s);
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.button u { /* underline replacement that has more space */
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
+
+/* buttons - base styles */
+.button.primary, .button.secondary, .button.tertiary {
+  border-radius: var(--btn-radius);
+  border-style: solid;
+  border-width: 1px;
+  padding: 0.6em 1.2em;
   font-style: normal;
   font-weight: 700;
-  line-height: 1.25;
-  text-align: center;
-  text-decoration: none;
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  box-shadow: none;
 }
 
-/* Primary button */
-a.button.primary:any-link,
-button.primary {
-  background-color: var(--btn-color-red);
-  color: var(--color-white);
-  border-color: transparent;
-  transition: background-color 0.2s ease;
+.button.primary {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-border);
+  color: var(--btn-primary-text);
 }
 
-a.button.primary:hover,
-a.button.primary:focus,
-button.primary:hover,
-button.primary:focus {
-  background-color: var(--color-white);
-  border-color: var(--btn-color-red);
-  color: var(--btn-color-red);
-  cursor: pointer;
+.button.secondary {
+  background: var(--btn-secondary-bg);
+  border-color: var(--btn-secondary-border);
+  color: var(--btn-secondary-text);
 }
 
-/* Secondary button */
-a.button.secondary:any-link,
-button.secondary {
-  background-color: transparent;
-  border: 2px solid var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-a.button.secondary:hover,
-a.button.secondary:focus,
-button.secondary:hover,
-button.secondary:focus {
-  background-color: var(--color-white);
-}
-
-/* Button block styles (Universal Editor component) - base states */
-.button.block.primary a,
-.button.block.secondary a {
-  box-sizing: border-box;
-  display: inline-block;
-  margin: 12px 0;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1.25;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.button.block.primary a {
-  background-color: var(--btn-color-red);
-  border: 2px solid transparent;
-  color: var(--color-white);
-}
-
-.button.block.secondary a {
-  background-color: transparent;
-  border: 2px solid var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-/* Button block scheme variants - base states */
-.light-scheme .button.block.primary a {
-  background-color: var(--btn-color-red);
-  color: var(--color-white);
-}
-
-.light-scheme .button.block.secondary a {
-  background-color: var(--btn-color-red);
-  border-color: var(--btn-color-red);
-}
-
-.dark-scheme .button.block.primary a {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--btn-color-red);
-}
-
-.dark-scheme .button.block.secondary a {
-  background-color: transparent;
-  border-color: var(--color-white);
-  color: var(--color-white);
-}
-
-/* Button block hover/focus states */
-.button.block.primary a:hover,
-.button.block.primary a:focus {
-  background-color: var(--color-white);
-  border-color: var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-.button.block.secondary a:hover,
-.button.block.secondary a:focus {
-  background-color: var(--color-white);
-  color: var(--btn-color-red);
-  border-color: var(--color-white);
-}
-
-.light-scheme .button.block.primary a:hover,
-.light-scheme .button.block.primary a:focus {
-  background-color: var(--color-white);
-  border-color: var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-.light-scheme .button.block.secondary a:hover,
-.light-scheme .button.block.secondary a:focus {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--btn-color-red);
-}
-
-.dark-scheme .button.block.primary a:hover,
-.dark-scheme .button.block.primary a:focus {
-  background-color: var(--color-white);
-  border-color: var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-.dark-scheme .button.block.secondary a:hover,
-.dark-scheme .button.block.secondary a:focus {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--btn-color-red);
-}
-
-/* Scheme button base states */
-.light-scheme a.button.primary:any-link,
-.light-scheme button.primary {
-  background-color: var(--btn-color-red);
-  color: var(--color-white);
-  border-color: transparent;
-}
-
-.dark-scheme a.button.primary:any-link,
-.dark-scheme button.primary {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--btn-color-red);
-}
-
-.light-scheme a.button.secondary:any-link,
-.light-scheme button.secondary {
-  background-color: var(--color-white);
-  border: 2px solid var(--btn-color-red);
-  color: var(--btn-color-red);
-}
-
-.dark-scheme a.button.secondary:any-link,
-.dark-scheme button.secondary {
-  background-color: transparent;
-  border: 2px solid var(--color-white);
-  color: var(--color-white);
-}
-
-/* Disabled button states */
-button.primary:disabled,
-button.primary:disabled:hover {
-  background-color: var(--color-white);
-  cursor: unset;
-}
-
-/* Scheme button hover/focus states */
-.light-scheme a.button.primary:hover,
-.light-scheme a.button.primary:focus,
-.light-scheme button.primary:hover,
-.light-scheme button.primary:focus {
-  background-color: var(--color-white);
-  border-color: var(--btn-color-red);
-  color: var(--btn-color-red); 
-}
-
-.dark-scheme a.button.primary:hover,
-.dark-scheme a.button.primary:focus,
-.dark-scheme button.primary:hover,
-.dark-scheme button.primary:focus {
-  background-color: var(--color-white);
-  border-color: transparent;
-}
-
-.light-scheme a.button.secondary:hover,
-.light-scheme a.button.secondary:focus,
-.light-scheme button.secondary:hover,
-.light-scheme button.secondary:focus {
-  background-color: var(--color-white);
-}
-
-.dark-scheme a.button.secondary:hover,
-.dark-scheme a.button.secondary:focus,
-.dark-scheme button.secondary:hover,
-.dark-scheme button.secondary:focus {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--btn-color-red);
-}
-
-.button > span.icon {
-  vertical-align: bottom;
-}
-
-a.button:has(span.icon) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Align icons within headings (similar to button icon alignment above) */
-h3:has(span.icon) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25em;
+.button.tertiary {
+  background: var(--btn-tertiary-bg);
+  border-color: var(--btn-tertiary-border);
+  color: var(--btn-tertiary-text);
 }
 
 /* button groups - wraps text (typically superscript) and button together for responsive layouts */
+
 .button-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin: var(--spacing-xs);
+  align-items: center;
+  margin: var(--spacing-s) 0;
+  width: max-content;
 
   p {
     margin: 0;
   }
 
   sup {
-    vertical-align: text-bottom;
+    font-size: var(--body-font-size-xs);
   }
 }
 
 .button-group .button-container {
   margin: 0;
+
+  sup {
+    vertical-align: middle;
+    font-size: var(--body-font-size-s);
+  }
+}
+
+h2:has(span.icon),
+h3:has(span.icon),
+.button:has(span.icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
 }
 
 main img {
@@ -593,6 +420,22 @@ main img {
 .dark-scheme {
   color: var(--color-white);
 
+  a {
+    color: var(--color-white);
+  }
+
+  .button.primary {
+    background: var(--btn-primary-text);
+    border-color: var(--btn-primary-text);
+    color: var(--btn-secondary-text);
+  }
+
+  .button.secondary {
+    background: var(--color-transparent);
+    border-color: var(--btn-primary-text);
+    color: var(--btn-primary-text);
+  }  
+
   .swiper-pagination-bullet {
     background: rgba(255 255 255 / 50%);
   }
@@ -600,14 +443,6 @@ main img {
   .swiper-pagination-bullet-active {
     background: var(--color-white);
   }
-}
-
-.center {
-  text-align: center;
-}
-
-.hide-mobile {
-  display: none;
 }
 
 /* =================================================================
@@ -787,12 +622,18 @@ main>.section:first-of-type {
     }
 }
 
+/* grnt-app-mob is the mobile app banner */
 &#grnt-app-mob {
   z-index: 4;
   top: 0;
   left: 0;
+  padding: var(--spacing-xxs) 0;
   width: 100%;
   border-bottom: 1px solid var(--color-gray-200);
+
+  .button-container {
+    margin: unset;
+  }
 
   .columns > div {
     background-color: var(--color-white);
@@ -814,11 +655,11 @@ main>.section:first-of-type {
         height: 60px;
       }
       
-      a.button:has(span.icon-icon-plus) {
+      .button:has(span.icon-icon-plus) {
         padding: var(--spacing-xs);
       }
 
-      a.button.primary {
+      .button.primary {
         font-weight: 300;
         font-size: var(--body-font-size-s);
         padding: var(--spacing-xs) var(--spacing-s);
@@ -930,15 +771,6 @@ main .section.highlight {
   margin-top: 0;
 }
 
-/* Category navbar is now part of header, so simpler styling */
-.category-nav-wrapper {
-  width: 100%;
-  background-color: #fff;
-  border-top: 1px solid #E0E0E0;
-  border-bottom: 1px solid #E0E0E0;
-  box-shadow: 0 2px 4px rgba(37 36 59 / 10%);
-}
-
 /* 
  * CLS FIX: Category-nav sections are loaded from fragments and temporarily 
  * inserted into main before being processed and moved to the header.
@@ -958,15 +790,6 @@ body:not(.is-framework-page) main:not([data-aue-resource]) .section.category-nav
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-}
-
-/* In Universal Editor, show category-nav sections for editing */
-main[data-aue-resource] .section.category-nav-container,
-main[data-aue-resource] .section.category-nav-section {
-  display: block !important;
-  visibility: visible !important;
-  height: auto !important;
-  overflow: visible !important;
 }
 
 /* On framework pages, show category-nav sections for preview/editing */
@@ -1224,71 +1047,8 @@ The height and width are set to 200 assuming the decorations won't be larger. */
     font-size: var(--body-font-size-xl);
   }
 
-  .section.banner-image>div>p:nth-child(1) {
-    display: none;
-  }
-
-  .section.banner-image>div>p:nth-child(2) {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    object-fit: cover;
-    margin: unset;
-  }
-
-  .section.banner-image .default-content-wrapper ol {
-    display: none;
-  }
-
-  .section.banner-image .default-content-wrapper p img {
-    height: auto;
-  }
-
-  .section.banner-image h1 {
-    top: 1%;
-    font-size: var(--heading-font-size-xs);
-    font-weight: 600;
-    letter-spacing: normal;
-    font-style: normal;
-    line-height: normal;
-    padding: 0 10px;
-  }
-
-  .section.banner-image h3 {
-    font-size: var(--body-font-size-xs);
-    font-weight: 300;
-    line-height: 18px;
-    letter-spacing: 1.3px;
-    top: 5%;
-    padding: 0 10px;
-  }
-
-  .section.banner-image .default-content-wrapper .button-container {
-    position: absolute;
-    top: 7%;
-    text-align: center;
-    font-size: var(--body-font-size-s);
-    font-style: normal;
-    font-weight: 600;
-    line-height: 20px;
-  }
-
-  .section.banner-image .default-content-wrapper .button-container a {
-    padding: 14px 34px;
-  }
-
-  .section.rte-block-container {
-    padding: 40px 0;
-  }
-
   .section.faq-accordion-container h4{
     font-size: var(--body-font-size-l);
-  }
-
-  .section.highlight.hero-banner.banner-image.columns-container {
-    height: 1250px;
   }
 
   .section.columns-container .columns-wrapper{
@@ -1325,4 +1085,21 @@ The height and width are set to 200 assuming the decorations won't be larger. */
   100% {
     transform: translateY(-15px);
   }
+}
+
+/* In Universal Editor, use default background immediately */
+body:has(main[data-aue-resource]) {
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  line-height: 1.6;
+}
+
+/* In Universal Editor, show category-nav sections for editing */
+main[data-aue-resource] .section.category-nav-container,
+main[data-aue-resource] .section.category-nav-section {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  overflow: visible !important;
 }

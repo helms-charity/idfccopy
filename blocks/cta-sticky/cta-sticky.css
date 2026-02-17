@@ -54,28 +54,20 @@ p + p {
   margin-top: 0;
 }
 
-p.button-container a.button.primary:any-link {
-  background-color: var(--color-red-300);
-  border-color: var(--color-red-300);
-  color: var(--color-white);
-  font-size: var(--body-font-size-xs);
-  box-shadow: 0 0 20px 0 rgb(0 0 0 / 25%);
+.button-container {
+  margin: var(--spacing-xxs) 0;
+
+  .button {
+  box-shadow: var(--btn-shadow);
   margin: 0;
   min-width: 234px;
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  padding: var(--spacing-xxs);
-
-  &:hover {
-    border-color: var(--color-red-300);
-    background-color: var(--color-red-300);
   }
 }
 
 div:empty {
   margin: 0;
-}
+ }
 }
 
 .cta-sticky-mobile-content {
@@ -95,11 +87,6 @@ div:empty {
     p {
       font-size: var(--body-font-size-xs);
     }
-
-    p.button-container a.button.primary:any-link {
-      font-size: var(--body-font-size-s);
-      padding: var(--spacing-xs);
-    }
   }
 
   .cta-sticky-mobile-content {
@@ -108,6 +95,15 @@ div:empty {
 
   .cta-sticky-desktop-content {
     display: block;
+      margin: var(--spacing-xxs) 0;
+
+      &:has(div:empty) {
+        margin: 0;
+      }
+    
+      .button {
+      padding: calc(var(--spacing-m) / 2);
+      }
 
     > div {
       margin: var(--spacing-xs) 0;

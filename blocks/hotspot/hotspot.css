@@ -99,7 +99,7 @@
   margin-bottom: 0;
 }
 
-.hotspot-panel-item > p > a.button {
+.hotspot-panel-item > p > .button {
   color: rgb(0 0 0);
   font-size: 16px;
   font-weight: 500;
