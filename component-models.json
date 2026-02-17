@@ -2017,7 +2017,7 @@
       },
       {
         "component": "select",
-        "name": "title_type",
+        "name": "titleType",
         "label": "Title Type",
         "value": "h2",
         "valueType": "string",
@@ -2086,6 +2086,10 @@
           {
             "name": "XS",
             "value": "size-xs"
+          },
+          {
+            "name": "TEST",
+            "value": "size-name"
           }
         ]
       },
@@ -2124,7 +2128,7 @@
           },
           {
             "component": "select",
-            "name": "subtitle_type",
+            "name": "subtitleType",
             "label": "Subtitle Type",
             "value": "p",
             "valueType": "string",
