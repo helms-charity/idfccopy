@@ -358,27 +358,27 @@
           },
           {
             "name": "XXL",
-            "value": "xxl"
+            "value": "size-xxl"
           },
           {
             "name": "XL",
-            "value": "xl"
+            "value": "size-xl"
           },
           {
             "name": "L",
-            "value": "l"
+            "value": "size-l"
           },
           {
             "name": "M",
-            "value": "m"
+            "value": "size-m"
           },
           {
             "name": "S",
-            "value": "s"
+            "value": "size-s"
           },
           {
             "name": "XS",
-            "value": "xs"
+            "value": "size-xs"
           }
         ]
       },
@@ -458,27 +458,27 @@
               },
               {
                 "name": "XXL",
-                "value": "xxl"
+                "value": "size-xxl"
               },
               {
                 "name": "XL",
-                "value": "xl"
+                "value": "size-xl"
               },
               {
                 "name": "L",
-                "value": "l"
+                "value": "size-l"
               },
               {
                 "name": "M",
-                "value": "m"
+                "value": "size-m"
               },
               {
                 "name": "S",
-                "value": "s"
+                "value": "size-s"
               },
               {
                 "name": "XS",
-                "value": "xs"
+                "value": "size-xs"
               }
             ]
           },
@@ -603,24 +603,24 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "doodle-image-top",
-        "label": "Background accessory image - top",
+        "name": "decoration-image-top",
+        "label": "Background decoration image - top",
         "description": "Displayed at top left of the section",
         "multi": false
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "doodle-image-bottom",
-        "label": "Background accessory image - bottom",
+        "name": "decoration-image-bottom",
+        "label": "Background decoration image - bottom",
         "description": "Displayed at bottom right of the section",
         "multi": false
       },
       {
         "component": "boolean",
         "valueType": "boolean",
-        "name": "doodle-reverse",
-        "label": "Reverse background accessory images",
+        "name": "decoration-reverse",
+        "label": "Reverse background decoration images",
         "description": "Display at top right and bottom left of the section"
       },
       {
@@ -1977,40 +1977,6 @@
     ]
   },
   {
-    "id": "nav-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "description": "Title of the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link",
-        "label": "Link",
-        "description": "URL for the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "sub-title",
-        "label": "Sub Title",
-        "description": "Sub Title of the navigation item."
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "value": "",
-        "label": "Description",
-        "valueType": "string",
-        "description": "Description or additional details for the navigation item."
-      }
-    ]
-  },
-  {
     "id": "overview-rte-item",
     "fields": []
   },
@@ -2045,13 +2011,13 @@
     "fields": [
       {
         "component": "text",
-        "name": "title",
-        "label": "Title",
+        "name": "title_text",
+        "label": "Title Text",
         "valueType": "string"
       },
       {
         "component": "select",
-        "name": "titleType",
+        "name": "title_type",
         "label": "Title Type",
         "value": "h2",
         "valueType": "string",
@@ -2088,7 +2054,7 @@
       },
       {
         "component": "select",
-        "name": "textSize",
+        "name": "title_size",
         "label": "Text Size",
         "value": "",
         "valueType": "string",
@@ -2126,7 +2092,7 @@
       {
         "component": "multiselect",
         "name": "classes",
-        "label": "Alignment / location",
+        "label": "Text Alignment",
         "value": "",
         "valueType": "string",
         "options": [
@@ -2141,6 +2107,94 @@
           {
             "name": "Right",
             "value": "right"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "optional-subtitle",
+        "label": "Optional Subtitle",
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "subtitle_text",
+            "label": "Subtitle Text",
+            "valueType": "string"
+          },
+          {
+            "component": "select",
+            "name": "subtitle_type",
+            "label": "Subtitle Type",
+            "value": "p",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "h1",
+                "value": "h1"
+              },
+              {
+                "name": "h2",
+                "value": "h2"
+              },
+              {
+                "name": "h3",
+                "value": "h3"
+              },
+              {
+                "name": "h4",
+                "value": "h4"
+              },
+              {
+                "name": "h5",
+                "value": "h5"
+              },
+              {
+                "name": "h6",
+                "value": "h6"
+              },
+              {
+                "name": "p",
+                "value": "p"
+              }
+            ]
+          },
+          {
+            "component": "select",
+            "name": "subtitle_size",
+            "label": "Subtitle Size",
+            "value": "",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default (based on type)",
+                "value": ""
+              },
+              {
+                "name": "XXL",
+                "value": "size-xxl"
+              },
+              {
+                "name": "XL",
+                "value": "size-xl"
+              },
+              {
+                "name": "L",
+                "value": "size-l"
+              },
+              {
+                "name": "M",
+                "value": "size-m"
+              },
+              {
+                "name": "S",
+                "value": "size-s"
+              },
+              {
+                "name": "XS",
+                "value": "size-xs"
+              }
+            ]
           }
         ]
       }

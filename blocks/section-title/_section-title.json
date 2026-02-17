@@ -23,102 +23,97 @@
       "fields": [
         {
           "component": "text",
-          "name": "title",
-          "label": "Title",
+          "name": "title_text",
+          "label": "Title Text",
           "valueType": "string"
         },
         {
           "component": "select",
-          "name": "titleType",
+          "name": "title_type",
           "label": "Title Type",
           "value": "h2",
           "valueType": "string",
           "options": [
-            {
-              "name": "h1",
-              "value": "h1"
-            },
-            {
-              "name": "h2",
-              "value": "h2"
-            },
-            {
-              "name": "h3",
-              "value": "h3"
-            },
-            {
-              "name": "h4",
-              "value": "h4"
-            },
-            {
-              "name": "h5",
-              "value": "h5"
-            },
-            {
-              "name": "h6",
-              "value": "h6"
-            },
-            {
-              "name": "p",
-              "value": "p"
-            }
+            { "name": "h1", "value": "h1" },
+            { "name": "h2", "value": "h2" },
+            { "name": "h3", "value": "h3" },
+            { "name": "h4", "value": "h4" },
+            { "name": "h5", "value": "h5" },
+            { "name": "h6", "value": "h6" },
+            { "name": "p", "value": "p" }
           ]
         },
         {
           "component": "select",
-          "name": "textSize",
+          "name": "title_size",
           "label": "Text Size",
           "value": "",
           "valueType": "string",
           "options": [
-            {
-              "name": "Default (based on heading type)",
-              "value": ""
-            },
-            {
-              "name": "XXL",
-              "value": "size-xxl"
-            },
-            {
-              "name": "XL",
-              "value": "size-xl"
-            },
-            {
-              "name": "L",
-              "value": "size-l"
-            },
-            {
-              "name": "M",
-              "value": "size-m"
-            },
-            {
-              "name": "S",
-              "value": "size-s"
-            },
-            {
-              "name": "XS",
-              "value": "size-xs"
-            }
+            { "name": "Default (based on heading type)", "value": "" },
+            { "name": "XXL", "value": "size-xxl" },
+            { "name": "XL", "value": "size-xl" },
+            { "name": "L", "value": "size-l" },
+            { "name": "M", "value": "size-m" },
+            { "name": "S", "value": "size-s" },
+            { "name": "XS", "value": "size-xs" }
           ]
         },
         {
           "component": "multiselect",
           "name": "classes",
-          "label": "Alignment / location",
+          "label": "Text Alignment",
           "value": "",
           "valueType": "string",
           "options": [
+            { "name": "Default (Left)", "value": "left" },
+            { "name": "Center", "value": "center" },
+            { "name": "Right", "value": "right" }
+          ]
+        },
+        {
+          "component": "container",
+          "name": "optional-subtitle",
+          "label": "Optional Subtitle",
+          "collapsible": true,
+          "fields": [
             {
-              "name": "Default (Left)",
-              "value": "left"
+              "component": "text",
+              "name": "subtitle_text",
+              "label": "Subtitle Text",
+              "valueType": "string"
             },
             {
-              "name": "Center",
-              "value": "center"
+              "component": "select",
+              "name": "subtitle_type",
+              "label": "Subtitle Type",
+              "value": "p",
+              "valueType": "string",
+              "options": [
+                { "name": "h1", "value": "h1" },
+                { "name": "h2", "value": "h2" },
+                { "name": "h3", "value": "h3" },
+                { "name": "h4", "value": "h4" },
+                { "name": "h5", "value": "h5" },
+                { "name": "h6", "value": "h6" },
+                { "name": "p", "value": "p" }
+              ]
             },
             {
-              "name": "Right",
-              "value": "right"
+              "component": "select",
+              "name": "subtitle_size",
+              "label": "Subtitle Size",
+              "value": "",
+              "valueType": "string",
+              "options": [
+                { "name": "Default (based on type)", "value": "" },
+                { "name": "XXL", "value": "size-xxl" },
+                { "name": "XL", "value": "size-xl" },
+                { "name": "L", "value": "size-l" },
+                { "name": "M", "value": "size-m" },
+                { "name": "S", "value": "size-s" },
+                { "name": "XS", "value": "size-xs" }
+              ]
             }
           ]
         }
