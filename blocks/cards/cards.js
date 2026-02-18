@@ -4,8 +4,8 @@ import {
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
 
-/** UE instrumentation debug: set to true in console to trace data-aue-* / data-richtext-* */
-const UE_DEBUG = typeof window !== 'undefined' && window.__CARDS_UE_DEBUG === true;
+/** UE instrumentation debug: full trace runs automatically (set window.__CARDS_UE_DEBUG = false to disable) */
+const UE_DEBUG = typeof window === 'undefined' || window.__CARDS_UE_DEBUG !== false;
 
 function getUEAttrNames(el) {
   if (!el || !el.attributes) return [];
@@ -616,13 +616,13 @@ export default async function decorate(block) {
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
 
-  // One-time debug hint and snapshot of UE attrs on initial block/rows
+  // One-time snapshot of UE attrs on initial block/rows
   if (typeof window !== 'undefined' && !window.__CARDS_UE_DEBUG_LOGGED) {
     window.__CARDS_UE_DEBUG_LOGGED = true;
     const totalOnBlock = getUEAttrNames(block).length;
     const onRows = rows.map((r, i) => ({ row: i, count: getUEAttrNames(r).length, descendants: r.querySelectorAll('*').length }));
     // eslint-disable-next-line no-console
-    console.debug('[Cards UE] Instrumentation snapshot at decorate: block UE attrs=', totalOnBlock, 'rows=', onRows, 'Enable full trace: set window.__CARDS_UE_DEBUG = true and reload');
+    console.debug('[Cards UE] Instrumentation snapshot at decorate: block UE attrs=', totalOnBlock, 'rows=', onRows);
   }
 
   // Move block-level UE instrumentation from config rows onto the block so the tree shows
