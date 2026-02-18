@@ -350,6 +350,8 @@ function buildCardFromThreeCells(row) {
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
+  // Consolidate all card-field instrumentation onto this element so UE tree shows one "Card" node
+  row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
 
   const cells = [...row.children];
   if (cells.length < 3) return cardItem;
@@ -590,6 +592,15 @@ export default async function decorate(block) {
   const rows = [...block.children];
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
+
+  // Move block-level UE instrumentation from config rows onto the block so the tree shows
+  // one "Cards" node (not modal/swiper as separate nodes). Same pattern as accordion: one
+  // source element's instrumentation → one target; here config rows → block.
+  for (let i = 0; i < configRowCount; i += 1) {
+    const configRow = rows[i];
+    moveInstrumentation(configRow, block);
+    configRow.querySelectorAll('*').forEach((el) => moveInstrumentation(el, block));
+  }
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
