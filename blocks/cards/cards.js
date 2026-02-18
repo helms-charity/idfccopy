@@ -14,11 +14,33 @@ function getUEAttrNames(el) {
     .filter((n) => n.startsWith('data-aue-') || n.startsWith('data-richtext-'));
 }
 
+/** All data-aue-* / data-richtext-* name → value (what the UE side rail uses to build the tree). */
+function getUEAttrs(el) {
+  if (!el || !el.attributes) return {};
+  const out = {};
+  [...el.attributes].forEach(({ nodeName, value }) => {
+    if (nodeName.startsWith('data-aue-') || nodeName.startsWith('data-richtext-')) {
+      out[nodeName] = value;
+    }
+  });
+  return out;
+}
+
 function debugUE(label, el, extra = '') {
   if (!UE_DEBUG) return;
   const attrs = el ? getUEAttrNames(el) : [];
   // eslint-disable-next-line no-console
   console.debug(`[Cards UE] ${label}`, attrs.length ? attrs : '(none)', extra);
+}
+
+/** Verbose side-rail debug: full UE attr names + values and element descriptor. */
+function debugUESideRail(label, el) {
+  if (!UE_DEBUG) return;
+  const attrs = el ? getUEAttrs(el) : {};
+  const cls = el?.className && typeof el.className === 'string' ? el.className : null;
+  const desc = el ? { tag: el.tagName, id: el.id || null, class: cls } : null;
+  // eslint-disable-next-line no-console
+  console.debug(`[Cards UE – side rail] ${label}`, { attrs, el: desc });
 }
 
 /**
@@ -365,16 +387,19 @@ function splitCardContentCell(cardItem, contentCell) {
  */
 function buildCardFromThreeCells(row) {
   debugUE('Card row (before move)', row);
+  debugUESideRail('Card row (before move)', row);
   row.querySelectorAll('*').forEach((desc, di) => {
-    const a = getUEAttrNames(desc);
-    if (a.length) debugUE(`  card row descendant ${di}`, desc, `${desc.tagName} ${(desc.className && typeof desc.className === 'string') ? desc.className : ''}`);
+    if (getUEAttrNames(desc).length) debugUESideRail(`  card row descendant ${di} (before move)`, desc);
   });
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
   // Consolidate all card-field instrumentation onto this element so UE tree shows one "Card" node
   row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
+  // So the tree shows one "Card" node: drop data-aue-prop (component type doesn't use it; prop drives per-field tree nodes).
+  cardItem.removeAttribute('data-aue-prop');
   debugUE('cardItem (after move)', cardItem);
+  debugUESideRail('cardItem (after move)', cardItem);
 
   const cells = [...row.children];
   if (cells.length < 3) return cardItem;
@@ -539,6 +564,8 @@ function globalMayuraScrollbarResizeHandler() {
 }
 
 export default async function decorate(block) {
+  // Order of operations: (1) sync setup and build card DOM, (2) block.replaceChildren(cardsContainer)
+  // so the block shows built cards immediately, (3) sync class/interactivity, (4) await Swiper only if needed.
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
@@ -616,13 +643,16 @@ export default async function decorate(block) {
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
 
-  // One-time snapshot of UE attrs on initial block/rows
+  // One-time snapshot: full UE attr names + values (what the side rail uses)
   if (typeof window !== 'undefined' && !window.__CARDS_UE_DEBUG_LOGGED) {
     window.__CARDS_UE_DEBUG_LOGGED = true;
-    const totalOnBlock = getUEAttrNames(block).length;
-    const onRows = rows.map((r, i) => ({ row: i, count: getUEAttrNames(r).length, descendants: r.querySelectorAll('*').length }));
-    // eslint-disable-next-line no-console
-    console.debug('[Cards UE] Instrumentation snapshot at decorate: block UE attrs=', totalOnBlock, 'rows=', onRows);
+    debugUESideRail('Snapshot – block (at decorate start)', block);
+    rows.forEach((r, i) => {
+      debugUESideRail(`Snapshot – row ${i}`, r);
+      r.querySelectorAll('*').forEach((d, di) => {
+        if (getUEAttrNames(d).length) debugUESideRail(`Snapshot – row ${i} descendant ${di} (${d.tagName})`, d);
+      });
+    });
   }
 
   // Move block-level UE instrumentation from config rows onto the block so the tree shows
@@ -632,13 +662,15 @@ export default async function decorate(block) {
     const configRow = rows[i];
     debugUE(`Config row ${i} (before move)`, configRow);
     configRow.querySelectorAll('*').forEach((desc, di) => {
-      const a = getUEAttrNames(desc);
-      if (a.length) debugUE(`  config row ${i} descendant ${di}`, desc, desc.tagName);
+      if (getUEAttrNames(desc).length) debugUESideRail(`Config row ${i} descendant ${di} (before move)`, desc);
     });
     moveInstrumentation(configRow, block);
     configRow.querySelectorAll('*').forEach((el) => moveInstrumentation(el, block));
   }
+  // One "Cards" node: drop data-aue-prop (component type; prop drives per-field tree nodes).
+  block.removeAttribute('data-aue-prop');
   debugUE('Block after config rows moved', block);
+  debugUESideRail('Block after config (side rail)', block);
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
@@ -691,8 +723,10 @@ export default async function decorate(block) {
 
   if (UE_DEBUG) {
     debugUE('Block (final)', block);
+    debugUESideRail('Block (final) – side rail content', block);
     cardsContainer.querySelectorAll('.cards-card').forEach((c, i) => {
       debugUE(`Card ${i} (final)`, c);
+      debugUESideRail(`Card ${i} (final) – side rail content`, c);
     });
   }
 
@@ -723,7 +757,7 @@ export default async function decorate(block) {
     }
   });
 
-  block.append(cardsContainer);
+  // cardsContainer is already the block's only child (from replaceChildren above); no second append.
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
