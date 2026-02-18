@@ -155,10 +155,14 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
     });
 
     // Hide the original link text but keep it functional
-    const buttonContainer = cardLink.closest('.button-container');
-    if (buttonContainer) {
-      buttonContainer.classList.add('sr-only');
+    let buttonContainer = cardLink.closest('.button-container');
+    if (!buttonContainer) {
+      buttonContainer = document.createElement('div');
+      buttonContainer.className = 'button-container';
+      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
+      buttonContainer.appendChild(cardLink);
     }
+    buttonContainer.classList.add('sr-only');
 
     // Add arrow icon for interactive cards (if enabled for this variant)
     if (shouldAddArrow) {
@@ -256,10 +260,14 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
     });
 
     // Hide the original link text but keep it functional
-    const buttonContainer = cardLink.closest('.button-container');
-    if (buttonContainer) {
-      buttonContainer.classList.add('sr-only');
+    let buttonContainer = cardLink.closest('.button-container');
+    if (!buttonContainer) {
+      buttonContainer = document.createElement('div');
+      buttonContainer.className = 'button-container';
+      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
+      buttonContainer.appendChild(cardLink);
     }
+    buttonContainer.classList.add('sr-only');
 
     // Add arrow icon for interactive cards (if enabled for this variant)
     if (shouldAddArrow) {
@@ -639,45 +647,6 @@ export default async function decorate(block) {
   allCards.forEach((cardItem) => {
     if (isImportantDocuments) {
       cardItem.classList.add('important-documents-card');
-
-      // Make entire card clickable - wrap card content in link
-      const link = cardItem.querySelector('.cards-card-body a');
-      if (link && link.href) {
-        const linkUrl = link.href;
-        const linkTitle = link.getAttribute('title') || link.textContent.trim();
-        const imageDiv = cardItem.querySelector('.cards-card-image');
-        const bodyDiv = cardItem.querySelector('.cards-card-body');
-
-        // Create new link wrapper
-        const cardLink = document.createElement('a');
-        cardLink.href = linkUrl;
-        cardLink.title = linkTitle;
-        cardLink.className = 'important-documents-card-link';
-
-        // Move elements directly instead of cloning (performance optimization)
-        if (imageDiv) {
-          // Remove from parent and append to link
-          const imageDivClone = imageDiv.cloneNode(true);
-          cardLink.appendChild(imageDivClone);
-        }
-
-        // Move body content into link, but replace nested link with just text
-        if (bodyDiv) {
-          const bodyDivClone = bodyDiv.cloneNode(true);
-          const nestedLink = bodyDivClone.querySelector('a');
-          if (nestedLink) {
-            // Replace link with its text content (use textContent for better performance)
-            const strong = document.createElement('strong');
-            strong.textContent = nestedLink.textContent;
-            nestedLink.replaceWith(strong);
-          }
-          cardLink.appendChild(bodyDivClone);
-        }
-
-        // Clear and append link wrapper
-        cardItem.textContent = '';
-        cardItem.appendChild(cardLink);
-      }
     } else if (isBlogPosts) {
       cardItem.classList.add('blog-post-card');
     } else if (!isEarnRewards && !isJoiningPerks && !isAllAboutCard) {
@@ -689,8 +658,8 @@ export default async function decorate(block) {
     }
 
     // Setup interactivity for all card types (links, modals)
-    // Skip for blog-posts and important-documents - they use standard link behavior
-    if (!isBlogPosts && !isImportantDocuments) {
+    // Skip for blog-posts and important-documents - they use wrap-in-link behavior only
+    if (!isBlogPosts) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
