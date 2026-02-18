@@ -2024,7 +2024,6 @@
         "component": "select",
         "name": "titleType",
         "label": "Title Type",
-        "value": "h2",
         "valueType": "string",
         "options": [
           {
@@ -2131,7 +2130,6 @@
             "component": "select",
             "name": "subtitleType",
             "label": "Subtitle Type",
-            "value": "p",
             "valueType": "string",
             "options": [
               {
