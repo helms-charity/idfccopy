@@ -404,8 +404,11 @@ function buildCardFromThreeCells(row) {
   moveInstrumentation(row, cardItem);
   // Consolidate all card-field instrumentation onto this element so UE tree shows one "Card" node
   row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
-  // So the tree shows one "Card" node: drop data-aue-prop (component type doesn't use it; prop drives per-field tree nodes).
+  // One "Card" node: drop data-aue-prop so rail does not show Image, Text, etc. as tree nodes.
   cardItem.removeAttribute('data-aue-prop');
+  // Container type + label so side rail shows only "Card", not its property rows.
+  cardItem.setAttribute('data-aue-type', 'container');
+  cardItem.setAttribute('data-aue-label', 'Card');
   debugUE('cardItem (after move)', cardItem);
   debugUESideRail('cardItem (after move)', cardItem);
 
@@ -675,8 +678,11 @@ export default async function decorate(block) {
     moveInstrumentation(configRow, block);
     configRow.querySelectorAll('*').forEach((el) => moveInstrumentation(el, block));
   }
-  // One "Cards" node: drop data-aue-prop (component type; prop drives per-field tree nodes).
+  // One "Cards" node: drop data-aue-prop so rail does not show property nodes.
   block.removeAttribute('data-aue-prop');
+  // Container type + label so side rail shows only "Cards" and its Card children, not property rows.
+  block.setAttribute('data-aue-type', 'container');
+  block.setAttribute('data-aue-label', 'Cards');
   debugUE('Block after config rows moved', block);
   debugUESideRail('Block after config (side rail)', block);
 
