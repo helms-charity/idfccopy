@@ -31,7 +31,6 @@
           "component": "select",
           "name": "titleType",
           "label": "Title Type",
-          "value": "h2",
           "valueType": "string",
           "options": [
             { "name": "h1", "value": "h1" },
@@ -88,7 +87,6 @@
               "component": "select",
               "name": "subtitleType",
               "label": "Subtitle Type",
-              "value": "h3",
               "valueType": "string",
               "options": [
                 { "name": "h1", "value": "h1" },
