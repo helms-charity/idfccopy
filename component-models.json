@@ -2126,7 +2126,7 @@
             "component": "select",
             "name": "subtitleType",
             "label": "Subtitle Type",
-            "value": "p",
+            "value": "h3",
             "valueType": "string",
             "options": [
               {

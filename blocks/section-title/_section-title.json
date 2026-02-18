@@ -88,7 +88,7 @@
               "component": "select",
               "name": "subtitleType",
               "label": "Subtitle Type",
-              "value": "p",
+              "value": "h3",
               "valueType": "string",
               "options": [
                 { "name": "h1", "value": "h1" },

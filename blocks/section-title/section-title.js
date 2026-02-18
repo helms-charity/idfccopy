@@ -1,10 +1,11 @@
 /**
  * Section Title block: apply author-selected text size and alignment as block classes.
- * Title and subtitle share the same alignment (row3). Subtitle size uses block class
- * (subtitle-size-*) so CSS can reuse the same pattern as title (size on block).
- * EDS DOM order: row0=title, row1=titleType, row2=title_size, row3=classes;
- * optional subtitle: row4=subtitle, row5=subtitleType, row6=subtitle_size.
+ * Uses readBlockConfig (aem.js) so content is read by label like other EDS blocks;
+ * supports both existing semantic heading in DOM and building from config when
+ * title is only in table cells (e.g. UE rendering).
  */
+import { readBlockConfig } from '../../scripts/aem.js';
+
 const SIZE_CLASSES = {
   xxl: 'size-xxl',
   xl: 'size-xl',
@@ -29,48 +30,48 @@ function toSizeClass(val) {
   return '';
 }
 
-function cellText(row) {
-  if (!row) return '';
-  const col = row.children.length >= 2 ? row.children[1] : row;
-  return (col.textContent || '').trim();
-}
-
 const SUBTITLE_TAG = /^h[1-6]|p$/i;
 
 function decorate(block) {
-  const rows = block.querySelectorAll(':scope > div');
-  const titleSizeRowIndex = 2;
-  if (rows.length > titleSizeRowIndex) {
-    const sizeClass = toSizeClass(cellText(rows[titleSizeRowIndex]));
-    if (sizeClass) block.classList.add(sizeClass);
+  const config = readBlockConfig(block);
+
+  const titleText = config['title-text'] ?? config.title ?? '';
+  const titleType = (config['title-type'] ?? config.titleType ?? 'h2').trim().toLowerCase();
+  const tagName = SUBTITLE_TAG.test(titleType) ? titleType : 'h2';
+
+  const sizeVal = config['text-size'] ?? config.textSize ?? '';
+  const sizeClass = toSizeClass(sizeVal);
+  if (sizeClass) block.classList.add(sizeClass);
+
+  const alignment = config.classes ?? config['text-alignment'] ?? '';
+  const validAlignment = ['left', 'center', 'right'];
+  if (alignment) {
+    const classes = typeof alignment === 'string' ? alignment.split(',').map((c) => c.trim()) : [alignment];
+    classes.forEach((c) => c && validAlignment.includes(c) && block.classList.add(c));
   }
 
-  const heading = block.querySelector('h1, h2, h3, h4, h5, h6, p');
-  if (heading && block.children.length > 1) {
+  let heading = block.querySelector('h1, h2, h3, h4, h5, h6, p');
+  if (!heading && titleText) {
+    heading = document.createElement(tagName);
+    heading.textContent = titleText;
+  }
+
+  if (heading) {
     block.innerHTML = '';
     heading.classList.add('title');
     block.appendChild(heading);
 
-    const subtitleTextRowIndex = 4;
-    const subtitleTypeRowIndex = 5;
-    const subtitleSizeRowIndex = 6;
-    if (rows.length > subtitleTextRowIndex) {
-      const subtitleText = cellText(rows[subtitleTextRowIndex]);
-      if (subtitleText) {
-        let tagName = 'p';
-        if (rows.length > subtitleTypeRowIndex) {
-          const typeVal = cellText(rows[subtitleTypeRowIndex]);
-          if (typeVal && SUBTITLE_TAG.test(typeVal)) tagName = typeVal.toLowerCase();
-        }
-        const subtitle = document.createElement(tagName);
-        subtitle.className = 'subtitle';
-        if (rows.length > subtitleSizeRowIndex) {
-          const sizeClass = toSizeClass(cellText(rows[subtitleSizeRowIndex]));
-          if (sizeClass) block.classList.add(`subtitle-${sizeClass}`);
-        }
-        subtitle.textContent = subtitleText;
-        block.appendChild(subtitle);
-      }
+    const subtitleText = (config.subtitle ?? '').trim();
+    if (subtitleText) {
+      const subType = (config['subtitle-type'] ?? config.subtitleType ?? 'p').trim().toLowerCase();
+      const subTagName = SUBTITLE_TAG.test(subType) ? subType : 'p';
+      const subtitle = document.createElement(subTagName);
+      subtitle.className = 'subtitle';
+      subtitle.textContent = subtitleText;
+      const subSizeVal = config['subtitle-size'] ?? config.subtitle_size ?? '';
+      const subSizeClass = toSizeClass(subSizeVal);
+      if (subSizeClass) block.classList.add(`subtitle-${subSizeClass}`);
+      block.appendChild(subtitle);
     }
   }
 }
