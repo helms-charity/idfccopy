@@ -193,6 +193,10 @@ body.modal-open {
   color: black;
   line-height: 0;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: rgb(0 0 0 / 50%) auto 1px;
+  }
 }
 
 .modal .close-button .icon.icon-close {
@@ -334,7 +338,7 @@ body.modal-open {
 }
 
 /* Button styles - base styles first */
-.modal dialog.modal-mayura-silver .button-container a.button {
+.modal dialog.modal-mayura-silver .button-container .button {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
@@ -352,7 +356,7 @@ body.modal-open {
   }
 }
 
-.modal dialog.modal-mayura-blue .button-container a.button {
+.modal dialog.modal-mayura-blue .button-container .button {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xxs);
@@ -371,8 +375,8 @@ body.modal-open {
 }
 
 /* Button styles - hover states */
-.modal dialog.modal-mayura-silver .button-container a.button:hover,
-.modal dialog.modal-mayura-blue .button-container a.button:hover {
+.modal dialog.modal-mayura-silver .button-container .button:hover,
+.modal dialog.modal-mayura-blue .button-container .button:hover {
   opacity: 0.8;
 }
 
@@ -448,9 +452,6 @@ body.modal-open {
     padding: 40px var(--spacing-l);
   }
 
-  .modal dialog .modal-content:has(.section[data-id="mayura-card-modal"]) {
-  }
-
   /* Top right decoration - offset to viewport right corner (50vw from dialog center) */
   .modal .modal-page-background .modal-decoration-top-right {
     top: var(--modal-offset-height);
@@ -464,18 +465,6 @@ body.modal-open {
     transform: rotate(180deg);
   }
 }
-
-/* ===== Special Content Styles ===== */
-
-/* H2 styling for modals with fees-and-charges table 
-.modal:has(#fees-and-charges) h2 {
-  font-size: var(--heading-font-size-l);
-  font-weight: 700;
-  text-align: center;
-  margin: 0 0 25px;
-  padding: 40px 0 0;
-}
-*/
 
 /* ===== Mayura Metal Card Modal Styles ===== */
 

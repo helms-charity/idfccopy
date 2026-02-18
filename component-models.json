@@ -291,6 +291,11 @@
     "id": "section",
     "fields": [
       {
+        "component": "tab",
+        "label": "Section Configs",
+        "name": "section-configs"
+      },
+      {
         "component": "text",
         "name": "name",
         "label": "Section Name",
@@ -501,126 +506,122 @@
         ]
       },
       {
-        "component": "container",
-        "label": "Optional outer background properties",
-        "name": "container",
+        "component": "tab",
+        "label": "Background Properties",
+        "name": "background-properties"
+      },
+      {
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color/gradient",
+        "value": "",
         "valueType": "string",
-        "collapsible": true,
-        "fields": [
+        "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImage",
+        "label": "Background Image",
+        "description": "Background image of the section, displayed on top of the background color if specified",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImageMobile",
+        "label": "Background Image Mobile",
+        "description": "Background image for mobile",
+        "multi": false
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-fit",
+        "label": "Background Fit",
+        "value": "cover",
+        "options": [
           {
-            "component": "text",
-            "name": "backgroundColor",
-            "label": "Background Color/gradient",
-            "value": "",
-            "valueType": "string",
-            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+            "name": "cover",
+            "value": "cover"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImage",
-            "label": "Background Image",
-            "description": "Background image of the section, displayed on top of the background color if specified",
-            "multi": false
+            "name": "contain",
+            "value": "contain"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImageMobile",
-            "label": "Background Image Mobile",
-            "description": "Background image for mobile",
-            "multi": false
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-fit",
-            "label": "Background Fit",
-            "value": "cover",
-            "options": [
-              {
-                "name": "cover",
-                "value": "cover"
-              },
-              {
-                "name": "contain",
-                "value": "contain"
-              },
-              {
-                "name": "none",
-                "value": "none"
-              }
-            ]
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-position",
-            "label": "Background Image Position",
-            "value": "center",
-            "options": [
-              {
-                "name": "center",
-                "value": "center"
-              },
-              {
-                "name": "top left",
-                "value": "top left"
-              },
-              {
-                "name": "top right",
-                "value": "top right"
-              },
-              {
-                "name": "bottom left",
-                "value": "bottom left"
-              },
-              {
-                "name": "bottom right",
-                "value": "bottom right"
-              }
-            ]
-          },
-          {
-            "component": "text",
-            "name": "height",
-            "label": "Desktop Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in desktop, e.g. 400px"
-          },
-          {
-            "component": "text",
-            "name": "heightmobile",
-            "label": "Mobile Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in mobile, e.g. 400px"
-          },
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "decoration-image-top",
-            "label": "Background decoration image - top",
-            "description": "Displayed at top left of the section",
-            "multi": false
-          },
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "decoration-image-bottom",
-            "label": "Background decoration image - bottom",
-            "description": "Displayed at bottom right of the section",
-            "multi": false
-          },
-          {
-            "component": "boolean",
-            "valueType": "boolean",
-            "name": "decoration-reverse",
-            "label": "Reverse background decoration images",
-            "description": "Display at top right and bottom left of the section"
+            "name": "none",
+            "value": "none"
           }
         ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-position",
+        "label": "Background Image Position",
+        "value": "center",
+        "options": [
+          {
+            "name": "center",
+            "value": "center"
+          },
+          {
+            "name": "top left",
+            "value": "top left"
+          },
+          {
+            "name": "top right",
+            "value": "top right"
+          },
+          {
+            "name": "bottom left",
+            "value": "bottom left"
+          },
+          {
+            "name": "bottom right",
+            "value": "bottom right"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "height",
+        "label": "Desktop Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in desktop, e.g. 400px"
+      },
+      {
+        "component": "text",
+        "name": "heightmobile",
+        "label": "Mobile Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in mobile, e.g. 400px"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "decoration-image-top",
+        "label": "Background decoration image - top",
+        "description": "Displayed at top left of the section",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "decoration-image-bottom",
+        "label": "Background decoration image - bottom",
+        "description": "Displayed at bottom right of the section",
+        "multi": false
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "decoration-reverse",
+        "label": "Reverse background decoration images",
+        "description": "Display at top right and bottom left of the section"
       },
       {
         "component": "container",
@@ -711,6 +712,11 @@
     "id": "multi-section",
     "fields": [
       {
+        "component": "tab",
+        "label": "Section Configs",
+        "name": "tab1"
+      },
+      {
         "component": "text",
         "name": "name",
         "label": "Section Name",
@@ -761,42 +767,6 @@
         ]
       },
       {
-        "component": "select",
-        "name": "spacing",
-        "label": "Spacing top and bottom of section",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Default",
-            "value": ""
-          },
-          {
-            "name": "XXL",
-            "value": "size-xxl"
-          },
-          {
-            "name": "XL",
-            "value": "size-xl"
-          },
-          {
-            "name": "L",
-            "value": "size-l"
-          },
-          {
-            "name": "M",
-            "value": "size-m"
-          },
-          {
-            "name": "S",
-            "value": "size-s"
-          },
-          {
-            "name": "XS",
-            "value": "size-xs"
-          }
-        ]
-      },
-      {
         "component": "container",
         "label": "Optional layout properties",
         "name": "layout-container",
@@ -821,27 +791,27 @@
               },
               {
                 "name": "XXL",
-                "value": "size-xxl"
+                "value": "xxl"
               },
               {
                 "name": "XL",
-                "value": "size-xl"
+                "value": "xl"
               },
               {
                 "name": "L",
-                "value": "size-l"
+                "value": "l"
               },
               {
                 "name": "M",
-                "value": "size-m"
+                "value": "m"
               },
               {
                 "name": "S",
-                "value": "size-s"
+                "value": "s"
               },
               {
                 "name": "XS",
-                "value": "size-xs"
+                "value": "xs"
               }
             ]
           },
@@ -869,103 +839,99 @@
         ]
       },
       {
-        "component": "container",
-        "label": "Optional outer background properties",
-        "name": "container",
+        "component": "tab",
+        "label": "Background Properties",
+        "name": "tab2"
+      },
+      {
+        "component": "text",
+        "name": "backgroundColor",
+        "label": "Background Color/gradient",
+        "value": "",
         "valueType": "string",
-        "collapsible": true,
-        "fields": [
+        "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImage",
+        "label": "Background Image",
+        "description": "Background image of the section, displayed on top of the background color if specified",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "sectionBackgroundImageMobile",
+        "label": "Background Image Mobile",
+        "description": "Background image for mobile",
+        "multi": false
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-fit",
+        "label": "Background Fit",
+        "value": "cover",
+        "options": [
           {
-            "component": "text",
-            "name": "backgroundColor",
-            "label": "Background Color/gradient",
-            "value": "",
-            "valueType": "string",
-            "description": "Use hex (e.g. #000000), RGB (e.g. rgb(0, 0, 0)) or CSS color values (e.g. var(--gradient-silver)"
+            "name": "cover",
+            "value": "cover"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImage",
-            "label": "Background Image",
-            "description": "Background image of the section, displayed on top of the background color if specified",
-            "multi": false
+            "name": "contain",
+            "value": "contain"
           },
           {
-            "component": "reference",
-            "valueType": "string",
-            "name": "sectionBackgroundImageMobile",
-            "label": "Background Image Mobile",
-            "description": "Background image for mobile",
-            "multi": false
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-fit",
-            "label": "Background Fit",
-            "value": "cover",
-            "options": [
-              {
-                "name": "cover",
-                "value": "cover"
-              },
-              {
-                "name": "contain",
-                "value": "contain"
-              },
-              {
-                "name": "none",
-                "value": "none"
-              }
-            ]
-          },
-          {
-            "component": "select",
-            "valueType": "string",
-            "name": "object-position",
-            "label": "Background Image Position",
-            "value": "center",
-            "options": [
-              {
-                "name": "center",
-                "value": "center"
-              },
-              {
-                "name": "top left",
-                "value": "top left"
-              },
-              {
-                "name": "top right",
-                "value": "top right"
-              },
-              {
-                "name": "bottom left",
-                "value": "bottom left"
-              },
-              {
-                "name": "bottom right",
-                "value": "bottom right"
-              }
-            ]
-          },
-          {
-            "component": "text",
-            "name": "height",
-            "label": "Desktop Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in desktop, e.g. 400px"
-          },
-          {
-            "component": "text",
-            "name": "heightmobile",
-            "label": "Mobile Height",
-            "value": "",
-            "valueType": "string",
-            "description": "optional minimum height when in mobile, e.g. 400px"
+            "name": "none",
+            "value": "none"
           }
         ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "object-position",
+        "label": "Background Image Position",
+        "value": "center",
+        "options": [
+          {
+            "name": "center",
+            "value": "center"
+          },
+          {
+            "name": "top left",
+            "value": "top left"
+          },
+          {
+            "name": "top right",
+            "value": "top right"
+          },
+          {
+            "name": "bottom left",
+            "value": "bottom left"
+          },
+          {
+            "name": "bottom right",
+            "value": "bottom right"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "height",
+        "label": "Desktop Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in desktop, e.g. 400px"
+      },
+      {
+        "component": "text",
+        "name": "heightmobile",
+        "label": "Mobile Height",
+        "value": "",
+        "valueType": "string",
+        "description": "optional minimum height when in mobile, e.g. 400px"
       }
     ]
   },
@@ -2016,40 +1982,6 @@
     ]
   },
   {
-    "id": "nav-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "description": "Title of the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link",
-        "label": "Link",
-        "description": "URL for the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "sub-title",
-        "label": "Sub Title",
-        "description": "Sub Title of the navigation item."
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "value": "",
-        "label": "Description",
-        "valueType": "string",
-        "description": "Description or additional details for the navigation item."
-      }
-    ]
-  },
-  {
     "id": "overview-rte-item",
     "fields": []
   },
@@ -2085,7 +2017,7 @@
       {
         "component": "text",
         "name": "title",
-        "label": "Title",
+        "label": "Title Text",
         "valueType": "string"
       },
       {
@@ -2127,7 +2059,7 @@
       },
       {
         "component": "select",
-        "name": "textSize",
+        "name": "title_size",
         "label": "Text Size",
         "value": "",
         "valueType": "string",
@@ -2165,7 +2097,7 @@
       {
         "component": "multiselect",
         "name": "classes",
-        "label": "Alignment / location",
+        "label": "Text Alignment",
         "value": "",
         "valueType": "string",
         "options": [
@@ -2180,6 +2112,94 @@
           {
             "name": "Right",
             "value": "right"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "optional-subtitle",
+        "label": "Optional Subtitle",
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "subtitle",
+            "label": "Subtitle Text",
+            "valueType": "string"
+          },
+          {
+            "component": "select",
+            "name": "subtitleType",
+            "label": "Subtitle Type",
+            "value": "p",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "h1",
+                "value": "h1"
+              },
+              {
+                "name": "h2",
+                "value": "h2"
+              },
+              {
+                "name": "h3",
+                "value": "h3"
+              },
+              {
+                "name": "h4",
+                "value": "h4"
+              },
+              {
+                "name": "h5",
+                "value": "h5"
+              },
+              {
+                "name": "h6",
+                "value": "h6"
+              },
+              {
+                "name": "p",
+                "value": "p"
+              }
+            ]
+          },
+          {
+            "component": "select",
+            "name": "subtitle_size",
+            "label": "Subtitle Size",
+            "value": "",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default (based on type)",
+                "value": ""
+              },
+              {
+                "name": "XXL",
+                "value": "size-xxl"
+              },
+              {
+                "name": "XL",
+                "value": "size-xl"
+              },
+              {
+                "name": "L",
+                "value": "size-l"
+              },
+              {
+                "name": "M",
+                "value": "size-m"
+              },
+              {
+                "name": "S",
+                "value": "size-s"
+              },
+              {
+                "name": "XS",
+                "value": "size-xs"
+              }
+            ]
           }
         ]
       }
@@ -2411,11 +2431,10 @@
     "id": "tabs-upi-link",
     "fields": [
       {
-        "component": "reference",
+        "component": "text",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "classes",
+        "label": "Style"
       },
       {
         "component": "richtext",
@@ -2425,15 +2444,16 @@
         "valueType": "string"
       },
       {
-        "component": "text",
+        "component": "reference",
         "valueType": "string",
-        "name": "classes",
-        "label": "Style"
+        "name": "phone_image",
+        "label": "Image",
+        "multi": false
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "phone-video",
+        "name": "phone_video",
         "label": "Phone Video",
         "multi": false,
         "filter": {
@@ -2441,13 +2461,6 @@
             "video/mp4"
           ]
         }
-      },
-      {
-        "component": "richtext",
-        "name": "temp-video-url",
-        "value": "",
-        "label": "Temporary External Phone Video URL",
-        "valueType": "string"
       }
     ]
   },

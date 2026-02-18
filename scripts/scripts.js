@@ -675,8 +675,14 @@ export function handleSectionMetadata(el) {
   if (metadata.style?.text) handleStyle(metadata.style.text, section);
   if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
   if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
-  if (metadata.gap?.text) handleLayout(metadata.gap.text, section, 'gap');
-  if (metadata.spacing?.text) handleLayout(metadata.spacing.text, section, 'spacing');
+  if (metadata.gap?.text) {
+    const gapText = metadata.gap.text.replace(/^size-/, '');
+    if (gapText) handleLayout(gapText, section, 'gap');
+  }
+  if (metadata.spacing?.text) {
+    const spacingText = metadata.spacing.text.replace(/^size-/, '');
+    if (spacingText) handleLayout(spacingText, section, 'spacing');
+  }
   if (metadata.containerwidth?.text) handleLayout(metadata.containerwidth.text, section, 'container');
 
   // Handle section height (desktop and mobile)
@@ -849,84 +855,83 @@ function initEntranceAnimationObserver(container) {
   sections.forEach((section) => observer.observe(section));
 }
 
-function groupItemsByMultisection(items) {
-  const grouped = {};
-  items.forEach((item) => {
-    const groupValue = item.getAttribute('data-multisection');
-    if (!grouped[groupValue]) {
-      grouped[groupValue] = [];
-    }
-    grouped[groupValue].push(item);
-  });
-  return grouped;
+/**
+ * Finds all elements in main with the same data-multisection as the container section,
+ * excluding the container itself. Items may be other sections or divs (tab/accordion panels).
+ */
+function getMultisectionItemsForSection(main, containerSection) {
+  const groupValue = containerSection.getAttribute('data-multisection');
+  if (!groupValue) return [];
+  const matches = main.querySelectorAll(`[data-multisection="${groupValue}"]`);
+  return [...matches].filter((el) => el !== containerSection);
 }
 
-function createSectionFromGroup(groupItems, blockClass, handlePicture = false) {
-  const firstItem = groupItems[0];
-  const section = document.createElement('div');
-  section.classList.add('section', 'multi');
-  section.id = firstItem.getAttribute('data-multisection');
-
-  // Copy all classes from the first item to the section
-  firstItem.classList.forEach((className) => {
-    section.classList.add(className);
-  });
-
-  // Copy inline styles from the first item to the section
-  const inlineStyles = firstItem.getAttribute('style');
-  if (inlineStyles) {
-    section.setAttribute('style', inlineStyles);
-    firstItem.removeAttribute('style');
+/**
+ * Ensures the section has a .block-content wrapper so blocks are discoverable.
+ * Creates one and prepends it to the section if missing.
+ * @param {Element} section The section element
+ * @returns {Element} The .block-content element (existing or newly created)
+ */
+function ensureBlockContent(section) {
+  let contentContainer = section.querySelector(':scope > .block-content');
+  if (!contentContainer) {
+    contentContainer = document.createElement('div');
+    contentContainer.className = 'block-content';
+    section.prepend(contentContainer);
+    if (section.blocks) section.blocks = [...section.querySelectorAll('.block-content > div[class]')];
   }
+  return contentContainer;
+}
 
-  // Handle picture.bg-images for tabs
+/**
+ * Builds the tabs/accordion block inside an existing section and moves the grouped items into it.
+ * Appends the block as a direct child of .block-content so it is discovered and decorated.
+ * Returns the created block element so the section's blocks list can be updated.
+ */
+function appendMultiSectionBlock(section, groupItems, blockClass, handlePicture = false) {
+  const firstItem = groupItems[0];
+
   if (handlePicture) {
     const firstChild = firstItem.firstElementChild;
-    if (firstChild && firstChild.tagName === 'PICTURE' && firstChild.classList.contains('bg-images')) {
+    if (firstChild?.tagName === 'PICTURE' && firstChild.classList.contains('bg-images')) {
       firstChild.remove();
       section.prepend(firstChild);
     }
   }
 
-  // Create wrapper and block structure
-  const wrapperDiv = document.createElement('div');
   const blockDiv = document.createElement('div');
   blockDiv.classList.add(blockClass);
   groupItems.forEach((item) => {
     blockDiv.append(item);
   });
-  wrapperDiv.append(blockDiv);
-  section.append(wrapperDiv);
 
-  return section;
+  const contentContainer = ensureBlockContent(section);
+  contentContainer.append(blockDiv);
+
+  if (section.blocks) {
+    section.blocks.push(blockDiv);
+  }
+  return blockDiv;
 }
 
 export function buildMultiSection(main) {
-  // Handle accordions
-  const accordionItems = main.querySelectorAll('div[data-category="accordion"]');
-  if (accordionItems.length > 0) {
-    const groupedAccordions = groupItemsByMultisection(accordionItems);
-    Object.values(groupedAccordions).forEach((groupItems) => {
-      const [firstItem] = groupItems;
-      const { parentElement: parent, nextSibling } = firstItem;
-      const accordionSection = createSectionFromGroup(groupItems, 'accordion', true);
-      // Insert section at the position where the first item was
-      parent.insertBefore(accordionSection, nextSibling);
-    });
-  }
+  const containerSections = main.querySelectorAll('.section[data-is-multisection="true"]');
 
-  // Handle tabs: items with data-multisection that are not accordions
-  const tabItems = main.querySelectorAll('div[data-multisection]:not([data-category="accordion"])');
-  if (tabItems.length > 0) {
-    const groupedTabs = groupItemsByMultisection(tabItems);
-    Object.values(groupedTabs).forEach((groupItems) => {
-      const [firstItem] = groupItems;
-      const { parentElement: parent, nextSibling } = firstItem;
-      const multisection = createSectionFromGroup(groupItems, 'tabs', true);
-      // Insert section at the position where the first item was
-      parent.insertBefore(multisection, nextSibling);
-    });
-  }
+  containerSections.forEach((section) => {
+    const items = getMultisectionItemsForSection(main, section);
+    if (items.length === 0) return;
+
+    // Block type comes from container section's "Grouped section type" (data-category)
+    const containerCategory = section.getAttribute('data-category') || '';
+    const blockClass = containerCategory === 'accordion'
+      ? 'accordion'
+      : 'tabs'; // tabs-horizontal, tabs-vertical, or any other value → tabs
+
+    section.classList.add('multi', `${blockClass}-container`);
+    appendMultiSectionBlock(section, items, blockClass, true);
+    // Decorate blocks inside nested sections so they get .block and are loaded by loadSection
+    decorateBlocks(section);
+  });
 }
 
 /**

@@ -369,3 +369,8 @@ main[data-aue-resource] .hero-heritage-cc-banner-cta a.button.primary {
   border: unset;
   text-decoration: unset;
 }
+
+/* Ensure all-about-card cards are visible in Universal Editor */
+main[data-aue-resource] .cards.all-about-card {
+  visibility: visible !important;
+}
