@@ -974,12 +974,12 @@ function decorateLinkedPictures(main) {
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
-  decorateButtonGroups(main);
   decorateIcons(main);
   decorateSections(main); /* must be before buildAutoBlocks */
   buildAutoBlocks(main);
   initEntranceAnimationObserver(main);
   decorateBlocks(main);
+  decorateButtonGroups(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);
 }
