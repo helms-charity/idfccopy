@@ -25,10 +25,6 @@
   background-color: transparent;
 }
 
-.cards .cards-card-body {
-  margin: 16px 0;
-}
-
 .cards .cards-card-image {
   line-height: 0;
 }
@@ -66,7 +62,7 @@
 
 .cards .benefit-cards .cards-card-body {
   flex: 1;
-  margin-top: var(--spacing-xs);
+  margin: var(--spacing-xs) 0;
 }
 
 .cards .benefit-cards .cards-card-body h3 {
@@ -97,11 +93,6 @@
 .cards .card-clickable {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.cards .card-clickable:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px 0 rgb(137 137 137 / 100%);
 }
 
 .cards .card-clickable:focus {
@@ -317,19 +308,11 @@
 }
 
 .cards.important-documents .important-documents-card-link {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
   text-decoration: none;
   color: inherit;
-  gap: 10px;
-  justify-content: flex-start;
-}
-
-.cards.important-documents .important-documents-card-link:hover {
-  text-decoration: none;
 }
 
 /* Important Documents Card Image */
@@ -349,18 +332,15 @@
 }
 
 /* Important Documents Card Body */
-.cards.important-documents .cards-card-body {
+.cards.important-documents .cards-card-body p,
+.cards.important-documents .cards-card-body h3 {
   width: 100%;
-  margin: 0;
   text-align: center;
   word-wrap: break-word;
   overflow-wrap: break-word;
 
   /* Base font styling for all text elements */
-  color: var(--color-black);
   font-size: var(--body-font-size-s);
-  font-weight: 600;
-  line-height: 1.4;
 }
 
 .cards.important-documents p {
@@ -384,20 +364,9 @@
   width: 100%;
 }
 
-.section:has(.cards.important-documents) .default-content-wrapper h3 {
-  color: var(--color-white);
-  font-size: var(--body-font-size-xl);
-  font-weight: 600;
-  text-align: center;
-  margin: 32px 0;
-  padding: 0 16px;
+.dark-scheme .cards .important-documents-card {
+  color: var(--text-color);
 }
-
-/* === RELATED SEARCH CARD VARIANT === 
-.section:has(.cards.related-search) {
-  padding: 40px 16px var(--spacing-xl);
-}
-  */
 
 .section:has(.cards.related-search) .default-content-wrapper h2 {
   color: #54565b;
@@ -437,11 +406,6 @@
   gap: 16px;
   position: relative;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.cards.related-search .benefit-cards:hover {
-  box-shadow: 0 4px 16px rgba(0 0 0 / 12%);
-  transform: translateY(-2px);
 }
 
 /* Related Search Card Image */
@@ -1841,7 +1805,6 @@
 
   .cards.important-documents .cards-card-body {
     flex: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -1945,7 +1908,6 @@
 
   .cards.experience-life .benefit-cards .cards-card-body {
     padding: 0 28px 28px;
-    margin-top: var(--spacing-xs);
   }
 
   .cards.experience-life .benefit-cards .cards-card-body h3 {
