@@ -4,6 +4,23 @@ import {
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
 
+/** UE instrumentation debug: set to true in console to trace data-aue-* / data-richtext-* */
+const UE_DEBUG = typeof window !== 'undefined' && window.__CARDS_UE_DEBUG === true;
+
+function getUEAttrNames(el) {
+  if (!el || !el.attributes) return [];
+  return [...el.attributes]
+    .map(({ nodeName }) => nodeName)
+    .filter((n) => n.startsWith('data-aue-') || n.startsWith('data-richtext-'));
+}
+
+function debugUE(label, el, extra = '') {
+  if (!UE_DEBUG) return;
+  const attrs = el ? getUEAttrNames(el) : [];
+  // eslint-disable-next-line no-console
+  console.debug(`[Cards UE] ${label}`, attrs.length ? attrs : '(none)', extra);
+}
+
 /**
  * Sanitizes text for JSON-LD by removing/replacing problematic characters
  * @param {string} text The text to sanitize
@@ -347,11 +364,17 @@ function splitCardContentCell(cardItem, contentCell) {
  * @returns {HTMLElement} The card element
  */
 function buildCardFromThreeCells(row) {
+  debugUE('Card row (before move)', row);
+  row.querySelectorAll('*').forEach((desc, di) => {
+    const a = getUEAttrNames(desc);
+    if (a.length) debugUE(`  card row descendant ${di}`, desc, `${desc.tagName} ${(desc.className && typeof desc.className === 'string') ? desc.className : ''}`);
+  });
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
   // Consolidate all card-field instrumentation onto this element so UE tree shows one "Card" node
   row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
+  debugUE('cardItem (after move)', cardItem);
 
   const cells = [...row.children];
   if (cells.length < 3) return cardItem;
@@ -593,14 +616,29 @@ export default async function decorate(block) {
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
 
+  // One-time debug hint and snapshot of UE attrs on initial block/rows
+  if (typeof window !== 'undefined' && !window.__CARDS_UE_DEBUG_LOGGED) {
+    window.__CARDS_UE_DEBUG_LOGGED = true;
+    const totalOnBlock = getUEAttrNames(block).length;
+    const onRows = rows.map((r, i) => ({ row: i, count: getUEAttrNames(r).length, descendants: r.querySelectorAll('*').length }));
+    // eslint-disable-next-line no-console
+    console.debug('[Cards UE] Instrumentation snapshot at decorate: block UE attrs=', totalOnBlock, 'rows=', onRows, 'Enable full trace: set window.__CARDS_UE_DEBUG = true and reload');
+  }
+
   // Move block-level UE instrumentation from config rows onto the block so the tree shows
   // one "Cards" node (not modal/swiper as separate nodes). Same pattern as accordion: one
   // source element's instrumentation → one target; here config rows → block.
   for (let i = 0; i < configRowCount; i += 1) {
     const configRow = rows[i];
+    debugUE(`Config row ${i} (before move)`, configRow);
+    configRow.querySelectorAll('*').forEach((desc, di) => {
+      const a = getUEAttrNames(desc);
+      if (a.length) debugUE(`  config row ${i} descendant ${di}`, desc, desc.tagName);
+    });
     moveInstrumentation(configRow, block);
     configRow.querySelectorAll('*').forEach((el) => moveInstrumentation(el, block));
   }
+  debugUE('Block after config rows moved', block);
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
@@ -650,6 +688,13 @@ export default async function decorate(block) {
   });
 
   block.replaceChildren(cardsContainer);
+
+  if (UE_DEBUG) {
+    debugUE('Block (final)', block);
+    cardsContainer.querySelectorAll('.cards-card').forEach((c, i) => {
+      debugUE(`Card ${i} (final)`, c);
+    });
+  }
 
   // Get all card elements once and reuse
   const allCards = cardsContainer.querySelectorAll('.cards-card');
