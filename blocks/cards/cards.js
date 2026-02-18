@@ -33,14 +33,22 @@ function debugUE(label, el, extra = '') {
   console.debug(`[Cards UE] ${label}`, attrs.length ? attrs : '(none)', extra);
 }
 
-/** Verbose side-rail debug: full UE attr names + values and element descriptor. */
+/** Verbose side-rail debug: full UE attr names + values (what UE shows in the tree). */
 function debugUESideRail(label, el) {
   if (!UE_DEBUG) return;
   const attrs = el ? getUEAttrs(el) : {};
   const cls = el?.className && typeof el.className === 'string' ? el.className : null;
   const desc = el ? { tag: el.tagName, id: el.id || null, class: cls } : null;
+  // Log attrs as separate arg so DevTools shows key/value when expanded
   // eslint-disable-next-line no-console
-  console.debug(`[Cards UE – side rail] ${label}`, { attrs, el: desc });
+  console.debug(`[Cards UE – side rail] ${label}`, desc, attrs);
+  // Explicit values line so side-rail contents are visible without expanding
+  if (Object.keys(attrs).length > 0) {
+    const trunc = (v) => (String(v).length > 80 ? `${String(v).slice(0, 80)}…` : String(v));
+    const pairs = Object.entries(attrs).map(([k, v]) => `${k}="${trunc(v)}"`).join(' ');
+    // eslint-disable-next-line no-console
+    console.debug('[Cards UE – side rail] values:', pairs);
+  }
 }
 
 /**
