@@ -93,16 +93,31 @@ function extractBlockProperties(block) {
       if (t) modalTheme = t;
       return;
     }
-    const img = node.tagName === 'IMG' ? node : node.querySelector?.('img');
-    if (img?.src) modalImages.push(img.src);
+    // Only collect when we visit the img itself so we get one entry per image in document order.
+    // (Previously we pushed for any node containing an img, so the first image was pushed twice.)
+    if (node.tagName === 'IMG' && node.src) {
+      modalImages.push(node.src);
+      return;
+    }
     [...node.childNodes].forEach(walk);
   };
   walk(modalCell);
   if (modalTheme) block.dataset.modalTheme = modalTheme;
-  const [dialogTexture, pageBg, decorationImg] = modalImages;
-  if (dialogTexture) block.dataset.modalDialogBackgroundImageTexture = dialogTexture;
-  if (pageBg) block.dataset.modalPageBackgroundImage = pageBg;
-  if (decorationImg) block.dataset.modalPageDecorationImage = decorationImg;
+  // Assign by count: 3 = [texture, pageBg, decoration], 2 = [pageBg, decoration], 1 = [pageBg].
+  const n = modalImages.length;
+  if (n >= 3) {
+    const [dialogTexture, pageBg, decorationImg] = modalImages;
+    block.dataset.modalDialogBackgroundImageTexture = dialogTexture;
+    block.dataset.modalPageBackgroundImage = pageBg;
+    block.dataset.modalPageDecorationImage = decorationImg;
+  } else if (n === 2) {
+    const [pageBg, decorationImg] = modalImages;
+    block.dataset.modalPageBackgroundImage = pageBg;
+    block.dataset.modalPageDecorationImage = decorationImg;
+  } else if (n === 1) {
+    const [pageBg] = modalImages;
+    block.dataset.modalPageBackgroundImage = pageBg;
+  }
 
   const swiperText = swiperCell.textContent?.trim() || '';
   const parts = swiperText.split(/\s+/).filter(Boolean);
