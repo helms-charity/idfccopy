@@ -588,6 +588,13 @@
   align-items: stretch;
 }
 
+/* When key-benefits uses grid (no swiper), lay out cards in a grid so they don't stretch full width */
+.cards.key-benefits > .grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
 /* Key Benefits Card Base Styling */
 .cards.key-benefits > .grid-cards > .cards-card,
 .cards.key-benefits .swiper-slide > .cards-card,

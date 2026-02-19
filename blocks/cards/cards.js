@@ -467,10 +467,7 @@ function buildCardFromCells(cells, rowOrRows) {
   cardItem.classList.add('cards-card');
   const rows = Array.isArray(rowOrRows) ? rowOrRows : [rowOrRows];
   rows.forEach((row) => {
-    if (row) {
-      moveInstrumentation(row, cardItem);
-      row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
-    }
+    if (row) moveInstrumentation(row, cardItem);
   });
   cardItem.removeAttribute('data-aue-prop');
   cardItem.setAttribute('data-aue-type', 'container');
@@ -537,10 +534,7 @@ function buildCardFromSevenCells(cells, rowOrRows) {
   cardItem.classList.add('cards-card');
   const rows = Array.isArray(rowOrRows) ? rowOrRows : [rowOrRows];
   rows.forEach((row) => {
-    if (row) {
-      moveInstrumentation(row, cardItem);
-      row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
-    }
+    if (row) moveInstrumentation(row, cardItem);
   });
   cardItem.removeAttribute('data-aue-prop');
   cardItem.setAttribute('data-aue-type', 'container');
@@ -600,7 +594,6 @@ function buildCardFromThreeCells(row) {
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
-  row.querySelectorAll('*').forEach((el) => moveInstrumentation(el, cardItem));
   cardItem.removeAttribute('data-aue-prop');
   cardItem.setAttribute('data-aue-type', 'container');
   cardItem.setAttribute('data-aue-label', 'Card');
