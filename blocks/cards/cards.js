@@ -4,16 +4,6 @@ import {
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
 
-/** UE debug: set window.__CARDS_UE_DEBUG = false to disable. */
-// eslint-disable-next-line no-underscore-dangle
-const UE_DEBUG = typeof window === 'undefined' || window.__CARDS_UE_DEBUG !== false;
-function logUE(...args) {
-  if (UE_DEBUG) {
-    // eslint-disable-next-line no-console
-    console.debug('[Cards UE]', ...args);
-  }
-}
-
 /**
  * Sanitizes text for JSON-LD by removing/replacing problematic characters
  * @param {string} text The text to sanitize
@@ -830,7 +820,6 @@ export default async function decorate(block) {
   const rows = [...block.children];
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
-  logUE('rows=', rows.length, 'configRowCount=', configRowCount, 'cardRows=', cardRows.length);
 
   // Move block-level UE instrumentation from config rows onto the block (row element only,
   // not descendants) so the tree shows one "Cards" node. Same pattern as accordion:
@@ -841,7 +830,6 @@ export default async function decorate(block) {
   block.removeAttribute('data-aue-prop');
   block.setAttribute('data-aue-type', 'container');
   block.setAttribute('data-aue-label', 'Cards');
-  logUE('block after config: type=', block.getAttribute('data-aue-type'), 'label=', block.getAttribute('data-aue-label'), 'model=', block.getAttribute('data-aue-model') || '(none)');
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
@@ -905,8 +893,6 @@ export default async function decorate(block) {
       numCells,
     );
   }
-  const builtCardCount = cardsContainer.querySelectorAll('.cards-card').length;
-  logUE('built cards=', builtCardCount);
 
   // Identify semantic elements (divider/texture by size, cardTag by heading)
   if (supportsSemanticElements) {
