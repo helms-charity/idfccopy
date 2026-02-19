@@ -41,18 +41,54 @@
           "name": "classes",
           "label": "Style",
           "options": [
-            { "name": "Standard", "value": "" },
-            { "name": "All About", "value": "all-about-card" },
-            { "name": "Important Documents", "value": "important-documents" },
-            { "name": "Key Benefits", "value": "key-benefits" },
-            { "name": "Experience Life", "value": "experience-life" },
-            { "name": "Reward Points", "value": "reward-points" },
-            { "name": "Blog Posts", "value": "blog-posts" },
-            { "name": "Earn Rewards", "value": "earn-rewards" },
-            { "name": "Related Search", "value": "related-search" },
-            { "name": "Joining Perks", "value": "joining-perks" },
-            { "name": "Explore Other Cards", "value": "explore-other-cards" },
-            { "name": "Image and Title", "value": "image-and-title" }
+            {
+              "name": "Standard",
+              "value": ""
+            },
+            {
+              "name": "All About",
+              "value": "all-about-card"
+            },
+            {
+              "name": "Important Documents",
+              "value": "important-documents"
+            },
+            {
+              "name": "Key Benefits",
+              "value": "key-benefits"
+            },
+            {
+              "name": "Experience Life",
+              "value": "experience-life"
+            },
+            {
+              "name": "Reward Points",
+              "value": "reward-points"
+            },
+            {
+              "name": "Blog Posts",
+              "value": "blog-posts"
+            },
+            {
+              "name": "Earn Rewards",
+              "value": "earn-rewards"
+            },
+            {
+              "name": "Related Search",
+              "value": "related-search"
+            },
+            {
+              "name": "Joining Perks",
+              "value": "joining-perks"
+            },
+            {
+              "name": "Explore Other Cards",
+              "value": "explore-other-cards"
+            },
+            {
+              "name": "Image and Title",
+              "value": "image-and-title"
+            }
           ]
         },
         {
@@ -62,9 +98,18 @@
           "valueType": "string",
           "description": "Select the theme for the modal",
           "options": [
-            { "name": "Default (no theme)", "value": "" },
-            { "name": "Mayura Blue", "value": "modal-mayura-blue" },
-            { "name": "Mayura Silver", "value": "modal-mayura-silver" }
+            {
+              "name": "Default (no theme)",
+              "value": ""
+            },
+            {
+              "name": "Mayura Blue",
+              "value": "modal-mayura-blue"
+            },
+            {
+              "name": "Mayura Silver",
+              "value": "modal-mayura-silver"
+            }
           ]
         },
         {
