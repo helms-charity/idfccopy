@@ -79,6 +79,12 @@
     ]
   },
   {
+    "id": "cards-icon",
+    "components": [
+      "card"
+    ]
+  },
+  {
     "id": "cards-testimonial",
     "components": [
       "card-testimonial"
