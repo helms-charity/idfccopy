@@ -44,7 +44,7 @@
         },
         {
           "component": "select",
-          "name": "title_size",
+          "name": "textSize",
           "label": "Text Size",
           "value": "",
           "valueType": "string",
@@ -56,13 +56,12 @@
             { "name": "M", "value": "size-m" },
             { "name": "S", "value": "size-s" },
             { "name": "XS", "value": "size-xs" }
-
           ]
         },
         {
-          "component": "multiselect",
+          "component": "select",
           "name": "classes",
-          "label": "Text Alignment",
+          "label": "Alignment",
           "value": "",
           "valueType": "string",
           "options": [

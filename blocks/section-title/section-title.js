@@ -1,10 +1,6 @@
 /**
- * Section Title block: apply author-selected text size and alignment as block classes.
- * Title and subtitle share the same alignment (row3). Subtitle size uses block class
- * (subtitle-size-*) so CSS can reuse the same pattern as title (size on block).
- * EDS DOM row order follows _section-title.json model field order:
- * row0=title, row1=titleType, row2=title_size, row3=classes;
- * row4=subtitle, row5=subtitleType, row6=subtitle_size (optional-subtitle container).
+ * Section Title block: apply author-selected text size and alignment as classes.
+ * EDS DOM order: row0=title, row1=textSize, row2=alignment.
  */
 const SIZE_CLASSES = {
   xxl: 'size-xxl',
@@ -36,44 +32,16 @@ function cellText(row) {
   return (col.textContent || '').trim();
 }
 
-const SUBTITLE_TAG = /^h[1-6]|p$/i;
-
-function decorate(block) {
+export default function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
-  const titleSizeRowIndex = 2;
-  if (rows.length > titleSizeRowIndex) {
-    const sizeClass = toSizeClass(cellText(rows[titleSizeRowIndex]));
+  if (rows.length >= 2) {
+    const sizeClass = toSizeClass(cellText(rows[1]));
     if (sizeClass) block.classList.add(sizeClass);
   }
 
   const heading = block.querySelector('h1, h2, h3, h4, h5, h6, p');
   if (heading && block.children.length > 1) {
     block.innerHTML = '';
-    heading.classList.add('title');
     block.appendChild(heading);
-
-    const subtitleTextRowIndex = 4;
-    const subtitleTypeRowIndex = 5;
-    const subtitleSizeRowIndex = 6;
-    if (rows.length > subtitleTextRowIndex) {
-      const subtitleText = cellText(rows[subtitleTextRowIndex]);
-      if (subtitleText) {
-        let tagName = 'p';
-        if (rows.length > subtitleTypeRowIndex) {
-          const typeVal = cellText(rows[subtitleTypeRowIndex]);
-          if (typeVal && SUBTITLE_TAG.test(typeVal)) tagName = typeVal.toLowerCase();
-        }
-        const subtitle = document.createElement(tagName);
-        subtitle.className = 'subtitle';
-        if (rows.length > subtitleSizeRowIndex) {
-          const sizeClass = toSizeClass(cellText(rows[subtitleSizeRowIndex]));
-          if (sizeClass) block.classList.add(`subtitle-${sizeClass}`);
-        }
-        subtitle.textContent = subtitleText;
-        block.appendChild(subtitle);
-      }
-    }
   }
 }
-
-export default decorate;
