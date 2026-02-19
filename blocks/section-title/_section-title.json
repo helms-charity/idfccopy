@@ -44,8 +44,8 @@
         },
         {
           "component": "select",
-          "name": "textSize",
-          "label": "Text Size",
+          "name": "title_size",
+          "label": "Title Size",
           "value": "",
           "valueType": "string",
           "options": [
