@@ -1,6 +1,6 @@
 /**
- * Section Title block: minimal decorate — add size/alignment classes and .title on heading.
- * Does not clear or replace content; only decorates what’s already in the block.
+ * Section Title block: apply author-selected text size and alignment as classes.
+ * EDS DOM order: row0=title, row1=textSize, row2=alignment.
  */
 const SIZE_CLASSES = {
   xxl: 'size-xxl',
@@ -34,16 +34,14 @@ function cellText(row) {
 
 export default function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
-
-  if (rows.length > 2) {
-    const sizeClass = toSizeClass(cellText(rows[2]));
+  if (rows.length >= 2) {
+    const sizeClass = toSizeClass(cellText(rows[1]));
     if (sizeClass) block.classList.add(sizeClass);
-  }
-  if (rows.length > 3) {
-    const align = cellText(rows[3]).toLowerCase();
-    if (align === 'center' || align === 'right' || align === 'left') block.classList.add(align);
   }
 
   const heading = block.querySelector('h1, h2, h3, h4, h5, h6, p');
-  if (heading) heading.classList.add('title');
+  if (heading && block.children.length > 1) {
+    block.innerHTML = '';
+    block.appendChild(heading);
+  }
 }
