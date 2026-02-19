@@ -41,130 +41,77 @@
           "name": "classes",
           "label": "Style",
           "options": [
-            {
-              "name": "Standard",
-              "value": ""
-            },
-            {
-              "name": "All About",
-              "value": "all-about-card"
-            },
-            {
-              "name": "Important Documents",
-              "value": "important-documents"
-            },
-            {
-              "name": "Key Benefits",
-              "value": "key-benefits"
-            },
-            {
-              "name": "Experience Life",
-              "value": "experience-life"
-            },
-            {
-              "name": "Reward Points",
-              "value": "reward-points"
-            },
-            {
-              "name": "Blog Posts",
-              "value": "blog-posts"
-            },
-            {
-              "name": "Earn Rewards",
-              "value": "earn-rewards"
-            },
-            {
-              "name": "Related Search",
-              "value": "related-search"
-            },
-            {
-              "name": "Joining Perks",
-              "value": "joining-perks"
-            },
-            {
-              "name": "Explore Other Cards",
-              "value": "explore-other-cards"
-            },
-            {
-              "name": "Image and Title",
-              "value": "image-and-title"
-            }
+            { "name": "Standard", "value": "" },
+            { "name": "All About", "value": "all-about-card" },
+            { "name": "Important Documents", "value": "important-documents" },
+            { "name": "Key Benefits", "value": "key-benefits" },
+            { "name": "Experience Life", "value": "experience-life" },
+            { "name": "Reward Points", "value": "reward-points" },
+            { "name": "Blog Posts", "value": "blog-posts" },
+            { "name": "Earn Rewards", "value": "earn-rewards" },
+            { "name": "Related Search", "value": "related-search" },
+            { "name": "Joining Perks", "value": "joining-perks" },
+            { "name": "Explore Other Cards", "value": "explore-other-cards" },
+            { "name": "Image and Title", "value": "image-and-title" }
           ]
         },
         {
           "component": "select",
-          "name": "modal_theme",
+          "name": "modalTheme",
           "label": "Modal Theme",
           "valueType": "string",
           "description": "Select the theme for the modal",
           "options": [
-            {
-              "name": "Default (no theme)",
-              "value": ""
-            },
-            {
-              "name": "Mayura Blue",
-              "value": "modal-mayura-blue"
-            },
-            {
-              "name": "Mayura Silver",
-              "value": "modal-mayura-silver"
-            }
+            { "name": "Default (no theme)", "value": "" },
+            { "name": "Mayura Blue", "value": "modal-mayura-blue" },
+            { "name": "Mayura Silver", "value": "modal-mayura-silver" }
           ]
         },
         {
           "component": "reference",
-          "name": "modal_dialogTexture",
+          "name": "modalDialogBackgroundImageTexture",
           "label": "Modal Background Texture",
           "valueType": "string",
           "description": "Select the background texture image for themed modals"
         },
         {
           "component": "reference",
-          "name": "modal_pageBackground",
+          "name": "modalPageBackgroundImage",
           "label": "Modal Page Background",
           "valueType": "string",
           "description": "Select the background image for the page behind the modal"
         },
         {
           "component": "reference",
-          "name": "modal_decorationImage",
+          "name": "modalPageDecorationImage",
           "label": "Modal Decoration Image",
           "valueType": "string",
           "description": "Decoration image for modal corners (top-right and bottom-left rotated)"
         },
         {
-          "component": "container",
-          "name": "swiperSettings",
-          "label": "Swiper Settings",
-          "collapsible": true,
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "swiper_swipable",
-              "label": "Enable Swiper",
-              "valueType": "boolean",
-              "value": false
-            },
-            {
-              "component": "boolean",
-              "name": "swiper_autoplayEnabled",
-              "label": "Autoplay",
-              "valueType": "boolean",
-              "value": false
-            },
-            {
-              "component": "number",
-              "name": "swiper_startingCard",
-              "label": "Starting Card (Index, default is 0)",
-              "valueType": "number",
-              "value": 0,
-              "validation": {
-                "numberMin": 0,
-                "customErrorMsg": "Starting card index must be 0 or greater"
-              }
-            }
-          ]
+          "component": "boolean",
+          "name": "swipable",
+          "label": "Enable Swiper",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "boolean",
+          "name": "autoplayEnabled",
+          "label": "Autoplay",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "number",
+          "name": "startingCard",
+          "label": "Starting Card (Index, default is 0)",
+          "valueType": "number",
+          "value": 0,
+          "validation": {
+            "numberMin": 0,
+            "customErrorMsg": "Starting card index must be 0 or greater"
+          }
         }
       ]
     },
@@ -185,42 +132,42 @@
         },
         {
           "component": "reference",
-          "name": "cardDecor_dividerImage",
+          "name": "dividerImage",
           "label": "Divider Image",
           "valueType": "string"
         },
         {
+          "component": "text",
+          "name": "cardTag",
+          "label": "Card Tag (optional)"
+        },
+        {
           "component": "reference",
-          "name": "cardDecor_backgroundTexture",
+          "name": "backgroundImageTexture",
           "label": "Background Image Texture",
           "valueType": "string"
         },
         {
-          "component": "text",
-          "name": "cardContent_cardTag",
-          "label": "Card Tag (optional)"
-        },
-        {
           "component": "richtext",
-          "name": "cardContent_text",
+          "name": "text",
           "value": "",
           "label": "Text",
           "valueType": "string"
         },
         {
           "component": "aem-content",
-          "name": "cardContent_cardLink",
+          "name": "cardLink",
           "label": "Card Link (optional)",
           "valueType": "string"
         },
         {
           "component": "text",
-          "name": "cardContent_cardLinkText",
+          "name": "cardLinkText",
           "label": "Card Link Text (optional)"
         },
         {
           "component": "richtext",
-          "name": "cardContent_modalContent",
+          "name": "modalContent",
           "label": "Modal Content (optional)",
           "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
           "valueType": "string"
@@ -231,9 +178,7 @@
   "filters": [
     {
       "id": "cards",
-      "components": [
-        "card"
-      ]
+      "components": ["card"]
     }
   ]
 }
