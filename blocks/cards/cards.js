@@ -4,68 +4,13 @@ import {
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
 
-/** UE instrumentation debug: full trace runs automatically (set window.__CARDS_UE_DEBUG = false to disable) */
+/** UE debug: set window.__CARDS_UE_DEBUG = false to disable. */
+// eslint-disable-next-line no-underscore-dangle
 const UE_DEBUG = typeof window === 'undefined' || window.__CARDS_UE_DEBUG !== false;
-
-/** Construction debug: always on. Set window.__CARDS_CONSTRUCTION_DEBUG = false to disable. */
-const CONSTRUCTION_DEBUG = typeof window === 'undefined'
-  || window.__CARDS_CONSTRUCTION_DEBUG !== false;
-
-function logConstruction(...args) {
-  if (CONSTRUCTION_DEBUG) {
+function logUE(...args) {
+  if (UE_DEBUG) {
     // eslint-disable-next-line no-console
-    console.debug('[Cards construction]', ...args);
-  }
-}
-
-function truncVal(val, max = 60) {
-  let s = '';
-  if (typeof val === 'string') s = val;
-  else if (val) s = String(val);
-  return s.length > max ? `${s.slice(0, max)}…` : s;
-}
-
-function getUEAttrNames(el) {
-  if (!el || !el.attributes) return [];
-  return [...el.attributes]
-    .map(({ nodeName }) => nodeName)
-    .filter((n) => n.startsWith('data-aue-') || n.startsWith('data-richtext-'));
-}
-
-/** All data-aue-* / data-richtext-* name → value (what the UE side rail uses to build the tree). */
-function getUEAttrs(el) {
-  if (!el || !el.attributes) return {};
-  const out = {};
-  [...el.attributes].forEach(({ nodeName, value }) => {
-    if (nodeName.startsWith('data-aue-') || nodeName.startsWith('data-richtext-')) {
-      out[nodeName] = value;
-    }
-  });
-  return out;
-}
-
-function debugUE(label, el, extra = '') {
-  if (!UE_DEBUG) return;
-  const attrs = el ? getUEAttrNames(el) : [];
-  // eslint-disable-next-line no-console
-  console.debug(`[Cards UE] ${label}`, attrs.length ? attrs : '(none)', extra);
-}
-
-/** Verbose side-rail debug: full UE attr names + values (what UE shows in the tree). */
-function debugUESideRail(label, el) {
-  if (!UE_DEBUG) return;
-  const attrs = el ? getUEAttrs(el) : {};
-  const cls = el?.className && typeof el.className === 'string' ? el.className : null;
-  const desc = el ? { tag: el.tagName, id: el.id || null, class: cls } : null;
-  // Log attrs as separate arg so DevTools shows key/value when expanded
-  // eslint-disable-next-line no-console
-  console.debug(`[Cards UE – side rail] ${label}`, desc, attrs);
-  // Explicit values line so side-rail contents are visible without expanding
-  if (Object.keys(attrs).length > 0) {
-    const truncAttr = (v) => (String(v).length > 80 ? `${String(v).slice(0, 80)}…` : String(v));
-    const pairs = Object.entries(attrs).map(([k, v]) => `${k}="${truncAttr(v)}"`).join(' ');
-    // eslint-disable-next-line no-console
-    console.debug('[Cards UE – side rail] values:', pairs);
+    console.debug('[Cards UE]', ...args);
   }
 }
 
@@ -146,28 +91,59 @@ function getConfigRowValue(row) {
 }
 
 /**
+ * Counts how many leading rows are config rows by structure (for UE-safe parsing).
+ * Config rows: one-column = single cell; two-column = two cells with label in CARDS_FIELDS.
+ * Stops at first non-config row or at 7, so card rows are never mistaken for config.
+ * @param {HTMLElement[]} rows Block children
+ * @returns {number} Number of config rows (0–7)
+ */
+function getConfigRowCount(rows) {
+  if (!rows.length) return 0;
+  const firstRow = rows[0];
+  const isOneColumn = firstRow.children.length === 1;
+  let count = 0;
+  const max = Math.min(CONFIG_ROW_COUNT, rows.length);
+  if (isOneColumn) {
+    while (count < max && rows[count].children.length === 1) count += 1;
+    return count;
+  }
+  while (count < max) {
+    const row = rows[count];
+    const cols = [...row.children];
+    if (cols.length >= 2) {
+      const name = toCamelCase(cols[0].textContent?.trim() ?? '');
+      if (name && CARDS_FIELDS.includes(name)) {
+        count += 1;
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+  return count;
+}
+
+/**
  * Extracts block-level properties from config rows by field index.
  * Cards block has 7 fields only (no "classes" – that is CSS only).
- * One-column: 7 rows, row i → CARDS_FIELDS[i]. Two-column: 7 rows, col0=label, col1=value.
+ * Uses structure-based config row count so UE/fragments never treat card rows as config.
  * @param {HTMLElement} block The block element (children: config rows then card rows)
- * @returns {number} Number of config rows consumed (CONFIG_ROW_COUNT)
+ * @returns {number} Number of config rows consumed
  */
 function extractBlockProperties(block) {
   const rows = [...block.children];
-  const limit = Math.min(CONFIG_ROW_COUNT, rows.length);
+  const limit = getConfigRowCount(rows);
+  if (limit === 0) return 0;
   const firstRow = rows[0];
-  const isOneColumn = firstRow && firstRow.children.length === 1;
-
-  logConstruction('extractBlockProperties: total rows=', rows.length, 'limit=', limit, 'isOneColumn=', isOneColumn);
+  const isOneColumn = firstRow.children.length === 1;
 
   if (isOneColumn) {
     for (let i = 0; i < limit; i += 1) {
       const key = CARDS_FIELDS[i];
       const rawVal = getConfigRowValue(rows[i]);
       if (rawVal) block.dataset[key] = rawVal;
-      logConstruction(`  config row ${i}: CARDS_FIELDS[${i}]=${key} | raw=${truncVal(rawVal)} | set=${rawVal ? truncVal(rawVal) : '(empty)'}`);
     }
-    logConstruction('  block dataset after config:', { ...block.dataset });
     return limit;
   }
 
@@ -179,11 +155,9 @@ function extractBlockProperties(block) {
       if (name && CARDS_FIELDS.includes(name)) {
         const value = getConfigColumnValue(cols[1]);
         if (value) block.dataset[name] = value;
-        logConstruction(`  config row ${i}: label=${truncVal(cols[0].textContent)} → ${name}=${truncVal(value)}`);
       }
     }
   }
-  logConstruction('  block dataset after config (two-col):', { ...block.dataset });
   return limit;
 }
 
@@ -488,18 +462,6 @@ function appendCellContentAs(cardItem, cell, wrapperClass) {
  */
 function buildCardFromCells(cells, rowOrRows) {
   if (!cells || cells.length < 9) return null;
-  debugUE('Card cells (before move)', cells[0]?.parentElement);
-
-  if (CONSTRUCTION_DEBUG) {
-    logConstruction('buildCardFromCells: cell count=', cells.length);
-    cells.forEach((cell, idx) => {
-      const name = CARD_FIELDS[idx] ?? `?${idx}`;
-      const hasImg = !!getCellPictureOrImg(cell);
-      const val = getCellValue(cell);
-      const preview = hasImg ? `img:${truncVal(val)}` : truncVal(val);
-      logConstruction(`  cell ${idx}: CARD_FIELDS[${idx}]=${name} | ${preview}`);
-    });
-  }
 
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
@@ -635,7 +597,6 @@ function buildCardFromSevenCells(cells, rowOrRows) {
 function buildCardFromThreeCells(row) {
   const cells = [...row.children];
   if (cells.length < 3) return null;
-  debugUE('Card row (before move)', row);
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
@@ -798,8 +759,8 @@ function globalMayuraScrollbarResizeHandler() {
 }
 
 export default async function decorate(block) {
-  // Order of operations: (1) sync setup and build card DOM, (2) block.replaceChildren(cardsContainer)
-  // so the block shows built cards immediately, (3) sync class/interactivity, (4) await Swiper only if needed.
+  // Order: (1) sync setup and build card DOM, (2) block.replaceChildren(cardsContainer),
+  // (3) sync class/interactivity, (4) await Swiper only if needed.
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
@@ -872,62 +833,28 @@ export default async function decorate(block) {
   // Check if this cards block is within the #cscards section (customer service dropdown)
   const isInCsCards = block.closest('#cscards') !== null;
 
-  if (CONSTRUCTION_DEBUG) {
-    logConstruction('CARDS_FIELDS (config row index → dataset key):', CARDS_FIELDS.map((f, i) => `${i}:${f}`).join(', '));
-    logConstruction('CARD_FIELDS (cell index → field):', CARD_FIELDS.map((f, i) => `${i}:${f}`).join(', '));
-  }
-
   // First CONFIG_ROW_COUNT (7) rows = block config by CARDS_FIELDS order; rest = card rows.
   const rows = [...block.children];
-  logConstruction('decorate: block children count=', rows.length);
   const configRowCount = extractBlockProperties(block);
   const cardRows = rows.slice(configRowCount);
-  logConstruction('decorate: configRowCount=', configRowCount, 'cardRows.length=', cardRows.length);
+  logUE('rows=', rows.length, 'configRowCount=', configRowCount, 'cardRows=', cardRows.length);
 
-  // One-time snapshot: full UE attr names + values (what the side rail uses)
-  if (typeof window !== 'undefined' && !window.__CARDS_UE_DEBUG_LOGGED) {
-    window.__CARDS_UE_DEBUG_LOGGED = true;
-    debugUESideRail('Snapshot – block (at decorate start)', block);
-    rows.forEach((r, i) => {
-      debugUESideRail(`Snapshot – row ${i}`, r);
-      r.querySelectorAll('*').forEach((d, di) => {
-        if (getUEAttrNames(d).length) debugUESideRail(`Snapshot – row ${i} descendant ${di} (${d.tagName})`, d);
-      });
-    });
-  }
-
-  // Move block-level UE instrumentation from config rows onto the block so the tree shows
-  // one "Cards" node (not modal/swiper as separate nodes). Same pattern as accordion: one
-  // source element's instrumentation → one target; here config rows → block.
+  // Move block-level UE instrumentation from config rows onto the block (row element only,
+  // not descendants) so the tree shows one "Cards" node. Same pattern as accordion:
+  // moveInstrumentation(sourceRow, targetContainer) without pulling in property-level attrs.
   for (let i = 0; i < configRowCount; i += 1) {
-    const configRow = rows[i];
-    debugUE(`Config row ${i} (before move)`, configRow);
-    configRow.querySelectorAll('*').forEach((desc, di) => {
-      if (getUEAttrNames(desc).length) debugUESideRail(`Config row ${i} descendant ${di} (before move)`, desc);
-    });
-    moveInstrumentation(configRow, block);
-    configRow.querySelectorAll('*').forEach((el) => moveInstrumentation(el, block));
+    moveInstrumentation(rows[i], block);
   }
-  // One "Cards" node: drop data-aue-prop so rail does not show property nodes.
   block.removeAttribute('data-aue-prop');
-  // Container type + label so side rail shows only "Cards" and its Card children, not property rows.
   block.setAttribute('data-aue-type', 'container');
   block.setAttribute('data-aue-label', 'Cards');
-  debugUE('Block after config rows moved', block);
-  debugUESideRail('Block after config (side rail)', block);
+  logUE('block after config: type=', block.getAttribute('data-aue-type'), 'label=', block.getAttribute('data-aue-label'), 'model=', block.getAttribute('data-aue-model') || '(none)');
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
 
   const firstCardRow = cardRows[0];
   const numCells = firstCardRow ? firstCardRow.children.length : 0;
-  let layoutDesc = 'unexpected';
-  if (numCells === CARD_FIELDS.length) layoutDesc = '1 row × 9 cells';
-  else if (numCells === 4) layoutDesc = '3 rows × 4+4+1';
-  else if (numCells === 3) layoutDesc = 'legacy 3 cells';
-  else if (numCells === 7) layoutDesc = '1 row × 7 cells';
-  else if (numCells === 8) layoutDesc = '1 row × 8 cells (padded to 9)';
-  logConstruction('decorate: firstCardRow cells=', numCells, 'CARD_FIELDS.length=', CARD_FIELDS.length, '→ layout:', layoutDesc);
 
   if (numCells === CARD_FIELDS.length) {
     // 1 row per card, 9 cells per row (strict order from _cards.json)
@@ -985,9 +912,8 @@ export default async function decorate(block) {
       numCells,
     );
   }
-
   const builtCardCount = cardsContainer.querySelectorAll('.cards-card').length;
-  logConstruction('decorate: built cards count=', builtCardCount);
+  logUE('built cards=', builtCardCount);
 
   // Identify semantic elements (divider/texture by size, cardTag by heading)
   if (supportsSemanticElements) {
@@ -1020,15 +946,6 @@ export default async function decorate(block) {
 
   block.replaceChildren(cardsContainer);
 
-  if (UE_DEBUG) {
-    debugUE('Block (final)', block);
-    debugUESideRail('Block (final) – side rail content', block);
-    cardsContainer.querySelectorAll('.cards-card').forEach((c, i) => {
-      debugUE(`Card ${i} (final)`, c);
-      debugUESideRail(`Card ${i} (final) – side rail content`, c);
-    });
-  }
-
   // Get all card elements once and reuse
   const allCards = cardsContainer.querySelectorAll('.cards-card');
 
@@ -1056,17 +973,14 @@ export default async function decorate(block) {
     }
   });
 
-  // cardsContainer is already the block's only child (from replaceChildren above); no second append.
+  // cardsContainer is the block's only child (from replaceChildren); no second append.
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
   const isAutoplayEnabled = block.dataset.autoplayEnabled === 'true';
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
-  logConstruction('swiper: swipable=', block.dataset.swipable, 'autoplay=', block.dataset.autoplayEnabled, 'start=', block.dataset.startingCard, 'isSwipable=', isSwipable);
-
   if (isSwipable) {
-    logConstruction('swiper: loading CSS/script and adding swiper classes…');
     // Load Swiper library (will skip if already loaded from head.html)
     await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
     await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
@@ -1283,7 +1197,6 @@ export default async function decorate(block) {
       return;
     }
 
-    logConstruction('swiper: initializing Swiper, slideCount=', slideCount, 'startingCard=', startingCard);
     // eslint-disable-next-line no-undef
     const swiper = new Swiper(block, swiperConfig);
     window.requestAnimationFrame(() => releaseLayoutLock());
