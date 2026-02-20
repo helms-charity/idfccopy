@@ -83,7 +83,7 @@
   {
     "id": "cards-icon",
     "components": [
-      "card"
+      "card-icon-item"
     ]
   },
   {

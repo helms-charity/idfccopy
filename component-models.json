@@ -1110,7 +1110,7 @@
     ]
   },
   {
-    "id": "card",
+    "id": "card-icon-item",
     "fields": [
       {
         "component": "reference",
