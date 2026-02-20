@@ -2120,16 +2120,12 @@ header nav[aria-expanded='true'] .nav-tools #search-box .search-input {
 
   /* Gray padding on top/left/right only */
 
-  /* Updated for div structure: .cards-card.blog-post-card > .cards-card-body (outer wrapper) */
+  /* Discover card: flat structure is card > .cards-card-image, .cards-card-body (body needs padding) */
   header nav .nav-sections .nav-discover-section .cards.block .cards-card.blog-post-card {
     background: var(--color-white-200);
     border: 1px solid var(--color-gray-200);
     margin: var(--spacing-xs);
-
-  > .cards-card-body {
-    padding: 0; /* No bottom padding */
   }
-}
 
   /* White card container - image and text connect seamlessly */
   header nav .nav-sections .nav-discover-section .cards-card.blog-post-card > .cards-card-body > .cards-card-image,

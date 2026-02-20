@@ -1147,6 +1147,37 @@
   }
 }
 
+/* =================================================================
+   DISCOVER CARD (#openaccount) - search dropdown blog-posts card
+   ================================================================= */
+
+/* When no image/divider is present, reserve the same space so layout stays consistent */
+#openaccount .cards.blog-posts .blog-post-card:not(:has(.cards-card-image), :has(.cards-card-divider))::before {
+  content: '';
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px 12px 0 0;
+  flex-shrink: 0;
+}
+
+/* If divider image is present in DOM, style it like the hero image for Discover card */
+#openaccount .cards.blog-posts .blog-post-card .cards-card-divider {
+  width: 100%;
+  margin: 0;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+#openaccount .cards.blog-posts .blog-post-card .cards-card-divider img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
 /* Desktop styles for benefit cards */
 @media (width >= 600px) {
   .cards .benefit-cards {
