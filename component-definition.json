@@ -223,7 +223,7 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Card",
-                  "model": "card"
+                  "model": "card-icon-item"
                 }
               }
             }
