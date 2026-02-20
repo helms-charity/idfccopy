@@ -1125,18 +1125,6 @@
         "label": "Alt Text"
       },
       {
-        "component": "reference",
-        "name": "cardDecor_dividerImage",
-        "label": "Divider Image",
-        "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "name": "cardDecor_backgroundTexture",
-        "label": "Background Image Texture",
-        "valueType": "string"
-      },
-      {
         "component": "text",
         "name": "cardContent_cardTag",
         "label": "Card Tag (optional)"
@@ -1158,13 +1146,6 @@
         "component": "text",
         "name": "cardContent_cardLinkText",
         "label": "Card Link Text (optional)"
-      },
-      {
-        "component": "richtext",
-        "name": "cardContent_modalContent",
-        "label": "Modal Content (optional)",
-        "description": "For simple modals, author content here. For complex modals, use Card Link pointing to /modals/ path instead.",
-        "valueType": "string"
       }
     ]
   },

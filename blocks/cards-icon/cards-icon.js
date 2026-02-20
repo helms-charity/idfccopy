@@ -1,11 +1,10 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
-import { createModal } from '../modal/modal.js';
 
 /**
  * Cards-icon block: Important Documents, Related Search, and Image and Title variants only.
  * No Swiper carousel; grid layout only.
- * Card row: cell 0 = image+alt, cell 1 = cardDecor (divider + texture), cell 2 = cardContent.
+ * Card row: cell 0 = image+alt, cell 1 = cardContent (tag, text, link).
  */
 
 function appendArrowIcon(cardBody) {
@@ -23,136 +22,42 @@ function appendArrowIcon(cardBody) {
   cardBody.appendChild(arrowP);
 }
 
-function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '', parentBlock = null) {
+function setupCardInteractivity(cardItem, shouldAddArrow = false) {
   const cardBodies = cardItem.querySelectorAll('.cards-card-body');
   if (cardBodies.length === 0) return;
 
   const mainBody = cardBodies[0];
-  const modalContentDiv = cardBodies.length > 1 ? cardBodies[cardBodies.length - 1] : null;
-
-  const isJustALink = modalContentDiv
-    && modalContentDiv.querySelector('a')
-    && modalContentDiv.textContent.trim() === modalContentDiv.querySelector('a')?.textContent.trim();
-
-  const hasModalContent = modalContentDiv
-    && modalContentDiv.textContent.trim().length > 0
-    && modalContentDiv !== mainBody
-    && !isJustALink;
-
-  if (modalContentDiv && modalContentDiv !== mainBody) {
-    modalContentDiv.classList.add('cards-modal-content');
-  }
-
   const cardLink = cardItem.querySelector('a[href]');
-  const hasModalPath = cardLink && cardLink.href && cardLink.href.includes('/modals/');
-  const hasRegularLink = cardLink && !hasModalPath;
+  if (!cardLink) return;
 
-  if (hasModalPath) {
-    cardItem.classList.add('card-clickable');
-    cardItem.setAttribute('role', 'button');
-    cardItem.setAttribute('tabindex', '0');
+  cardItem.classList.add('card-clickable');
+  cardItem.setAttribute('role', 'link');
+  cardItem.setAttribute('tabindex', '0');
 
-    const handleClick = (e) => {
-      if (e.target.closest('a')) return;
-      e.preventDefault();
-      e.stopPropagation();
-      cardLink.click();
-    };
+  const handleClick = (e) => {
+    if (e.target.closest('a')) return;
+    e.preventDefault();
+    cardLink.click();
+  };
 
-    cardItem.addEventListener('click', handleClick);
-    cardItem.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        cardLink.click();
-      }
-    });
-
-    let buttonContainer = cardLink.closest('.button-container');
-    if (!buttonContainer) {
-      buttonContainer = document.createElement('div');
-      buttonContainer.className = 'button-container';
-      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
-      buttonContainer.appendChild(cardLink);
-    }
-    buttonContainer.classList.add('sr-only');
-
-    if (shouldAddArrow) appendArrowIcon(mainBody);
-    return;
-  }
-
-  if (hasModalContent) {
-    cardItem.classList.add('card-clickable', 'card-modal');
-    cardItem.setAttribute('role', 'button');
-    cardItem.setAttribute('tabindex', '0');
-
-    const modalContent = modalContentDiv.cloneNode(true);
-
-    const openCardModal = async () => {
-      const contentWrapper = document.createElement('div');
-      contentWrapper.innerHTML = modalContent.innerHTML;
-
-      const modalOptions = {};
-      if (modalTheme) modalOptions.modalTheme = modalTheme;
-      const blockTextureUrl = parentBlock?.dataset?.modalDialogBackgroundImageTexture;
-      const pageBackgroundUrl = parentBlock?.dataset?.modalPageBackgroundImage;
-      if (blockTextureUrl) modalOptions.textureImage = blockTextureUrl;
-      if (pageBackgroundUrl) modalOptions.pageBackgroundImage = pageBackgroundUrl;
-      const decorationImageUrl = parentBlock?.dataset?.modalPageDecorationImage;
-      if (decorationImageUrl) modalOptions.decorationImage = decorationImageUrl;
-      const ctaContent = parentBlock?.dataset?.modalCtaContent;
-      if (ctaContent) modalOptions.ctaContent = ctaContent;
-
-      const { showModal } = await createModal([contentWrapper], modalOptions);
-      showModal();
-    };
-
-    cardItem.addEventListener('click', (e) => {
-      if (e.target.closest('a')) return;
-      e.preventDefault();
-      e.stopPropagation();
-      openCardModal();
-    });
-    cardItem.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openCardModal();
-      }
-    });
-
-    if (shouldAddArrow) appendArrowIcon(mainBody);
-    return;
-  }
-
-  if (hasRegularLink) {
-    cardItem.classList.add('card-clickable');
-    cardItem.setAttribute('role', 'link');
-    cardItem.setAttribute('tabindex', '0');
-
-    const handleClick = (e) => {
-      if (e.target.closest('a')) return;
+  cardItem.addEventListener('click', handleClick);
+  cardItem.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       cardLink.click();
-    };
-
-    cardItem.addEventListener('click', handleClick);
-    cardItem.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        cardLink.click();
-      }
-    });
-
-    let buttonContainer = cardLink.closest('.button-container');
-    if (!buttonContainer) {
-      buttonContainer = document.createElement('div');
-      buttonContainer.className = 'button-container';
-      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
-      buttonContainer.appendChild(cardLink);
     }
-    buttonContainer.classList.add('sr-only');
+  });
 
-    if (shouldAddArrow) appendArrowIcon(mainBody);
+  let buttonContainer = cardLink.closest('.button-container');
+  if (!buttonContainer) {
+    buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    cardLink.parentNode.insertBefore(buttonContainer, cardLink);
+    buttonContainer.appendChild(cardLink);
   }
+  buttonContainer.classList.add('sr-only');
+
+  if (shouldAddArrow) appendArrowIcon(mainBody);
 }
 
 function splitCardContentCell(cardItem, contentCell) {
@@ -165,28 +70,20 @@ function splitCardContentCell(cardItem, contentCell) {
 
   let tagNodes;
   let bodyNodes;
-  let modalNodes;
 
   if (headingIndices.length > 0) {
     const firstHeadingIdx = headingIndices[0];
     const secondHeadingIdx = headingIndices[1] ?? nodes.length;
     tagNodes = firstHeadingIdx > 0 ? nodes.slice(0, firstHeadingIdx) : [];
     bodyNodes = nodes.slice(firstHeadingIdx, secondHeadingIdx);
-    modalNodes = secondHeadingIdx < nodes.length ? nodes.slice(secondHeadingIdx) : [];
   } else {
     if (nodes.length === 0) return;
     if (nodes.length === 1) {
       tagNodes = [];
       bodyNodes = nodes;
-      modalNodes = [];
-    } else if (nodes.length === 2) {
-      tagNodes = [nodes[0]];
-      bodyNodes = [nodes[1]];
-      modalNodes = [];
     } else {
       tagNodes = [nodes[0]];
-      bodyNodes = nodes.slice(1, -1);
-      modalNodes = [nodes[nodes.length - 1]];
+      bodyNodes = nodes.slice(1);
     }
   }
 
@@ -202,21 +99,15 @@ function splitCardContentCell(cardItem, contentCell) {
     bodyNodes.forEach((n) => bodyDiv.appendChild(n));
     cardItem.appendChild(bodyDiv);
   }
-  if (modalNodes.length > 0) {
-    const modalDiv = document.createElement('div');
-    modalDiv.className = 'cards-card-body cards-modal-content';
-    modalNodes.forEach((n) => modalDiv.appendChild(n));
-    cardItem.appendChild(modalDiv);
-  }
 }
 
-function buildCardFromThreeCells(row) {
+function buildCardFromTwoCells(row) {
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
 
   const cells = [...row.children];
-  if (cells.length < 3) return cardItem;
+  if (cells.length < 2) return cardItem;
 
   const imageCell = cells[0].querySelector('div') || cells[0];
   const picture = imageCell.querySelector?.('picture');
@@ -227,22 +118,7 @@ function buildCardFromThreeCells(row) {
     cardItem.appendChild(imageWrap);
   }
 
-  const decorCell = cells[1].querySelector('div') || cells[1];
-  const pictures = [...decorCell.querySelectorAll?.('picture') || []];
-  if (pictures.length >= 1) {
-    const dividerWrap = document.createElement('div');
-    dividerWrap.className = 'cards-card-divider';
-    dividerWrap.appendChild(pictures[0]);
-    cardItem.appendChild(dividerWrap);
-  }
-  if (pictures.length >= 2) {
-    const textureWrap = document.createElement('div');
-    textureWrap.className = 'cards-card-bg-texture';
-    textureWrap.appendChild(pictures[1]);
-    cardItem.appendChild(textureWrap);
-  }
-
-  splitCardContentCell(cardItem, cells[2]);
+  splitCardContentCell(cardItem, cells[1]);
   return cardItem;
 }
 
@@ -260,13 +136,13 @@ export default async function decorate(block) {
 
   cardRows.forEach((row, rowIndex) => {
     const numCells = row.querySelectorAll(':scope > div').length || row.children.length;
-    if (numCells === 3) {
-      const cardItem = buildCardFromThreeCells(row);
+    if (numCells === 2) {
+      const cardItem = buildCardFromTwoCells(row);
       cardsContainer.append(cardItem);
     } else {
       // eslint-disable-next-line no-console
       console.error(
-        'Cards-icon block: card row has unexpected number of cells (expected 3, got %d). Row index: %d.',
+        'Cards-icon block: card row has unexpected number of cells (expected 2, got %d). Row index: %d.',
         numCells,
         rowIndex,
       );
@@ -312,8 +188,7 @@ export default async function decorate(block) {
     // image-and-title: no extra card class
 
     const shouldAddArrow = false;
-    const modalTheme = block.dataset.modalTheme || '';
-    setupCardInteractivity(cardItem, shouldAddArrow, modalTheme, block);
+    setupCardInteractivity(cardItem, shouldAddArrow);
   });
 
   block.append(cardsContainer);

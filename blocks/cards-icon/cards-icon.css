@@ -94,14 +94,6 @@
   border: 0;
 }
 
-.cards-icon .cards-card-body.cards-modal-content {
-  display: none !important;
-}
-
-.aem-editing .cards-icon .cards-card-body.cards-modal-content {
-  display: none !important;
-}
-
 /* === IMPORTANT DOCUMENTS === */
 .cards-icon.important-documents {
   margin: var(--spacing-s) 0;
