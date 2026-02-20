@@ -119,10 +119,11 @@ function getConfigRowCount(rows) {
  * Cards block has 7 fields only (no "classes" – that is CSS only).
  * Uses structure-based config row count so UE/fragments never treat card rows as config.
  * @param {HTMLElement} block The block element (children: config rows then card rows)
+ * @param {HTMLElement[]} [rowsOverride] If provided, use as rows instead of block.children
  * @returns {number} Number of config rows consumed
  */
-function extractBlockProperties(block) {
-  const rows = [...block.children];
+function extractBlockProperties(block, rowsOverride) {
+  const rows = rowsOverride ?? [...block.children];
   const limit = getConfigRowCount(rows);
   if (limit === 0) return 0;
   const firstRow = rows[0];
@@ -485,6 +486,17 @@ function buildCardFromCells(cells, rowOrRows) {
     dividerWrap.appendChild(dividerPic.cloneNode(true));
     cardItem.appendChild(dividerWrap);
   }
+  // Fallback: when image and divider cells (0 and 2) are empty but cell 1 has a picture
+  // (e.g. blog-posts Discover card with single image in second column), use it as card image
+  if (!pic0 && !dividerPic && cells[1]) {
+    const picFromCell1 = getCellPictureOrImg(cells[1]);
+    if (picFromCell1) {
+      const imageWrap = document.createElement('div');
+      imageWrap.className = 'cards-card-image';
+      imageWrap.appendChild(picFromCell1.cloneNode(true));
+      cardItem.insertBefore(imageWrap, cardItem.firstChild);
+    }
+  }
   // CARD_FIELDS[3]: cardTag
   appendCellContentAs(cardItem, cells[3], 'cards-card-tag');
   // CARD_FIELDS[4]: backgroundImageTexture
@@ -549,6 +561,16 @@ function buildCardFromSevenCells(cells, rowOrRows) {
     dividerWrap.className = 'cards-card-divider';
     dividerWrap.appendChild(dividerPic.cloneNode(true));
     cardItem.appendChild(dividerWrap);
+  }
+  // Fallback: no image/divider in 0 or 2 but cell 1 has a picture → use as card image
+  if (!pic0 && !dividerPic && cells[1]) {
+    const picFromCell1 = getCellPictureOrImg(cells[1]);
+    if (picFromCell1) {
+      const imageWrap = document.createElement('div');
+      imageWrap.className = 'cards-card-image';
+      imageWrap.appendChild(picFromCell1.cloneNode(true));
+      cardItem.insertBefore(imageWrap, cardItem.firstChild);
+    }
   }
   const texturePic = getCellPictureOrImg(cells[3]);
   if (texturePic) {
@@ -817,10 +839,28 @@ export default async function decorate(block) {
   // Check if this cards block is within the #cscards section (customer service dropdown)
   const isInCsCards = block.closest('#cscards') !== null;
 
+  // Skip rebuild when block was already built (e.g. clone inserted into nav). Otherwise we
+  // misinterpret .grid-cards as "first row" and its .cards-card children as "cells", get
+  // numCells=2, no branch matches, and replaceChildren() wipes the content.
+  const singleChild = block.children.length === 1 ? block.children[0] : null;
+  const isGridCards = singleChild?.classList?.contains('grid-cards');
+  const hasCardCards = singleChild?.querySelector?.('.cards-card');
+  if (isGridCards && hasCardCards) return;
+
   // First CONFIG_ROW_COUNT (7) rows = block config by CARDS_FIELDS order; rest = card rows.
-  const rows = [...block.children];
-  const configRowCount = extractBlockProperties(block);
+  // When block has a single .default-content/.block-content child, use its children as rows
+  // (fragment/nav often wraps the table; otherwise we see blockChildrenCount: 1, numCells: 2).
+  let rows = [...block.children];
+  if (rows.length === 1 && rows[0].classList?.contains('default-content')) {
+    rows = [...rows[0].children];
+  } else if (rows.length === 1 && rows[0].classList?.contains('block-content')) {
+    rows = [...rows[0].children];
+  }
+  const configRowCount = extractBlockProperties(block, rows);
   const cardRows = rows.slice(configRowCount);
+
+  const firstCardRow = cardRows[0];
+  const numCells = firstCardRow ? firstCardRow.children.length : 0;
 
   // Move block-level UE instrumentation from config rows onto the block (row element only,
   // not descendants) so the tree shows one "Cards" node. Same pattern as accordion:
@@ -834,9 +874,6 @@ export default async function decorate(block) {
 
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
-
-  const firstCardRow = cardRows[0];
-  const numCells = firstCardRow ? firstCardRow.children.length : 0;
 
   if (numCells === CARD_FIELDS.length) {
     // 1 row per card, 9 cells per row (strict order from _cards.json)
@@ -890,7 +927,7 @@ export default async function decorate(block) {
   } else if (cardRows.length > 0) {
     // eslint-disable-next-line no-console
     console.error(
-      'Cards block: unexpected card row cell count (%d). Expected 3, 4, 7, or 9.',
+      'Cards block: unexpected card row cell count (%d). Expected 3, 4, 7, 8, or 9.',
       numCells,
     );
   }
