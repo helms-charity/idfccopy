@@ -65,8 +65,8 @@ function parseFromId(id) {
   return out;
 }
 
-function getHeadingFromCell(cell) {
-  const heading = cell?.querySelector?.(HEADING_SELECTOR);
+function getHeadingFromCell(cell, existingHeading = null) {
+  const heading = existingHeading ?? cell?.querySelector?.(HEADING_SELECTOR);
   if (heading) {
     return {
       text: (heading.textContent ?? '').trim(),
@@ -77,10 +77,11 @@ function getHeadingFromCell(cell) {
   return { text: cellText(cell), tag: 'h2', id: '' };
 }
 
-function createHeading(tag, text, className, id = '') {
+function buildHeading(tag, text, className, id = '', clone = null) {
   const el = document.createElement(HEADING_TAGS.includes(tag) ? tag : 'p');
   el.classList.add(className);
-  el.textContent = text;
+  if (clone) el.append(...clone.childNodes);
+  else el.textContent = text ?? '';
   if (hasValue(id)) el.id = id;
   return el;
 }
@@ -99,8 +100,9 @@ export default function decorate(block) {
   let alignVal = '';
 
   const titleSource = rows.length >= 1 ? rows[0] : block;
-  const titleInfo = getHeadingFromCell(titleSource);
-  if (hasValue(titleInfo.text)) {
+  const titleHeadingEl = titleSource?.querySelector?.(HEADING_SELECTOR);
+  const titleInfo = getHeadingFromCell(titleSource, titleHeadingEl);
+  if (hasValue(titleInfo.text) || titleHeadingEl) {
     titleText = titleInfo.text;
     titleTag = titleInfo.tag;
     titleId = titleInfo.id;
@@ -113,9 +115,10 @@ export default function decorate(block) {
   }
 
   if (rows.length >= 2) titleSizeClass = normalizeSize(cellText(rows[1])) || titleSizeClass;
+  const subHeadingEl = rows.length >= 3 ? rows[2]?.querySelector?.(HEADING_SELECTOR) : null;
   if (rows.length >= 3) {
-    const sub = getHeadingFromCell(rows[2]);
-    if (hasValue(sub.text)) {
+    const sub = getHeadingFromCell(rows[2], subHeadingEl);
+    if (hasValue(sub.text) || subHeadingEl) {
       subtitleText = sub.text;
       subtitleTag = sub.tag;
     }
@@ -139,16 +142,28 @@ export default function decorate(block) {
   if (sType) subtitleTag = sType;
   if (hasValue(cfg('subtitle-size', 'subtitleSize'))) subtitleSizeClass = normalizeSize(cfg('subtitle-size', 'subtitleSize'));
 
-  if (!hasValue(titleText)) return;
+  if (!hasValue(titleText) && !titleHeadingEl) return;
 
   block.innerHTML = '';
-  block.appendChild(createHeading(titleTag, titleText, 'title', titleId));
+  block.appendChild(buildHeading(
+    titleTag,
+    titleText,
+    'title',
+    titleId,
+    titleHeadingEl?.cloneNode(true) ?? null,
+  ));
 
   if (hasValue(titleSizeClass)) block.classList.add(titleSizeClass);
   if (ALIGNMENTS.includes(alignVal)) block.classList.add(alignVal);
 
   if (hasValue(subtitleText)) {
-    block.appendChild(createHeading(subtitleTag, subtitleText, 'subtitle'));
+    block.appendChild(buildHeading(
+      subtitleTag,
+      subtitleText,
+      'subtitle',
+      '',
+      subHeadingEl?.cloneNode(true) ?? null,
+    ));
     if (hasValue(subtitleSizeClass)) block.classList.add(`subtitle-${subtitleSizeClass}`);
   }
 }

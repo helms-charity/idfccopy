@@ -37,6 +37,29 @@
   font-size: var(--heading-font-size-xs);
 }
 
+/* Icon vertical alignment: center icons with text at any size */
+.section-title .title:has(.icon),
+.section-title .subtitle:has(.icon) {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.section-title .icon {
+  flex-shrink: 0;
+  height: 1em;
+  width: 1em;
+  vertical-align: middle;
+}
+
+.section-title .icon img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 /* Alignment */
 .section-title.center { text-align: center; }
 .section-title.right { text-align: right; }
