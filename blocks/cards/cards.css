@@ -1151,22 +1151,12 @@
    DISCOVER CARD (#openaccount) - search dropdown blog-posts card
    ================================================================= */
 
-/* When divider/image is missing (e.g. fragment export omits it), show divider image via CSS.
-   Fallback uses /content/dam/idfc-edge/disc-img.png when divider/image is not in DOM. */
-#openaccount .cards.blog-posts .blog-post-card:not(:has(.cards-card-image), :has(.cards-card-divider)) {
-  position: relative;
-}
-
+/* When no image/divider is present, reserve the same space so layout stays consistent */
 #openaccount .cards.blog-posts .blog-post-card:not(:has(.cards-card-image), :has(.cards-card-divider))::before {
   content: '';
   display: block;
   width: 100%;
-  height: 0;
-  padding-top: 56.25%; /* 16:9 */
-  background-image: url('/content/dam/idfc-edge/disc-img.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  aspect-ratio: 16 / 9;
   border-radius: 12px 12px 0 0;
   flex-shrink: 0;
 }
