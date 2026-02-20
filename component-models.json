@@ -1086,6 +1086,70 @@
     ]
   },
   {
+    "id": "cards-icon",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Important Documents",
+            "value": "important-documents"
+          },
+          {
+            "name": "Related Search",
+            "value": "related-search"
+          },
+          {
+            "name": "Image and Title",
+            "value": "image-and-title"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "name": "card-tag",
+        "label": "Card Tag (optional)"
+      },
+      {
+        "component": "richtext",
+        "name": "card_text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "card_link",
+        "label": "Card Link (optional)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "card_linkText",
+        "label": "Card Link Text (optional)"
+      }
+    ]
+  },
+  {
     "id": "cards-testimonial",
     "fields": [
       {

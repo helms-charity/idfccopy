@@ -804,6 +804,7 @@ export default async function decorate(block) {
   const { classList } = block;
   const isImportantDocuments = classList.contains('important-documents');
   const isRelatedSearch = classList.contains('related-search');
+  const isImageAndTitle = classList.contains('image-and-title');
   const isExperienceLife = classList.contains('experience-life');
   const isBlogPosts = classList.contains('blog-posts');
   const isEarnRewards = classList.contains('earn-rewards');
@@ -934,7 +935,7 @@ export default async function decorate(block) {
       cardItem.classList.add('important-documents-card');
     } else if (isBlogPosts) {
       cardItem.classList.add('blog-post-card');
-    } else if (!isEarnRewards && !isJoiningPerks && !isAllAboutCard) {
+    } else if (!isEarnRewards && !isJoiningPerks && !isImageAndTitle && !isAllAboutCard) {
       if (isExploreOtherCards) {
         cardItem.classList.add('explore-other-cards');
       } else {
@@ -1268,7 +1269,7 @@ export default async function decorate(block) {
       });
     }
   } else if (
-    !isImportantDocuments && !isRelatedSearch
+    !isImportantDocuments && !isRelatedSearch && !isImageAndTitle
     && !isEarnRewards && !isJoiningPerks && !isInCsCards
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===
