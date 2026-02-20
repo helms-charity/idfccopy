@@ -44,8 +44,8 @@
         },
         {
           "component": "select",
-          "name": "textSize",
-          "label": "Text Size",
+          "name": "title-size",
+          "label": "Title Size",
           "value": "",
           "valueType": "string",
           "options": [
@@ -99,7 +99,7 @@
             },
             {
               "component": "select",
-              "name": "subtitle_size",
+              "name": "subtitle-size",
               "label": "Subtitle Size",
               "value": "",
               "valueType": "string",
