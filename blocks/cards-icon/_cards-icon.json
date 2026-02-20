@@ -74,25 +74,25 @@
         },
         {
           "component": "text",
-          "name": "cardContent_cardTag",
+          "name": "card-tag",
           "label": "Card Tag (optional)"
         },
         {
           "component": "richtext",
-          "name": "cardContent_text",
+          "name": "card_text",
           "value": "",
           "label": "Text",
           "valueType": "string"
         },
         {
           "component": "aem-content",
-          "name": "cardContent_cardLink",
+          "name": "card_link",
           "label": "Card Link (optional)",
           "valueType": "string"
         },
         {
           "component": "text",
-          "name": "cardContent_cardLinkText",
+          "name": "card_linkText",
           "label": "Card Link Text (optional)"
         }
       ]

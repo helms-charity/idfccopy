@@ -4,8 +4,34 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 /**
  * Cards-icon block: Important Documents, Related Search, and Image and Title variants only.
  * No Swiper carousel; grid layout only.
- * Card row: cell 0 = image+alt, cell 1 = cardContent (tag, text, link).
+ * Card row: 6 cells in sheet order — image, imageAlt, card-tag, card_text, card_link, card_linkText.
  */
+
+function getCellValue(cell) {
+  if (!cell) return '';
+  const inner = cell.querySelector('div') || cell;
+  const img = inner.querySelector?.('img') || (inner.tagName === 'IMG' ? inner : null);
+  if (img?.src) return img.src;
+  const a = inner.querySelector?.('a[href]');
+  if (a?.href) return a.href;
+  const t = inner.textContent?.trim();
+  return t || '';
+}
+
+function getCellPictureOrImg(cell) {
+  if (!cell) return null;
+  const inner = cell.querySelector('div') || cell;
+  return inner.querySelector?.('picture') || inner.querySelector?.('img') || null;
+}
+
+function appendCellContentAs(cardItem, cell, wrapperClass) {
+  const inner = cell?.querySelector('div') || cell;
+  if (!inner || !inner.children.length) return;
+  const wrap = document.createElement('div');
+  wrap.className = wrapperClass;
+  [...inner.children].forEach((child) => wrap.appendChild(child.cloneNode(true)));
+  cardItem.appendChild(wrap);
+}
 
 function appendArrowIcon(cardBody) {
   if (cardBody.querySelector('.icon-arrow-right-white')) return;
@@ -60,65 +86,47 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false) {
   if (shouldAddArrow) appendArrowIcon(mainBody);
 }
 
-function splitCardContentCell(cardItem, contentCell) {
-  const wrapper = contentCell.querySelector('div') || contentCell;
-  const nodes = [...wrapper.children];
-  const headingIndices = [];
-  nodes.forEach((el, i) => {
-    if (el.matches?.('h1, h2, h3, h4, h5, h6')) headingIndices.push(i);
-  });
-
-  let tagNodes;
-  let bodyNodes;
-
-  if (headingIndices.length > 0) {
-    const firstHeadingIdx = headingIndices[0];
-    const secondHeadingIdx = headingIndices[1] ?? nodes.length;
-    tagNodes = firstHeadingIdx > 0 ? nodes.slice(0, firstHeadingIdx) : [];
-    bodyNodes = nodes.slice(firstHeadingIdx, secondHeadingIdx);
-  } else {
-    if (nodes.length === 0) return;
-    if (nodes.length === 1) {
-      tagNodes = [];
-      bodyNodes = nodes;
-    } else {
-      tagNodes = [nodes[0]];
-      bodyNodes = nodes.slice(1);
-    }
-  }
-
-  if (tagNodes.length > 0) {
-    const tagDiv = document.createElement('div');
-    tagDiv.className = 'cards-card-tag';
-    tagNodes.forEach((n) => tagDiv.appendChild(n));
-    cardItem.appendChild(tagDiv);
-  }
-  if (bodyNodes.length > 0) {
-    const bodyDiv = document.createElement('div');
-    bodyDiv.className = 'cards-card-body';
-    bodyNodes.forEach((n) => bodyDiv.appendChild(n));
-    cardItem.appendChild(bodyDiv);
-  }
-}
-
-function buildCardFromTwoCells(row) {
+/**
+ * Builds a single card from 6 cells (sheet order: image, imageAlt, card-tag, card_text, card_link, card_linkText).
+ */
+function buildCardFromSixCells(row) {
   const cardItem = document.createElement('div');
   cardItem.classList.add('cards-card');
   moveInstrumentation(row, cardItem);
 
   const cells = [...row.children];
-  if (cells.length < 2) return cardItem;
+  if (cells.length < 6) return cardItem;
 
-  const imageCell = cells[0].querySelector('div') || cells[0];
-  const picture = imageCell.querySelector?.('picture');
-  if (picture) {
+  // cells[0]: image
+  const pic = getCellPictureOrImg(cells[0]);
+  if (pic) {
     const imageWrap = document.createElement('div');
     imageWrap.className = 'cards-card-image';
-    imageWrap.appendChild(picture);
+    const cloned = pic.cloneNode(true);
+    const alt = (cells[1] && getCellValue(cells[1])) || '';
+    if (alt && cloned.tagName === 'IMG') cloned.alt = alt;
+    if (cloned.tagName === 'PICTURE' && cloned.querySelector('img')) {
+      cloned.querySelector('img').alt = alt;
+    }
+    imageWrap.appendChild(cloned);
     cardItem.appendChild(imageWrap);
   }
-
-  splitCardContentCell(cardItem, cells[1]);
+  // cells[2]: card-tag
+  appendCellContentAs(cardItem, cells[2], 'cards-card-tag');
+  // cells[3]: card_text (main body)
+  appendCellContentAs(cardItem, cells[3], 'cards-card-body');
+  // cells[4]: card_link, cells[5]: card_linkText (optional override)
+  const linkEl = (cells[4]?.querySelector('div') || cells[4])?.querySelector?.('a[href]');
+  const linkTextOverride = cells[5] ? getCellValue(cells[5]) : '';
+  if (linkEl && linkEl.href) {
+    const btnWrap = document.createElement('p');
+    btnWrap.className = 'button-container';
+    const a = linkEl.cloneNode(true);
+    if (linkTextOverride) a.textContent = linkTextOverride;
+    btnWrap.appendChild(a);
+    const body = cardItem.querySelector('.cards-card-body');
+    (body || cardItem).appendChild(btnWrap);
+  }
   return cardItem;
 }
 
@@ -136,13 +144,13 @@ export default async function decorate(block) {
 
   cardRows.forEach((row, rowIndex) => {
     const numCells = row.querySelectorAll(':scope > div').length || row.children.length;
-    if (numCells === 2) {
-      const cardItem = buildCardFromTwoCells(row);
+    if (numCells === 6) {
+      const cardItem = buildCardFromSixCells(row);
       cardsContainer.append(cardItem);
     } else {
       // eslint-disable-next-line no-console
       console.error(
-        'Cards-icon block: card row has unexpected number of cells (expected 2, got %d). Row index: %d.',
+        'Cards-icon block: card row has unexpected number of cells (expected 6, got %d). Row index: %d.',
         numCells,
         rowIndex,
       );
