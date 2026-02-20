@@ -4,7 +4,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 /**
  * Cards-icon block: Important Documents, Related Search, and Image and Title variants only.
  * No Swiper carousel; grid layout only.
- * Card row: 6 cells in sheet order — image, imageAlt, card-tag, card_text, card_link, card_linkText.
+ * Card row: 6 cells - image, imageAlt, card-tag, card_text, card_link, card_linkText.
  */
 
 function getCellValue(cell) {
@@ -87,7 +87,7 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false) {
 }
 
 /**
- * Builds a single card from 6 cells (sheet order: image, imageAlt, card-tag, card_text, card_link, card_linkText).
+ * Builds a card from 6 cells (image, imageAlt, card-tag, card_text, card_link, card_linkText).
  */
 function buildCardFromSixCells(row) {
   const cardItem = document.createElement('div');
@@ -134,7 +134,7 @@ export default async function decorate(block) {
   const { classList } = block;
   const isImportantDocuments = classList.contains('important-documents');
   const isRelatedSearch = classList.contains('related-search');
-  const isImageAndTitle = classList.contains('image-and-title');
+  // const isImageAndTitle = classList.contains('image-and-title');
 
   const rows = [...block.children];
   const cardRows = rows;
@@ -157,7 +157,7 @@ export default async function decorate(block) {
     }
   });
 
-  const getStaticImageDimensions = (img) => {
+  const getStaticImageDimensions = () => {
     if (isImportantDocuments) return { width: 175, height: 175 };
     return null;
   };
