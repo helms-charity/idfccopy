@@ -65,29 +65,23 @@ function parseFromId(id) {
   return out;
 }
 
-function getHeadingFromCell(cell) {
-  const heading = cell?.querySelector?.(HEADING_SELECTOR);
+function getHeadingFromCell(cell, existingHeading = null) {
+  const heading = existingHeading ?? cell?.querySelector?.(HEADING_SELECTOR);
   if (heading) {
     return {
       text: (heading.textContent ?? '').trim(),
       tag: heading.tagName.toLowerCase(),
       id: heading.id ?? '',
-      innerHTML: heading.innerHTML?.trim() || '',
     };
   }
-  return {
-    text: cellText(cell),
-    tag: 'h2',
-    id: '',
-    innerHTML: '',
-  };
+  return { text: cellText(cell), tag: 'h2', id: '' };
 }
 
-function createHeading(tag, content, className, id = '', useHtml = false) {
+function buildHeading(tag, text, className, id = '', clone = null) {
   const el = document.createElement(HEADING_TAGS.includes(tag) ? tag : 'p');
   el.classList.add(className);
-  if (useHtml && content) el.innerHTML = content;
-  else el.textContent = content ?? '';
+  if (clone) el.append(...clone.childNodes);
+  else el.textContent = text ?? '';
   if (hasValue(id)) el.id = id;
   return el;
 }
@@ -106,8 +100,9 @@ export default function decorate(block) {
   let alignVal = '';
 
   const titleSource = rows.length >= 1 ? rows[0] : block;
-  const titleInfo = getHeadingFromCell(titleSource);
-  if (hasValue(titleInfo.text)) {
+  const titleHeadingEl = titleSource?.querySelector?.(HEADING_SELECTOR);
+  const titleInfo = getHeadingFromCell(titleSource, titleHeadingEl);
+  if (hasValue(titleInfo.text) || titleHeadingEl) {
     titleText = titleInfo.text;
     titleTag = titleInfo.tag;
     titleId = titleInfo.id;
@@ -120,13 +115,12 @@ export default function decorate(block) {
   }
 
   if (rows.length >= 2) titleSizeClass = normalizeSize(cellText(rows[1])) || titleSizeClass;
-  let subtitleHtml = '';
+  const subHeadingEl = rows.length >= 3 ? rows[2]?.querySelector?.(HEADING_SELECTOR) : null;
   if (rows.length >= 3) {
-    const sub = getHeadingFromCell(rows[2]);
-    if (hasValue(sub.text)) {
+    const sub = getHeadingFromCell(rows[2], subHeadingEl);
+    if (hasValue(sub.text) || subHeadingEl) {
       subtitleText = sub.text;
       subtitleTag = sub.tag;
-      subtitleHtml = sub.innerHTML || '';
     }
   }
   if (rows.length >= 4) subtitleSizeClass = normalizeSize(cellText(rows[3]));
@@ -148,24 +142,27 @@ export default function decorate(block) {
   if (sType) subtitleTag = sType;
   if (hasValue(cfg('subtitle-size', 'subtitleSize'))) subtitleSizeClass = normalizeSize(cfg('subtitle-size', 'subtitleSize'));
 
-  const titleUseHtml = hasValue(titleInfo.innerHTML) && !hasValue(titleCfg);
-  if (!hasValue(titleText) && !titleUseHtml) return;
-  const titleContent = titleUseHtml ? titleInfo.innerHTML : titleText;
+  if (!hasValue(titleText) && !titleHeadingEl) return;
 
   block.innerHTML = '';
-  block.appendChild(createHeading(titleTag, titleContent, 'title', titleId, titleUseHtml));
+  block.appendChild(buildHeading(
+    titleTag,
+    titleText,
+    'title',
+    titleId,
+    titleHeadingEl?.cloneNode(true) ?? null,
+  ));
 
   if (hasValue(titleSizeClass)) block.classList.add(titleSizeClass);
   if (ALIGNMENTS.includes(alignVal)) block.classList.add(alignVal);
 
   if (hasValue(subtitleText)) {
-    const subUseHtml = hasValue(subtitleHtml);
-    block.appendChild(createHeading(
+    block.appendChild(buildHeading(
       subtitleTag,
-      subUseHtml ? subtitleHtml : subtitleText,
+      subtitleText,
       'subtitle',
       '',
-      subUseHtml,
+      subHeadingEl?.cloneNode(true) ?? null,
     ));
     if (hasValue(subtitleSizeClass)) block.classList.add(`subtitle-${subtitleSizeClass}`);
   }
