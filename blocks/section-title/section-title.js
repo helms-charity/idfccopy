@@ -72,15 +72,22 @@ function getHeadingFromCell(cell) {
       text: (heading.textContent ?? '').trim(),
       tag: heading.tagName.toLowerCase(),
       id: heading.id ?? '',
+      innerHTML: heading.innerHTML?.trim() || '',
     };
   }
-  return { text: cellText(cell), tag: 'h2', id: '' };
+  return {
+    text: cellText(cell),
+    tag: 'h2',
+    id: '',
+    innerHTML: '',
+  };
 }
 
-function createHeading(tag, text, className, id = '') {
+function createHeading(tag, content, className, id = '', useHtml = false) {
   const el = document.createElement(HEADING_TAGS.includes(tag) ? tag : 'p');
   el.classList.add(className);
-  el.textContent = text;
+  if (useHtml && content) el.innerHTML = content;
+  else el.textContent = content ?? '';
   if (hasValue(id)) el.id = id;
   return el;
 }
@@ -113,11 +120,13 @@ export default function decorate(block) {
   }
 
   if (rows.length >= 2) titleSizeClass = normalizeSize(cellText(rows[1])) || titleSizeClass;
+  let subtitleHtml = '';
   if (rows.length >= 3) {
     const sub = getHeadingFromCell(rows[2]);
     if (hasValue(sub.text)) {
       subtitleText = sub.text;
       subtitleTag = sub.tag;
+      subtitleHtml = sub.innerHTML || '';
     }
   }
   if (rows.length >= 4) subtitleSizeClass = normalizeSize(cellText(rows[3]));
@@ -139,16 +148,25 @@ export default function decorate(block) {
   if (sType) subtitleTag = sType;
   if (hasValue(cfg('subtitle-size', 'subtitleSize'))) subtitleSizeClass = normalizeSize(cfg('subtitle-size', 'subtitleSize'));
 
-  if (!hasValue(titleText)) return;
+  const titleUseHtml = hasValue(titleInfo.innerHTML) && !hasValue(titleCfg);
+  if (!hasValue(titleText) && !titleUseHtml) return;
+  const titleContent = titleUseHtml ? titleInfo.innerHTML : titleText;
 
   block.innerHTML = '';
-  block.appendChild(createHeading(titleTag, titleText, 'title', titleId));
+  block.appendChild(createHeading(titleTag, titleContent, 'title', titleId, titleUseHtml));
 
   if (hasValue(titleSizeClass)) block.classList.add(titleSizeClass);
   if (ALIGNMENTS.includes(alignVal)) block.classList.add(alignVal);
 
   if (hasValue(subtitleText)) {
-    block.appendChild(createHeading(subtitleTag, subtitleText, 'subtitle'));
+    const subUseHtml = hasValue(subtitleHtml);
+    block.appendChild(createHeading(
+      subtitleTag,
+      subUseHtml ? subtitleHtml : subtitleText,
+      'subtitle',
+      '',
+      subUseHtml,
+    ));
     if (hasValue(subtitleSizeClass)) block.classList.add(`subtitle-${subtitleSizeClass}`);
   }
 }
