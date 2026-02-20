@@ -419,6 +419,7 @@ function decorateButtons(element) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
       const threeup = a.parentElement.parentElement.parentElement;
+      const child = a.querySelector(':scope > *:first-child');
       if (!a.querySelector('img')) {
         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
           a.className = 'button'; // default
@@ -446,7 +447,7 @@ function decorateButtons(element) {
           up.childNodes.length === 1
           && up.tagName === 'STRONG'
           && twoup.childNodes.length === 1
-          && twoup.tagName === 'EM'
+          && (twoup.tagName === 'EM' || child?.tagName === 'EM')
           && threeup.childNodes.length === 1
           && threeup.tagName === 'P'
         ) {
