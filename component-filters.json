@@ -35,7 +35,8 @@
       "overview",
       "section-title",
       "hotspot",
-      "cards-testimonial"
+      "cards-testimonial",
+      "cards-icon"
     ]
   },
   {
@@ -57,7 +58,8 @@
       "banner",
       "overview",
       "section-title",
-      "hotspot"
+      "hotspot",
+      "cards-icon"
     ]
   },
   {
