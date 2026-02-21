@@ -27,7 +27,7 @@ module.exports = {
       'category-nav-item': 10,
       'section-title': 5,
       steps: 5,
-      table: 5
+      table: 5,
     }],
     'no-restricted-syntax': [
       'error',
