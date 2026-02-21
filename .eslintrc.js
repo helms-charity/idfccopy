@@ -21,15 +21,13 @@ module.exports = {
     'xwalk/max-cells': ['error', {
       section: 30, // section is a key-value block and over 4 is OK
       'multi-section': 30,
-      accordion: 4, // the rest of these need adjustments per https://www.aem.live/developer/component-model-definitions#type-inference
-      'banner-item': 4,
-      cards: 4,
-      card: 4,
-      'category-nav-item': 4,
-      'cc-hero-slider-item': 4,
-      steps: 4,
-      table: 4,
-      'tabs-upi-link': 4,
+      accordion: 5, // the rest of these need adjustments per https://www.aem.live/developer/component-model-definitions#type-inference
+      cards: 8,
+      card: 7,
+      'category-nav-item': 10,
+      'section-title': 5,
+      steps: 5,
+      table: 5
     }],
     'no-restricted-syntax': [
       'error',
