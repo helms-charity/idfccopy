@@ -48,10 +48,10 @@ function generateTestimonialSchema(block) {
   cards.forEach((card) => {
     const cardBody = card.querySelector('.cards-card-body');
     if (!cardBody) return;
-    let authorName = sanitizeText(card.getAttribute('data-person-name') || '');
-    let productName = sanitizeText(card.getAttribute('data-product-name') || 'IDFC FIRST Bank Credit Card');
-    let ratingValue = parseInt(card.getAttribute('data-author-rating'), 10) || 0;
-    let datePublished = parseReviewDateToISO(card.getAttribute('data-review-date') || '');
+    let authorName = sanitizeText(card.dataset('data-person-name') || '');
+    let productName = sanitizeText(card.dataset('data-product-name') || 'IDFC FIRST Bank Credit Card');
+    let ratingValue = parseInt(card.dataset('data-author-rating'), 10) || 0;
+    let datePublished = parseReviewDateToISO(card.dataset('data-review-date') || '');
     if (!authorName) {
       const authorEl = cardBody.querySelector('.testimonial-person-name') || cardBody.querySelector('h5');
       authorName = sanitizeText(authorEl ? authorEl.textContent : '');
@@ -344,7 +344,7 @@ const STRUCTURED_LAYOUTS = [
 
 function applyLegacyNormalization(cardItem, mainBody) {
   if (!mainBody.querySelector('.icon-inverted-commas')) {
-    cardItem.setAttribute('data-quote-icon', 'none');
+    cardItem.dataset('data-quote-icon', 'none');
   }
   const authorEl = mainBody.querySelector('h5');
   if (authorEl) {
@@ -353,7 +353,7 @@ function applyLegacyNormalization(cardItem, mainBody) {
     p.className = 'testimonial-person-name';
     p.textContent = name;
     authorEl.replaceWith(p);
-    cardItem.setAttribute('data-person-name', name);
+    cardItem.dataset('data-person-name', name);
   }
   const dateEl = mainBody.querySelector('h6');
   if (dateEl) {
@@ -362,7 +362,7 @@ function applyLegacyNormalization(cardItem, mainBody) {
     p.className = 'testimonial-date';
     p.textContent = dt;
     dateEl.replaceWith(p);
-    cardItem.setAttribute('data-review-date', dt);
+    cardItem.dataset('data-review-date', dt);
   }
   const productEl = mainBody.querySelector('p u');
   if (productEl) {
@@ -371,11 +371,11 @@ function applyLegacyNormalization(cardItem, mainBody) {
     if (parentP && !parentP.classList.contains('testimonial-product-name')) {
       parentP.classList.add('testimonial-product-name');
     }
-    cardItem.setAttribute('data-product-name', name);
+    cardItem.dataset('data-product-name', name);
   }
   const starIcons = mainBody.querySelectorAll('[class*="icon-star"]');
   if (starIcons.length > 0) {
-    cardItem.setAttribute('data-author-rating', String(starIcons.length));
+    cardItem.dataset('data-author-rating', String(starIcons.length));
   }
 }
 
@@ -462,13 +462,9 @@ function normalizeTestimonialCard(cardItem) {
   }
 }
 
-export default async function decorate(block) {
-  block.classList.add('cards-testimonial', 'testimonial-card');
-
+function buildCardsFromRows(rows) {
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
-  const rows = [...block.children];
-
   rows.forEach((row) => {
     const cardItem = document.createElement('div');
     cardItem.classList.add('cards-card');
@@ -487,26 +483,28 @@ export default async function decorate(block) {
     divsToRemove.forEach((div) => div.remove());
     cardsContainer.append(cardItem);
   });
+  return cardsContainer;
+}
 
+function optimizePicturesInContainer(cardsContainer) {
   cardsContainer.querySelectorAll('picture > img').forEach((img) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
     const optimizedImg = optimizedPic.querySelector('img');
     moveInstrumentation(img, optimizedImg);
-    const width = img.getAttribute('width');
-    const height = img.getAttribute('height');
+    const width = img.dataset('width');
+    const height = img.dataset('height');
     if (width && height) {
-      optimizedImg.setAttribute('width', width);
-      optimizedImg.setAttribute('height', height);
+      optimizedImg.dataset('width', width);
+      optimizedImg.dataset('height', height);
     } else if (img.closest('.swiper-slide')) {
-      optimizedImg.setAttribute('width', '232');
-      optimizedImg.setAttribute('height', '358');
+      optimizedImg.dataset('width', '232');
+      optimizedImg.dataset('height', '358');
     }
     img.closest('picture').replaceWith(optimizedPic);
   });
+}
 
-  block.replaceChildren(cardsContainer);
-  extractBlockProperties(block, cardsContainer);
-
+function copyBlockPropertiesFromContext(block) {
   const section = block.closest('.section');
   const blockContent = block.closest('.block-content');
   [blockContent, section].filter(Boolean).forEach((el) => {
@@ -521,6 +519,62 @@ export default async function decorate(block) {
       block.dataset.startingCard = dataset.startingCard;
     }
   });
+}
+
+function setImageDimensionsFromRects(block) {
+  block.querySelectorAll('img').forEach((img) => {
+    if (img.hasAttribute('width') && img.hasAttribute('height')) return;
+    const rect = img.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      img.dataset('width', Math.round(rect.width));
+      img.dataset('height', Math.round(rect.height));
+    }
+  });
+}
+
+function waitForSwiperLib() {
+  return new Promise((resolve) => {
+    if (typeof Swiper !== 'undefined') {
+      resolve();
+      return;
+    }
+    const checkInterval = setInterval(() => {
+      if (typeof Swiper !== 'undefined') {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 10);
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      resolve();
+    }, 2000);
+  });
+}
+
+function updateStarIconInSlide(slide, activeSlide) {
+  const isActive = slide === activeSlide;
+  const iconSrc = isActive ? '/icons/star-yellow.svg' : '/icons/star-white.svg';
+  const iconName = isActive ? 'star-yellow' : 'star-white';
+  const spanClass = isActive ? 'icon icon-star icon-star-yellow' : 'icon icon-star icon-star-white';
+  slide.querySelectorAll('[class*="icon-star"]').forEach((span) => {
+    const img = span.querySelector('img');
+    if (!img?.getAttribute('src')?.includes('star')) return;
+    span.className = spanClass;
+    img.src = iconSrc;
+    img.dataset.iconName = iconName;
+  });
+}
+
+export default async function decorate(block) {
+  block.classList.add('cards-testimonial', 'testimonial-card');
+
+  const rows = [...block.children];
+  const cardsContainer = buildCardsFromRows(rows);
+  optimizePicturesInContainer(cardsContainer);
+
+  block.replaceChildren(cardsContainer);
+  extractBlockProperties(block, cardsContainer);
+  copyBlockPropertiesFromContext(block);
 
   cardsContainer.querySelectorAll('.cards-card').forEach((cardItem) => normalizeTestimonialCard(cardItem));
   block.append(cardsContainer);
@@ -530,40 +584,14 @@ export default async function decorate(block) {
   const startingCard = parseInt(block.dataset.startingCard || '0', 10);
 
   if (!isSwipable) {
-    window.requestAnimationFrame(() => {
-      block.querySelectorAll('img').forEach((img) => {
-        if (img.hasAttribute('width') && img.hasAttribute('height')) return;
-        const rect = img.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          img.setAttribute('width', Math.round(rect.width));
-          img.setAttribute('height', Math.round(rect.height));
-        }
-      });
-    });
+    window.requestAnimationFrame(() => setImageDimensionsFromRects(block));
     injectSchema(generateTestimonialSchema(block));
     return;
   }
 
   await loadCSS('/scripts/swiperjs/swiper-bundle.min.css');
   await loadScript('/scripts/swiperjs/swiper-bundle.min.js');
-
-  const waitForSwiper = () => new Promise((resolve) => {
-    if (typeof Swiper !== 'undefined') {
-      resolve();
-    } else {
-      const checkInterval = setInterval(() => {
-        if (typeof Swiper !== 'undefined') {
-          clearInterval(checkInterval);
-          resolve();
-        }
-      }, 10);
-      setTimeout(() => {
-        clearInterval(checkInterval);
-        resolve();
-      }, 2000);
-    }
-  });
-  await waitForSwiper();
+  await waitForSwiperLib();
 
   if (typeof Swiper === 'undefined') {
     injectSchema(generateTestimonialSchema(block));
@@ -621,18 +649,7 @@ export default async function decorate(block) {
       updateScheduled = false;
       const slides = block.querySelectorAll('.swiper-slide');
       const activeSlide = block.querySelector('.swiper-slide-active');
-      slides.forEach((slide) => {
-        const isActive = slide === activeSlide;
-        const iconSrc = isActive ? '/icons/star-yellow.svg' : '/icons/star-white.svg';
-        const iconName = isActive ? 'star-yellow' : 'star-white';
-        slide.querySelectorAll('[class*="icon-star"] img').forEach((img) => {
-          const currentSrc = img.getAttribute('src');
-          if (currentSrc && currentSrc.includes('star')) {
-            img.setAttribute('src', iconSrc);
-            img.setAttribute('data-icon-name', iconName);
-          }
-        });
-      });
+      slides.forEach((slide) => updateStarIconInSlide(slide, activeSlide));
     });
   };
   updateStarIcons();
