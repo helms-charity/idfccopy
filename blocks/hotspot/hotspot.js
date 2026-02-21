@@ -6,7 +6,7 @@
  * Link hotspots (#id) navigate to other hotspot blocks.
  */
 
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { ensureDOMPurify, moveInstrumentation, sanitizeHTML } from '../../scripts/scripts.js';
 
 // Per-section tracking (keyed by section element)
 // Stores: { firstBlockId, firstBlockElement, maxHeight, seenFirst, contentMap }
@@ -122,8 +122,8 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
     return;
   }
 
-  // Show the panel with the content
-  tooltipContent.innerHTML = panelHTML;
+  // Show the panel with the content (sanitize in case content came from dataset/cache)
+  tooltipContent.innerHTML = sanitizeHTML(panelHTML);
   tooltipPanel.classList.add('visible');
 
   // Only calculate padding if not skipped (during transitions, fadeTransition handles this)
@@ -159,32 +159,19 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
       tooltipContent.style.transition = '';
     };
 
-    // Get the main image in the hotspot
-    const mainImage = imageSection.querySelector('img');
-
-    // Wait for image to be fully ready before calculating position
-    const waitForImageAndCalculate = () => {
-      if (mainImage && mainImage.naturalWidth === 0) {
-        // Image not yet decoded, wait for load event
-        mainImage.addEventListener('load', () => {
-          // Use double RAF to ensure layout is stable after image load
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              calculateInitialPadding();
-            });
-          });
-        }, { once: true });
-      } else {
-        // Image already loaded or no image, use double RAF for layout stability
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            calculateInitialPadding();
-          });
-        });
-      }
+    // Run a callback after double RAF (ensures layout is stable)
+    const runAfterDoubleRAF = (fn) => {
+      requestAnimationFrame(() => requestAnimationFrame(fn));
     };
 
-    waitForImageAndCalculate();
+    const mainImage = imageSection.querySelector('img');
+    const schedulePadding = () => runAfterDoubleRAF(calculateInitialPadding);
+
+    if (mainImage && mainImage.naturalWidth === 0) {
+      mainImage.addEventListener('load', schedulePadding, { once: true });
+    } else {
+      runAfterDoubleRAF(calculateInitialPadding);
+    }
   }
 
   // Set up the go-back behavior:
@@ -233,7 +220,7 @@ function showInitialPanel(container, currentBlockId, skipPaddingCalculation = fa
 
           // eslint-disable-next-line no-use-before-define
           fadeTransition(container, () => {
-            container.innerHTML = targetContent;
+            container.innerHTML = sanitizeHTML(targetContent);
             // eslint-disable-next-line no-use-before-define
             reattachHotspotListeners(container, targetId);
             showInitialPanel(container, targetId, true);
@@ -307,31 +294,56 @@ function fadeTransition(container, contentSwapCallback) {
       // Allow RAF to calculate final position again
       transitioningContainers.delete(container);
 
-      // Wait for images to load before fading in
+      function makeFadeInEndHandler() {
+        return function onFadeInEnd() {
+          container.removeEventListener('transitionend', onFadeInEnd);
+          container.classList.remove('brightness-flash');
+          resolve();
+        };
+      }
+
+      const startFadeIn = () => {
+        container.classList.add('brightness-flash');
+        container.classList.remove('fade-out');
+        container.addEventListener('transitionend', makeFadeInEndHandler(), { once: true });
+      };
+
       waitForImages(container).then(() => {
-        // Use double RAF to ensure browser has painted the new content
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // Add brightness flash before fade-in starts
-            container.classList.add('brightness-flash');
-
-            // Start fade in
-            container.classList.remove('fade-out');
-
-            // Wait for fade-in to complete
-            const onFadeInEnd = () => {
-              container.removeEventListener('transitionend', onFadeInEnd);
-              // Remove brightness flash - triggers 0.2s transition back to normal brightness
-              container.classList.remove('brightness-flash');
-              resolve();
-            };
-            container.addEventListener('transitionend', onFadeInEnd, { once: true });
-          });
-        });
+        requestAnimationFrame(() => requestAnimationFrame(startFadeIn));
       });
     };
 
     container.addEventListener('transitionend', onFadeOutEnd, { once: true });
+  });
+}
+
+/**
+ * Handles click on a "go back" link (href="#..." or "#").
+ * Either expands hero or navigates to the target block.
+ * @param {Event} evt - Click event
+ * @param {Object} sectionData - Section data from getSectionData(section)
+ * @param {HTMLElement} container - Hotspot container element
+ * @param {Function} reattachListeners - reattachHotspotListeners(container, blockId)
+ */
+function handleGoBackLinkClick(evt, sectionData, container, reattachListeners) {
+  evt.preventDefault();
+  const href = evt.currentTarget.getAttribute('href') || '#';
+  const targetId = href.substring(1);
+
+  if (!targetId) {
+    const hero = document.querySelector('.hero-heritage-cc');
+    if (hero) hero.classList.remove('hero-heritage-cc-collapsed');
+    return;
+  }
+
+  const content = sectionData.contentMap.get(targetId);
+  if (!content) return;
+
+  transitioningContainers.add(container);
+  fadeTransition(container, () => {
+    container.innerHTML = sanitizeHTML(content);
+    reattachListeners(container, targetId);
+    showInitialPanel(container, targetId, true);
   });
 }
 
@@ -566,7 +578,9 @@ function setupConnectorLine(container, currentBlockId = null) {
   return cleanup;
 }
 
-export default function decorate(block) {
+export default async function decorate(block) {
+  await ensureDOMPurify();
+
   const rows = Array.from(block.children);
 
   // Block-level fields have fixed positions (per _hotspot.json):
@@ -602,9 +616,9 @@ export default function decorate(block) {
     // Get innerHTML from the first cell if it exists, otherwise from the row itself
     const firstCell = textRow.children[0];
     const rawHTML = firstCell ? firstCell.innerHTML?.trim() : textRow.innerHTML?.trim();
-    // Only set if there's actual content (not just empty string)
+    // Only set if there's actual content (not just empty string). Sanitize to prevent DOM XSS.
     if (rawHTML) {
-      hotspotText = rawHTML;
+      hotspotText = sanitizeHTML(rawHTML);
     }
   }
 
@@ -723,7 +737,7 @@ export default function decorate(block) {
           // Use fade transition when switching blocks
           // eslint-disable-next-line no-use-before-define
           fadeTransition(container, () => {
-            container.innerHTML = newContent;
+            container.innerHTML = sanitizeHTML(newContent);
             // eslint-disable-next-line no-use-before-define
             reattachHotspotListeners(container, group.targetId);
             // Skip padding calc, fadeTransition handles it
@@ -746,7 +760,7 @@ export default function decorate(block) {
           // Show block-level hotspot-text content
           hotspot.classList.add('active');
           tooltipContent.innerHTML = hotspotText
-            ? `<div class="hotspot-panel-item">${hotspotText}</div>`
+            ? sanitizeHTML(`<div class="hotspot-panel-item">${hotspotText}</div>`)
             : '';
           tooltipPanel.classList.add('visible');
 
@@ -754,38 +768,12 @@ export default function decorate(block) {
           const sectionWrapper = container.closest('.section');
           const sectionData = getSectionData(sectionWrapper);
           const goBackLinks = tooltipContent.querySelectorAll('a[href^="#"]');
-
           goBackLinks.forEach((link) => {
-            link.addEventListener('click', (evt) => {
-              evt.preventDefault();
-              const href = link.getAttribute('href') || '#';
-              const targetId = href.substring(1);
-
-              if (!targetId) {
-                // href is just "#" - expand the hero back to 100% (reverse of #the-concept-hotspot)
-                const hero = document.querySelector('.hero-heritage-cc');
-                if (hero) {
-                  hero.classList.remove('hero-heritage-cc-collapsed');
-                }
-              } else {
-                // Navigate to the specified block (within this section)
-                const targetContent = sectionData.contentMap.get(targetId);
-                if (targetContent) {
-                  transitioningContainers.add(container);
-                  // eslint-disable-next-line no-use-before-define
-                  fadeTransition(container, () => {
-                    container.innerHTML = targetContent;
-                    // eslint-disable-next-line no-use-before-define
-                    reattachHotspotListeners(container, targetId);
-                    showInitialPanel(container, targetId, true);
-                  });
-                }
-              }
-            });
+            // reattachHotspotListeners is defined later in the file; safe at click time
+            // eslint-disable-next-line no-use-before-define
+            link.addEventListener('click', (evt) => handleGoBackLinkClick(evt, sectionData, container, reattachHotspotListeners));
           });
-          // SVG connector line will automatically update via requestAnimationFrame
         } else {
-          // Hide panel
           tooltipPanel.classList.remove('visible');
         }
       });
@@ -849,9 +837,10 @@ export default function decorate(block) {
   }
 
   // Store original content AFTER showing initial panel (so stored state includes visible panel)
-  // Content is stored per-section to avoid conflicts between sections with same block IDs
+  // Content is stored per-section to avoid conflicts between sections with same block IDs.
+  // Sanitize before storing to keep contentMap safe for later innerHTML use.
   if (blockId) {
-    sectionData.contentMap.set(blockId, container.innerHTML);
+    sectionData.contentMap.set(blockId, sanitizeHTML(container.innerHTML));
   }
 }
 
@@ -927,7 +916,7 @@ function reattachHotspotListeners(container, blockId) {
 
           // Use fade transition when switching blocks
           fadeTransition(container, () => {
-            container.innerHTML = newContent;
+            container.innerHTML = sanitizeHTML(newContent);
             reattachHotspotListeners(container, targetId);
             // Skip padding calc, fadeTransition handles it
             showInitialPanel(container, targetId, true);
@@ -945,41 +934,16 @@ function reattachHotspotListeners(container, blockId) {
 
         if (!isActive && tooltipPanel && tooltipContent) {
           hotspot.classList.add('active');
-          tooltipContent.innerHTML = panelHTML;
+          tooltipContent.innerHTML = sanitizeHTML(panelHTML);
           tooltipPanel.classList.add('visible');
 
           // Attach go-back handlers to any links with href starting with #
           const sectionWrapper = container.closest('.section');
           const sectionData = getSectionData(sectionWrapper);
           const goBackLinks = tooltipContent.querySelectorAll('a[href^="#"]');
-
           goBackLinks.forEach((link) => {
-            link.addEventListener('click', (evt) => {
-              evt.preventDefault();
-              const href = link.getAttribute('href') || '#';
-              const goBackId = href.substring(1);
-
-              if (!goBackId) {
-                // href is just "#" - expand the hero back to 100% (reverse of #the-concept-hotspot)
-                const hero = document.querySelector('.hero-heritage-cc');
-                if (hero) {
-                  hero.classList.remove('hero-heritage-cc-collapsed');
-                }
-              } else {
-                // Navigate to the specified block (within this section)
-                const goBackContent = sectionData.contentMap.get(goBackId);
-                if (goBackContent) {
-                  transitioningContainers.add(container);
-                  fadeTransition(container, () => {
-                    container.innerHTML = goBackContent;
-                    reattachHotspotListeners(container, goBackId);
-                    showInitialPanel(container, goBackId, true);
-                  });
-                }
-              }
-            });
+            link.addEventListener('click', (evt) => handleGoBackLinkClick(evt, sectionData, container, reattachHotspotListeners));
           });
-          // SVG connector line updates automatically via requestAnimationFrame
         } else if (tooltipPanel) {
           tooltipPanel.classList.remove('visible');
         }
