@@ -28,10 +28,12 @@ npm i
 ```
 
 ## Linting
+This project is using StyleLint and ESLint (including the SonarJS plugin for ESLint 8).
 
 ```sh
 npm run lint
 ```
+If for Stylelint you only see "No rules found within configuration", check by going to Settings --> VSCode settings and search "Stylelint". For both User and Workspace tabs, check settings.json to see if there is an empty entry for "stylelint.config": { }. Remove it from both places so that this project's .stylelintrc.json file will be used for the config.
 
 ## Local development
 
