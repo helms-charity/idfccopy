@@ -1,9 +1,11 @@
 module.exports = {
   root: true,
+  plugins: ['sonarjs'],
   extends: [
     'airbnb-base',
     'plugin:json/recommended',
     'plugin:xwalk/recommended',
+    'plugin:sonarjs/recommended-legacy',
   ],
   env: {
     browser: true,

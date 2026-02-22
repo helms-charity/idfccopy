@@ -28,10 +28,12 @@ npm i
 ```
 
 ## Linting
+This project is using StyleLint and ESLint (including the SonarJS plugin for ESLint 8).
 
 ```sh
 npm run lint
 ```
+
 
 ## Local development
 
