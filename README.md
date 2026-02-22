@@ -18,7 +18,7 @@ Furthremore, we encourage you to watch the recordings of any of our previous pre
 
 ## Prerequisites
 
-- nodejs 18.3.x or newer
+- nodejs 20.9.x or newer
 - AEM Cloud Service release 2024.8 or newer (>= `17465`)
 
 ## Installation
@@ -28,10 +28,13 @@ npm i
 ```
 
 ## Linting
+This project is using StyleLint and ESLint (including the SonarJS code quality and the Interlace secure-coding security plugins for ESLint).
+https://dev.to/ofri-peretz/sonarjs-has-269-rules-it-still-misses-65-of-security-vulnerabilities-3jh
 
 ```sh
 npm run lint
 ```
+If for Stylelint you only see "No rules found within configuration", check by going to Settings --> VSCode settings and search "Stylelint". For both User and Workspace tabs, check settings.json to see if there is an empty entry for "stylelint.config": { }. Remove it from both places so that this project's .stylelintrc.json file will be used for the config.
 
 ## Local development
 
