@@ -1,5 +1,5 @@
 import { loadScript, loadCSS } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, sanitizeHTML } from '../../scripts/scripts.js';
 
 /**
  * Decorates the CC Hero Slider block
@@ -58,16 +58,16 @@ export default async function decorate(block) {
 
     // Fourth div: Pop-up trigger CTA text (optional)
     const popupTriggerDiv = children[3];
-    if (popupTriggerDiv && popupTriggerDiv.textContent.trim()) {
+    if (popupTriggerDiv?.textContent.trim()) {
       const popupTrigger = document.createElement('div');
       popupTrigger.className = 'cc-hero-slider-popup-trigger';
-      popupTrigger.innerHTML = popupTriggerDiv.innerHTML;
+      popupTrigger.innerHTML = sanitizeHTML(popupTriggerDiv.innerHTML);
       swiperSlide.appendChild(popupTrigger);
     }
 
     // Fifth div: Pop-up ID (optional) - store as data attribute
     const popupIdDiv = children[4];
-    if (popupIdDiv && popupIdDiv.textContent.trim()) {
+    if (popupIdDiv?.textContent.trim()) {
       swiperSlide.dataset.popupId = popupIdDiv.textContent.trim();
     }
 
