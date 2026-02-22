@@ -1,22 +1,10 @@
 import {
   createOptimizedPicture, loadScript, loadCSS, getMetadata,
 } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, sanitizeHTML } from '../../scripts/scripts.js';
 
-function sanitizeText(text) {
-  if (!text) return '';
-  return (
-    String(text)
-      // eslint-disable-next-line no-control-regex
-      .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
-      .replace(/\s+/g, ' ')
-      .replace(/[\u2018\u2019]/g, "'")
-      .replace(/[\u201C\u201D]/g, '"')
-      .replace(/[\u2013\u2014]/g, '-')
-      .replace(/\u2026/g, '...')
-      .trim()
-  );
-}
+/* eslint-disable secure-coding/no-improper-sanitization --
+sanitizeHTML uses DOMPurify via the import from scripts.js which linting can't see */
 
 function parseReviewDateToISO(dateText) {
   if (!dateText || !String(dateText).trim()) return '';
@@ -29,7 +17,10 @@ function parseReviewDateToISO(dateText) {
     if (!Number.isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
       return parsed.toISOString().split('T')[0];
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('Failed to parse review date:', e);
+  }
   return '';
 }
 
@@ -39,64 +30,65 @@ function formatDateForDisplay(isoDate) {
     const d = new Date(`${String(isoDate).trim()}T12:00:00`);
     if (Number.isNaN(d.getTime())) return isoDate;
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  } catch (e) { return isoDate; }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('Failed to format date:', e);
+    return isoDate;
+  }
 }
 
-function generateTestimonialSchema(block) {
-  const testimonials = [];
-  const cards = block.querySelectorAll('.cards-card');
-  cards.forEach((card) => {
-    const cardBody = card.querySelector('.cards-card-body');
-    if (!cardBody) return;
-    let authorName = sanitizeText(card.dataset('data-person-name') || '');
-    let productName = sanitizeText(card.dataset('data-product-name') || 'IDFC FIRST Bank Credit Card');
-    let ratingValue = parseInt(card.dataset('data-author-rating'), 10) || 0;
-    let datePublished = parseReviewDateToISO(card.dataset('data-review-date') || '');
-    if (!authorName) {
-      const authorEl = cardBody.querySelector('.testimonial-person-name') || cardBody.querySelector('h5');
-      authorName = sanitizeText(authorEl ? authorEl.textContent : '');
-    }
-    if (!productName || productName === 'IDFC FIRST Bank Credit Card') {
-      const productEl = cardBody.querySelector('.testimonial-product-name u') || cardBody.querySelector('p u');
-      productName = sanitizeText(productEl ? productEl.textContent : 'IDFC FIRST Bank Credit Card');
-    }
-    if (ratingValue <= 0) {
-      const starIcons = cardBody.querySelectorAll('[class*="icon-star"]');
-      ratingValue = starIcons.length;
-    }
-    const paragraphs = cardBody.querySelectorAll('p');
-    let reviewText = '';
-    paragraphs.forEach((p, index) => {
-      if (p.classList.contains('testimonial-person-name') || p.classList.contains('testimonial-date')
-          || p.classList.contains('testimonial-product-name')) return;
-      if (index > 0 && !p.querySelector('u') && !p.querySelector('.icon-inverted-commas')
-          && !p.querySelector('[class*="icon-star"]')) {
-        reviewText += p.textContent.trim();
-      }
-    });
-    reviewText = sanitizeText(reviewText);
-    if (!datePublished) {
-      const dateEl = cardBody.querySelector('.testimonial-date') || cardBody.querySelector('h6');
-      const dateText = dateEl ? dateEl.textContent : '';
-      const dateParts = dateText.split('|');
-      const dateString = dateParts.length > 1 ? dateParts[1].trim() : dateText.trim();
-      datePublished = parseReviewDateToISO(dateString);
-    }
-    if (!datePublished) {
-      [datePublished] = new Date().toISOString().split('T');
-    }
-    if (reviewText && authorName && ratingValue > 0) {
-      testimonials.push({
-        '@type': 'Review',
-        reviewBody: reviewText,
-        reviewRating: { '@type': 'Rating', ratingValue: ratingValue.toString(), bestRating: '5' },
-        author: { '@type': 'Person', name: authorName },
-        datePublished,
-        itemReviewed: { '@type': 'Product', name: productName },
-      });
+function extractOneTestimonial(card) {
+  const cardBody = card.querySelector('.cards-card-body');
+  if (!cardBody) return null;
+  let authorName = sanitizeHTML(card.dataset.personName || card.getAttribute('data-person-name') || '');
+  let productName = sanitizeHTML(card.dataset.productName || card.getAttribute('data-product-name') || 'IDFC FIRST Bank Credit Card');
+  let ratingValue = parseInt(card.dataset.authorRating || card.getAttribute('data-author-rating'), 10) || 0;
+  let datePublished = parseReviewDateToISO(card.dataset.reviewDate || card.getAttribute('data-review-date') || '');
+  if (!authorName) {
+    const authorEl = cardBody.querySelector('.testimonial-person-name') || cardBody.querySelector('h5');
+    authorName = sanitizeHTML(authorEl ? authorEl.textContent : '');
+  }
+  if (!productName || productName === 'IDFC FIRST Bank Credit Card') {
+    const productEl = cardBody.querySelector('.testimonial-product-name u') || cardBody.querySelector('p u');
+    productName = sanitizeHTML(productEl ? productEl.textContent : 'IDFC FIRST Bank Credit Card');
+  }
+  if (ratingValue <= 0) {
+    const starIcons = cardBody.querySelectorAll('[class*="icon-star"]');
+    ratingValue = starIcons.length;
+  }
+  const paragraphs = cardBody.querySelectorAll('p');
+  let reviewText = '';
+  paragraphs.forEach((p, index) => {
+    if (p.classList.contains('testimonial-person-name') || p.classList.contains('testimonial-date')
+        || p.classList.contains('testimonial-product-name')) return;
+    if (index > 0 && !p.querySelector('u') && !p.querySelector('.icon-inverted-commas')
+        && !p.querySelector('[class*="icon-star"]')) {
+      reviewText += p.textContent.trim();
     }
   });
-  if (testimonials.length === 0) return null;
+  reviewText = sanitizeHTML(reviewText);
+  if (!datePublished) {
+    const dateEl = cardBody.querySelector('.testimonial-date') || cardBody.querySelector('h6');
+    const dateText = dateEl ? dateEl.textContent : '';
+    const dateParts = dateText.split('|');
+    const dateString = dateParts.length > 1 ? dateParts[1].trim() : dateText.trim();
+    datePublished = parseReviewDateToISO(dateString);
+  }
+  if (!datePublished) {
+    [datePublished] = new Date().toISOString().split('T');
+  }
+  if (!reviewText || !authorName || ratingValue <= 0) return null;
+  return {
+    '@type': 'Review',
+    reviewBody: reviewText,
+    reviewRating: { '@type': 'Rating', ratingValue: ratingValue.toString(), bestRating: '5' },
+    author: { '@type': 'Person', name: authorName },
+    datePublished,
+    itemReviewed: { '@type': 'Product', name: productName },
+  };
+}
+
+function buildProductSchemaFromTestimonials(testimonials) {
   const totalRating = testimonials.reduce(
     (sum, t) => sum + parseInt(t.reviewRating.ratingValue, 10),
     0,
@@ -112,16 +104,10 @@ function generateTestimonialSchema(block) {
   const publishedTime = getMetadata('published-time');
   const modifiedTime = getMetadata('modified-time');
   const category = getMetadata('breadcrumbstitle');
-  let brandName = 'IDFC FIRST Bank';
-  if (pageTitle.includes('IDFC')) {
-    const titleParts = pageTitle.split('|');
-    if (titleParts.length > 1) brandName = titleParts[1].trim();
-  }
-  let schemaProductName = pageTitle;
-  if (pageTitle.includes('|')) {
-    [schemaProductName] = pageTitle.split('|');
-    schemaProductName = schemaProductName.trim();
-  }
+  const brandName = pageTitle.includes('IDFC') && pageTitle.includes('|')
+    ? pageTitle.split('|')[1].trim() : 'IDFC FIRST Bank';
+  const schemaProductName = pageTitle.includes('|')
+    ? pageTitle.split('|')[0].trim() : pageTitle;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -142,6 +128,13 @@ function generateTestimonialSchema(block) {
   if (modifiedTime) schema.dateModified = modifiedTime;
   if (category) schema.category = category;
   return schema;
+}
+
+function generateTestimonialSchema(block) {
+  const cards = block.querySelectorAll('.cards-card');
+  const testimonials = [...cards].map((card) => extractOneTestimonial(card)).filter(Boolean);
+  if (testimonials.length === 0) return null;
+  return buildProductSchemaFromTestimonials(testimonials);
 }
 
 function injectSchema(schema) {
@@ -169,6 +162,7 @@ function injectSchema(schema) {
 }
 
 const PROPERTY_FIELDS = ['swipable', 'autoplayEnabled', 'startingCard'];
+const PROPERTY_FIELDS_BY_INDEX = new Map(PROPERTY_FIELDS.map((name, i) => [i, name]));
 const DEFAULT_PRODUCT = 'IDFC FIRST Bank Credit Card';
 
 function parsePropertyValue(fieldName, text) {
@@ -182,6 +176,45 @@ function parsePropertyValue(fieldName, text) {
   return null;
 }
 
+function isCardEmpty(cardItem) {
+  return !cardItem.textContent.trim() && !cardItem.querySelector('picture, img');
+}
+
+function tryConsumeTextOnlyCard(cardItem, cardIndex, propertyIndex, propertyValues, itemsToRemove) {
+  const paragraphs = cardItem.querySelectorAll('p');
+  const hasPicture = cardItem.querySelector('picture');
+  const hasHeading = cardItem.querySelector('h1, h2, h3, h4, h5, h6');
+  if (paragraphs.length !== 1 || hasPicture || hasHeading) return null;
+  const fieldName = PROPERTY_FIELDS_BY_INDEX.get(propertyIndex);
+  const value = parsePropertyValue(fieldName, paragraphs[0].textContent);
+  if ((value ?? null) === null) {
+    return { nextCardIndex: cardIndex, nextPropertyIndex: propertyIndex + 1 };
+  }
+  if (fieldName === 'swipable') propertyValues.swipable = value;
+  else if (fieldName === 'autoplayEnabled') propertyValues.autoplayEnabled = value;
+  else if (fieldName === 'startingCard') propertyValues.startingCard = value;
+  itemsToRemove.push(cardItem);
+  return { nextCardIndex: cardIndex + 1, nextPropertyIndex: propertyIndex + 1 };
+}
+
+function tryConsumeThreeParagraphCard(cardItem, propertyValues, itemsToRemove) {
+  const paragraphs = cardItem.querySelectorAll('p');
+  const hasPicture = cardItem.querySelector('picture');
+  const hasHeading = cardItem.querySelector('h1, h2, h3, h4, h5, h6');
+  if (paragraphs.length < 3 || hasPicture || hasHeading) return false;
+  const texts = [...paragraphs].slice(0, 3).map((p) => p.textContent.trim());
+  const allValid = PROPERTY_FIELDS.slice(0, 3).every(
+    (name, i) => parsePropertyValue(name, texts[i]),
+  );
+  if (!allValid) return false;
+  const [swipableVal, autoplayVal, startingVal] = texts;
+  propertyValues.swipable = swipableVal;
+  propertyValues.autoplayEnabled = autoplayVal;
+  propertyValues.startingCard = startingVal;
+  itemsToRemove.push(cardItem);
+  return true;
+}
+
 function extractBlockProperties(block, cardsContainer) {
   const propertyValues = {};
   const itemsToRemove = [];
@@ -190,44 +223,24 @@ function extractBlockProperties(block, cardsContainer) {
   let propertyIndex = 0;
 
   while (cardIndex < items.length && propertyIndex < PROPERTY_FIELDS.length) {
-    const cardItem = items[cardIndex];
-    const fieldName = PROPERTY_FIELDS[propertyIndex];
-    const isEmpty = !cardItem.textContent.trim() && !cardItem.querySelector('picture, img');
-
-    if (isEmpty) {
+    const cardItem = items.at(cardIndex);
+    const empty = isCardEmpty(cardItem);
+    if (empty) {
       itemsToRemove.push(cardItem);
       cardIndex += 1;
       propertyIndex += 1;
     } else {
-      const paragraphs = cardItem.querySelectorAll('p');
-      const hasPicture = cardItem.querySelector('picture');
-      const hasHeading = cardItem.querySelector('h1, h2, h3, h4, h5, h6');
-      const isTextOnly = paragraphs.length === 1 && !hasPicture && !hasHeading;
-
-      if (isTextOnly) {
-        const value = parsePropertyValue(fieldName, paragraphs[0].textContent);
-        if (value != null) {
-          propertyValues[fieldName] = value;
-          itemsToRemove.push(cardItem);
-          cardIndex += 1;
-          propertyIndex += 1;
-        } else {
-          propertyIndex += 1;
-        }
-      } else if (paragraphs.length >= 3 && !hasPicture && !hasHeading) {
-        const texts = [...paragraphs].slice(0, 3).map((p) => p.textContent.trim());
-        const allValid = PROPERTY_FIELDS.slice(0, 3).every(
-          (name, i) => parsePropertyValue(name, texts[i]),
-        );
-        if (allValid) {
-          const [swipableVal, autoplayVal, startingVal] = texts;
-          propertyValues.swipable = swipableVal;
-          propertyValues.autoplayEnabled = autoplayVal;
-          propertyValues.startingCard = startingVal;
-          itemsToRemove.push(cardItem);
-          cardIndex += 1;
-          propertyIndex = PROPERTY_FIELDS.length;
-        }
+      const textResult = tryConsumeTextOnlyCard(
+        cardItem,
+        cardIndex,
+        propertyIndex,
+        propertyValues,
+        itemsToRemove,
+      );
+      if (textResult) {
+        cardIndex = textResult.nextCardIndex;
+        propertyIndex = textResult.nextPropertyIndex;
+      } else if (tryConsumeThreeParagraphCard(cardItem, propertyValues, itemsToRemove)) {
         break;
       } else {
         break;
@@ -235,9 +248,9 @@ function extractBlockProperties(block, cardsContainer) {
     }
   }
 
-  Object.keys(propertyValues).forEach((key) => {
-    block.dataset[key] = propertyValues[key];
-  });
+  if (Object.hasOwn(propertyValues, 'swipable')) block.dataset.swipable = propertyValues.swipable;
+  if (Object.hasOwn(propertyValues, 'autoplayEnabled')) block.dataset.autoplayEnabled = propertyValues.autoplayEnabled;
+  if (Object.hasOwn(propertyValues, 'startingCard')) block.dataset.startingCard = propertyValues.startingCard;
   itemsToRemove.forEach((cardItem) => cardItem.remove());
 }
 
@@ -344,112 +357,143 @@ const STRUCTURED_LAYOUTS = [
 
 function applyLegacyNormalization(cardItem, mainBody) {
   if (!mainBody.querySelector('.icon-inverted-commas')) {
-    cardItem.dataset('data-quote-icon', 'none');
+    cardItem.dataset.quoteIcon = 'none';
   }
   const authorEl = mainBody.querySelector('h5');
   if (authorEl) {
-    const name = sanitizeText(authorEl.textContent);
+    const name = sanitizeHTML(authorEl.textContent);
     const p = document.createElement('p');
     p.className = 'testimonial-person-name';
     p.textContent = name;
     authorEl.replaceWith(p);
-    cardItem.dataset('data-person-name', name);
+    cardItem.dataset.personName = name;
   }
   const dateEl = mainBody.querySelector('h6');
   if (dateEl) {
-    const dt = sanitizeText(dateEl.textContent);
+    const dt = sanitizeHTML(dateEl.textContent);
     const p = document.createElement('p');
     p.className = 'testimonial-date';
     p.textContent = dt;
     dateEl.replaceWith(p);
-    cardItem.dataset('data-review-date', dt);
+    cardItem.dataset.reviewDate = dt;
   }
   const productEl = mainBody.querySelector('p u');
   if (productEl) {
-    const name = sanitizeText(productEl.textContent);
+    const name = sanitizeHTML(productEl.textContent);
     const parentP = productEl.closest('p');
     if (parentP && !parentP.classList.contains('testimonial-product-name')) {
       parentP.classList.add('testimonial-product-name');
     }
-    cardItem.dataset('data-product-name', name);
+    cardItem.dataset.productName = name;
   }
   const starIcons = mainBody.querySelectorAll('[class*="icon-star"]');
   if (starIcons.length > 0) {
-    cardItem.dataset('data-author-rating', String(starIcons.length));
+    cardItem.dataset.authorRating = String(starIcons.length);
   }
+}
+
+function getQuoteIconVal(layoutMap, bodyDivsByIndex) {
+  const quoteVal = layoutMap.get('quoteVal');
+  if (quoteVal !== undefined) return quoteVal;
+  const quoteIdx = layoutMap.get('quoteIdx');
+  if (quoteIdx === undefined) return '';
+  const quoteDiv = bodyDivsByIndex.get(quoteIdx);
+  return quoteDiv ? quoteDiv.textContent.trim().toLowerCase() : '';
+}
+
+function getReviewHtml(layoutMap, bodyDivsByIndex) {
+  const reviewIdx = layoutMap.get('reviewIdx');
+  if ((reviewIdx ?? null) === null) return '';
+  const reviewDiv = bodyDivsByIndex.get(reviewIdx);
+  return reviewDiv ? reviewDiv.innerHTML : '';
+}
+
+function getDetailsFromLayout(layoutMap, bodyDivsByIndex) {
+  const quotedetailsIdx = layoutMap.get('quotedetailsIdx');
+  if (quotedetailsIdx !== undefined) {
+    const detailsBody = bodyDivsByIndex.get(quotedetailsIdx);
+    const detailsParas = detailsBody ? [...detailsBody.querySelectorAll('p')] : [];
+    return {
+      personName: sanitizeHTML(detailsParas[0]?.textContent ?? ''),
+      productName: sanitizeHTML(detailsParas[1]?.textContent ?? '') || DEFAULT_PRODUCT,
+      ratingRaw: detailsParas[2]?.textContent?.trim() ?? '',
+      dateText: detailsParas[3]?.textContent?.trim() ?? '',
+    };
+  }
+  const personIdx = layoutMap.get('personIdx');
+  const productIdx = layoutMap.get('productIdx');
+  const ratingIdx = layoutMap.get('ratingIdx');
+  const dateIdx = layoutMap.get('dateIdx');
+  if (
+    personIdx === undefined || productIdx === undefined
+    || ratingIdx === undefined || dateIdx === undefined
+  ) {
+    return {
+      personName: '', productName: DEFAULT_PRODUCT, ratingRaw: '', dateText: '',
+    };
+  }
+  const personDiv = bodyDivsByIndex.get(personIdx);
+  const productDiv = bodyDivsByIndex.get(productIdx);
+  const ratingDiv = bodyDivsByIndex.get(ratingIdx);
+  const dateDiv = bodyDivsByIndex.get(dateIdx);
+  return {
+    personName: personDiv ? sanitizeHTML(personDiv.textContent) : '',
+    productName: (productDiv ? sanitizeHTML(productDiv.textContent) : '') || DEFAULT_PRODUCT,
+    ratingRaw: ratingDiv ? ratingDiv.textContent.trim() : '',
+    dateText: dateDiv ? dateDiv.textContent.trim() : '',
+  };
 }
 
 function normalizeTestimonialCard(cardItem) {
   const bodyDivs = [...cardItem.querySelectorAll('.cards-card-body')];
   if (bodyDivs.length === 0) return;
 
-  const mainBody = bodyDivs[0];
+  const bodyDivsByIndex = new Map(bodyDivs.map((el, i) => [i, el]));
+  const mainBody = bodyDivsByIndex.get(0);
   const layout = STRUCTURED_LAYOUTS.find(
     (l) => bodyDivs.length === l.length && l.hasContent(bodyDivs),
   );
-
-  let quoteIconVal;
 
   if (!layout) {
     applyLegacyNormalization(cardItem, mainBody);
     return;
   }
 
-  if (layout.quoteVal !== undefined) {
-    quoteIconVal = layout.quoteVal;
-  } else {
-    quoteIconVal = bodyDivs[layout.quoteIdx].textContent.trim().toLowerCase();
-  }
-  const reviewHtml = layout.reviewIdx != null ? bodyDivs[layout.reviewIdx].innerHTML : '';
-  let personName;
-  let productName;
-  let ratingRaw;
-  let dateText;
-  if (layout.quotedetailsIdx !== undefined) {
-    const detailsBody = bodyDivs[layout.quotedetailsIdx];
-    const detailsParas = [...detailsBody.querySelectorAll('p')];
-    personName = sanitizeText(detailsParas[0]?.textContent ?? '');
-    productName = sanitizeText(detailsParas[1]?.textContent ?? '') || DEFAULT_PRODUCT;
-    ratingRaw = detailsParas[2]?.textContent?.trim() ?? '';
-    dateText = detailsParas[3]?.textContent?.trim() ?? '';
-  } else {
-    personName = sanitizeText(bodyDivs[layout.personIdx].textContent);
-    productName = sanitizeText(bodyDivs[layout.productIdx].textContent) || DEFAULT_PRODUCT;
-    ratingRaw = bodyDivs[layout.ratingIdx].textContent.trim();
-    dateText = bodyDivs[layout.dateIdx].textContent.trim();
-  }
+  const layoutMap = new Map(Object.entries(layout));
+  const quoteIconVal = getQuoteIconVal(layoutMap, bodyDivsByIndex);
+  const reviewHtml = getReviewHtml(layoutMap, bodyDivsByIndex);
+  const details = getDetailsFromLayout(layoutMap, bodyDivsByIndex);
 
   const quoteIcon = (quoteIconVal === 'inverted-commas') ? 'inverted-commas' : 'none';
-  const ratingNum = parseInt(ratingRaw, 10);
+  const ratingNum = parseInt(details.ratingRaw, 10);
   const authorRating = (Number.isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) ? 5 : ratingNum;
-  const isoDate = /^\d{4}-\d{2}-\d{2}$/.test(dateText.trim())
-    ? dateText.trim() : parseReviewDateToISO(dateText) || dateText;
-  const formattedDate = formatDateForDisplay(isoDate) || dateText;
+  const dateText = details.dateText.trim();
+  const isoDate = /^\d{4}-\d{2}-\d{2}$/.test(dateText)
+    ? dateText : parseReviewDateToISO(details.dateText) || details.dateText;
+  const formattedDate = formatDateForDisplay(isoDate) || details.dateText;
 
   const newBody = document.createElement('div');
   newBody.className = 'cards-card-body';
-  if (quoteIcon === 'inverted-commas') {
-    newBody.appendChild(createQuoteIconElement());
-  }
+  if (quoteIcon === 'inverted-commas') newBody.appendChild(createQuoteIconElement());
   cardItem.setAttribute('data-quote-icon', quoteIcon);
-  if (reviewHtml && reviewHtml.trim()) {
+  if (reviewHtml.trim()) {
     const reviewWrapper = document.createElement('div');
     reviewWrapper.innerHTML = reviewHtml;
     newBody.append(...reviewWrapper.childNodes);
   }
   const pPerson = document.createElement('p');
   pPerson.className = 'testimonial-person-name';
-  pPerson.textContent = personName;
+  pPerson.textContent = details.personName;
   newBody.appendChild(pPerson);
   const pProduct = document.createElement('p');
   pProduct.className = 'testimonial-product-name';
   const u = document.createElement('u');
-  u.textContent = productName;
+  u.textContent = details.productName;
   pProduct.appendChild(u);
   newBody.appendChild(pProduct);
   newBody.appendChild(createStarRatingElement(authorRating, formattedDate));
-  cardItem.setAttribute('data-person-name', personName);
-  cardItem.setAttribute('data-product-name', productName);
+  cardItem.setAttribute('data-person-name', details.personName);
+  cardItem.setAttribute('data-product-name', details.productName);
   cardItem.setAttribute('data-author-rating', String(authorRating));
   cardItem.setAttribute('data-review-date', isoDate);
 
@@ -491,14 +535,13 @@ function optimizePicturesInContainer(cardsContainer) {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
     const optimizedImg = optimizedPic.querySelector('img');
     moveInstrumentation(img, optimizedImg);
-    const width = img.dataset('width');
-    const height = img.dataset('height');
+    const { width, height } = img.dataset;
     if (width && height) {
-      optimizedImg.dataset('width', width);
-      optimizedImg.dataset('height', height);
+      optimizedImg.dataset.width = width;
+      optimizedImg.dataset.height = height;
     } else if (img.closest('.swiper-slide')) {
-      optimizedImg.dataset('width', '232');
-      optimizedImg.dataset('height', '358');
+      optimizedImg.dataset.width = '232';
+      optimizedImg.dataset.height = '358';
     }
     img.closest('picture').replaceWith(optimizedPic);
   });
@@ -526,8 +569,8 @@ function setImageDimensionsFromRects(block) {
     if (img.hasAttribute('width') && img.hasAttribute('height')) return;
     const rect = img.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
-      img.dataset('width', Math.round(rect.width));
-      img.dataset('height', Math.round(rect.height));
+      img.dataset.width = String(Math.round(rect.width));
+      img.dataset.height = String(Math.round(rect.height));
     }
   });
 }
