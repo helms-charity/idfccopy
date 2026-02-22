@@ -1,9 +1,11 @@
 module.exports = {
   root: true,
+  plugins: ['secure-coding', 'sonarjs'],
   extends: [
     'airbnb-base',
     'plugin:json/recommended',
     'plugin:xwalk/recommended',
+    'plugin:sonarjs/recommended-legacy',
   ],
   env: {
     browser: true,
@@ -15,6 +17,23 @@ module.exports = {
     requireConfigFile: false,
   },
   rules: {
+    // secure-coding: preset is flat-config only; rules enabled manually for legacy config
+    'secure-coding/no-hardcoded-credentials': 'error',
+    'secure-coding/no-redos-vulnerable-regex': 'error',
+    'secure-coding/no-unsafe-deserialization': 'error',
+    'secure-coding/no-improper-sanitization': 'error',
+    'secure-coding/no-format-string-injection': 'error',
+    'secure-coding/no-unchecked-loop-condition': 'error',
+    'secure-coding/no-unlimited-resource-allocation': 'error',
+    'secure-coding/no-xpath-injection': 'error',
+    'secure-coding/no-graphql-injection': 'error',
+    'secure-coding/no-xxe-injection': 'error',
+    'secure-coding/detect-non-literal-regexp': 'warn',
+    'secure-coding/detect-object-injection': 'warn',
+    'secure-coding/no-improper-type-validation': 'warn',
+    'secure-coding/no-missing-authentication': 'warn',
+    'secure-coding/no-sensitive-data-exposure': 'warn',
+    'secure-coding/no-pii-in-logs': 'warn',
     'import/extensions': ['error', { js: 'always' }], // require js file extensions in imports
     'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
