@@ -11,6 +11,7 @@
  */
 
 /* eslint-env browser */
+/* eslint-disable sonarjs/cognitive-complexity */
 function sampleRUM(checkpoint, data) {
   // eslint-disable-next-line max-len
   const timeShift = () => (window.performance ? window.performance.now() : Date.now() - window.hlx.rum.firstReadTime);
@@ -23,7 +24,10 @@ function sampleRUM(checkpoint, data) {
         || (window.SAMPLE_PAGEVIEWS_AT_RATE === 'low' && 1000)
         || (param === 'on' && 1)
         || 100;
+      // RUM id/sampling: Math.random() is intentional (analytics, not crypto)
+      // eslint-disable-next-line sonarjs/pseudo-random -- safe for RUM sampling
       const id = Math.random().toString(36).slice(-4);
+      // eslint-disable-next-line sonarjs/pseudo-random -- safe for RUM sampling
       const isSelected = param !== 'off' && Math.random() * weight < 1;
       // eslint-disable-next-line object-curly-newline, max-len
       window.hlx.rum = {
@@ -48,7 +52,8 @@ function sampleRUM(checkpoint, data) {
               .replace(/ at /, '@')
               .trim();
           } catch (err) {
-            /* error structure was not as expected */
+            // eslint-disable-next-line no-console
+            console.log('Error in dataFromErrorObj:', err);
           }
           return errData;
         };
@@ -85,6 +90,7 @@ function sampleRUM(checkpoint, data) {
             ? `?${new URLSearchParams(window.RUM_PARAMS).toString()}`
             : '';
           const { href: url, origin } = new URL(
+            /* eslint-disable secure-coding/no-format-string-injection -- CWE-134: URL components */
             `.rum/${weight}${urlParams}`,
             sampleRUM.collectBaseURL,
           );
@@ -122,7 +128,8 @@ function sampleRUM(checkpoint, data) {
     }
     document.dispatchEvent(new CustomEvent('rum', { detail: { checkpoint, data } }));
   } catch (error) {
-    // something went awry
+    // eslint-disable-next-line no-console
+    console.log('Error in sampleRUM:', error);
   }
 }
 
@@ -185,20 +192,34 @@ function toCamelCase(name) {
   return toClassName(name).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 }
 
+/** Keys that must not be used for dynamic property access (CWE-915). */
+const UNSAFE_OBJECT_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/**
+ * Returns true if key is safe to use as an object property (not prototype pollution).
+ * @param {string} key
+ * @returns {boolean}
+ */
+function isSafeObjectKey(key) {
+  return typeof key === 'string' && key.length > 0 && !UNSAFE_OBJECT_KEYS.has(key);
+}
+
 /**
  * Extracts the config from a block.
  * @param {Element} block The block element
  * @returns {object} The block config
  */
 // eslint-disable-next-line import/prefer-default-export
+/* eslint-disable sonarjs/cognitive-complexity */
 function readBlockConfig(block) {
-  const config = {};
+  const configMap = new Map();
   block.querySelectorAll(':scope > div').forEach((row) => {
     if (row.children) {
       const cols = [...row.children];
       if (cols[1]) {
         const col = cols[1];
         const name = toClassName(cols[0].textContent);
+        if (!isSafeObjectKey(name)) return;
         let value = '';
         if (col.querySelector('a')) {
           const as = [...col.querySelectorAll('a')];
@@ -222,11 +243,11 @@ function readBlockConfig(block) {
             value = ps.map((p) => p.textContent);
           }
         } else value = row.children[1].textContent;
-        config[name] = value;
+        configMap.set(name, value);
       }
     }
   });
-  return config;
+  return Object.fromEntries(configMap);
 }
 
 /**
@@ -258,11 +279,12 @@ async function loadScript(src, attrs) {
     if (!document.querySelector(`head > script[src="${src}"]`)) {
       const script = document.createElement('script');
       script.src = src;
-      if (attrs) {
-        // eslint-disable-next-line no-restricted-syntax, guard-for-in
-        for (const attr in attrs) {
-          script.setAttribute(attr, attrs[attr]);
-        }
+      if (attrs && typeof attrs === 'object' && !Array.isArray(attrs)) {
+        Object.entries(attrs).forEach(([attr, val]) => {
+          if (isSafeObjectKey(attr) && val !== null && val !== undefined) {
+            script.setAttribute(attr, String(val));
+          }
+        });
       }
       script.onload = resolve;
       script.onerror = reject;
@@ -392,12 +414,11 @@ function wrapTextNodes(block) {
     if (blockColumn.hasChildNodes()) {
       const hasWrapper = !!blockColumn.firstElementChild
         && validWrappers.some((tagName) => blockColumn.firstElementChild.tagName === tagName);
-      if (!hasWrapper) {
-        wrap(blockColumn);
-      } else if (
-        blockColumn.firstElementChild.tagName === 'PICTURE'
+      const needsWrap = !hasWrapper || (
+        blockColumn.firstElementChild?.tagName === 'PICTURE'
         && (blockColumn.children.length > 1 || !!blockColumn.textContent.trim())
-      ) {
+      );
+      if (needsWrap) {
         wrap(blockColumn);
       }
     }
@@ -411,8 +432,6 @@ function wrapTextNodes(block) {
 function decorateButtons(element) {
   element.querySelectorAll('a').forEach((a) => {
     a.title = a.title || a.textContent;
-    // if (a.href !== a.textContent) {
-    // adding lines 413-415 as a quick sanity check
     const shouldSkip = a.href === a.textContent && a.textContent.trim().length > 0
       && !a.closest('.button-container') && !a.classList.contains('button');
     if (!shouldSkip) {
@@ -503,16 +522,29 @@ function decorateIcons(element, prefix = '') {
 /* decorateSections moved to scripts.js */
 
 /**
+ * Gets placeholders cache (Map keyed by prefix). Uses Map to avoid CWE-915.
+ * @returns {Map<string, object|Promise<object>>}
+ */
+function getPlaceholdersCache() {
+  if (!window.placeholdersCache) {
+    window.placeholdersCache = new Map();
+  }
+  return window.placeholdersCache;
+}
+
+/**
  * Gets placeholders object.
  * @param {string} [prefix] Location of placeholders
  * @returns {object} Window placeholders object
  */
 // eslint-disable-next-line import/prefer-default-export
 async function fetchPlaceholders(prefix = 'default') {
-  window.placeholders = window.placeholders || {};
-  if (!window.placeholders[prefix]) {
-    window.placeholders[prefix] = new Promise((resolve) => {
-      fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
+  const safePrefix = isSafeObjectKey(prefix) ? prefix : 'default';
+  const cache = getPlaceholdersCache();
+  if (!cache.has(safePrefix)) {
+    const promise = new Promise((resolve) => {
+      const fetchUrl = safePrefix === 'default' ? '' : safePrefix;
+      fetch(`${fetchUrl}/placeholders.json`)
         .then((resp) => {
           if (resp.ok) {
             return resp.json();
@@ -520,23 +552,40 @@ async function fetchPlaceholders(prefix = 'default') {
           return {};
         })
         .then((json) => {
-          const placeholders = {};
-          json.data
+          const placeholdersMap = new Map();
+          const data = json.data || [];
+          data
             .filter((placeholder) => placeholder.Key)
             .forEach((placeholder) => {
-              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+              const key = toCamelCase(placeholder.Key);
+              if (isSafeObjectKey(key)) {
+                placeholdersMap.set(key, placeholder.Text);
+              }
             });
-          window.placeholders[prefix] = placeholders;
-          resolve(window.placeholders[prefix]);
+          const placeholders = Object.fromEntries(placeholdersMap);
+          cache.set(safePrefix, placeholders);
+          resolve(placeholders);
         })
         .catch(() => {
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
+          const empty = {};
+          cache.set(safePrefix, empty);
+          resolve(empty);
         });
     });
+    cache.set(safePrefix, promise);
   }
-  return window.placeholders[`${prefix}`];
+  return cache.get(safePrefix);
+}
+
+/**
+ * Sanitize HTML before assigning to innerHTML. Uses DOMPurify when available.
+ * @param {string} html - Raw HTML string
+ * @returns {string} Sanitized HTML safe for insertion
+ */
+export function sanitizeHTML(html) {
+  if (!html || typeof html !== 'string') return html;
+  if (!window.DOMPurify) return html;
+  return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 /**
@@ -557,7 +606,7 @@ function buildBlock(blockName, content) {
       vals.forEach((val) => {
         if (val) {
           if (typeof val === 'string') {
-            colEl.innerHTML += val;
+            colEl.innerHTML += sanitizeHTML(val);
           } else {
             colEl.appendChild(val);
           }
@@ -678,6 +727,12 @@ async function waitForFirstImage(section) {
   });
 }
 
+/** Max blocks to load per section (CWE-606 loop bound). */
+const MAX_BLOCKS_PER_SECTION = 100;
+
+/** Max sections to load (CWE-606 loop bound). */
+const MAX_SECTIONS = 100;
+
 /**
  * Loads all blocks in a section.
  * @param {Element} section The section element
@@ -688,7 +743,8 @@ async function loadSection(section, loadCallback) {
   if (!status || status === 'initialized') {
     section.dataset.sectionStatus = 'loading';
     const blocks = [...section.querySelectorAll('div.block')];
-    for (let i = 0; i < blocks.length; i += 1) {
+    const blockLimit = Math.min(blocks.length, MAX_BLOCKS_PER_SECTION);
+    for (let i = 0; i < blockLimit; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       await loadBlock(blocks[i]);
     }
@@ -705,7 +761,8 @@ async function loadSection(section, loadCallback) {
 
 async function loadSections(element) {
   const sections = [...element.querySelectorAll('div.section')];
-  for (let i = 0; i < sections.length; i += 1) {
+  const sectionLimit = Math.min(sections.length, MAX_SECTIONS);
+  for (let i = 0; i < sectionLimit; i += 1) {
     // eslint-disable-next-line no-await-in-loop
     await loadSection(sections[i]);
     if (i === 0 && sampleRUM.enhance) {

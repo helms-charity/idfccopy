@@ -14,9 +14,13 @@ import {
   loadCSS,
   loadScript,
   getMetadata,
+  sanitizeHTML,
   // readBlockConfig,
   toCamelCase,
 } from './aem.js';
+
+// Re-export for blocks that import from scripts.js
+export { sanitizeHTML };
 
 // DOMPurify loaded once for HTML sanitization (mitigates DOM XSS from contentMap/dataset)
 let domPurifyReady = null;
@@ -31,17 +35,6 @@ export async function ensureDOMPurify() {
     domPurifyReady = loadScript(`${base}/scripts/dompurify.min.js`);
   }
   return domPurifyReady;
-}
-
-/**
- * Sanitize HTML before assigning to innerHTML. Use for any content from DOM/dataset/contentMap.
- * @param {string} html - Raw HTML string
- * @returns {string} Sanitized HTML safe for insertion
- */
-export function sanitizeHTML(html) {
-  if (!html || typeof html !== 'string') return html;
-  if (!window.DOMPurify) return html;
-  return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 }
 
 // Cached media query results for Section performance
