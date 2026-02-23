@@ -1,12 +1,12 @@
 // eslint-disable-next-line import/no-unresolved
 import { toClassName } from '../../scripts/aem.js';
-import { getBlockId, moveInstrumentation } from '../../scripts/scripts.js';
+import { getBlockId, moveInstrumentation, sanitizeHTML } from '../../scripts/scripts.js';
 
 function createTabButton(block, tabpanel, tablist, index, buttonContent, buttonId) {
   const button = document.createElement('button');
   button.className = 'tabs-tab';
   button.id = buttonId;
-  button.innerHTML = buttonContent;
+  button.innerHTML = sanitizeHTML(buttonContent);
   button.setAttribute('aria-controls', tabpanel.id);
   button.setAttribute('aria-selected', !index);
   button.setAttribute('role', 'tab');
@@ -75,7 +75,7 @@ export default async function decorate(block) {
         tabpanel,
         tablist,
         i,
-        tabTextWrapper.innerHTML,
+        sanitizeHTML(tabTextWrapper.innerHTML),
         `${block.id}_tab_${i}`,
       );
       tablist.append(button);
@@ -93,7 +93,7 @@ export default async function decorate(block) {
 
     tabs.forEach((tab, i) => {
       const id = toClassName(tab.textContent);
-      const buttonContent = tab.innerHTML;
+      const buttonContent = sanitizeHTML(tab.innerHTML);
       const tabpanel = block.children[i];
       tabpanel.className = 'tabs-panel';
       tabpanel.id = `${block.id}_tabPane_${i}`;
