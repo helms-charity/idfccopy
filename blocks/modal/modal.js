@@ -1,7 +1,7 @@
 import {
   buildBlock, decorateBlock, loadBlock, loadCSS,
 } from '../../scripts/aem.js';
-import { loadFragment } from '../../scripts/scripts.js';
+import { loadFragment, sanitizeHTML } from '../../scripts/scripts.js';
 
 /*
   This is not a traditional block, so there is no decorate function.
@@ -47,6 +47,98 @@ const MAYURA_HOTSPOT_POSITIONS = {
   },
 };
 
+/** Safe getter for concept positions (whitelist; conceptNum 1–3). */
+function getMayuraPositionsForConcept(conceptNum) {
+  switch (conceptNum) {
+    case 1: return MAYURA_HOTSPOT_POSITIONS[1];
+    case 2: return MAYURA_HOTSPOT_POSITIONS[2];
+    case 3: return MAYURA_HOTSPOT_POSITIONS[3];
+    default: return null;
+  }
+}
+
+/** Safe getter for one hotspot position (whitelist; targetConcept 1–3). */
+function getHotspotPos(positions, targetConcept) {
+  if (!positions) return undefined;
+  switch (targetConcept) {
+    case 1: return positions.hotspot1;
+    case 2: return positions.hotspot2;
+    case 3: return positions.hotspot3;
+    default: return undefined;
+  }
+}
+
+/**
+ * Applies the section switch: hide all concept sections, show target, trigger fade-in.
+ * @param {NodeListOf<Element>} conceptSections - All mayura concept sections
+ * @param {HTMLElement} targetSection - The section to show
+ */
+function applyMayuraSectionSwitch(conceptSections, targetSection) {
+  conceptSections.forEach((s) => {
+    s.style.display = 'none';
+    s.classList.remove('fade-out', 'fade-in');
+  });
+  targetSection.style.display = 'flex';
+  targetSection.classList.add('fade-out');
+  // eslint-disable-next-line no-unused-expressions
+  targetSection.offsetHeight;
+  targetSection.classList.remove('fade-out');
+  targetSection.classList.add('fade-in');
+}
+
+/**
+ * Returns a click handler for a mayura hotspot that fades out the current section
+ * then switches to the target concept section.
+ * @param {HTMLElement} container - Modal content container
+ * @param {NodeListOf<Element>} conceptSections - All mayura concept sections
+ * @param {number} targetConcept - Concept number (1–3) to show
+ * @returns {(e: MouseEvent) => void}
+ */
+function createMayuraHotspotClickHandler(container, conceptSections, targetConcept) {
+  return (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const visibleSection = [...conceptSections].find(
+      (s) => s.style.display !== 'none' && getComputedStyle(s).display !== 'none',
+    );
+    const targetSection = container.querySelector(`.section[data-id="mayura-metal-concept-${targetConcept}"]`);
+    if (!targetSection || targetSection === visibleSection) return;
+    if (visibleSection) {
+      visibleSection.classList.add('fade-out');
+      visibleSection.classList.remove('fade-in');
+    }
+    setTimeout(() => applyMayuraSectionSwitch(conceptSections, targetSection), 350);
+  };
+}
+
+/**
+ * Creates one hotspot button for a given target concept and position.
+ * @param {Object} pos - { top, left } CSS position
+ * @param {number} targetConcept - Concept number (1–3)
+ * @param {HTMLElement} container - Modal content container
+ * @param {NodeListOf<Element>} conceptSections - All mayura concept sections
+ * @returns {HTMLButtonElement}
+ */
+function createMayuraHotspotButton(pos, targetConcept, container, conceptSections) {
+  const hotspot = document.createElement('button');
+  hotspot.type = 'button';
+  hotspot.className = 'mayura-hotspot';
+  hotspot.setAttribute('aria-label', `View concept ${targetConcept}`);
+  hotspot.style.cssText = `
+    position: absolute;
+    top: calc(${pos.top} - 10px);
+    left: calc(${pos.left} - 10px);
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+  `;
+  hotspot.addEventListener('click', createMayuraHotspotClickHandler(container, conceptSections, targetConcept));
+  return hotspot;
+}
+
 /**
  * Creates clickable hotspots for mayura-metal-concept sections.
  * These hotspots overlay the pseudo-element positions and allow
@@ -60,86 +152,57 @@ function setupMayuraHotspots(container) {
   conceptSections.forEach((section) => {
     const dataId = section.getAttribute('data-id');
     const conceptNum = parseInt(dataId.replace('mayura-metal-concept-', ''), 10);
-    const positions = MAYURA_HOTSPOT_POSITIONS[conceptNum];
+    const positions = getMayuraPositionsForConcept(conceptNum);
 
     if (!positions) return;
 
     const imgCol = section.querySelector('div.columns-img-col');
     if (!imgCol) return;
 
-    // Create hotspot container
     const hotspotContainer = document.createElement('div');
     hotspotContainer.className = 'mayura-hotspot-container';
 
-    // Create 3 hotspots
     [1, 2, 3].forEach((targetConcept) => {
-      const hotspotKey = `hotspot${targetConcept}`;
-      const pos = positions[hotspotKey];
-
-      const hotspot = document.createElement('button');
-      hotspot.type = 'button';
-      hotspot.className = 'mayura-hotspot';
-      hotspot.setAttribute('aria-label', `View concept ${targetConcept}`);
-      // Position hotspot to overlap the 20px pseudo-element circles
-      // Pseudo-elements have top-left at the specified position
-      // We use a larger clickable area (40px) centered on the pseudo-element
-      hotspot.style.cssText = `
-        position: absolute;
-        top: calc(${pos.top} - 10px);
-        left: calc(${pos.left} - 10px);
-        width: 40px;
-        height: 40px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        z-index: 10;
-      `;
-
-      hotspot.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Find the currently visible section
-        const visibleSection = [...conceptSections].find(
-          (s) => s.style.display !== 'none' && getComputedStyle(s).display !== 'none',
-        );
-
-        const targetSection = container.querySelector(`.section[data-id="mayura-metal-concept-${targetConcept}"]`);
-        if (!targetSection || targetSection === visibleSection) return;
-
-        // Fade out the visible section
-        if (visibleSection) {
-          visibleSection.classList.add('fade-out');
-          visibleSection.classList.remove('fade-in');
-        }
-
-        // Wait for fade-out to complete (350ms), then switch sections
-        setTimeout(() => {
-          // Hide all concept sections
-          conceptSections.forEach((s) => {
-            s.style.display = 'none';
-            s.classList.remove('fade-out', 'fade-in');
-          });
-
-          // Show target section starting invisible
-          targetSection.style.display = 'flex';
-          targetSection.classList.add('fade-out');
-
-          // Force reflow before starting fade-in animation
-          // eslint-disable-next-line no-unused-expressions
-          targetSection.offsetHeight;
-
-          // Now fade in
-          targetSection.classList.remove('fade-out');
-          targetSection.classList.add('fade-in');
-        }, 350);
-      });
-
+      const pos = getHotspotPos(positions, targetConcept);
+      const hotspot = createMayuraHotspotButton(pos, targetConcept, container, conceptSections);
       hotspotContainer.appendChild(hotspot);
     });
 
     imgCol.appendChild(hotspotContainer);
   });
+}
+
+/**
+ * Returns a click handler that closes the given dialog.
+ * @param {HTMLDialogElement} dialog
+ * @returns {() => void}
+ */
+function createCloseModalHandler(dialog) {
+  return () => animatedClose(dialog);
+}
+
+const MAYURA_CONCEPT_SECTION_IDS = new Set(['mayura-metal-concept-2', 'mayura-metal-concept-3']);
+
+/**
+ * Returns a click handler that programmatically clicks a hotspot button
+ * in the given section (e.g. button:nth-child(1) or (2)).
+ * @param {HTMLElement} container - Modal content container
+ * @param {string} sectionDataId - Must be in MAYURA_CONCEPT_SECTION_IDS
+ * @param {number} buttonIndex - 1-based index (1–3)
+ * @returns {() => void}
+ */
+function createClickHotspotInSectionHandler(container, sectionDataId, buttonIndex) {
+  const safeId = MAYURA_CONCEPT_SECTION_IDS.has(sectionDataId) ? sectionDataId : null;
+  const safeIndex = Number(buttonIndex);
+  const isValidIndex = Number.isInteger(safeIndex) && safeIndex >= 1 && safeIndex <= 3;
+  const validIndex = isValidIndex ? safeIndex : null;
+  if (!safeId || !validIndex) return () => {};
+
+  return () => {
+    const section = container.querySelector(`.section[data-id="${safeId}"]`);
+    const hotspot = section?.querySelector(`.mayura-hotspot-container > button:nth-child(${validIndex})`);
+    if (hotspot) hotspot.click();
+  };
 }
 
 /**
@@ -151,33 +214,22 @@ function setupMayuraHotspots(container) {
  * @param {HTMLDialogElement} dialog - The dialog element to close
  */
 function setupMayuraLastParagraphActions(container, dialog) {
-  // Concept 1: last p closes modal
   const concept1LastP = container.querySelector('.section[data-id="mayura-metal-concept-1"] p:last-child');
   if (concept1LastP) {
     concept1LastP.style.cursor = 'pointer';
-    concept1LastP.addEventListener('click', () => {
-      animatedClose(dialog);
-    });
+    concept1LastP.addEventListener('click', createCloseModalHandler(dialog));
   }
 
-  // Concept 2: last p clicks hotspot 1 (shows concept 1)
   const concept2LastP = container.querySelector('.section[data-id="mayura-metal-concept-2"] p:last-child');
   if (concept2LastP) {
     concept2LastP.style.cursor = 'pointer';
-    concept2LastP.addEventListener('click', () => {
-      const hotspot1 = container.querySelector('.section[data-id="mayura-metal-concept-2"] .mayura-hotspot-container > button:nth-child(1)');
-      if (hotspot1) hotspot1.click();
-    });
+    concept2LastP.addEventListener('click', createClickHotspotInSectionHandler(container, 'mayura-metal-concept-2', 1));
   }
 
-  // Concept 3: last p clicks hotspot 2 (shows concept 2)
   const concept3LastP = container.querySelector('.section[data-id="mayura-metal-concept-3"] p:last-child');
   if (concept3LastP) {
     concept3LastP.style.cursor = 'pointer';
-    concept3LastP.addEventListener('click', () => {
-      const hotspot2 = container.querySelector('.section[data-id="mayura-metal-concept-3"] .mayura-hotspot-container > button:nth-child(2)');
-      if (hotspot2) hotspot2.click();
-    });
+    concept3LastP.addEventListener('click', createClickHotspotInSectionHandler(container, 'mayura-metal-concept-3', 2));
   }
 }
 
@@ -347,7 +399,9 @@ export async function createModal(contentNodes, options = {}) {
   closeButton.classList.add('close-button');
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.type = 'button';
-  closeButton.innerHTML = '<span class="icon icon-close"></span>';
+  // CWE-116: sanitizeHTML uses DOMPurify (comprehensive sanitization)
+  // eslint-disable-next-line secure-coding/no-improper-sanitization -- DOMPurify via scripts.js
+  closeButton.innerHTML = sanitizeHTML('<span class="icon icon-close"></span>');
   closeButton.addEventListener('click', () => animatedClose(dialog));
   dialog.prepend(closeButton);
 
@@ -355,7 +409,7 @@ export async function createModal(contentNodes, options = {}) {
   if (options.ctaContent) {
     const ctaWrapper = document.createElement('div');
     ctaWrapper.classList.add('modal-cta');
-    ctaWrapper.innerHTML = options.ctaContent;
+    ctaWrapper.innerHTML = sanitizeHTML(options.ctaContent);
     dialog.prepend(ctaWrapper);
   }
 

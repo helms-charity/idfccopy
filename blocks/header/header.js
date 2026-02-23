@@ -1,6 +1,9 @@
 import { getMetadata, decorateIcons } from '../../scripts/aem.js';
-import { loadFragment } from '../../scripts/scripts.js';
+import { loadFragment, sanitizeHTML } from '../../scripts/scripts.js';
 import { parseCategoryNavBlock, buildDropdown } from '../category-nav/category-nav.js';
+
+/* eslint-disable secure-coding/no-improper-sanitization --
+sanitizeHTML uses DOMPurify via the import from scripts.js which linting can't see */
 
 // media query matches for different viewport sizes
 const isDesktop = window.matchMedia('(min-width: 990px)');
@@ -107,47 +110,540 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
   // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
     window.addEventListener('keydown', closeOnEscape);
-    // collapse menu on focus lost
-    // nav.addEventListener('focusout', closeOnFocusLost);
   } else {
     window.removeEventListener('keydown', closeOnEscape);
-    // nav.removeEventListener('focusout', closeOnFocusLost);
   }
 }
 
 /**
- * loads and decorates the header, mainly the nav
- * @param {Element} block The header block element
+ * Creates a dropdown with overlay functionality
+ * @param {Object} options Configuration options
+ * @returns {Object} Dropdown controls and functions
  */
-export default async function decorate(block) {
-  // load nav as fragment
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+function createDropdown(options) {
+  const {
+    className,
+    overlayClassName,
+    fragmentPath,
+    closeDelay = 100,
+  } = options;
 
-  // decorate nav DOM
-  block.textContent = '';
-  const nav = document.createElement('nav');
-  nav.id = 'nav';
+  const dropdown = document.createElement('div');
+  dropdown.className = className;
 
-  // Get the default-content-wrapper from fragment
-  const contentWrapper = fragment.querySelector('.default-content');
-  if (!contentWrapper) return;
+  const closeBtn = document.createElement('button');
+  closeBtn.className = `${className.split(' ')[0]}-close-btn`;
+  closeBtn.innerHTML = '&times;';
+  closeBtn.setAttribute('aria-label', 'Close');
+  dropdown.appendChild(closeBtn);
 
-  // Create the three main sections
-  const navBrand = document.createElement('div');
-  navBrand.classList.add('nav-brand', 'section');
+  const overlay = document.createElement('div');
+  overlay.className = overlayClassName;
 
-  const navSections = document.createElement('div');
-  navSections.classList.add('nav-sections', 'section');
+  document.body.appendChild(overlay);
+  document.body.appendChild(dropdown);
 
-  const navTools = document.createElement('div');
-  navTools.classList.add('nav-tools', 'section');
+  let loaded = false;
+  let closeTimeout = null;
 
-  // Extract logo from fragment (if exists) or use default
-  // Authoring contract: Logo should be in a section with data-id="logo"
+  const openDropdown = async () => {
+    clearTimeout(closeTimeout);
+    if (!loaded && fragmentPath) {
+      const dropdownFragment = await loadFragment(fragmentPath);
+      if (dropdownFragment) dropdown.append(...dropdownFragment.childNodes);
+      loaded = true;
+    }
+    if (!isDesktop.matches) overlay.classList.add('visible');
+    dropdown.classList.add('open');
+  };
+
+  const closeDropdown = () => {
+    overlay.classList.remove('visible');
+    dropdown.classList.remove('open');
+  };
+
+  const scheduleClose = () => {
+    clearTimeout(closeTimeout);
+    closeTimeout = setTimeout(closeDropdown, closeDelay);
+  };
+
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeDropdown();
+  });
+  overlay.addEventListener('click', () => closeDropdown());
+
+  return {
+    dropdown,
+    overlay,
+    openDropdown,
+    closeDropdown,
+    scheduleClose,
+    clearTimeout: () => clearTimeout(closeTimeout),
+  };
+}
+
+/**
+ * Start odometer animation for Customer Service in nav-tools
+ * @param {Element} navTools Nav tools container
+ */
+function startOdometerAnimation(navTools) {
+  const odometerTrack = navTools.querySelector('.grnt-odometer-track');
+  if (!odometerTrack) return;
+
+  const spans = odometerTrack.querySelectorAll('span');
+  const spanHeight = 20;
+  const totalItems = spans.length - 1;
+  let currentIndex = 0;
+
+  setInterval(() => {
+    currentIndex += 1;
+    odometerTrack.style.transform = `translateY(-${currentIndex * spanHeight}px)`;
+    if (currentIndex >= totalItems) {
+      setTimeout(() => {
+        odometerTrack.style.transition = 'none';
+        odometerTrack.style.transform = 'translateY(0)';
+        currentIndex = 0;
+        setTimeout(() => {
+          odometerTrack.style.transition = 'transform 0.6s ease-in-out';
+        }, 50);
+      }, 600);
+    }
+  }, 1500);
+}
+
+/**
+ * Setup customer service dropdown on odometer; returns openDropdown for mobile use.
+ * @param {Element} navTools Nav tools container
+ * @returns {(() => Promise<void>)|null} openDropdown or null
+ */
+function setupCustomerServiceDropdown(navTools) {
+  const odometerEl = navTools.querySelector('.grnt-animation-odometer');
+  const odometerLi = odometerEl?.closest('li');
+  if (!odometerLi) return null;
+
+  const cs = createDropdown({
+    className: 'cs-dropdown',
+    overlayClassName: 'cs-dropdown-overlay',
+    fragmentPath: '/fragments/customer-service-dropdown',
+    closeDelay: 100,
+  });
+
+  odometerLi.style.cursor = 'pointer';
+  odometerLi.addEventListener('mouseenter', () => {
+    if (isDesktop.matches) cs.openDropdown();
+  });
+  cs.dropdown.addEventListener('mouseenter', () => cs.clearTimeout());
+  cs.dropdown.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) cs.scheduleClose();
+  });
+  odometerLi.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !cs.dropdown.contains(e.relatedTarget)) cs.scheduleClose();
+  });
+  odometerLi.addEventListener('click', () => {
+    if (!isDesktop.matches) cs.openDropdown();
+  });
+
+  document.addEventListener('click', (e) => {
+    const clickedMobileOdometer = e.target.closest('.mobile-customer-service-odometer');
+    const isOutsideClick = !cs.dropdown.contains(e.target)
+      && !odometerLi.contains(e.target)
+      && !clickedMobileOdometer
+      && !cs.overlay.contains(e.target);
+    if (!isDesktop.matches && isOutsideClick) cs.closeDropdown();
+  });
+
+  return cs.openDropdown;
+}
+
+/**
+ * Setup login dropdown on #login-button.
+ * @param {Element} navToolsWrapper Nav tools wrapper containing #login-button
+ */
+function setupLoginDropdown(navToolsWrapper) {
+  const loginButton = navToolsWrapper.querySelector('#login-button');
+  if (!loginButton) return;
+
+  const login = createDropdown({
+    className: 'login-dropdown',
+    overlayClassName: 'login-dropdown-overlay',
+    fragmentPath: '/fragments/login',
+    closeDelay: 200,
+  });
+
+  loginButton.addEventListener('mouseenter', () => {
+    if (isDesktop.matches) login.openDropdown();
+  });
+  login.dropdown.addEventListener('mouseenter', () => login.clearTimeout());
+  login.dropdown.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !loginButton.contains(e.relatedTarget)) login.scheduleClose();
+  });
+  loginButton.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !login.dropdown.contains(e.relatedTarget)) login.scheduleClose();
+  });
+  loginButton.addEventListener('click', () => {
+    if (!isDesktop.matches) login.openDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    const isOutsideClick = !login.dropdown.contains(e.target)
+      && !loginButton.contains(e.target)
+      && !login.overlay.contains(e.target);
+    if (isOutsideClick && login.dropdown.classList.contains('open')) login.closeDropdown();
+  });
+}
+
+/** Search fallback suggestions list (used when API fails or returns empty). */
+const SEARCH_FALLBACK_SUGGESTIONS = [
+  { title: 'Personal Loan', url: '/personal-banking/loans/personal-loan', type: 'Loan' },
+  { title: 'Savings Account', url: '/personal-banking/accounts/savings-account', type: 'Account' },
+  { title: 'Fixed Deposit', url: '/personal-banking/deposits/fixed-deposit', type: 'Deposit' },
+  { title: 'Home Loan', url: '/personal-banking/loans/home-loan', type: 'Loan' },
+  { title: 'FASTag', url: '/personal-banking/fastag', type: 'Service' },
+  { title: 'Mutual Funds', url: '/wealth-management/mutual-funds', type: 'Investment' },
+  { title: 'Current Account', url: '/business-banking/current-account', type: 'Account' },
+  { title: 'Business Loan', url: '/business-banking/loans/business-loan', type: 'Loan' },
+  { title: 'NRI Account', url: '/nri-banking/nri-savings-account', type: 'Account' },
+  { title: 'Gaj Credit Card', url: '/credit-card/metal-credit-card/gaj', type: 'Premium Metal' },
+  { title: 'Ashva Credit Card', url: '/credit-card/metal-credit-card/ashva', type: 'Premium Metal' },
+  { title: 'Mayura Credit Card', url: '/credit-card/metal-credit-card/mayura', type: 'Premium Metal' },
+  { title: 'FIRST Private Credit Card', url: '/credit-card/FIRSTPrivateCreditCard', type: 'Premium Metal' },
+  { title: 'Diamond Reserve Credit Card', url: '/credit-card/diamond-reserve-credit-card', type: 'Travel' },
+  { title: 'IndiGo Credit Card', url: '/credit-card/indigo-credit-card', type: 'Travel' },
+  { title: 'Club Vistara Credit Card', url: '/credit-card/vistara-credit-card', type: 'Travel' },
+  { title: 'FIRST WOW! Black Credit Card', url: '/credit-card/wow-black-credit-card', type: 'Travel' },
+  { title: 'FIRST Classic Credit Card', url: '/credit-card/classic', type: 'Lifetime Free' },
+  { title: 'FIRST Millennia Credit Card', url: '/credit-card/millennia', type: 'Lifetime Free' },
+  { title: 'FIRST Select Credit Card', url: '/credit-card/select', type: 'Lifetime Free' },
+  { title: 'FIRST Wealth Credit Card', url: '/credit-card/wealth', type: 'Lifetime Free' },
+  { title: 'FIRST WOW! Credit Card', url: '/credit-card/wow', type: 'Lifetime Free' },
+  { title: 'LIC Classic Credit Card', url: '/credit-card/lic-classic-credit-card', type: 'Lifetime Free' },
+  { title: 'LIC Select Credit Card', url: '/credit-card/lic-credit-card', type: 'Lifetime Free' },
+  { title: 'Hello Cashback Credit Card', url: '/credit-card/hello-cashback-credit-card', type: 'UPI Card' },
+  { title: 'FIRST Power Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
+  { title: 'FIRST Power+ Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
+  { title: 'FIRST EA₹N Credit Card', url: '/credit-card/secured-rupay-credit-card', type: 'UPI Card' },
+  { title: 'FIRST Digital RuPay Credit Card', url: '/credit-card/rupay-credit-card', type: 'UPI Card' },
+  { title: 'FIRST SWYP EMI Credit Card', url: '/credit-card/swyp-emi-credit-card', type: 'EMI Card' },
+  { title: 'CreditPro Balance Transfer', url: '/credit-card/credit-card-balance-transfer', type: 'Balance Transfer' },
+  { title: 'Business Credit Card', url: '/credit-card/business-credit-card-sme', type: 'Business' },
+  { title: 'Corporate Credit Card', url: '/credit-card/corporate-credit-card', type: 'Business' },
+  { title: 'Purchase Credit Card', url: '/credit-card/purchase-credit-card', type: 'Business' },
+  { title: 'Credit Card Referral Program', url: '/credit-card/credit-card-referral-program', type: 'Service' },
+  { title: 'Add-on Credit Card', url: '/credit-card/add-on-credit-card', type: 'Service' },
+  { title: 'Personalised Credit Card', url: '/credit-card/image-card/apply', type: 'Service' },
+  { title: 'Credit Card', url: '/credit-card', type: 'Product' },
+];
+
+function getSearchFallbackSuggestions(query) {
+  const lowerQuery = query.toLowerCase();
+  return SEARCH_FALLBACK_SUGGESTIONS
+    .filter((item) => item.title.toLowerCase().includes(lowerQuery))
+    .slice(0, 10);
+}
+
+/** Tracks which mobile odometer containers have started animation (run once per container). */
+const mobileOdometerStarted = new WeakSet();
+
+/**
+ * Start mobile odometer animation once per container.
+ * @param {Element} container Element with .grnt-odometer-track
+ */
+function startMobileOdometerAnimation(container) {
+  if (!container || mobileOdometerStarted.has(container)) return;
+  mobileOdometerStarted.add(container);
+
+  const track = container.querySelector('.grnt-odometer-track');
+  if (!track) return;
+
+  const spans = track.querySelectorAll('span');
+  const spanHeight = 20;
+  const totalItems = spans.length - 1;
+  let currentIndex = 0;
+  track.style.transform = 'translateY(0)';
+
+  setInterval(() => {
+    currentIndex += 1;
+    track.style.transform = `translateY(-${currentIndex * spanHeight}px)`;
+    if (currentIndex >= totalItems) {
+      setTimeout(() => {
+        track.style.transition = 'none';
+        track.style.transform = 'translateY(0)';
+        currentIndex = 0;
+        setTimeout(() => { track.style.transition = 'transform 0.6s ease-in-out'; }, 50);
+      }, 600);
+    }
+  }, 1500);
+}
+
+/**
+ * Build mobile customer-service odometer container (markup only).
+ * @param {string[]} odometerItemTexts Text for each odometer item
+ * @returns {Element} Container element
+ */
+function buildMobileOdometerContainer(odometerItemTexts) {
+  const container = document.createElement('div');
+  /* eslint-disable-next-line secure-coding/no-hardcoded-credentials --
+  CSS class, not credential. Next time don't use 'service' in the class name. */
+  container.className = 'mobile-customer-service-odometer';
+  if (odometerItemTexts.length === 0) return container;
+
+  const spans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
+  const firstItemText = odometerItemTexts[0];
+  container.innerHTML = sanitizeHTML(`
+    <div class="grnt-animation-odometer">
+      <div class="grnt-odometer-track">
+        ${spans}
+        <span>${firstItemText}</span>
+      </div>
+    </div>
+  `);
+  return container;
+}
+
+/**
+ * Wire mobile odometer click and start animation when nav expands.
+ * @param {Element} nav Nav element (aria-expanded observed)
+ * @param {Element} mobileOdometerContainer Mobile odometer container
+ * @param {(() => void)|null} csDropdownOpen Open function for customer service dropdown
+ */
+function wireMobileOdometer(nav, mobileOdometerContainer, csDropdownOpen) {
+  mobileOdometerContainer.style.cursor = 'pointer';
+  mobileOdometerContainer.addEventListener('click', () => {
+    if (!isDesktop.matches && csDropdownOpen) csDropdownOpen();
+  });
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'aria-expanded' && nav.getAttribute('aria-expanded') === 'true') {
+        setTimeout(() => startMobileOdometerAnimation(mobileOdometerContainer), 100);
+      }
+    });
+  });
+  observer.observe(nav, { attributes: true });
+}
+
+/**
+ * Initialize nav section behaviors (desktop/tablet/mobile) per section.
+ * @param {Object} domCache Cache with allNavSections
+ * @param {function(Element)} setupDesktop Called for each section when isLargeDesktop
+ * @param {function(Element)} setupTablet Called for each section when isDesktop but not large
+ * @param {function(Element)} setupMobile Called for each section when mobile
+ */
+function initNavSectionBehaviors(domCache, setupDesktop, setupTablet, setupMobile) {
+  domCache.allNavSections.forEach((navSection) => {
+    if (!navSection.getAttribute('data-fragment-path')) return;
+    if (isLargeDesktop.matches) setupDesktop(navSection);
+    else if (isDesktop.matches) setupTablet(navSection);
+    else setupMobile(navSection);
+  });
+}
+
+/**
+ * Setup search dropdown (search box, results, mobile search icon).
+ * @param {Element} navToolsWrapper Wrapper containing #search-box
+ * @param {Element} navTools Nav tools container (for mobile search icon)
+ */
+function setupSearchDropdown(navToolsWrapper, navTools) {
+  const searchBox = navToolsWrapper.querySelector('#search-box');
+  if (!searchBox) return;
+
+  const search = createDropdown({
+    className: 'search-dropdown',
+    overlayClassName: 'search-dropdown-overlay',
+    fragmentPath: '/fragments/search-dropdown',
+    closeDelay: 100,
+  });
+
+  const mobileSearchBox = document.createElement('div');
+  mobileSearchBox.className = 'mobile-search-input-wrapper';
+  mobileSearchBox.id = 'mobile-search-box';
+  mobileSearchBox.innerHTML = `
+    <span class="icon icon-search"></span>
+    <input type="text" placeholder="What are you looking for..." class="search-input mobile-search-input" />
+  `;
+
+  const insertMobileSearchBox = () => {
+    const firstSection = search.dropdown.querySelector('.section');
+    if (firstSection && !search.dropdown.querySelector('#mobile-search-box')) {
+      search.dropdown.insertBefore(mobileSearchBox, firstSection);
+      decorateIcons(mobileSearchBox);
+    }
+  };
+
+  const searchInput = searchBox.querySelector('.search-input');
+  const mobileSearchInput = mobileSearchBox.querySelector('.mobile-search-input');
+  let searchTimeout = null;
+  let defaultDropdownContent = null;
+
+  const storeDefaultContent = () => {
+    if (!defaultDropdownContent && search.dropdown.querySelector('.default-content')) {
+      defaultDropdownContent = search.dropdown.querySelector('.default-content').cloneNode(true);
+    }
+  };
+
+  const restoreDefaultContent = () => {
+    const searchResults = search.dropdown.querySelector('.search-results');
+    if (searchResults) searchResults.remove();
+    const firstSection = search.dropdown.querySelector('.section');
+    if (firstSection && firstSection.style.display === 'none') firstSection.style.display = '';
+  };
+
+  const displaySearchResults = (results, query, container) => {
+    const loadingEl = container.querySelector('.search-results-loading');
+    if (loadingEl) loadingEl.remove();
+
+    if (results.length === 0) {
+      /* eslint-disable-next-line secure-coding/no-format-string-injection --
+      HTML, sanitizeHTML; not format string */
+      container.innerHTML += sanitizeHTML(`
+        <div class="search-results-empty">
+          <p>No results found for "${query}"</p>
+          <p>Try searching for something else or press Enter to see all results</p>
+        </div>
+      `);
+      return;
+    }
+
+    const resultsList = document.createElement('ul');
+    resultsList.classList.add('search-results-list');
+    results.forEach((result) => {
+      const li = document.createElement('li');
+      li.innerHTML = sanitizeHTML(`
+        <a href="${result.url}">
+          <span class="search-result-title">${result.title}</span>
+          ${result.type ? `<span class="search-result-type">${result.type}</span>` : ''}
+        </a>
+      `);
+      resultsList.appendChild(li);
+    });
+    container.appendChild(resultsList);
+
+    const viewAllLink = document.createElement('div');
+    viewAllLink.classList.add('search-results-footer');
+    /* eslint-disable-next-line secure-coding/no-format-string-injection --
+    HTML, sanitizeHTML; not format string. Next time don't use 'query' in the format string. */
+    viewAllLink.innerHTML = sanitizeHTML(`
+      <a href="https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}" class="view-all-results">
+        View all results for "${query}" <span class="icon icon-arrow-right-alt"></span>
+      </a>
+    `);
+    viewAllLink.querySelector('.view-all-results').addEventListener('click', () => {
+      sessionStorage.setItem('searchKeySolar', query);
+    });
+    container.appendChild(viewAllLink);
+    decorateIcons(viewAllLink);
+  };
+
+  const fetchSearchResults = async (query, container) => {
+    try {
+      const response = await fetch(`https://www.idfcfirst.bank.in/bin/idfcfirstbank/search?q=${encodeURIComponent(query)}&limit=10`);
+      let results = response.ok ? ((await response.json()).results || []) : [];
+      if (results.length === 0) results = getSearchFallbackSuggestions(query);
+      displaySearchResults(results, query, container);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('[Header Search] Search API failed, using fallback suggestions:', error?.message ?? error);
+      displaySearchResults(getSearchFallbackSuggestions(query), query, container);
+    }
+  };
+
+  const createSearchResults = (query) => {
+    const existingResults = search.dropdown.querySelector('.search-results');
+    if (existingResults) existingResults.remove();
+    const firstSection = search.dropdown.querySelector('.section');
+    if (!firstSection) return;
+
+    firstSection.style.display = 'none';
+    const resultsContainer = document.createElement('div');
+    resultsContainer.classList.add('search-results', 'section');
+    resultsContainer.setAttribute('data-search-results', 'true');
+    /* eslint-disable-next-line secure-coding/no-format-string-injection --
+    HTML, sanitizeHTML; not format string.  */
+    resultsContainer.innerHTML = sanitizeHTML(`
+      <div class="search-results-header">
+        <h3>Search results for "${query}"</h3>
+      </div>
+      <div class="search-results-loading">
+        <p>Searching...</p>
+      </div>
+    `);
+    firstSection.parentNode.insertBefore(resultsContainer, firstSection);
+    setTimeout(() => fetchSearchResults(query, resultsContainer), 300);
+  };
+
+  const handleSearchInput = (e) => {
+    const query = e.target.value.trim();
+    if (e.target === searchInput && mobileSearchInput) mobileSearchInput.value = query;
+    else if (e.target === mobileSearchInput && searchInput) searchInput.value = query;
+    if (searchTimeout) clearTimeout(searchTimeout);
+    if (query.length === 0) {
+      restoreDefaultContent();
+      return;
+    }
+    if (query.length >= 2) searchTimeout = setTimeout(() => createSearchResults(query), 300);
+  };
+
+  const handleSearchKeydown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const query = e.target.value.trim();
+      if (query) {
+        sessionStorage.setItem('searchKeySolar', query);
+        window.location.href = `https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}`;
+      }
+    }
+  };
+
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keydown', handleSearchKeydown);
+    const originalOpenDropdown = search.openDropdown;
+    search.openDropdown = async () => {
+      await originalOpenDropdown();
+      storeDefaultContent();
+      insertMobileSearchBox();
+      if (!isDesktop.matches && mobileSearchInput) mobileSearchInput.focus();
+      else searchInput.focus();
+    };
+  }
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', handleSearchInput);
+    mobileSearchInput.addEventListener('keydown', handleSearchKeydown);
+  }
+
+  searchBox.addEventListener('click', () => search.openDropdown());
+  search.dropdown.addEventListener('mouseenter', () => search.clearTimeout());
+  search.dropdown.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !searchBox.contains(e.relatedTarget)) search.scheduleClose();
+  });
+  searchBox.addEventListener('mouseleave', (e) => {
+    if (isDesktop.matches && !search.dropdown.contains(e.relatedTarget)) search.scheduleClose();
+  });
+
+  const mobileSearchIconEl = navTools.querySelector('.mobile-search-icon');
+  if (mobileSearchIconEl) mobileSearchIconEl.addEventListener('click', () => search.openDropdown());
+
+  document.addEventListener('click', (e) => {
+    const isOutsideClick = !search.dropdown.contains(e.target)
+      && !searchBox.contains(e.target)
+      && !e.target.closest('.mobile-search-icon')
+      && !search.overlay.contains(e.target);
+    if (isOutsideClick && search.dropdown.classList.contains('open')) {
+      search.closeDropdown();
+      if (searchInput) searchInput.value = '';
+      if (mobileSearchInput) mobileSearchInput.value = '';
+      restoreDefaultContent();
+    }
+  });
+}
+
+/**
+ * Extract logo src and alt from nav fragment.
+ * @param {DocumentFragment} fragment Nav fragment
+ * @returns {{ logoImgSrc: string, logoImgAlt: string }}
+ */
+function getLogoFromFragment(fragment) {
   let logoImgSrc = '/icons/idfc-logo-nav.svg';
   let logoImgAlt = 'IDFC FIRST Bank';
 
@@ -157,44 +653,46 @@ export default async function decorate(block) {
     if (logoImg) {
       const srcFromFragment = logoImg.getAttribute('src');
       logoImgAlt = logoImg.getAttribute('alt') || logoImgAlt;
-
-      if (srcFromFragment) {
-        logoImgSrc = srcFromFragment;
-      }
+      if (srcFromFragment) logoImgSrc = srcFromFragment;
     }
   } else {
-    // Fallback: Look for the last image in the fragment (backward compatibility)
     const allImages = fragment.querySelectorAll('img');
     if (allImages.length > 0) {
-      const lastImg = allImages[allImages.length - 1];
+      const lastImg = allImages.at(-1);
       const srcFromFragment = lastImg.getAttribute('src');
       logoImgAlt = lastImg.getAttribute('alt') || logoImgAlt;
-
-      if (srcFromFragment) {
-        logoImgSrc = srcFromFragment;
-      }
+      if (srcFromFragment) logoImgSrc = srcFromFragment;
     }
   }
+  return { logoImgSrc, logoImgAlt };
+}
 
-  // Build nav-brand
-  navBrand.innerHTML = `<a href="https://www.idfcfirst.bank.in/personal-banking" aria-label="IDFC FIRST Bank Home">
-    <img src="${logoImgSrc}" alt="${logoImgAlt}">
-  </a>`;
+/**
+ * Build nav-brand section with logo link.
+ * @param {Element} navBrand Container element
+ * @param {{ logoImgSrc: string, logoImgAlt: string }} logo Logo data
+ */
+function buildNavBrand(navBrand, logo) {
+  navBrand.innerHTML = sanitizeHTML(`<a href="https://www.idfcfirst.bank.in/personal-banking" aria-label="IDFC FIRST Bank Home">
+    <img src="${logo.logoImgSrc}" alt="${logo.logoImgAlt}">
+  </a>`);
+}
 
-  // Parse the content and build nav-sections
+/**
+ * Build nav-sections list (ul of nav items) from fragment.
+ * @param {DocumentFragment} fragment Nav fragment
+ * @returns {{ navSectionsWrapper: Element, navSectionsUl: Element } | null} Wrapper and ul, or null
+ */
+function buildNavSectionsFromFragment(fragment) {
+  const sections = fragment.querySelectorAll(':scope > .section');
   const navSectionsWrapper = document.createElement('div');
   navSectionsWrapper.classList.add('default-content-wrapper');
   const navSectionsUl = document.createElement('ul');
 
-  // Get sections from the fragment
-  const sections = fragment.querySelectorAll(':scope > .section');
-
   sections.forEach((section) => {
-    // Get section data-id as title
     const sectionId = section.getAttribute('data-id');
     if (!sectionId) return;
 
-    // Get H2 and links from section
     const h2 = section.querySelector('h2');
     const links = section.querySelectorAll('a');
     if (!h2 || links.length === 0) return;
@@ -204,26 +702,21 @@ export default async function decorate(block) {
     let fragmentPath;
 
     if (links.length >= 2) {
-      // Has both title link and fragment path
       const titleLink = links[0];
       const fragmentLink = links[1];
       title = titleLink.textContent.trim();
       titleUrl = titleLink.getAttribute('href');
       fragmentPath = fragmentLink.getAttribute('href');
     } else {
-      // Only has fragment path, title is plain text in H2
       title = h2.textContent.trim();
       fragmentPath = links[0].getAttribute('href');
     }
 
     if (!fragmentPath) return;
 
-    // Create nav item
     const li = document.createElement('li');
     li.setAttribute('data-fragment-path', fragmentPath);
-    if (titleUrl) {
-      li.setAttribute('data-title-url', titleUrl);
-    }
+    if (titleUrl) li.setAttribute('data-title-url', titleUrl);
     li.setAttribute('aria-expanded', 'false');
 
     const titleP = document.createElement('p');
@@ -231,147 +724,124 @@ export default async function decorate(block) {
     titleA.textContent = title;
     titleA.href = titleUrl || '#';
     titleA.classList.add('nav-title-link');
-
-    // If no URL, prevent navigation on both desktop and mobile
-    if (!titleUrl) {
-      titleA.addEventListener('click', (e) => e.preventDefault());
-    }
+    if (!titleUrl) titleA.addEventListener('click', (e) => e.preventDefault());
 
     titleP.appendChild(titleA);
     li.appendChild(titleP);
-
     navSectionsUl.appendChild(li);
   });
 
   navSectionsWrapper.appendChild(navSectionsUl);
-  navSections.appendChild(navSectionsWrapper);
+  return { navSectionsWrapper, navSectionsUl };
+}
 
-  // Cache frequently accessed DOM elements for performance
-  const domCache = {
-    navSectionsUl,
-    get allNavSections() {
-      // Lazy getter that returns fresh array each time (in case DOM changes)
-      return Array.from(this.navSectionsUl.querySelectorAll(':scope > li'));
-    },
+/**
+ * Extract tools section data (search, odometer, buttons) from fragment sections.
+ * @param {NodeListOf<Element>} sections Fragment sections
+ * @returns {{ searchP: Element|null, toolsUl: Element|null, toolsContent:
+ * Element|null, odometerItemTexts: string[], buttonParagraphs: Element[] }}
+ */
+function getToolsData(sections) {
+  const result = {
+    searchP: null,
+    toolsUl: null,
+    toolsContent: null,
+    odometerItemTexts: [],
+    buttonParagraphs: [],
   };
 
-  // Build nav-tools section
-  // Authoring contract: Section must have data-id="nav-tools"
-  const navToolsWrapper = document.createElement('div');
-  navToolsWrapper.classList.add('default-content-wrapper');
+  const toolsSection = Array.from(sections).find((s) => s.getAttribute('data-id') === 'nav-tools');
+  if (!toolsSection) return result;
 
-  // Find the nav-tools section by exact ID match
-  const toolsSection = Array.from(sections).find((section) => {
-    const sectionId = section.getAttribute('data-id');
-    return sectionId === 'nav-tools';
-  });
+  const toolsContent = toolsSection.querySelector('.default-content');
+  if (!toolsContent) return result;
 
-  let searchP;
-  let toolsUl;
-  let toolsContent;
+  result.toolsContent = toolsContent;
+  result.searchP = toolsContent.querySelector('p strong')?.parentElement;
+  result.toolsUl = toolsContent.querySelector('ul');
 
-  if (toolsSection) {
-    // Get content from the tools section
-    toolsContent = toolsSection.querySelector('.default-content');
-    if (toolsContent) {
-      // Authoring contract: First <p> with <strong> is the search bar text
-      searchP = toolsContent.querySelector('p strong')?.parentElement;
-
-      // Authoring contract: First <ul> is the tools list (odometer items)
-      toolsUl = toolsContent.querySelector('ul');
+  if (result.toolsUl) {
+    const originalLis = Array.from(result.toolsUl.querySelectorAll('li'));
+    if (originalLis.length > 0) {
+      result.odometerItemTexts = originalLis.map((li) => li.textContent.trim());
     }
   }
 
-  // Add search bar with icon and input field (created programmatically)
+  result.buttonParagraphs = Array.from(toolsContent.querySelectorAll('p'))
+    .filter((p) => {
+      if (p.querySelector('strong')) return false;
+      const hasLink = p.querySelector('a');
+      const textContent = p.textContent.trim().toLowerCase();
+      return hasLink || ['pay', 'login'].includes(textContent);
+    });
+
+  return result;
+}
+
+/**
+ * Build nav-tools DOM (search bar, odometer list, button items) and append to wrapper.
+ * @param {Element} navToolsWrapper Wrapper element
+ * @param {ReturnType<getToolsData>} toolsData From getToolsData()
+ */
+function buildNavToolsDOM(navToolsWrapper, toolsData) {
+  const {
+    searchP,
+    toolsUl,
+    odometerItemTexts,
+    buttonParagraphs,
+  } = toolsData;
+
   if (searchP) {
-    // Extract just the text content from the authored paragraph
     const searchText = searchP.textContent.trim();
-    // Create new search element with icon and input
     const searchElement = document.createElement('p');
     searchElement.id = 'search-box';
-    searchElement.innerHTML = `<span class="icon icon-search"></span><input type="text" placeholder="${searchText}" class="search-input" />`;
+    /* eslint-disable secure-coding/no-graphql-injection -- HTML, sanitizeHTML; not GraphQL */
+    const searchHtml = '<span class="icon icon-search"></span>'
+      + `<input type="text" placeholder="${searchText}" class="search-input" />`;
+    /* eslint-enable secure-coding/no-graphql-injection */
+    searchElement.innerHTML = sanitizeHTML(searchHtml);
     navToolsWrapper.appendChild(searchElement);
   }
 
-  // Extract odometer items from original list (all items are odometer items now)
-  let odometerItemTexts = [];
-  if (toolsUl) {
-    const originalLis = Array.from(toolsUl.querySelectorAll('li'));
-    if (originalLis.length > 0) {
-      odometerItemTexts = originalLis.map((li) => li.textContent.trim());
-    }
-  }
-
-  // Build the tools list with dynamic odometer (if UL exists)
   if (toolsUl && odometerItemTexts.length > 0) {
     const toolsUlClone = document.createElement('ul');
     const odometerLi = document.createElement('li');
-
-    // Build odometer HTML from all list items
     const odometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
-    // Add first item again at the end for seamless loop
     const firstItemText = odometerItemTexts[0];
-    const odometerHTML = `
+    odometerLi.innerHTML = sanitizeHTML(`
       <div class="grnt-animation-odometer">
         <div class="grnt-odometer-track">
           ${odometerSpans}
           <span>${firstItemText}</span>
         </div>
       </div>
-    `;
-
-    odometerLi.innerHTML = odometerHTML;
+    `);
     toolsUlClone.appendChild(odometerLi);
     navToolsWrapper.appendChild(toolsUlClone);
   }
 
-  // Extract standalone button paragraphs (Pay, Login, etc.)
-  // These are <p> tags with either <a> links or plain text after the UL
-  const buttonParagraphs = toolsContent
-    ? Array.from(toolsContent.querySelectorAll('p'))
-      .filter((p) => {
-        // Exclude the search paragraph (has <strong>)
-        if (p.querySelector('strong')) return false;
-        // Include paragraphs with links or plain text that looks like a button
-        const hasLink = p.querySelector('a');
-        const textContent = p.textContent.trim().toLowerCase();
-        const isButton = ['pay', 'login'].includes(textContent);
-        return hasLink || isButton;
-      })
-    : [];
-
-  // Add standalone buttons (Pay, Login, etc.)
   buttonParagraphs.forEach((p) => {
     const link = p.querySelector('a');
     const buttonLi = document.createElement('li');
     const buttonText = link ? link.textContent.trim() : p.textContent.trim();
     const buttonTextLower = buttonText.toLowerCase();
 
-    // Set ID based on button text
     if (buttonTextLower === 'pay') {
       buttonLi.id = 'pay-button';
-      // Add the link text
       buttonLi.appendChild(document.createTextNode(buttonText));
-      // Make clickable and navigate to link
       if (link) {
         buttonLi.style.cursor = 'pointer';
-        buttonLi.addEventListener('click', () => {
-          window.location.href = link.href;
-        });
+        buttonLi.addEventListener('click', () => { window.location.href = link.href; });
       }
     } else if (buttonTextLower === 'login') {
       buttonLi.id = 'login-button';
       buttonLi.style.cursor = 'pointer';
-      // Add login icon
       const loginIcon = document.createElement('span');
       loginIcon.classList.add('icon', 'icon-login-lock');
       buttonLi.appendChild(loginIcon);
-      // Add the text
       buttonLi.appendChild(document.createTextNode(buttonText));
-      // Don't add click handler - login dropdown is handled separately below
     }
 
-    // Add to existing UL or create one
     let targetUl = navToolsWrapper.querySelector('ul');
     if (!targetUl) {
       targetUl = document.createElement('ul');
@@ -379,7 +849,48 @@ export default async function decorate(block) {
     }
     targetUl.appendChild(buttonLi);
   });
+}
 
+/**
+ * loads and decorates the header, mainly the nav
+ * @param {Element} block The header block element
+ */
+export default async function decorate(block) {
+  const navMeta = getMetadata('nav');
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+  const fragment = await loadFragment(navPath);
+
+  block.textContent = '';
+  const nav = document.createElement('nav');
+  nav.id = 'nav';
+
+  if (!fragment.querySelector('.default-content')) return;
+
+  const navBrand = document.createElement('div');
+  navBrand.classList.add('nav-brand', 'section');
+  const navSections = document.createElement('div');
+  navSections.classList.add('nav-sections', 'section');
+  const navTools = document.createElement('div');
+  navTools.classList.add('nav-tools', 'section');
+
+  buildNavBrand(navBrand, getLogoFromFragment(fragment));
+
+  const navSectionsBuilt = buildNavSectionsFromFragment(fragment);
+  navSections.appendChild(navSectionsBuilt.navSectionsWrapper);
+  const { navSectionsUl } = navSectionsBuilt;
+
+  const domCache = {
+    navSectionsUl,
+    get allNavSections() {
+      return Array.from(this.navSectionsUl.querySelectorAll(':scope > li'));
+    },
+  };
+
+  const sections = fragment.querySelectorAll(':scope > .section');
+  const toolsData = getToolsData(sections);
+  const navToolsWrapper = document.createElement('div');
+  navToolsWrapper.classList.add('default-content-wrapper');
+  buildNavToolsDOM(navToolsWrapper, toolsData);
   navTools.appendChild(navToolsWrapper);
 
   // Create mobile search icon (replaces CSS ::after pseudo-element)
@@ -387,652 +898,15 @@ export default async function decorate(block) {
   mobileSearchIcon.classList.add('mobile-search-icon', 'icon', 'icon-search');
   navTools.appendChild(mobileSearchIcon);
 
-  // Decorate icons in nav-tools to add actual icon images
   decorateIcons(navTools);
+  setTimeout(() => startOdometerAnimation(navTools), 100);
 
-  // Start odometer animation for Customer Service
-  function startOdometerAnimation() {
-    const odometerTrack = navTools.querySelector('.grnt-odometer-track');
-    if (!odometerTrack) return;
+  const csDropdownOpen = setupCustomerServiceDropdown(navTools);
+  setupSearchDropdown(navToolsWrapper, navTools);
+  setupLoginDropdown(navToolsWrapper);
 
-    const spans = odometerTrack.querySelectorAll('span');
-    const spanHeight = 20; // Height of each span in pixels
-    const totalItems = spans.length - 1; // Exclude the duplicate last item
-    let currentIndex = 0;
-
-    setInterval(() => {
-      currentIndex += 1;
-      const translateY = currentIndex * spanHeight;
-      odometerTrack.style.transform = `translateY(-${translateY}px)`;
-
-      // Reset to first item when reaching the duplicate last item
-      if (currentIndex >= totalItems) {
-        setTimeout(() => {
-          odometerTrack.style.transition = 'none';
-          odometerTrack.style.transform = 'translateY(0)';
-          currentIndex = 0;
-          // Re-enable transition after reset
-          setTimeout(() => {
-            odometerTrack.style.transition = 'transform 0.6s ease-in-out';
-          }, 50);
-        }, 600); // Wait for the transition to complete
-      }
-    }, 1500);
-  }
-
-  // Initialize odometer after DOM is ready
-  setTimeout(startOdometerAnimation, 100);
-
-  /**
-   * Creates a dropdown with overlay functionality
-   * @param {Object} options Configuration options
-   * @returns {Object} Dropdown controls and functions
-   */
-  function createDropdown(options) {
-    const {
-      className,
-      overlayClassName,
-      fragmentPath,
-      closeDelay = 100,
-    } = options;
-
-    const dropdown = document.createElement('div');
-    dropdown.className = className;
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = `${className.split(' ')[0]}-close-btn`;
-    closeBtn.innerHTML = '&times;';
-    closeBtn.setAttribute('aria-label', 'Close');
-    dropdown.appendChild(closeBtn);
-
-    const overlay = document.createElement('div');
-    overlay.className = overlayClassName;
-
-    document.body.appendChild(overlay);
-    document.body.appendChild(dropdown);
-
-    let loaded = false;
-    let closeTimeout = null;
-
-    const openDropdown = async () => {
-      clearTimeout(closeTimeout);
-      if (!loaded && fragmentPath) {
-        const dropdownFragment = await loadFragment(fragmentPath);
-        if (dropdownFragment) dropdown.append(...dropdownFragment.childNodes);
-        loaded = true;
-      }
-      // Only show overlay on mobile
-      if (!isDesktop.matches) {
-        overlay.classList.add('visible');
-      }
-      dropdown.classList.add('open');
-    };
-
-    const closeDropdown = () => {
-      overlay.classList.remove('visible');
-      dropdown.classList.remove('open');
-    };
-
-    const scheduleClose = () => {
-      clearTimeout(closeTimeout);
-      closeTimeout = setTimeout(closeDropdown, closeDelay);
-    };
-
-    // Close button handler
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeDropdown();
-    });
-
-    // Overlay click handler
-    overlay.addEventListener('click', () => {
-      closeDropdown();
-    });
-
-    return {
-      dropdown,
-      overlay,
-      openDropdown,
-      closeDropdown,
-      scheduleClose,
-      clearTimeout: () => clearTimeout(closeTimeout),
-    };
-  }
-
-  // Customer service dropdown - shared reference for both desktop and mobile
-  let csDropdownOpen = null;
-
-  // Customer service dropdown
-  const odometerEl = navTools.querySelector('.grnt-animation-odometer');
-  const odometerLi = odometerEl?.closest('li');
-  if (odometerLi) {
-    const cs = createDropdown({
-      className: 'cs-dropdown',
-      overlayClassName: 'cs-dropdown-overlay',
-      fragmentPath: '/fragments/customer-service-dropdown',
-      closeDelay: 100,
-    });
-
-    odometerLi.style.cursor = 'pointer';
-
-    // Desktop: hover behavior
-    odometerLi.addEventListener('mouseenter', () => {
-      if (isDesktop.matches) cs.openDropdown();
-    });
-    cs.dropdown.addEventListener('mouseenter', () => {
-      cs.clearTimeout();
-    });
-    cs.dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !odometerLi.contains(e.relatedTarget)) cs.scheduleClose();
-    });
-    odometerLi.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !cs.dropdown.contains(e.relatedTarget)) cs.scheduleClose();
-    });
-
-    // Store openDropdown function for mobile odometer use
-    csDropdownOpen = cs.openDropdown;
-
-    // Mobile: click behavior
-    odometerLi.addEventListener('click', () => {
-      if (!isDesktop.matches) cs.openDropdown();
-    });
-
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-      const clickedMobileOdometer = e.target.closest('.mobile-customer-service-odometer');
-      const isOutsideClick = !cs.dropdown.contains(e.target)
-        && !odometerLi.contains(e.target)
-        && !clickedMobileOdometer
-        && !cs.overlay.contains(e.target);
-      if (!isDesktop.matches && isOutsideClick) {
-        cs.closeDropdown();
-      }
-    });
-  }
-
-  // Search dropdown
-  const searchBox = navToolsWrapper.querySelector('#search-box');
-  if (searchBox) {
-    const search = createDropdown({
-      className: 'search-dropdown',
-      overlayClassName: 'search-dropdown-overlay',
-      fragmentPath: '/fragments/search-dropdown',
-      closeDelay: 100,
-    });
-
-    // Create mobile search input field for inside the dropdown
-    const mobileSearchBox = document.createElement('div');
-    mobileSearchBox.className = 'mobile-search-input-wrapper';
-    mobileSearchBox.id = 'mobile-search-box';
-    mobileSearchBox.innerHTML = `
-      <span class="icon icon-search"></span>
-      <input type="text" placeholder="What are you looking for..." class="search-input mobile-search-input" />
-    `;
-
-    // Insert mobile search box at the beginning of the dropdown
-    const insertMobileSearchBox = () => {
-      const firstSection = search.dropdown.querySelector('.section');
-      if (firstSection && !search.dropdown.querySelector('#mobile-search-box')) {
-        search.dropdown.insertBefore(mobileSearchBox, firstSection);
-        decorateIcons(mobileSearchBox);
-      }
-    };
-
-    const searchInput = searchBox.querySelector('.search-input');
-    const mobileSearchInput = mobileSearchBox.querySelector('.mobile-search-input');
-    let searchTimeout = null;
-    let defaultDropdownContent = null;
-
-    // Store the default dropdown content (Most Searched, Top Products, Accounts)
-    const storeDefaultContent = () => {
-      if (!defaultDropdownContent && search.dropdown.querySelector('.default-content')) {
-        defaultDropdownContent = search.dropdown.querySelector('.default-content').cloneNode(true);
-      }
-    };
-
-    // Restore default dropdown content
-    const restoreDefaultContent = () => {
-      // Remove search results
-      const searchResults = search.dropdown.querySelector('.search-results');
-      if (searchResults) {
-        searchResults.remove();
-      }
-
-      // Show the first section again
-      const firstSection = search.dropdown.querySelector('.section');
-      if (firstSection && firstSection.style.display === 'none') {
-        firstSection.style.display = '';
-      }
-    };
-
-    // Get fallback suggestions based on query
-    const getFallbackSuggestions = (query) => {
-      const allSuggestions = [
-        // Popular Products & Services
-        { title: 'Personal Loan', url: '/personal-banking/loans/personal-loan', type: 'Loan' },
-        { title: 'Savings Account', url: '/personal-banking/accounts/savings-account', type: 'Account' },
-        { title: 'Fixed Deposit', url: '/personal-banking/deposits/fixed-deposit', type: 'Deposit' },
-        { title: 'Home Loan', url: '/personal-banking/loans/home-loan', type: 'Loan' },
-        { title: 'FASTag', url: '/personal-banking/fastag', type: 'Service' },
-        { title: 'Mutual Funds', url: '/wealth-management/mutual-funds', type: 'Investment' },
-        { title: 'Current Account', url: '/business-banking/current-account', type: 'Account' },
-        { title: 'Business Loan', url: '/business-banking/loans/business-loan', type: 'Loan' },
-        { title: 'NRI Account', url: '/nri-banking/nri-savings-account', type: 'Account' },
-
-        // Premium Metal Credit Cards
-        { title: 'Gaj Credit Card', url: '/credit-card/metal-credit-card/gaj', type: 'Premium Metal' },
-        { title: 'Ashva Credit Card', url: '/credit-card/metal-credit-card/ashva', type: 'Premium Metal' },
-        { title: 'Mayura Credit Card', url: '/credit-card/metal-credit-card/mayura', type: 'Premium Metal' },
-        { title: 'FIRST Private Credit Card', url: '/credit-card/FIRSTPrivateCreditCard', type: 'Premium Metal' },
-
-        // Travel Credit Cards
-        { title: 'Diamond Reserve Credit Card', url: '/credit-card/diamond-reserve-credit-card', type: 'Travel' },
-        { title: 'IndiGo Credit Card', url: '/credit-card/indigo-credit-card', type: 'Travel' },
-        { title: 'Club Vistara Credit Card', url: '/credit-card/vistara-credit-card', type: 'Travel' },
-        { title: 'FIRST WOW! Black Credit Card', url: '/credit-card/wow-black-credit-card', type: 'Travel' },
-
-        // Lifetime Free Credit Cards
-        { title: 'FIRST Classic Credit Card', url: '/credit-card/classic', type: 'Lifetime Free' },
-        { title: 'FIRST Millennia Credit Card', url: '/credit-card/millennia', type: 'Lifetime Free' },
-        { title: 'FIRST Select Credit Card', url: '/credit-card/select', type: 'Lifetime Free' },
-        { title: 'FIRST Wealth Credit Card', url: '/credit-card/wealth', type: 'Lifetime Free' },
-        { title: 'FIRST WOW! Credit Card', url: '/credit-card/wow', type: 'Lifetime Free' },
-        { title: 'LIC Classic Credit Card', url: '/credit-card/lic-classic-credit-card', type: 'Lifetime Free' },
-        { title: 'LIC Select Credit Card', url: '/credit-card/lic-credit-card', type: 'Lifetime Free' },
-
-        // UPI Credit Cards
-        { title: 'Hello Cashback Credit Card', url: '/credit-card/hello-cashback-credit-card', type: 'UPI Card' },
-        { title: 'FIRST Power Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
-        { title: 'FIRST Power+ Credit Card', url: '/credit-card/hpcl-power-fuel-credit-card', type: 'Fuel & UPI' },
-        { title: 'FIRST EA₹N Credit Card', url: '/credit-card/secured-rupay-credit-card', type: 'UPI Card' },
-        { title: 'FIRST Digital RuPay Credit Card', url: '/credit-card/rupay-credit-card', type: 'UPI Card' },
-
-        // Special Features
-        { title: 'FIRST SWYP EMI Credit Card', url: '/credit-card/swyp-emi-credit-card', type: 'EMI Card' },
-        { title: 'CreditPro Balance Transfer', url: '/credit-card/credit-card-balance-transfer', type: 'Balance Transfer' },
-
-        // Business Credit Cards
-        { title: 'Business Credit Card', url: '/credit-card/business-credit-card-sme', type: 'Business' },
-        { title: 'Corporate Credit Card', url: '/credit-card/corporate-credit-card', type: 'Business' },
-        { title: 'Purchase Credit Card', url: '/credit-card/purchase-credit-card', type: 'Business' },
-
-        // Credit Card Services
-        { title: 'Credit Card Referral Program', url: '/credit-card/credit-card-referral-program', type: 'Service' },
-        { title: 'Add-on Credit Card', url: '/credit-card/add-on-credit-card', type: 'Service' },
-        { title: 'Personalised Credit Card', url: '/credit-card/image-card/apply', type: 'Service' },
-        { title: 'Credit Card', url: '/credit-card', type: 'Product' },
-      ];
-
-      const lowerQuery = query.toLowerCase();
-      return allSuggestions
-        .filter((item) => item.title.toLowerCase().includes(lowerQuery))
-        .slice(0, 10); // Increased to 10 results given the larger dataset
-    };
-
-    // Display search results
-    const displaySearchResults = (results, query, container) => {
-      const loadingEl = container.querySelector('.search-results-loading');
-      if (loadingEl) {
-        loadingEl.remove();
-      }
-
-      if (results.length === 0) {
-        container.innerHTML += `
-          <div class="search-results-empty">
-            <p>No results found for "${query}"</p>
-            <p>Try searching for something else or press Enter to see all results</p>
-          </div>
-        `;
-        return;
-      }
-
-      const resultsList = document.createElement('ul');
-      resultsList.classList.add('search-results-list');
-
-      results.forEach((result) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <a href="${result.url}">
-            <span class="search-result-title">${result.title}</span>
-            ${result.type ? `<span class="search-result-type">${result.type}</span>` : ''}
-          </a>
-        `;
-        resultsList.appendChild(li);
-      });
-
-      container.appendChild(resultsList);
-
-      // Add "View all results" link
-      const viewAllLink = document.createElement('div');
-      viewAllLink.classList.add('search-results-footer');
-      viewAllLink.innerHTML = `
-        <a href="https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}" class="view-all-results">
-          View all results for "${query}" <span class="icon icon-arrow-right-alt"></span>
-        </a>
-      `;
-
-      // Add click handler to set session storage before navigation
-      const viewAllLinkElement = viewAllLink.querySelector('.view-all-results');
-      viewAllLinkElement.addEventListener('click', () => {
-        sessionStorage.setItem('searchKeySolar', query);
-      });
-
-      container.appendChild(viewAllLink);
-      decorateIcons(viewAllLink);
-    };
-
-    // Fetch search results
-    const fetchSearchResults = async (query, container) => {
-      try {
-        // Try to fetch from the search page API
-        // Note: The actual API endpoint may vary - this is a best guess based on the site structure
-        const response = await fetch(`https://www.idfcfirst.bank.in/bin/idfcfirstbank/search?q=${encodeURIComponent(query)}&limit=10`);
-
-        let results = [];
-
-        if (response.ok) {
-          const data = await response.json();
-          results = data.results || [];
-        }
-
-        // If no results from API, show fallback suggestions
-        if (results.length === 0) {
-          results = getFallbackSuggestions(query);
-        }
-
-        displaySearchResults(results, query, container);
-      } catch (error) {
-        // If API fails, show fallback suggestions
-        const results = getFallbackSuggestions(query);
-        displaySearchResults(results, query, container);
-      }
-    };
-
-    // Create search results container
-    const createSearchResults = (query) => {
-      // Remove existing results
-      const existingResults = search.dropdown.querySelector('.search-results');
-      if (existingResults) {
-        existingResults.remove();
-      }
-
-      // Find the first section (Most Searched)
-      const firstSection = search.dropdown.querySelector('.section');
-      if (!firstSection) return;
-
-      // Hide the first section
-      firstSection.style.display = 'none';
-
-      // Create results container
-      const resultsContainer = document.createElement('div');
-      resultsContainer.classList.add('search-results');
-      resultsContainer.classList.add('section'); // Add section class so it fits in the layout
-      resultsContainer.setAttribute('data-search-results', 'true'); // Add marker for CSS
-
-      // Create loading state
-      resultsContainer.innerHTML = `
-        <div class="search-results-header">
-          <h3>Search results for "${query}"</h3>
-        </div>
-        <div class="search-results-loading">
-          <p>Searching...</p>
-        </div>
-      `;
-
-      // Insert the search results in place of the first section
-      firstSection.parentNode.insertBefore(resultsContainer, firstSection);
-
-      // Fetch search results (with fallback to client-side suggestions)
-      setTimeout(() => {
-        fetchSearchResults(query, resultsContainer);
-      }, 300);
-    };
-
-    // Handle search input - shared function for both inputs
-    const handleSearchInput = (e) => {
-      const query = e.target.value.trim();
-
-      // Sync both inputs
-      if (e.target === searchInput && mobileSearchInput) {
-        mobileSearchInput.value = query;
-      } else if (e.target === mobileSearchInput && searchInput) {
-        searchInput.value = query;
-      }
-
-      // Clear existing timeout
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-
-      if (query.length === 0) {
-        // Restore default content if search is empty
-        restoreDefaultContent();
-        return;
-      }
-
-      if (query.length >= 2) {
-        // Debounce search by 300ms
-        searchTimeout = setTimeout(() => {
-          createSearchResults(query);
-        }, 300);
-      }
-    };
-
-    // Handle Enter key to redirect to full search page - shared function
-    const handleSearchKeydown = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const query = e.target.value.trim();
-        if (query) {
-          // Set session storage before redirecting
-          sessionStorage.setItem('searchKeySolar', query);
-          window.location.href = `https://www.idfcfirst.bank.in/search?skey=${encodeURIComponent(query)}`;
-        }
-      }
-    };
-
-    if (searchInput) {
-      // Handle input changes (real-time search)
-      searchInput.addEventListener('input', handleSearchInput);
-      searchInput.addEventListener('keydown', handleSearchKeydown);
-
-      // Focus search input when dropdown opens
-      const originalOpenDropdown = search.openDropdown;
-      search.openDropdown = async () => {
-        await originalOpenDropdown();
-        storeDefaultContent();
-        insertMobileSearchBox();
-
-        // Focus the appropriate input based on viewport
-        if (!isDesktop.matches && mobileSearchInput) {
-          mobileSearchInput.focus();
-        } else {
-          searchInput.focus();
-        }
-      };
-    }
-
-    // Setup mobile search input handlers
-    if (mobileSearchInput) {
-      mobileSearchInput.addEventListener('input', handleSearchInput);
-      mobileSearchInput.addEventListener('keydown', handleSearchKeydown);
-    }
-
-    // Click to open
-    searchBox.addEventListener('click', () => {
-      search.openDropdown();
-    });
-
-    // Desktop: keep dropdown open while hovering
-    search.dropdown.addEventListener('mouseenter', () => {
-      search.clearTimeout();
-    });
-
-    // Desktop: schedule close when mouse leaves dropdown
-    search.dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !searchBox.contains(e.relatedTarget)) {
-        search.scheduleClose();
-      }
-    });
-
-    // Desktop: schedule close when mouse leaves search box
-    searchBox.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !search.dropdown.contains(e.relatedTarget)) {
-        search.scheduleClose();
-      }
-    });
-
-    // Mobile search icon click handler
-    const mobileSearchIconEl = navTools.querySelector('.mobile-search-icon');
-    if (mobileSearchIconEl) {
-      mobileSearchIconEl.addEventListener('click', () => {
-        search.openDropdown();
-      });
-    }
-
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-      const isOutsideClick = !search.dropdown.contains(e.target)
-        && !searchBox.contains(e.target)
-        && !e.target.closest('.mobile-search-icon')
-        && !search.overlay.contains(e.target);
-      if (isOutsideClick && search.dropdown.classList.contains('open')) {
-        search.closeDropdown();
-        // Restore default content when closing
-        if (searchInput) {
-          searchInput.value = '';
-        }
-        if (mobileSearchInput) {
-          mobileSearchInput.value = '';
-        }
-        restoreDefaultContent();
-      }
-    });
-  }
-
-  // Login dropdown
-  const loginButton = navToolsWrapper.querySelector('#login-button');
-  if (loginButton) {
-    const login = createDropdown({
-      className: 'login-dropdown',
-      overlayClassName: 'login-dropdown-overlay',
-      fragmentPath: '/fragments/login',
-      closeDelay: 200,
-    });
-
-    // Desktop: hover behavior
-    loginButton.addEventListener('mouseenter', () => {
-      if (isDesktop.matches) login.openDropdown();
-    });
-
-    login.dropdown.addEventListener('mouseenter', () => {
-      login.clearTimeout();
-    });
-
-    login.dropdown.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !loginButton.contains(e.relatedTarget)) {
-        login.scheduleClose();
-      }
-    });
-
-    loginButton.addEventListener('mouseleave', (e) => {
-      if (isDesktop.matches && !login.dropdown.contains(e.relatedTarget)) {
-        login.scheduleClose();
-      }
-    });
-
-    // Mobile: click behavior
-    loginButton.addEventListener('click', () => {
-      if (!isDesktop.matches) login.openDropdown();
-    });
-
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-      const isOutsideClick = !login.dropdown.contains(e.target)
-        && !loginButton.contains(e.target)
-        && !login.overlay.contains(e.target);
-      if (isOutsideClick && login.dropdown.classList.contains('open')) {
-        login.closeDropdown();
-      }
-    });
-  }
-
-  // Create mobile odometer for Customer Service (displayed at top when nav expanded)
-  const mobileOdometerContainer = document.createElement('div');
-  mobileOdometerContainer.className = 'mobile-customer-service-odometer';
-
-  // Use the same odometer items extracted above
-  if (odometerItemTexts.length > 0) {
-    const mobileOdometerSpans = odometerItemTexts.map((text) => `<span>${text}</span>`).join('');
-    const firstItemText = odometerItemTexts[0];
-
-    mobileOdometerContainer.innerHTML = `
-      <div class="grnt-animation-odometer">
-        <div class="grnt-odometer-track">
-          ${mobileOdometerSpans}
-          <span>${firstItemText}</span>
-        </div>
-      </div>
-    `;
-  }
-
-  // Mobile odometer click handler - open customer service dropdown
-  if (mobileOdometerContainer) {
-    mobileOdometerContainer.style.cursor = 'pointer';
-    mobileOdometerContainer.addEventListener('click', () => {
-      if (!isDesktop.matches && csDropdownOpen) {
-        csDropdownOpen();
-      }
-    });
-  }
-
-  // Start mobile odometer animation (only when nav is first expanded)
-  let mobileOdometerStarted = false;
-  function startMobileOdometerAnimation() {
-    if (mobileOdometerStarted) return;
-    mobileOdometerStarted = true;
-
-    const mobileOdometerTrack = mobileOdometerContainer.querySelector('.grnt-odometer-track');
-    if (!mobileOdometerTrack) return;
-
-    const spans = mobileOdometerTrack.querySelectorAll('span');
-    const spanHeight = 20;
-    const totalItems = spans.length - 1;
-    let currentIndex = 0;
-
-    // Ensure we start at the first item
-    mobileOdometerTrack.style.transform = 'translateY(0)';
-
-    setInterval(() => {
-      currentIndex += 1;
-      const translateY = currentIndex * spanHeight;
-      mobileOdometerTrack.style.transform = `translateY(-${translateY}px)`;
-
-      if (currentIndex >= totalItems) {
-        setTimeout(() => {
-          mobileOdometerTrack.style.transition = 'none';
-          mobileOdometerTrack.style.transform = 'translateY(0)';
-          currentIndex = 0;
-          setTimeout(() => {
-            mobileOdometerTrack.style.transition = 'transform 0.6s ease-in-out';
-          }, 50);
-        }, 600);
-      }
-    }, 1500);
-  }
-
-  // Watch for nav expansion to start mobile odometer
-  const navObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.attributeName === 'aria-expanded') {
-        const isExpanded = nav.getAttribute('aria-expanded') === 'true';
-        if (isExpanded && !mobileOdometerStarted) {
-          setTimeout(startMobileOdometerAnimation, 100);
-        }
-      }
-    });
-  });
-  navObserver.observe(nav, { attributes: true });
+  const mobileOdometerContainer = buildMobileOdometerContainer(toolsData.odometerItemTexts);
+  wireMobileOdometer(nav, mobileOdometerContainer, csDropdownOpen);
 
   // Assemble the navigation
   nav.appendChild(navBrand);
@@ -1340,115 +1214,88 @@ export default async function decorate(block) {
     });
   }
 
+  /** Build accordion UL from fragment sections (category-nav or standard). */
+  function buildFragmentSectionsUl(fragmentContent) {
+    const fragmentSections = fragmentContent.querySelectorAll('.section');
+    const ul = document.createElement('ul');
+    ul.classList.add('nav-fragment-content');
+    fragmentSections.forEach((section) => {
+      const processed = processCategoryNavSection(section)
+        || processStandardSectionMobile(section);
+      if (!processed) return;
+      const sectionLi = document.createElement('li');
+      sectionLi.classList.add('nav-fragment-section');
+      sectionLi.setAttribute('aria-expanded', 'false');
+      const titleWrapper = document.createElement('p');
+      titleWrapper.classList.add('nav-fragment-section-title');
+      titleWrapper.textContent = processed.titleText;
+      sectionLi.appendChild(titleWrapper);
+      const sectionUl = document.createElement('ul');
+      sectionUl.classList.add('nav-fragment-section-content');
+      const contentLi = document.createElement('li');
+      contentLi.appendChild(processed.content);
+      sectionUl.appendChild(contentLi);
+      sectionLi.appendChild(sectionUl);
+      ul.appendChild(sectionLi);
+    });
+    return ul;
+  }
+
+  /** Decorate non–category-nav blocks in fragment UL (Cards, etc.) using cached imports. */
+  async function decorateFragmentBlocks(ul) {
+    const otherBlocks = ul.querySelectorAll('.block:not(.category-nav)');
+    const toProcess = otherBlocks.length > 100 ? otherBlocks.slice(0, 100) : otherBlocks;
+    for (const blockElement of toProcess) {
+      const blockName = Array.from(blockElement.classList).find((c) => c !== 'block');
+      if (blockName) {
+        let mod = blockModuleCache.get(blockName);
+        if (!mod) {
+          // eslint-disable-next-line no-await-in-loop
+          mod = await import(`../${blockName}/${blockName}.js`);
+          blockModuleCache.set(blockName, mod);
+        }
+        if (mod.default) {
+          // eslint-disable-next-line no-await-in-loop
+          await mod.default(blockElement);
+        }
+      }
+    }
+  }
+
   /**
-   * Load fragment content and build structure based on viewport
-   * Both Desktop and Mobile: Use nested accordion structure
-   * Desktop has different visual presentation via CSS
+   * Load fragment content and build structure based on viewport.
+   * Both Desktop and Mobile: use nested accordion structure.
    */
   async function loadNavFragmentContent(navSection, isMobile = false) {
     const fragmentPath = navSection.getAttribute('data-fragment-path');
-    // Check if already loaded OR currently loading (prevents race conditions)
-    if (!fragmentPath
-      || navSection.getAttribute('data-fragment-loaded') === 'true'
-      || navSection.getAttribute('data-fragment-loading') === 'true'
-      || navSection.querySelector('.nav-fragment-content')) {
-      return true;
-    }
+    const alreadyLoaded = navSection.getAttribute('data-fragment-loaded') === 'true';
+    const loading = navSection.getAttribute('data-fragment-loading') === 'true';
+    const hasContent = navSection.querySelector('.nav-fragment-content');
+    if (!fragmentPath || alreadyLoaded || loading || hasContent) return true;
 
-    // Mark as loading to prevent duplicate calls
     navSection.setAttribute('data-fragment-loading', 'true');
-
     try {
       const fragmentContent = await loadFragment(fragmentPath);
       if (!fragmentContent) return false;
 
-      const fragmentSections = fragmentContent.querySelectorAll('.section');
-      const ul = document.createElement('ul');
-      ul.classList.add('nav-fragment-content');
-
-      // Both mobile and desktop use nested accordion structure now
-      fragmentSections.forEach((section) => {
-        // Try category-nav first, then standard processing
-        const processed = processCategoryNavSection(section)
-          || processStandardSectionMobile(section);
-
-        if (!processed) return;
-
-        // Create accordion item for this section
-        const sectionLi = document.createElement('li');
-        sectionLi.classList.add('nav-fragment-section');
-        sectionLi.setAttribute('aria-expanded', 'false');
-
-        // Create clickable title
-        const titleWrapper = document.createElement('p');
-        titleWrapper.classList.add('nav-fragment-section-title');
-        titleWrapper.textContent = processed.titleText;
-        sectionLi.appendChild(titleWrapper);
-
-        // Create container for section content
-        const sectionUl = document.createElement('ul');
-        sectionUl.classList.add('nav-fragment-section-content');
-
-        const contentLi = document.createElement('li');
-        contentLi.appendChild(processed.content);
-        sectionUl.appendChild(contentLi);
-
-        sectionLi.appendChild(sectionUl);
-        ul.appendChild(sectionLi);
-      });
-
-      if (ul.children.length > 0) {
-        navSection.appendChild(ul);
-        navSection.setAttribute('data-fragment-loaded', 'true');
+      const ul = buildFragmentSectionsUl(fragmentContent);
+      if (ul.children.length === 0) {
         navSection.removeAttribute('data-fragment-loading');
-        navSection.classList.add('nav-drop');
-
-        // Note: Fragment content icons are already decorated by loadFragment()
-        // Only newly created elements (like View All buttons) need decoration
-
-        // Decorate any category-nav blocks that were added dynamically
-        decorateCategoryNavBlocks(ul);
-
-        // Decorate any other blocks (like Cards) that were added dynamically
-        // Using cached imports for better performance
-        const otherBlocks = ul.querySelectorAll('.block:not(.category-nav)');
-        // eslint-disable-next-line no-restricted-syntax
-        for (const blockElement of otherBlocks) {
-          const blockName = Array.from(blockElement.classList).find((c) => c !== 'block');
-          if (blockName) {
-            try {
-              // Check cache first
-              let mod = blockModuleCache.get(blockName);
-              if (!mod) {
-                // Import and cache the module
-                // eslint-disable-next-line no-await-in-loop
-                mod = await import(`../${blockName}/${blockName}.js`);
-                blockModuleCache.set(blockName, mod);
-              }
-              if (mod.default) {
-                // eslint-disable-next-line no-await-in-loop
-                await mod.default(blockElement);
-              }
-            } catch (error) {
-              // Block doesn't have a JS file, that's ok
-            }
-          }
-        }
-
-        // Setup accordion behavior using event delegation
-        if (isMobile) {
-          setupMobileAccordionBehavior(ul);
-        } else {
-          setupDesktopAccordionBehavior(ul);
-        }
-
-        return true;
+        return false;
       }
 
+      navSection.appendChild(ul);
+      navSection.setAttribute('data-fragment-loaded', 'true');
       navSection.removeAttribute('data-fragment-loading');
-      return false;
+      navSection.classList.add('nav-drop');
+      decorateCategoryNavBlocks(ul);
+      await decorateFragmentBlocks(ul);
+      if (isMobile) setupMobileAccordionBehavior(ul);
+      else setupDesktopAccordionBehavior(ul);
+      return true;
     } catch (error) {
-      // Silently fail - fragment loading is optional
+      // eslint-disable-next-line no-console
+      console.log('[Header Nav] Failed to load fragment:', error?.message ?? error);
       navSection.removeAttribute('data-fragment-loading');
       return false;
     }
@@ -1643,24 +1490,12 @@ export default async function decorate(block) {
     });
   }
 
-  /**
-   * Initialize navigation behavior based on viewport
-   */
-  domCache.allNavSections.forEach((navSection) => {
-    const fragmentPath = navSection.getAttribute('data-fragment-path');
-    if (!fragmentPath) return;
-
-    if (isLargeDesktop.matches) {
-      // Desktop (1200px+): Hover to expand, click to navigate
-      setupDesktopNavigation(navSection);
-    } else if (isDesktop.matches) {
-      // Tablet (990-1200px): Click to expand, hover for underline only
-      setupTabletNavigation(navSection);
-    } else {
-      // Mobile (<990px): Click to expand accordion
-      setupMobileNavigation(navSection);
-    }
-  });
+  initNavSectionBehaviors(
+    domCache,
+    setupDesktopNavigation,
+    setupTabletNavigation,
+    setupMobileNavigation,
+  );
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
