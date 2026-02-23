@@ -10,6 +10,7 @@ import {
   handleBackground,
   normalizeBackgroundColor,
   getColorScheme,
+  sanitizeHTML,
 } from '../../scripts/scripts.js';
 
 /**
@@ -208,13 +209,13 @@ function buildTableRows(dataRows, thead, tbody) {
       const cell = document.createElement(isHeaderRow ? 'th' : 'td');
       if (isHeaderRow) cell.setAttribute('scope', 'column');
       cell.setAttribute('colspan', '2');
-      cell.innerHTML = firstCell.innerHTML;
+      cell.innerHTML = sanitizeHTML(firstCell.innerHTML);
       tr.append(cell);
     } else {
       cells.forEach((cell) => {
         const td = document.createElement(isHeaderRow ? 'th' : 'td');
         if (isHeaderRow) td.setAttribute('scope', 'column');
-        td.innerHTML = cell.innerHTML;
+        td.innerHTML = sanitizeHTML(cell.innerHTML);
         tr.append(td);
       });
     }
