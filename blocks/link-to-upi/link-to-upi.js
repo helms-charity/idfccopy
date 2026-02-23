@@ -1,92 +1,72 @@
-export default function decorate(block) {
-  const rows = Array.from(block.children);
+import { sanitizeHTML } from '../../scripts/scripts.js';
 
-  // Extract block-level fields from rows
-  // Each row is a div containing a single div with the actual content
-  let title = '';
-  let text = '';
+/**
+ * Extract block-level fields from rows. Each row is a div containing a single div with content.
+ * @param {HTMLCollection|Element[]} rows Block children
+ * @returns {{ title: string, text: string, image: Node|null, imageAlt: string }}
+ */
+function parseBlockFields(rows) {
+  const getCell = (index) => rows[index]?.querySelector(':scope > div');
+  const firstCell = getCell(0);
+  const secondCell = getCell(1);
+  const thirdCell = getCell(2);
+  const fourthCell = getCell(3);
+
   let image = null;
-  let imageAlt = '';
-
-  // Row 0: title (plain text)
-  if (rows.length > 0) {
-    const firstCell = rows[0].querySelector(':scope > div');
-    if (firstCell) {
-      title = firstCell.textContent?.trim() || '';
-    }
+  if (thirdCell) {
+    const pictureElement = thirdCell.querySelector('picture');
+    const imgElement = thirdCell.querySelector('img');
+    image = (pictureElement || imgElement) ? (pictureElement || imgElement).cloneNode(true) : null;
   }
 
-  // Row 1: text (richtext)
-  if (rows.length > 1) {
-    const secondCell = rows[1].querySelector(':scope > div');
-    if (secondCell) {
-      text = secondCell.innerHTML || '';
-    }
-  }
+  return {
+    title: firstCell?.textContent?.trim() || '',
+    text: sanitizeHTML(secondCell?.innerHTML || ''),
+    image,
+    imageAlt: fourthCell?.textContent?.trim() || '',
+  };
+}
 
-  // Row 2: image (reference)
-  if (rows.length > 2) {
-    const thirdCell = rows[2].querySelector(':scope > div');
-    if (thirdCell) {
-      const imgElement = thirdCell.querySelector('img');
-      if (imgElement) {
-        image = imgElement.cloneNode(true);
-      }
-      // Also clone the picture element if it exists
-      const pictureElement = thirdCell.querySelector('picture');
-      if (pictureElement) {
-        image = pictureElement.cloneNode(true);
-      }
-    }
-  }
-
-  // Row 3: imageAlt (plain text, optional)
-  if (rows.length > 3) {
-    const fourthCell = rows[3].querySelector(':scope > div');
-    if (fourthCell) {
-      imageAlt = fourthCell.textContent?.trim() || '';
-    }
-  }
-
-  // Build the new structure
-  block.innerHTML = '';
-
-  // Create container
+/**
+ * Build the link-to-upi container DOM from parsed fields.
+ * @param {{ title: string, text: string, image: Node|null, imageAlt: string }} fields
+ * @returns {Element}
+ */
+function buildContainer(fields) {
   const container = document.createElement('div');
   container.className = 'link-to-upi-container';
 
-  // Add title
-  if (title) {
+  if (fields.title) {
     const titleEl = document.createElement('h1');
     titleEl.className = 'link-to-upi-title';
-    titleEl.textContent = title;
+    titleEl.textContent = fields.title;
     container.append(titleEl);
   }
 
-  // Create image section
   const imageSection = document.createElement('div');
   imageSection.className = 'link-to-upi-image';
-
-  if (image) {
-    // Update alt text if provided
-    if (imageAlt) {
-      const img = image.tagName === 'IMG' ? image : image.querySelector('img');
-      if (img) {
-        img.alt = imageAlt;
-      }
+  if (fields.image) {
+    if (fields.imageAlt) {
+      const img = fields.image.tagName === 'IMG' ? fields.image : fields.image.querySelector('img');
+      if (img) img.alt = fields.imageAlt;
     }
-    imageSection.append(image);
+    imageSection.append(fields.image);
   }
   container.append(imageSection);
 
-  // Add text content
-  if (text) {
+  if (fields.text) {
     const textEl = document.createElement('div');
     textEl.className = 'link-to-upi-text';
-    textEl.innerHTML = text;
+    textEl.innerHTML = sanitizeHTML(fields.text);
     container.append(textEl);
   }
 
-  // Append container to block
-  block.append(container);
+  return container;
+}
+
+export default function decorate(block) {
+  const rows = Array.from(block.children);
+  const fields = parseBlockFields(rows);
+  block.innerHTML = sanitizeHTML('');
+  block.append(buildContainer(fields));
 }
