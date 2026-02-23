@@ -138,10 +138,10 @@ export function moveAllAttributes(from, to) {
 /* add a block id_number to a block instance (when any decorate(block) defines it)
   to be used for martech tracking, aria-controls, aria-labelledby, etc.
 */
-const blockIds = {};
+const blockIds = new Map();
 export function getBlockId(name) {
-  const forBlock = blockIds[name] || 0;
-  blockIds[name] = forBlock + 1;
+  const forBlock = blockIds.get(name) ?? 0;
+  blockIds.set(name, forBlock + 1);
   return `${name}_${forBlock}`;
 }
 
@@ -213,10 +213,13 @@ export async function loadFragment(path) {
       const main = document.createElement('main');
       main.innerHTML = sanitizeHTML(await resp.text());
 
-      // reset base path for media to fragment base
+      // reset base path for media to fragment base (whitelist attr to avoid prototype pollution)
       const resetAttributeBase = (tag, attr) => {
+        if (attr !== 'src' && attr !== 'srcset') return;
         main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
-          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+          const { href } = new URL(elem.getAttribute(attr), new URL(path, window.location));
+          if (attr === 'src') elem.src = href;
+          else if (attr === 'srcset') elem.srcset = href;
         });
       };
       resetAttributeBase('img', 'src');
@@ -693,15 +696,19 @@ function handleHeight(heightDesktop, heightMobile, section) {
   }
 }
 
-const getSectionMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
-  if (row.children && row.children.length >= 2) {
-    const key = row.children[0].textContent.trim().toLowerCase();
-    const content = row.children[1];
-    const text = content.textContent.trim().toLowerCase();
-    if (key && content) rdx[key] = { content, text };
-  }
+const SAFE_METADATA_KEY = (key) => typeof key === 'string' && key !== '__proto__' && key !== 'constructor';
+const getSectionMetadata = (el) => {
+  const rdx = new Map();
+  [...el.childNodes].forEach((row) => {
+    if (row.children && row.children.length >= 2) {
+      const key = row.children[0].textContent.trim().toLowerCase();
+      const content = row.children[1];
+      const text = content.textContent.trim().toLowerCase();
+      if (key && content && SAFE_METADATA_KEY(key)) rdx.set(key, { content, text });
+    }
+  });
   return rdx;
-}, {});
+};
 
 // Set() is used since ES6 to avoid duplicates and (theoretically) improve performance
 const SECTION_METADATA_SPECIAL_KEYS = new Set([
@@ -714,48 +721,62 @@ const SECTION_METADATA_SPECIAL_KEYS = new Set([
 const SECTION_METADATA_PRESERVE_CASE_KEYS = new Set(['tabname', 'multisection']);
 
 function applySpecialSectionMetadata(metadata, section) {
-  if (metadata.style?.text) handleStyle(metadata.style.text, section);
-  if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
-  if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
-  const gapText = metadata.gap?.text?.replace(/^size-/, '');
+  const style = metadata.get('style');
+  if (style?.text) handleStyle(style.text, section);
+  const backgroundcolor = metadata.get('backgroundcolor');
+  if (backgroundcolor?.text) handleBackground(backgroundcolor, section);
+  const grid = metadata.get('grid');
+  if (grid?.text) handleLayout(grid.text, section, 'grid');
+  const gap = metadata.get('gap');
+  const gapText = gap?.text?.replace(/^size-/, '');
   if (gapText) handleLayout(gapText, section, 'gap');
-  const spacingText = metadata.spacing?.text?.replace(/^size-/, '');
+  const spacing = metadata.get('spacing');
+  const spacingText = spacing?.text?.replace(/^size-/, '');
   if (spacingText) handleLayout(spacingText, section, 'spacing');
-  if (metadata.containerwidth?.text) handleLayout(metadata.containerwidth.text, section, 'container');
-  const heightDesktop = metadata.height?.text || null;
-  const heightMobile = metadata.heightmobile?.text || null;
+  const containerwidth = metadata.get('containerwidth');
+  if (containerwidth?.text) handleLayout(containerwidth.text, section, 'container');
+  const height = metadata.get('height');
+  const heightmobile = metadata.get('heightmobile');
+  const heightDesktop = height?.text || null;
+  const heightMobile = heightmobile?.text || null;
   if (heightDesktop || heightMobile) handleHeight(heightDesktop, heightMobile, section);
 }
 
+function camelToDataAttr(camel) {
+  return `data-${camel.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+}
 function applyDataAttributesFromMetadata(metadata, section) {
-  Object.keys(metadata).forEach((key) => {
-    if (SECTION_METADATA_SPECIAL_KEYS.has(key)) return;
-    const value = SECTION_METADATA_PRESERVE_CASE_KEYS.has(key)
-      ? metadata[key].content.textContent.trim()
-      : metadata[key].text;
-    section.dataset[toCamelCase(key)] = value;
+  metadata.forEach((value, key) => {
+    if (!SAFE_METADATA_KEY(key) || SECTION_METADATA_SPECIAL_KEYS.has(key)) return;
+    const out = SECTION_METADATA_PRESERVE_CASE_KEYS.has(key)
+      ? value.content.textContent.trim()
+      : value.text;
+    section.setAttribute(camelToDataAttr(toCamelCase(key)), out);
   });
-  if (metadata.id?.text) section.id = metadata.id.text;
+  const idMeta = metadata.get('id');
+  if (idMeta?.text) section.id = idMeta.text;
 }
 
 function applySectionBackgroundImages(metadata, section) {
-  const desktopBgImg = metadata.sectionbackgroundimage?.content
-    ? extractImageUrl(metadata.sectionbackgroundimage.content)
+  const sectionbackgroundimage = metadata.get('sectionbackgroundimage');
+  const sectionbackgroundimagemobile = metadata.get('sectionbackgroundimagemobile');
+  const desktopBgImg = sectionbackgroundimage?.content
+    ? extractImageUrl(sectionbackgroundimage.content)
     : null;
-  const mobileBgImg = metadata.sectionbackgroundimagemobile?.content
-    ? extractImageUrl(metadata.sectionbackgroundimagemobile.content)
+  const mobileBgImg = sectionbackgroundimagemobile?.content
+    ? extractImageUrl(sectionbackgroundimagemobile.content)
     : null;
   if (desktopBgImg || mobileBgImg) handleBackgroundImages(desktopBgImg, mobileBgImg, section);
 }
 
 function applyDecorationImages(metadata, section) {
-  const topContent = metadata['decoration-image-top'] ?? metadata['doodle-image-top'];
-  const bottomContent = metadata['decoration-image-bottom'] ?? metadata['doodle-image-bottom'];
+  const topContent = metadata.get('decoration-image-top') ?? metadata.get('doodle-image-top');
+  const bottomContent = metadata.get('decoration-image-bottom') ?? metadata.get('doodle-image-bottom');
   const decorationImageTop = topContent?.content ? extractImageUrl(topContent.content) : null;
   const decorationImageBottom = bottomContent?.content
     ? extractImageUrl(bottomContent.content)
     : null;
-  const reverseMeta = metadata['decoration-reverse'] ?? metadata['doodle-reverse'];
+  const reverseMeta = metadata.get('decoration-reverse') ?? metadata.get('doodle-reverse');
   const decorationReverse = reverseMeta?.text === 'true';
 
   if (!decorationImageTop && !decorationImageBottom) return;
@@ -776,15 +797,17 @@ function applyBlockContentMetadata(metadata, section) {
   const blockContents = section.querySelectorAll(':scope > div.block-content');
   if (blockContents.length === 0) return;
 
-  const bgBlock = metadata['background-block'];
-  const desktopBlockBgImg = metadata['background-block-image']?.content
-    ? extractImageUrl(metadata['background-block-image'].content)
+  const bgBlock = metadata.get('background-block');
+  const backgroundBlockImage = metadata.get('background-block-image');
+  const backgroundBlockImageMobile = metadata.get('background-block-image-mobile');
+  const desktopBlockBgImg = backgroundBlockImage?.content
+    ? extractImageUrl(backgroundBlockImage.content)
     : null;
-  const mobileBlockBgImg = metadata['background-block-image-mobile']?.content
-    ? extractImageUrl(metadata['background-block-image-mobile'].content)
+  const mobileBlockBgImg = backgroundBlockImageMobile?.content
+    ? extractImageUrl(backgroundBlockImageMobile.content)
     : null;
-  const objectFit = metadata['object-fit-block']?.text;
-  const objectPosition = metadata['object-position-block']?.text;
+  const objectFit = metadata.get('object-fit-block')?.text;
+  const objectPosition = metadata.get('object-position-block')?.text;
 
   blockContents.forEach((blockContent) => {
     if (bgBlock?.text) handleBackground(bgBlock, blockContent);
@@ -1038,7 +1061,8 @@ async function loadThemeSpreadSheetConfig() {
   if (resp.status === 200) {
     // create style element that should be last in the head
     document.head.insertAdjacentHTML('beforeend', '<style id="style-overrides"></style>');
-    const sheet = window.document.styleSheets[document.styleSheets.length - 1];
+    const sheets = window.document.styleSheets;
+    const sheet = sheets.item(sheets.length - 1);
     // load spreadsheet
     const json = await resp.json();
     const tokens = json.data || json.default.data;
