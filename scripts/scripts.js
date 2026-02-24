@@ -14,20 +14,16 @@ import {
   loadCSS,
   loadScript,
   getMetadata,
+  sanitizeHTML,
+  // readBlockConfig,
   toCamelCase,
 } from './aem.js';
 
+// Re-export for blocks that import from scripts.js
+export { sanitizeHTML };
+
 // Max collection size before iteration to prevent DoS from excessive loops (CWE-400)
 const MAX_ITERATION_LIMIT = 500;
-
-// Cached media query results for Section performance
-const MEDIA_QUERIES = {
-  mobile: window.matchMedia('(max-width: 599px)'),
-  tablet: window.matchMedia('(min-width: 600px) and (max-width: 989px)'),
-  desktop: window.matchMedia('(min-width: 990px)'),
-};
-
-const PROD_ORIGIN = 'https://www.idfcfirst.bank.in';
 
 // DOMPurify loaded once for HTML sanitization (mitigates DOM XSS from contentMap/dataset)
 let domPurifyReady = null;
@@ -44,16 +40,14 @@ export async function ensureDOMPurify() {
   return domPurifyReady;
 }
 
-/**
- * Sanitize HTML before assigning to innerHTML. Use for any content from DOM/dataset/contentMap.
- * @param {string} html - Raw HTML string
- * @returns {string} Sanitized HTML safe for insertion
- */
-export function sanitizeHTML(html) {
-  if (!html || typeof html !== 'string') return html;
-  if (!window.DOMPurify) return html;
-  return window.DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
-}
+// Cached media query results for Section performance
+const MEDIA_QUERIES = {
+  mobile: window.matchMedia('(max-width: 599px)'),
+  tablet: window.matchMedia('(min-width: 600px) and (max-width: 989px)'),
+  desktop: window.matchMedia('(min-width: 990px)'),
+};
+
+const PROD_ORIGIN = 'https://www.idfcfirst.bank.in';
 
 function makeProdUrl(href) {
   if (!href || href.startsWith('#')) return href;
