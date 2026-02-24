@@ -6,75 +6,61 @@
   padding: 0;
 }
 
-/* Text size overrides using CSS custom properties from styles.css */
-.section-title.size-xxl h1,
-.section-title.size-xxl h2,
-.section-title.size-xxl h3,
-.section-title.size-xxl h4,
-.section-title.size-xxl h5,
-.section-title.size-xxl h6,
-.section-title.size-xxl p {
+/* Title and subtitle size (same scale; CSS vars from styles.css) */
+.section-title.size-xxl .title,
+.section-title.subtitle-size-xxl .subtitle {
   font-size: var(--heading-font-size-xxl);
 }
 
-.section-title.size-xl h1,
-.section-title.size-xl h2,
-.section-title.size-xl h3,
-.section-title.size-xl h4,
-.section-title.size-xl h5,
-.section-title.size-xl h6,
-.section-title.size-xl p {
+.section-title.size-xl .title,
+.section-title.subtitle-size-xl .subtitle {
   font-size: var(--heading-font-size-xl);
 }
 
-.section-title.size-l h1,
-.section-title.size-l h2,
-.section-title.size-l h3,
-.section-title.size-l h4,
-.section-title.size-l h5,
-.section-title.size-l h6,
-.section-title.size-l p {
+.section-title.size-l .title,
+.section-title.subtitle-size-l .subtitle {
   font-size: var(--heading-font-size-l);
 }
 
-.section-title.size-m h1,
-.section-title.size-m h2,
-.section-title.size-m h3,
-.section-title.size-m h4,
-.section-title.size-m h5,
-.section-title.size-m h6,
-.section-title.size-m p {
+.section-title.size-m .title,
+.section-title.subtitle-size-m .subtitle {
   font-size: var(--heading-font-size-m);
 }
 
-.section-title.size-s h1,
-.section-title.size-s h2,
-.section-title.size-s h3,
-.section-title.size-s h4,
-.section-title.size-s h5,
-.section-title.size-s h6,
-.section-title.size-s p {
+.section-title.size-s .title,
+.section-title.subtitle-size-s .subtitle {
   font-size: var(--heading-font-size-s);
 }
 
-.section-title.size-xs h1,
-.section-title.size-xs h2,
-.section-title.size-xs h3,
-.section-title.size-xs h4,
-.section-title.size-xs h5,
-.section-title.size-xs h6,
-.section-title.size-xs p {
+.section-title.size-xs .title,
+.section-title.subtitle-size-xs .subtitle {
   font-size: var(--heading-font-size-xs);
 }
 
-/* Alignment */
-.section-title.center {
-  text-align: center;
-}
-.section-title.right {
-  text-align: right;
+/* Icon vertical alignment: center icons with text at any size */
+.section-title .title:has(.icon),
+.section-title .subtitle:has(.icon) {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
 }
 
-.section-title.left {
-  text-align: left;
+.section-title .icon {
+  flex-shrink: 0;
+  height: 1em;
+  width: 1em;
+  vertical-align: middle;
 }
+
+.section-title .icon img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Alignment */
+.section-title.center { text-align: center; }
+.section-title.right { text-align: right; }
+.section-title.left { text-align: left; }

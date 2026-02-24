@@ -228,8 +228,13 @@ export default function decorate(block) {
         } else {
           // On live pages: Apply as section background and remove from DOM
           const webpSource = bgPicture.querySelector('source[type="image/webp"]');
-          const bgUrl = webpSource?.srcset?.split(',')[0]?.trim()?.split(' ')[0]
+          let bgUrl = webpSource?.srcset?.split(',')[0]?.trim()?.split(' ')[0]
             || bgImg?.src;
+
+          // Use large optimization for desktop background image
+          if (bgUrl && bgUrl.includes('optimize=medium')) {
+            bgUrl = bgUrl.replace('optimize=medium', 'optimize=large');
+          }
 
           if (bgUrl) {
             const sectionContainer = block.closest('.section');

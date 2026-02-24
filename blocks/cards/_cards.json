@@ -134,37 +134,29 @@
           "description": "Decoration image for modal corners (top-right and bottom-left rotated)"
         },
         {
-          "component": "container",
-          "name": "swiperSettings",
-          "label": "Swiper Settings",
-          "collapsible": true,
-          "fields": [
-            {
-              "component": "boolean",
-              "name": "swipable",
-              "label": "Enable Swiper",
-              "valueType": "boolean",
-              "value": false
-            },
-            {
-              "component": "boolean",
-              "name": "autoplayEnabled",
-              "label": "Autoplay",
-              "valueType": "boolean",
-              "value": false
-            },
-            {
-              "component": "number",
-              "name": "startingCard",
-              "label": "Starting Card (Index, default is 0)",
-              "valueType": "number",
-              "value": 0,
-              "validation": {
-                "numberMin": 0,
-                "customErrorMsg": "Starting card index must be 0 or greater"
-              }
-            }
-          ]
+          "component": "boolean",
+          "name": "swipable",
+          "label": "Enable Swiper",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "boolean",
+          "name": "autoplayEnabled",
+          "label": "Autoplay",
+          "valueType": "boolean",
+          "value": false
+        },
+        {
+          "component": "number",
+          "name": "startingCard",
+          "label": "Starting Card (Index, default is 0)",
+          "valueType": "number",
+          "value": 0,
+          "validation": {
+            "numberMin": 0,
+            "customErrorMsg": "Starting card index must be 0 or greater"
+          }
         }
       ]
     },
@@ -214,6 +206,11 @@
           "valueType": "string"
         },
         {
+          "component": "text",
+          "name": "cardLinkText",
+          "label": "Card Link Text (optional)"
+        },
+        {
           "component": "richtext",
           "name": "modalContent",
           "label": "Modal Content (optional)",
@@ -226,9 +223,7 @@
   "filters": [
     {
       "id": "cards",
-      "components": [
-        "card"
-      ]
+      "components": ["card"]
     }
   ]
 }

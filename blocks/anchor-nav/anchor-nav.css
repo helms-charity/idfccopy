@@ -152,9 +152,6 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border: 0;
-    padding: 0;
-    background-color: transparent;
     color: #902a2c;
     font-weight: 700;
     font-style: normal;

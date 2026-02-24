@@ -12,10 +12,33 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  loadScript,
   getMetadata,
+  sanitizeHTML,
   // readBlockConfig,
   toCamelCase,
 } from './aem.js';
+
+// Re-export for blocks that import from scripts.js
+export { sanitizeHTML };
+
+// Max collection size before iteration to prevent DoS from excessive loops (CWE-400)
+const MAX_ITERATION_LIMIT = 500;
+
+// DOMPurify loaded once for HTML sanitization (mitigates DOM XSS from contentMap/dataset)
+let domPurifyReady = null;
+
+/**
+ * Ensures DOMPurify is loaded. Resolves with the script load. Safe to call multiple times.
+ * @returns {Promise<void>}
+ */
+export async function ensureDOMPurify() {
+  if (!domPurifyReady) {
+    const base = window.hlx?.codeBasePath ?? '';
+    domPurifyReady = loadScript(`${base}/scripts/dompurify.min.js`);
+  }
+  return domPurifyReady;
+}
 
 // Cached media query results for Section performance
 const MEDIA_QUERIES = {
@@ -34,7 +57,10 @@ function makeProdUrl(href) {
       if (url.origin.toLowerCase().includes('ww2.idfcfirst.bank.in')) {
         return new URL(url.pathname + url.search + url.hash, PROD_ORIGIN).toString();
       }
-    } catch (e) { /* invalid URL */ }
+    } catch (e) { /* invalid URL */
+      // eslint-disable-next-line no-console
+      console.error(`Invalid URL: ${href}`, e);
+    }
     return href;
   }
   return new URL(href, PROD_ORIGIN).toString();
@@ -106,10 +132,10 @@ export function moveAllAttributes(from, to) {
 /* add a block id_number to a block instance (when any decorate(block) defines it)
   to be used for martech tracking, aria-controls, aria-labelledby, etc.
 */
-const blockIds = {};
+const blockIds = new Map();
 export function getBlockId(name) {
-  const forBlock = blockIds[name] || 0;
-  blockIds[name] = forBlock + 1;
+  const forBlock = blockIds.get(name) ?? 0;
+  blockIds.set(name, forBlock + 1);
   return `${name}_${forBlock}`;
 }
 
@@ -118,11 +144,31 @@ export function getBlockId(name) {
  */
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
-  try {
-    if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
-  } catch (e) {
-    // do nothing
+  if (!window.location.hostname.includes('localhost')) sessionStorage.setItem('fonts-loaded', 'true');
+}
+
+/**
+ * Build modal options from parent block with modal theme data attributes.
+ * @param {Element} origin Link element to find parent theme container
+ * @returns {Object} Modal options object
+ */
+function getModalOptionsFromParent(origin) {
+  const modalOptions = {};
+  const parentWithTheme = origin.closest('[data-modal-theme]');
+  if (!parentWithTheme?.dataset) return modalOptions;
+
+  const { dataset } = parentWithTheme;
+  if (dataset.modalTheme) modalOptions.modalTheme = dataset.modalTheme;
+  if (dataset.modalDialogBackgroundImageTexture) {
+    modalOptions.textureImage = dataset.modalDialogBackgroundImageTexture;
   }
+  if (dataset.modalPageBackgroundImage) {
+    modalOptions.pageBackgroundImage = dataset.modalPageBackgroundImage;
+  }
+  if (dataset.modalPageDecorationImage) {
+    modalOptions.decorationImage = dataset.modalPageDecorationImage;
+  }
+  return modalOptions;
 }
 
 /**
@@ -132,53 +178,42 @@ async function loadFonts() {
 function autolinkModals(element) {
   element.addEventListener('click', async (e) => {
     const origin = e.target.closest('a');
+    const isModalLink = origin?.href?.includes('/modals/');
 
-    if (origin && origin.href && origin.href.includes('/modals/')) {
-      e.preventDefault();
-      e.stopPropagation();
+    if (!isModalLink) return;
 
-      // Build modal options from parent block with modal theme data attributes
-      const modalOptions = {};
-      const parentWithTheme = origin.closest('[data-modal-theme]');
-      if (parentWithTheme?.dataset) {
-        const { dataset } = parentWithTheme;
-        if (dataset.modalTheme) modalOptions.modalTheme = dataset.modalTheme;
-        if (dataset.modalDialogBackgroundImageTexture) {
-          modalOptions.textureImage = dataset.modalDialogBackgroundImageTexture;
-        }
-        if (dataset.modalPageBackgroundImage) {
-          modalOptions.pageBackgroundImage = dataset.modalPageBackgroundImage;
-        }
-        if (dataset.modalPageDecorationImage) {
-          modalOptions.decorationImage = dataset.modalPageDecorationImage;
-        }
-      }
+    e.preventDefault();
+    e.stopPropagation();
 
-      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(origin.href, modalOptions);
-    }
+    const modalOptions = getModalOptionsFromParent(origin);
+    const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+    openModal(origin.href, modalOptions);
   });
 }
 
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
- * @returns {HTMLElement} The root element of the fragment
+ * @returns {Promise<HTMLElement|null>} Resolves with the root element of the fragment, or null
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function loadFragment(path) {
-  if (path && path.startsWith('/')) {
+  if (path?.startsWith('/')) {
     // eslint-disable-next-line no-param-reassign
     path = path.replace(/(\.plain)?\.html/, '');
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
+      await ensureDOMPurify();
       const main = document.createElement('main');
-      main.innerHTML = await resp.text();
+      main.innerHTML = sanitizeHTML(await resp.text());
 
-      // reset base path for media to fragment base
+      // reset base path for media to fragment base (whitelist attr to avoid prototype pollution)
       const resetAttributeBase = (tag, attr) => {
+        if (attr !== 'src' && attr !== 'srcset') return;
         main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
-          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+          const { href } = new URL(elem.getAttribute(attr), new URL(path, window.location));
+          if (attr === 'src') elem.src = href;
+          else if (attr === 'srcset') elem.srcset = href;
         });
       };
       resetAttributeBase('img', 'src');
@@ -188,7 +223,7 @@ export async function loadFragment(path) {
       // They will be loaded explicitly when injected into the page
       const categoryNavBlocks = main.querySelectorAll('.category-nav');
       categoryNavBlocks.forEach((block) => {
-        block.setAttribute('data-fragment-block', 'true');
+        block.dataset.fragmentBlock = 'true';
       });
 
       // eslint-disable-next-line
@@ -229,8 +264,7 @@ function decorateButtonGroups(element) {
 
     // Check if the previous sibling is a <p> containing a <sup>
     const previousSibling = buttonContainer.previousElementSibling;
-    if (previousSibling
-      && previousSibling.tagName === 'P'
+    if (previousSibling?.tagName === 'P'
       && previousSibling.querySelector('sup')) {
       // Create a new div with class 'button-group'
       const buttonGroup = document.createElement('div');
@@ -337,7 +371,7 @@ async function loadCategoryNavFragment(main) {
       const categoryNavBlock = sectionClone.querySelector('.category-nav');
       if (categoryNavBlock) {
         // Remove the fragment-block marker so it can be loaded on the page
-        categoryNavBlock.removeAttribute('data-fragment-block');
+        delete categoryNavBlock.dataset.fragmentBlock;
         // Reset block status so it can be loaded explicitly later
         categoryNavBlock.dataset.blockStatus = '';
 
@@ -353,7 +387,7 @@ async function loadCategoryNavFragment(main) {
             titleElement.classList.add('category-title');
             // Add data attribute with the category name
             const categoryName = titleElement.textContent.trim();
-            sectionClone.setAttribute('data-category-name', categoryName);
+            sectionClone.dataset.categoryName = categoryName;
           }
         }
 
@@ -365,7 +399,7 @@ async function loadCategoryNavFragment(main) {
       }
 
       if (firstChild) {
-        main.insertBefore(sectionClone, firstChild);
+        firstChild.before(sectionClone);
       } else {
         main.appendChild(sectionClone);
       }
@@ -405,7 +439,7 @@ export function buildEmbedBlocks(main) {
 
 function loadAutoBlock(doc) {
   doc.querySelectorAll('a').forEach((a) => {
-    if (a && a.href && a.href.includes('/fragments/')) {
+    if (a?.href?.includes('/fragments/')) {
       decorateFragment(a.parentElement);
     }
   });
@@ -455,12 +489,12 @@ function parseColor(element) {
   if (!isSection && !isTableBg) return null;
 
   const computedBg = getComputedStyle(element).background;
-  const rgbMatch = computedBg.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  const rgbMatch = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/.exec(computedBg);
   if (!rgbMatch) return null;
   return {
-    r: parseInt(rgbMatch[1], 10),
-    g: parseInt(rgbMatch[2], 10),
-    b: parseInt(rgbMatch[3], 10),
+    r: Number.parseInt(rgbMatch[1], 10),
+    g: Number.parseInt(rgbMatch[2], 10),
+    b: Number.parseInt(rgbMatch[3], 10),
   };
 }
 
@@ -515,7 +549,7 @@ export function setColorScheme(element) {
 export function normalizeBackgroundColor(color) {
   if (!color || typeof color !== 'string') return color;
   const trimmed = color.trim();
-  if (trimmed.match(/^[0-9a-fA-F]{3,6}$/)) return `#${trimmed}`;
+  if (/^[0-9a-fA-F]{3,6}$/.exec(trimmed)) return `#${trimmed}`;
   return trimmed;
 }
 
@@ -656,125 +690,140 @@ function handleHeight(heightDesktop, heightMobile, section) {
   }
 }
 
-const getSectionMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
-  if (row.children && row.children.length >= 2) {
-    const key = row.children[0].textContent.trim().toLowerCase();
-    const content = row.children[1];
-    const text = content.textContent.trim().toLowerCase();
-    if (key && content) rdx[key] = { content, text };
-  }
+const SAFE_METADATA_KEY = (key) => typeof key === 'string' && key !== '__proto__' && key !== 'constructor';
+const getSectionMetadata = (el) => {
+  const rdx = new Map();
+  [...el.childNodes].forEach((row) => {
+    if (row.children && row.children.length >= 2) {
+      const key = row.children[0].textContent.trim().toLowerCase();
+      const content = row.children[1];
+      const text = content.textContent.trim().toLowerCase();
+      if (key && content && SAFE_METADATA_KEY(key)) rdx.set(key, { content, text });
+    }
+  });
   return rdx;
-}, {});
+};
 
+// Set() is used since ES6 to avoid duplicates and (theoretically) improve performance
+const SECTION_METADATA_SPECIAL_KEYS = new Set([
+  'style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile',
+  'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor',
+  'background-block', 'background-block-image', 'background-block-image-mobile',
+  'object-fit-block', 'object-position-block', 'decoration-image-top',
+  'decoration-image-bottom', 'decoration-reverse',
+]);
+const SECTION_METADATA_PRESERVE_CASE_KEYS = new Set(['tabname', 'multisection']);
+
+function applySpecialSectionMetadata(metadata, section) {
+  const style = metadata.get('style');
+  if (style?.text) handleStyle(style.text, section);
+  const backgroundcolor = metadata.get('backgroundcolor');
+  if (backgroundcolor?.text) handleBackground(backgroundcolor, section);
+  const grid = metadata.get('grid');
+  if (grid?.text) handleLayout(grid.text, section, 'grid');
+  const gap = metadata.get('gap');
+  const gapText = gap?.text?.replace(/^size-/, '');
+  if (gapText) handleLayout(gapText, section, 'gap');
+  const spacing = metadata.get('spacing');
+  const spacingText = spacing?.text?.replace(/^size-/, '');
+  if (spacingText) handleLayout(spacingText, section, 'spacing');
+  const containerwidth = metadata.get('containerwidth');
+  if (containerwidth?.text) handleLayout(containerwidth.text, section, 'container');
+  const height = metadata.get('height');
+  const heightmobile = metadata.get('heightmobile');
+  const heightDesktop = height?.text || null;
+  const heightMobile = heightmobile?.text || null;
+  if (heightDesktop || heightMobile) handleHeight(heightDesktop, heightMobile, section);
+}
+
+function camelToDataAttr(camel) {
+  return `data-${camel.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+}
+function applyDataAttributesFromMetadata(metadata, section) {
+  metadata.forEach((value, key) => {
+    if (!SAFE_METADATA_KEY(key) || SECTION_METADATA_SPECIAL_KEYS.has(key)) return;
+    const out = SECTION_METADATA_PRESERVE_CASE_KEYS.has(key)
+      ? value.content.textContent.trim()
+      : value.text;
+    section.setAttribute(camelToDataAttr(toCamelCase(key)), out);
+  });
+  const idMeta = metadata.get('id');
+  if (idMeta?.text) section.id = idMeta.text;
+}
+
+function applySectionBackgroundImages(metadata, section) {
+  const sectionbackgroundimage = metadata.get('sectionbackgroundimage');
+  const sectionbackgroundimagemobile = metadata.get('sectionbackgroundimagemobile');
+  const desktopBgImg = sectionbackgroundimage?.content
+    ? extractImageUrl(sectionbackgroundimage.content)
+    : null;
+  const mobileBgImg = sectionbackgroundimagemobile?.content
+    ? extractImageUrl(sectionbackgroundimagemobile.content)
+    : null;
+  if (desktopBgImg || mobileBgImg) handleBackgroundImages(desktopBgImg, mobileBgImg, section);
+}
+
+function applyDecorationImages(metadata, section) {
+  const topContent = metadata.get('decoration-image-top') ?? metadata.get('doodle-image-top');
+  const bottomContent = metadata.get('decoration-image-bottom') ?? metadata.get('doodle-image-bottom');
+  const decorationImageTop = topContent?.content ? extractImageUrl(topContent.content) : null;
+  const decorationImageBottom = bottomContent?.content
+    ? extractImageUrl(bottomContent.content)
+    : null;
+  const reverseMeta = metadata.get('decoration-reverse') ?? metadata.get('doodle-reverse');
+  const decorationReverse = reverseMeta?.text === 'true';
+
+  if (!decorationImageTop && !decorationImageBottom) return;
+
+  const setDecoProp = (name, url) => section.style.setProperty(name, `url(${url})`);
+  if (decorationReverse) {
+    if (decorationImageBottom) setDecoProp('--decoration-before-image', decorationImageBottom);
+    if (decorationImageTop) setDecoProp('--decoration-after-image', decorationImageTop);
+  } else {
+    if (decorationImageTop) setDecoProp('--decoration-before-image', decorationImageTop);
+    if (decorationImageBottom) setDecoProp('--decoration-after-image', decorationImageBottom);
+  }
+  section.classList.add('has-decorations');
+  if (decorationReverse) section.classList.add('decorations-reversed');
+}
+// apply background and background images to block content
+function applyBlockContentMetadata(metadata, section) {
+  const blockContents = section.querySelectorAll(':scope > div.block-content');
+  if (blockContents.length === 0) return;
+
+  const bgBlock = metadata.get('background-block');
+  const backgroundBlockImage = metadata.get('background-block-image');
+  const backgroundBlockImageMobile = metadata.get('background-block-image-mobile');
+  const desktopBlockBgImg = backgroundBlockImage?.content
+    ? extractImageUrl(backgroundBlockImage.content)
+    : null;
+  const mobileBlockBgImg = backgroundBlockImageMobile?.content
+    ? extractImageUrl(backgroundBlockImageMobile.content)
+    : null;
+  const objectFit = metadata.get('object-fit-block')?.text;
+  const objectPosition = metadata.get('object-position-block')?.text;
+
+  blockContents.forEach((blockContent) => {
+    if (bgBlock?.text) handleBackground(bgBlock, blockContent);
+    if (desktopBlockBgImg || mobileBlockBgImg) {
+      handleBackgroundImages(desktopBlockBgImg, mobileBlockBgImg, blockContent);
+    }
+    if (objectFit) blockContent.dataset.objectFit = objectFit;
+    if (objectPosition) blockContent.dataset.objectPosition = objectPosition;
+  });
+}
+
+// handle section metadata with the 5 helper functions
 export function handleSectionMetadata(el) {
   const section = el.closest('.section');
   if (!section) return;
+
   const metadata = getSectionMetadata(el);
-
-  // Special cases for SECTION - handle these first
-  if (metadata.style?.text) handleStyle(metadata.style.text, section);
-  if (metadata.backgroundcolor?.text) handleBackground(metadata.backgroundcolor, section);
-  if (metadata.grid?.text) handleLayout(metadata.grid.text, section, 'grid');
-  if (metadata.gap?.text) {
-    const gapText = metadata.gap.text.replace(/^size-/, '');
-    if (gapText) handleLayout(gapText, section, 'gap');
-  }
-  if (metadata.spacing?.text) {
-    const spacingText = metadata.spacing.text.replace(/^size-/, '');
-    if (spacingText) handleLayout(spacingText, section, 'spacing');
-  }
-  if (metadata.containerwidth?.text) handleLayout(metadata.containerwidth.text, section, 'container');
-
-  // Handle section height (desktop and mobile)
-  const heightDesktop = metadata.height?.text || null;
-  const heightMobile = metadata.heightmobile?.text || null;
-  if (heightDesktop || heightMobile) {
-    handleHeight(heightDesktop, heightMobile, section);
-  }
-
-  // Define which keys are handled specially for section or block-content
-  const specialKeys = ['style', 'grid', 'gap', 'spacing', 'container', 'height', 'heightmobile', 'sectionbackgroundimage', 'sectionbackgroundimagemobile', 'backgroundcolor', 'background-block', 'background-block-image', 'background-block-image-mobile', 'object-fit-block', 'object-position-block', 'decoration-image-top', 'decoration-image-bottom', 'decoration-reverse'];
-
-  // Keys that should preserve original case (not lowercased)
-  const preserveCaseKeys = ['tabname', 'multisection'];
-
-  // Catch-all: set any other metadata as data- attributes on section
-  Object.keys(metadata).forEach((key) => {
-    if (!specialKeys.includes(key)) {
-      // For tabname and multisection, use original text from content to preserve case
-      const value = preserveCaseKeys.includes(key)
-        ? metadata[key].content.textContent.trim()
-        : metadata[key].text;
-      section.dataset[toCamelCase(key)] = value;
-    }
-  });
-
-  // If 'id' metadata is defined, also set it as the actual HTML id attribute
-  if (metadata.id?.text) {
-    section.id = metadata.id.text;
-  }
-
-  // Handle SECTION background images (desktop and mobile variants)
-  const desktopBgImg = metadata.sectionbackgroundimage?.content
-    ? extractImageUrl(metadata.sectionbackgroundimage.content)
-    : null;
-  const mobileBgImg = metadata.sectionbackgroundimagemobile?.content
-    ? extractImageUrl(metadata.sectionbackgroundimagemobile.content)
-    : null;
-
-  if (desktopBgImg || mobileBgImg) {
-    handleBackgroundImages(desktopBgImg, mobileBgImg, section);
-  }
-
-  // Handle decoration images (background accessory images (aka doodles) for ::before and ::after)
-  const decorationImageTop = (metadata['decoration-image-top'] ?? metadata['doodle-image-top'])?.content
-    ? extractImageUrl((metadata['decoration-image-top'] ?? metadata['doodle-image-top']).content)
-    : null;
-  const decorationImageBottom = (metadata['decoration-image-bottom'] ?? metadata['doodle-image-bottom'])?.content
-    ? extractImageUrl((metadata['decoration-image-bottom'] ?? metadata['doodle-image-bottom']).content)
-    : null;
-  const decorationReverse = (metadata['decoration-reverse'] ?? metadata['doodle-reverse'])?.text === 'true';
-
-  if (decorationImageTop || decorationImageBottom) {
-    // Set CSS custom properties for the decoration images (previously 'doodles')
-    // If reversed, swap top and bottom
-    if (decorationReverse) {
-      if (decorationImageBottom) section.style.setProperty('--decoration-before-image', `url(${decorationImageBottom})`);
-      if (decorationImageTop) section.style.setProperty('--decoration-after-image', `url(${decorationImageTop})`);
-    } else {
-      if (decorationImageTop) section.style.setProperty('--decoration-before-image', `url(${decorationImageTop})`);
-      if (decorationImageBottom) section.style.setProperty('--decoration-after-image', `url(${decorationImageBottom})`);
-    }
-    // Add a class to indicate decoration images are present (previously 'doodles')
-    section.classList.add('has-decorations');
-    if (decorationReverse) section.classList.add('decorations-reversed');
-  }
-
-  // Handle BLOCK-CONTENT specific properties
-  const blockContents = section.querySelectorAll(':scope > div.block-content');
-  if (blockContents.length > 0) {
-    // Extract all block-content metadata once
-    const bgBlock = metadata['background-block'];
-    const desktopBlockBgImg = metadata['background-block-image']?.content
-      ? extractImageUrl(metadata['background-block-image'].content)
-      : null;
-    const mobileBlockBgImg = metadata['background-block-image-mobile']?.content
-      ? extractImageUrl(metadata['background-block-image-mobile'].content)
-      : null;
-    const objectFit = metadata['object-fit-block']?.text;
-    const objectPosition = metadata['object-position-block']?.text;
-
-    // Consolidated loop - apply all properties in a single iteration
-    blockContents.forEach((blockContent) => {
-      if (bgBlock?.text) handleBackground(bgBlock, blockContent);
-      if (desktopBlockBgImg || mobileBlockBgImg) {
-        handleBackgroundImages(desktopBlockBgImg, mobileBlockBgImg, blockContent);
-      }
-      if (objectFit) blockContent.dataset.objectFit = objectFit;
-      if (objectPosition) blockContent.dataset.objectPosition = objectPosition;
-    });
-  }
-
+  applySpecialSectionMetadata(metadata, section);
+  applyDataAttributesFromMetadata(metadata, section);
+  applySectionBackgroundImages(metadata, section);
+  applyDecorationImages(metadata, section);
+  applyBlockContentMetadata(metadata, section);
   el.remove();
 }
 
@@ -799,7 +848,11 @@ function groupChildren(section) {
   const groups = [];
   let currentGroup = null;
 
-  for (const child of children) {
+  // Limit iteration to prevent DoS from sections with excessive direct children (CWE-400)
+  const toProcess = children.length > MAX_ITERATION_LIMIT
+    ? children.slice(0, MAX_ITERATION_LIMIT) : children;
+
+  for (const child of toProcess) {
     const isDiv = child.tagName === 'DIV';
     const currentType = currentGroup?.classList.contains('block-content');
 
@@ -860,9 +913,10 @@ function initEntranceAnimationObserver(container) {
  * excluding the container itself. Items may be other sections or divs (tab/accordion panels).
  */
 function getMultisectionItemsForSection(main, containerSection) {
-  const groupValue = containerSection.getAttribute('data-multisection');
+  const groupValue = containerSection.dataset.multisection;
   if (!groupValue) return [];
-  const matches = main.querySelectorAll(`[data-multisection="${groupValue}"]`);
+  // Escape for safe use in CSS attribute selector (CWE-134); value may come from authored content.
+  const matches = main.querySelectorAll(`[data-multisection="${CSS.escape(groupValue)}"]`);
   return [...matches].filter((el) => el !== containerSection);
 }
 
@@ -922,7 +976,7 @@ export function buildMultiSection(main) {
     if (items.length === 0) return;
 
     // Block type comes from container section's "Grouped section type" (data-category)
-    const containerCategory = section.getAttribute('data-category') || '';
+    const containerCategory = section.dataset.category || '';
     const blockClass = containerCategory === 'accordion'
       ? 'accordion'
       : 'tabs'; // tabs-horizontal, tabs-vertical, or any other value → tabs
@@ -940,7 +994,7 @@ export function buildMultiSection(main) {
  */
 function buildAutoBlocks(main) {
   try {
-    // TODO: add auto block, if needed
+    // add auto block, if needed
     loadAutoBlock(main);
     buildMultiSection(main);
   } catch (error) {
@@ -974,12 +1028,12 @@ function decorateLinkedPictures(main) {
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
   decorateButtons(main);
-  decorateButtonGroups(main);
   decorateIcons(main);
   decorateSections(main); /* must be before buildAutoBlocks */
   buildAutoBlocks(main);
   initEntranceAnimationObserver(main);
   decorateBlocks(main);
+  decorateButtonGroups(main);
   buildEmbedBlocks(main);
   decorateLinkedPictures(main);
 }
@@ -1001,7 +1055,8 @@ async function loadThemeSpreadSheetConfig() {
   if (resp.status === 200) {
     // create style element that should be last in the head
     document.head.insertAdjacentHTML('beforeend', '<style id="style-overrides"></style>');
-    const sheet = window.document.styleSheets[document.styleSheets.length - 1];
+    const sheets = window.document.styleSheets;
+    const sheet = sheets.item(sheets.length - 1);
     // load spreadsheet
     const json = await resp.json();
     const tokens = json.data || json.default.data;
@@ -1119,13 +1174,9 @@ async function loadEager(doc) {
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 
-  try {
-    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
-    if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
-      loadFonts();
-    }
-  } catch (e) {
-    // do nothing
+  /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
+  if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
+    loadFonts();
   }
 }
 
@@ -1232,7 +1283,7 @@ async function loadCategoryNav(main) {
   const navWrapper = document.querySelector('header.header-wrapper .nav-wrapper');
   const categoryNavWrapper = document.createElement('div');
   categoryNavWrapper.classList.add('category-nav-wrapper');
-  categoryNavWrapper.setAttribute('data-nav-placeholder', 'true');
+  categoryNavWrapper.dataset.navPlaceholder = 'true';
 
   // Insert into header nav-wrapper (not main) to prevent layout shift
   if (navWrapper) {
@@ -1267,8 +1318,8 @@ async function loadCategoryNav(main) {
     console.error('[Category Nav] Failed to reset flag:', error);
   }
 
-  for (let i = 0; i < navBlocksArray.length; i += 1) {
-    const navBlock = navBlocksArray[i];
+  for (const element of navBlocksArray) {
+    const navBlock = element;
     // Remove block status entirely to force fresh decoration
     delete navBlock.dataset.blockStatus;
 
@@ -1323,7 +1374,7 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
       const link = menuItem.querySelector(':scope > a');
       crumbs.unshift({ title: getDirectTextContent(menuItem), url: link ? link.href : null });
       menuItem = menuItem.closest('ul')?.closest('li');
-    } while (menuItem);
+    } while (menuItem && menuItem.length < MAX_ITERATION_LIMIT);
   } else if (currentUrl !== homeUrl) {
     // Page not found in nav, build breadcrumbs from URL path
     const url = new URL(currentUrl);
@@ -1365,15 +1416,15 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   // Override last breadcrumb title with breadcrumbsTitle if available
   const breadcrumbsTitle = getMetadata('breadcrumbstitle');
   if (breadcrumbsTitle && crumbs.length > 0) {
-    crumbs[crumbs.length - 1].title = breadcrumbsTitle;
+    crumbs.at(-1).title = breadcrumbsTitle;
   }
 
   // last link is current page and should not be linked
   if (crumbs.length > 1) {
-    crumbs[crumbs.length - 1].url = null;
+    crumbs.at(-1).url = null;
   }
   if (crumbs.length > 0) {
-    crumbs[crumbs.length - 1]['aria-current'] = 'page';
+    crumbs.at(-1)['aria-current'] = 'page';
   }
   return crumbs;
 }
@@ -1444,7 +1495,7 @@ function injectBreadcrumbSchema(schema) {
     // Create and inject schema
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.setAttribute('data-schema-type', 'breadcrumb');
+    script.dataset.schemaType = 'breadcrumb';
     script.text = jsonString;
 
     document.head.appendChild(script);
@@ -1503,51 +1554,49 @@ async function buildBreadcrumbs() {
 }
 
 /**
+ * Returns the first section in main that is not a category-nav section.
+ * @param {Element} main The main element
+ * @returns {Element|null} First content section or null
+ */
+function findFirstContentSection(main) {
+  const sections = main.querySelectorAll(':scope > div.section');
+  const toScan = sections.length > MAX_ITERATION_LIMIT
+    ? [...sections].slice(0, MAX_ITERATION_LIMIT) : [...sections];
+  for (const section of toScan) {
+    const isCategoryNav = section.classList.contains('category-nav-container')
+      || section.classList.contains('category-nav-section');
+    if (!isCategoryNav) return section;
+  }
+  return null;
+}
+
+/**
+ * Injects breadcrumbs into the appropriate place in main (first content section or main).
+ * @param {Element} breadcrumbs Breadcrumbs container element
+ * @param {Element} main The main element
+ */
+function injectBreadcrumbsInto(breadcrumbs, main) {
+  const targetSection = findFirstContentSection(main);
+  if (!targetSection) {
+    main.insertBefore(breadcrumbs, main.firstChild);
+    return;
+  }
+  const wrapperDiv = targetSection.querySelector(':scope > div[class*="-wrapper"]');
+  const container = wrapperDiv || targetSection;
+  container.insertBefore(breadcrumbs, container.firstChild);
+}
+
+/**
  * Load and inject breadcrumbs into the first section of main
  * @param {Element} main The main element
  */
 async function loadBreadcrumbs(main) {
-  // Check if breadcrumbs are enabled via page metadata
-  const breadcrumbsMeta = getMetadata('breadcrumbs');
-
-  if (!breadcrumbsMeta || breadcrumbsMeta.toLowerCase() !== 'true') {
-    return;
-  }
+  if (getMetadata('breadcrumbs')?.toLowerCase() !== 'true') return;
 
   try {
     const breadcrumbs = await buildBreadcrumbs();
-    if (breadcrumbs) {
-      // Find the first content section in main (skip category-nav sections)
-      const sections = main.querySelectorAll(':scope > div.section');
-      let targetSection = null;
-
-      // Find the first section that is NOT a category-nav section
-      for (let i = 0; i < sections.length; i += 1) {
-        const section = sections[i];
-        if (!section.classList.contains('category-nav-container')
-          && !section.classList.contains('category-nav-section')) {
-          targetSection = section;
-          break;
-        }
-      }
-
-      if (targetSection) {
-        // Look for a wrapper div inside the section (e.g., hero-wrapper, cards-wrapper)
-        const wrapperDiv = targetSection.querySelector(':scope > div[class*="-wrapper"]');
-
-        if (wrapperDiv) {
-          // Insert breadcrumbs as the first element inside the wrapper
-          wrapperDiv.insertBefore(breadcrumbs, wrapperDiv.firstChild);
-        } else {
-          // Fallback: insert into section if no wrapper found
-          targetSection.insertBefore(breadcrumbs, targetSection.firstChild);
-        }
-      } else {
-        // Fallback: insert as first element in main if no suitable section found
-        main.insertBefore(breadcrumbs, main.firstChild);
-      }
-    }
-  } catch (error) {
+    if (breadcrumbs) injectBreadcrumbsInto(breadcrumbs, main);
+  } catch {
     // Silently fail - breadcrumbs are optional enhancement
   }
 }

@@ -358,27 +358,27 @@
           },
           {
             "name": "XXL",
-            "value": "xxl"
+            "value": "size-xxl"
           },
           {
             "name": "XL",
-            "value": "xl"
+            "value": "size-xl"
           },
           {
             "name": "L",
-            "value": "l"
+            "value": "size-l"
           },
           {
             "name": "M",
-            "value": "m"
+            "value": "size-m"
           },
           {
             "name": "S",
-            "value": "s"
+            "value": "size-s"
           },
           {
             "name": "XS",
-            "value": "xs"
+            "value": "size-xs"
           }
         ]
       },
@@ -458,27 +458,27 @@
               },
               {
                 "name": "XXL",
-                "value": "xxl"
+                "value": "size-xxl"
               },
               {
                 "name": "XL",
-                "value": "xl"
+                "value": "size-xl"
               },
               {
                 "name": "L",
-                "value": "l"
+                "value": "size-l"
               },
               {
                 "name": "M",
-                "value": "m"
+                "value": "size-m"
               },
               {
                 "name": "S",
-                "value": "s"
+                "value": "size-s"
               },
               {
                 "name": "XS",
-                "value": "xs"
+                "value": "size-xs"
               }
             ]
           },
@@ -603,24 +603,24 @@
       {
         "component": "reference",
         "valueType": "string",
-        "name": "doodle-image-top",
-        "label": "Background accessory image - top",
+        "name": "decoration-image-top",
+        "label": "Background decoration image - top",
         "description": "Displayed at top left of the section",
         "multi": false
       },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "doodle-image-bottom",
-        "label": "Background accessory image - bottom",
+        "name": "decoration-image-bottom",
+        "label": "Background decoration image - bottom",
         "description": "Displayed at bottom right of the section",
         "multi": false
       },
       {
         "component": "boolean",
         "valueType": "boolean",
-        "name": "doodle-reverse",
-        "label": "Reverse background accessory images",
+        "name": "decoration-reverse",
+        "label": "Reverse background decoration images",
         "description": "Display at top right and bottom left of the section"
       },
       {
@@ -1086,6 +1086,70 @@
     ]
   },
   {
+    "id": "cards-icon",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Important Documents",
+            "value": "important-documents"
+          },
+          {
+            "name": "Related Search",
+            "value": "related-search"
+          },
+          {
+            "name": "Image and Title",
+            "value": "image-and-title"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "card-icon-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "name": "card-tag",
+        "label": "Card Tag (optional)"
+      },
+      {
+        "component": "richtext",
+        "name": "card_text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "card_link",
+        "label": "Card Link (optional)",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "card_linkText",
+        "label": "Card Link Text (optional)"
+      }
+    ]
+  },
+  {
     "id": "cards-testimonial",
     "fields": [
       {
@@ -1284,37 +1348,29 @@
         "description": "Decoration image for modal corners (top-right and bottom-left rotated)"
       },
       {
-        "component": "container",
-        "name": "swiperSettings",
-        "label": "Swiper Settings",
-        "collapsible": true,
-        "fields": [
-          {
-            "component": "boolean",
-            "name": "swipable",
-            "label": "Enable Swiper",
-            "valueType": "boolean",
-            "value": false
-          },
-          {
-            "component": "boolean",
-            "name": "autoplayEnabled",
-            "label": "Autoplay",
-            "valueType": "boolean",
-            "value": false
-          },
-          {
-            "component": "number",
-            "name": "startingCard",
-            "label": "Starting Card (Index, default is 0)",
-            "valueType": "number",
-            "value": 0,
-            "validation": {
-              "numberMin": 0,
-              "customErrorMsg": "Starting card index must be 0 or greater"
-            }
-          }
-        ]
+        "component": "boolean",
+        "name": "swipable",
+        "label": "Enable Swiper",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "boolean",
+        "name": "autoplayEnabled",
+        "label": "Autoplay",
+        "valueType": "boolean",
+        "value": false
+      },
+      {
+        "component": "number",
+        "name": "startingCard",
+        "label": "Starting Card (Index, default is 0)",
+        "valueType": "number",
+        "value": 0,
+        "validation": {
+          "numberMin": 0,
+          "customErrorMsg": "Starting card index must be 0 or greater"
+        }
       }
     ]
   },
@@ -1362,6 +1418,11 @@
         "name": "cardLink",
         "label": "Card Link (optional)",
         "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "cardLinkText",
+        "label": "Card Link Text (optional)"
       },
       {
         "component": "richtext",
@@ -1977,40 +2038,6 @@
     ]
   },
   {
-    "id": "nav-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "description": "Title of the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link",
-        "label": "Link",
-        "description": "URL for the navigation item."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "sub-title",
-        "label": "Sub Title",
-        "description": "Sub Title of the navigation item."
-      },
-      {
-        "component": "richtext",
-        "name": "description",
-        "value": "",
-        "label": "Description",
-        "valueType": "string",
-        "description": "Description or additional details for the navigation item."
-      }
-    ]
-  },
-  {
     "id": "overview-rte-item",
     "fields": []
   },
@@ -2046,14 +2073,13 @@
       {
         "component": "text",
         "name": "title",
-        "label": "Title",
+        "label": "Title Text",
         "valueType": "string"
       },
       {
         "component": "select",
         "name": "titleType",
         "label": "Title Type",
-        "value": "h2",
         "valueType": "string",
         "options": [
           {
@@ -2088,8 +2114,8 @@
       },
       {
         "component": "select",
-        "name": "textSize",
-        "label": "Text Size",
+        "name": "title-size",
+        "label": "Title Size",
         "value": "",
         "valueType": "string",
         "options": [
@@ -2124,9 +2150,9 @@
         ]
       },
       {
-        "component": "multiselect",
+        "component": "select",
         "name": "classes",
-        "label": "Alignment / location",
+        "label": "Alignment",
         "value": "",
         "valueType": "string",
         "options": [
@@ -2141,6 +2167,93 @@
           {
             "name": "Right",
             "value": "right"
+          }
+        ]
+      },
+      {
+        "component": "container",
+        "name": "optional-subtitle",
+        "label": "Optional Subtitle",
+        "collapsible": true,
+        "fields": [
+          {
+            "component": "text",
+            "name": "subtitle",
+            "label": "Subtitle Text",
+            "valueType": "string"
+          },
+          {
+            "component": "select",
+            "name": "subtitleType",
+            "label": "Subtitle Type",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "h1",
+                "value": "h1"
+              },
+              {
+                "name": "h2",
+                "value": "h2"
+              },
+              {
+                "name": "h3",
+                "value": "h3"
+              },
+              {
+                "name": "h4",
+                "value": "h4"
+              },
+              {
+                "name": "h5",
+                "value": "h5"
+              },
+              {
+                "name": "h6",
+                "value": "h6"
+              },
+              {
+                "name": "p",
+                "value": "p"
+              }
+            ]
+          },
+          {
+            "component": "select",
+            "name": "subtitle-size",
+            "label": "Subtitle Size",
+            "value": "",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default (based on type)",
+                "value": ""
+              },
+              {
+                "name": "XXL",
+                "value": "size-xxl"
+              },
+              {
+                "name": "XL",
+                "value": "size-xl"
+              },
+              {
+                "name": "L",
+                "value": "size-l"
+              },
+              {
+                "name": "M",
+                "value": "size-m"
+              },
+              {
+                "name": "S",
+                "value": "size-s"
+              },
+              {
+                "name": "XS",
+                "value": "size-xs"
+              }
+            ]
           }
         ]
       }

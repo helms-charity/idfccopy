@@ -1,5 +1,5 @@
 import {
-  createOptimizedPicture, loadScript, loadCSS,
+  createOptimizedPicture, loadScript, loadCSS, toCamelCase,
 } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { createModal } from '../modal/modal.js';
@@ -11,163 +11,145 @@ import { createModal } from '../modal/modal.js';
  */
 
 /**
- * Extracts block-level properties from placeholder cards and sets them as data attributes
- * @param {HTMLElement} block The block element
- * @param {HTMLElement} cardsContainer The container holding card items
+ * Block and card field order (strict index-based parsing).
+ * Cards block: 7 config rows (no "classes" – applied as CSS class on element only).
+ * Card item: 9 cells per card.
  */
-function extractBlockProperties(block, cardsContainer) {
-  const propertyFields = [
-    'modalTheme',
-    'modalDialogBackgroundImageTexture',
-    'modalPageBackgroundImage',
-    'modalPageDecorationImage',
-    'modalCtaContent',
-    'swipable',
-    'autoplayEnabled',
-    'startingCard',
-  ];
-  const propertyValues = {};
-  const itemsToRemove = [];
 
-  // Check first few card elements for property values
-  const items = [...cardsContainer.querySelectorAll('.cards-card')];
-  let cardIndex = 0;
-  let propertyIndex = 0;
+/** Block config: 7 rows, one per field. "classes" is not a model field. */
+const CONFIG_ROW_COUNT = 7;
 
-  // Process card elements, matching them to expected property fields
-  while (cardIndex < items.length && propertyIndex < propertyFields.length) {
-    const cardItem = items[cardIndex];
-    const fieldName = propertyFields[propertyIndex];
+/** Cards block model field names in order (markdown/config). */
+const CARDS_FIELDS = [
+  'modalTheme', 'modalDialogBackgroundImageTexture', 'modalPageBackgroundImage',
+  'modalPageDecorationImage', 'swipable', 'autoplayEnabled', 'startingCard',
+];
 
-    // Check if card is completely empty (no content or only whitespace)
-    const isEmpty = !cardItem.textContent.trim() && !cardItem.querySelector('picture, img');
+/** Card model field names in order (markdown/config). */
+const CARD_FIELDS = [
+  'image', 'imageAlt', 'dividerImage', 'cardTag', 'backgroundImageTexture',
+  'text', 'cardLink', 'cardLinkText', 'modalContent',
+];
 
-    if (isEmpty) {
-      // Empty card - field value not defined, just remove it and move to next field
-      itemsToRemove.push(cardItem);
-      cardIndex += 1;
-      propertyIndex += 1;
-      // eslint-disable-next-line no-continue
-      continue;
-    }
+/**
+ * Returns the value from a block/card cell: first img src, first a href, or text content.
+ * @param {HTMLElement} cell Cell element (may contain div > img/p/a)
+ * @returns {string} Value or empty string
+ */
+function getCellValue(cell) {
+  if (!cell) return '';
+  const inner = cell.querySelector('div') || cell;
+  const img = inner.querySelector?.('img') || (inner.tagName === 'IMG' ? inner : null);
+  if (img?.src) return img.src;
+  const a = inner.querySelector?.('a[href]');
+  if (a?.href) return a.href;
+  const t = inner.textContent?.trim();
+  return t || '';
+}
 
-    // Check card content structure
-    const paragraphs = cardItem.querySelectorAll('p');
-    // Only consider picture elements for authored images (not icon imgs)
-    const pictureEl = cardItem.querySelector('picture');
-    const hasAuthoredImage = !!pictureEl;
-    const hasHeading = cardItem.querySelector('h1, h2, h3, h4, h5, h6');
+/**
+ * Returns the value from a config row's value column (col 1): same logic as readBlockConfig.
+ * @param {HTMLElement} col Second column element (value)
+ * @returns {string} Single value (first img src, first a href, or text)
+ */
+function getConfigColumnValue(col) {
+  if (!col) return '';
+  if (col.querySelector('a')) {
+    const as = [...col.querySelectorAll('a')];
+    return as.length >= 1 ? as[0].href : '';
+  }
+  if (col.querySelector('img')) {
+    const imgs = [...col.querySelectorAll('img')];
+    return imgs.length >= 1 ? imgs[0].src : '';
+  }
+  if (col.querySelector('p')) {
+    const ps = [...col.querySelectorAll('p')];
+    return ps.length >= 1 ? ps[0].textContent?.trim() ?? '' : '';
+  }
+  return col.textContent?.trim() ?? '';
+}
 
-    // Check if this is an image-only card (for image reference fields)
-    // Must have a picture element (not just any img, which could be an icon)
-    const isImageOnly = hasAuthoredImage && !hasHeading && paragraphs.length <= 1
-      && (!paragraphs.length || paragraphs[0].querySelector('picture'));
+/**
+ * Gets value from a config row (single cell or second column).
+ * @param {HTMLElement} row Row element
+ * @returns {string} Value (img src, link href, or text)
+ */
+function getConfigRowValue(row) {
+  const cols = [...row.children];
+  const cell = cols.length >= 2 ? cols[1] : cols[0];
+  return cell ? getConfigColumnValue(cell) : '';
+}
 
-    // Check if this is a text-only card (for string/boolean/number fields)
-    const isTextOnly = paragraphs.length === 1 && !hasAuthoredImage && !hasHeading;
-
-    // Handle image reference fields
-    const imageReferenceFields = [
-      'modalDialogBackgroundImageTexture',
-      'modalPageBackgroundImage',
-      'modalPageDecorationImage',
-    ];
-    if (imageReferenceFields.includes(fieldName)) {
-      if (isImageOnly && pictureEl) {
-        // Extract image src from picture element
-        const img = pictureEl.querySelector('img');
-        if (img && img.src) {
-          propertyValues[fieldName] = img.src;
-          itemsToRemove.push(cardItem);
-          cardIndex += 1;
-          propertyIndex += 1;
-          // eslint-disable-next-line no-continue
-          continue;
-        }
+/**
+ * Counts how many leading rows are config rows by structure (for UE-safe parsing).
+ * Config rows: one-column = single cell; two-column = two cells with label in CARDS_FIELDS.
+ * Stops at first non-config row or at 7, so card rows are never mistaken for config.
+ * @param {HTMLElement[]} rows Block children
+ * @returns {number} Number of config rows (0–7)
+ */
+function getConfigRowCount(rows) {
+  if (!rows.length) return 0;
+  const firstRow = rows[0];
+  const isOneColumn = firstRow.children.length === 1;
+  let count = 0;
+  const max = Math.min(CONFIG_ROW_COUNT, rows.length);
+  if (isOneColumn) {
+    while (count < max && rows[count].children.length === 1) count += 1;
+    return count;
+  }
+  while (count < max) {
+    const row = rows[count];
+    const cols = [...row.children];
+    if (cols.length >= 2) {
+      const name = toCamelCase(cols[0].textContent?.trim() ?? '');
+      if (name && CARDS_FIELDS.includes(name)) {
+        count += 1;
+      } else {
+        break;
       }
-      // Not an authored image or no src - skip to next field, stay on same card
-      propertyIndex += 1;
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-
-    // Handle richtext fields (modalCtaContent)
-    if (fieldName === 'modalCtaContent') {
-      // Check if card contains button-container or links (typical CTA content)
-      // BUT also verify it's not an actual card structure with image div
-      const hasButtonContainer = cardItem.querySelector('.button-container');
-      const hasLinks = cardItem.querySelector('a');
-      const hasCardImage = cardItem.querySelector('.cards-card-image');
-      const hasCardBody = cardItem.querySelector('.cards-card-body');
-
-      // Only extract as modalCtaContent if it has buttons/links but is NOT a full card structure
-      const isPlaceholderCta = (hasButtonContainer || hasLinks) && !hasCardImage;
-
-      // Additional check: if it has both image and body, it's definitely a real card
-      const isRealCard = hasCardImage && hasCardBody;
-
-      if (isPlaceholderCta && !isRealCard) {
-        // Extract the entire innerHTML as richtext content
-        propertyValues[fieldName] = cardItem.innerHTML;
-        itemsToRemove.push(cardItem);
-        cardIndex += 1;
-        propertyIndex += 1;
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-      // Not richtext content or is a real card - skip to next field, stay on same card
-      propertyIndex += 1;
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-
-    // Handle text-based fields
-    if (!isTextOnly) {
-      // This is a real card (has multiple elements) - stop processing
+    } else {
       break;
     }
+  }
+  return count;
+}
 
-    const text = paragraphs[0].textContent.trim();
+/**
+ * Extracts block-level properties from config rows by field index.
+ * Cards block has 7 fields only (no "classes" – that is CSS only).
+ * Uses structure-based config row count so UE/fragments never treat card rows as config.
+ * @param {HTMLElement} block The block element (children: config rows then card rows)
+ * @param {HTMLElement[]} [rowsOverride] If provided, use as rows instead of block.children
+ * @returns {number} Number of config rows consumed
+ */
+function extractBlockProperties(block, rowsOverride) {
+  const rows = rowsOverride ?? [...block.children];
+  const limit = getConfigRowCount(rows);
+  if (limit === 0) return 0;
+  const firstRow = rows[0];
+  const isOneColumn = firstRow.children.length === 1;
 
-    // Validate value based on expected field type:
-    // - modalTheme: CSS class name string (not boolean, not number)
-    // - swipable, autoplayEnabled: boolean ("true" or "false")
-    // - startingCard: number
-    const isBoolean = text === 'true' || text === 'false';
-    const isNumber = !Number.isNaN(Number(text)) && text !== '';
-
-    let isValidValue = false;
-    if (fieldName === 'modalTheme') {
-      // modalTheme must be a CSS class name (string, not boolean, not pure number)
-      isValidValue = !isBoolean && !isNumber && text.length > 0;
-    } else if (fieldName === 'swipable' || fieldName === 'autoplayEnabled') {
-      // Must be boolean
-      isValidValue = isBoolean;
-    } else if (fieldName === 'startingCard') {
-      // Must be a number
-      isValidValue = isNumber;
+  if (isOneColumn) {
+    for (let i = 0; i < limit; i += 1) {
+      const key = CARDS_FIELDS[i];
+      const rawVal = getConfigRowValue(rows[i]);
+      if (rawVal) block.dataset[key] = rawVal;
     }
-
-    if (isValidValue) {
-      // Value matches expected type - extract it
-      propertyValues[fieldName] = text;
-      itemsToRemove.push(cardItem);
-      cardIndex += 1;
-      propertyIndex += 1;
-    } else {
-      // Value doesn't match expected type for this field
-      // This card might be for a later field - skip to next field but stay on same card
-      propertyIndex += 1;
-    }
+    return limit;
   }
 
-  // Set data attributes on block (dataset automatically handles kebab-case conversion)
-  Object.keys(propertyValues).forEach((key) => {
-    block.dataset[key] = propertyValues[key];
-  });
-
-  // Remove placeholder items
-  itemsToRemove.forEach((cardItem) => cardItem.remove());
+  for (let i = 0; i < limit; i += 1) {
+    const row = rows[i];
+    const cols = [...row.children];
+    if (cols.length >= 2) {
+      const name = toCamelCase(cols[0].textContent?.trim() ?? '');
+      if (name && CARDS_FIELDS.includes(name)) {
+        const value = getConfigColumnValue(cols[1]);
+        if (value) block.dataset[name] = value;
+      }
+    }
+  }
+  return limit;
 }
 
 /**
@@ -258,10 +240,14 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
     });
 
     // Hide the original link text but keep it functional
-    const buttonContainer = cardLink.closest('.button-container');
-    if (buttonContainer) {
-      buttonContainer.classList.add('sr-only');
+    let buttonContainer = cardLink.closest('.button-container');
+    if (!buttonContainer) {
+      buttonContainer = document.createElement('div');
+      buttonContainer.className = 'button-container';
+      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
+      buttonContainer.appendChild(cardLink);
     }
+    buttonContainer.classList.add('sr-only');
 
     // Add arrow icon for interactive cards (if enabled for this variant)
     if (shouldAddArrow) {
@@ -359,10 +345,14 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
     });
 
     // Hide the original link text but keep it functional
-    const buttonContainer = cardLink.closest('.button-container');
-    if (buttonContainer) {
-      buttonContainer.classList.add('sr-only');
+    let buttonContainer = cardLink.closest('.button-container');
+    if (!buttonContainer) {
+      buttonContainer = document.createElement('div');
+      buttonContainer.className = 'button-container';
+      cardLink.parentNode.insertBefore(buttonContainer, cardLink);
+      buttonContainer.appendChild(cardLink);
     }
+    buttonContainer.classList.add('sr-only');
 
     // Add arrow icon for interactive cards (if enabled for this variant)
     if (shouldAddArrow) {
@@ -371,6 +361,279 @@ function setupCardInteractivity(cardItem, shouldAddArrow = false, modalTheme = '
   }
   // Type 1: Standard card with no link - no additional interactivity needed
   // No arrow is added for non-interactive cards
+}
+
+/**
+ * Splits the cardContent cell (third cell) into cardTag, cards-card-body, and cards-modal-content.
+ * @param {HTMLElement} cardItem The card element to append to
+ * @param {HTMLElement} contentCell The third cell (cardContent)
+ */
+function splitCardContentCell(cardItem, contentCell) {
+  const wrapper = contentCell.querySelector('div') || contentCell;
+  const nodes = [...wrapper.children];
+  const headingIndices = [];
+  nodes.forEach((el, i) => {
+    if (el.matches?.('h1, h2, h3, h4, h5, h6')) headingIndices.push(i);
+  });
+  let tagNodes; let bodyNodes; let modalNodes;
+  if (headingIndices.length > 0) {
+    const first = headingIndices[0];
+    const second = headingIndices[1] ?? nodes.length;
+    tagNodes = first > 0 ? nodes.slice(0, first) : [];
+    bodyNodes = nodes.slice(first, second);
+    modalNodes = second < nodes.length ? nodes.slice(second) : [];
+  } else {
+    if (nodes.length === 0) return;
+    if (nodes.length === 1) {
+      tagNodes = [];
+      bodyNodes = nodes;
+      modalNodes = [];
+    } else if (nodes.length === 2) {
+      tagNodes = [nodes[0]];
+      bodyNodes = [nodes[1]];
+      modalNodes = [];
+    } else {
+      tagNodes = [nodes[0]];
+      bodyNodes = nodes.slice(1, -1);
+      modalNodes = [nodes[nodes.length - 1]];
+    }
+  }
+  if (tagNodes.length > 0) {
+    const tagDiv = document.createElement('div');
+    tagDiv.className = 'cards-card-tag';
+    tagNodes.forEach((n) => tagDiv.appendChild(n));
+    cardItem.appendChild(tagDiv);
+  }
+  if (bodyNodes.length > 0) {
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'cards-card-body';
+    bodyNodes.forEach((n) => bodyDiv.appendChild(n));
+    cardItem.appendChild(bodyDiv);
+  }
+  if (modalNodes.length > 0) {
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'cards-card-body cards-modal-content';
+    modalNodes.forEach((n) => modalDiv.appendChild(n));
+    cardItem.appendChild(modalDiv);
+  }
+}
+
+/**
+ * Returns the first picture or img from a cell (from inner div if present).
+ * @param {HTMLElement} cell Cell element
+ * @returns {HTMLPictureElement|HTMLImageElement|null} picture or img or null
+ */
+function getCellPictureOrImg(cell) {
+  if (!cell) return null;
+  const inner = cell.querySelector('div') || cell;
+  return inner.querySelector?.('picture') || inner.querySelector?.('img') || null;
+}
+
+/**
+ * Appends a cell's inner content (clone) into a wrapper and appends wrapper to cardItem.
+ * @param {HTMLElement} cardItem Card element
+ * @param {HTMLElement} cell Cell element
+ * @param {string} wrapperClass Class name for the wrapper div
+ */
+function appendCellContentAs(cardItem, cell, wrapperClass) {
+  const inner = cell?.querySelector('div') || cell;
+  if (!inner || !inner.children.length) return;
+  const wrap = document.createElement('div');
+  wrap.className = wrapperClass;
+  [...inner.children].forEach((child) => wrap.appendChild(child.cloneNode(true)));
+  cardItem.appendChild(wrap);
+}
+
+/**
+ * Builds a single card from 9 cells in CARD_FIELDS order (strict index-based).
+ * @param {HTMLElement[]} cells Array of 9 cell elements (image, imageAlt, dividerImage,
+ *   cardTag, backgroundImageTexture, text, cardLink, cardLinkText, modalContent)
+ * @param {HTMLElement|HTMLElement[]} rowOrRows Source row(s) for UE instrumentation
+ * @returns {HTMLElement} The card element
+ */
+function buildCardFromCells(cells, rowOrRows) {
+  if (!cells || cells.length < 9) return null;
+
+  const cardItem = document.createElement('div');
+  cardItem.classList.add('cards-card');
+  const rows = Array.isArray(rowOrRows) ? rowOrRows : [rowOrRows];
+  rows.forEach((row) => {
+    if (row) moveInstrumentation(row, cardItem);
+  });
+  cardItem.removeAttribute('data-aue-prop');
+  cardItem.setAttribute('data-aue-type', 'container');
+  cardItem.setAttribute('data-aue-label', 'Card');
+
+  // CARD_FIELDS[0]: image
+  const pic0 = getCellPictureOrImg(cells[0]);
+  if (pic0) {
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'cards-card-image';
+    const cloned = pic0.cloneNode(true);
+    const alt = (cells[1] && getCellValue(cells[1])) || '';
+    if (alt && cloned.tagName === 'IMG') cloned.alt = alt;
+    if (cloned.tagName === 'PICTURE' && cloned.querySelector('img')) {
+      cloned.querySelector('img').alt = alt;
+    }
+    imageWrap.appendChild(cloned);
+    cardItem.appendChild(imageWrap);
+  }
+  // CARD_FIELDS[2]: dividerImage
+  const dividerPic = getCellPictureOrImg(cells[2]);
+  if (dividerPic) {
+    const dividerWrap = document.createElement('div');
+    dividerWrap.className = 'cards-card-divider';
+    dividerWrap.appendChild(dividerPic.cloneNode(true));
+    cardItem.appendChild(dividerWrap);
+  }
+  // Fallback: when image and divider cells (0 and 2) are empty but cell 1 has a picture
+  // (e.g. blog-posts Discover card with single image in second column), use it as card image
+  if (!pic0 && !dividerPic && cells[1]) {
+    const picFromCell1 = getCellPictureOrImg(cells[1]);
+    if (picFromCell1) {
+      const imageWrap = document.createElement('div');
+      imageWrap.className = 'cards-card-image';
+      imageWrap.appendChild(picFromCell1.cloneNode(true));
+      cardItem.insertBefore(imageWrap, cardItem.firstChild);
+    }
+  }
+  // CARD_FIELDS[3]: cardTag
+  appendCellContentAs(cardItem, cells[3], 'cards-card-tag');
+  // CARD_FIELDS[4]: backgroundImageTexture
+  const texturePic = getCellPictureOrImg(cells[4]);
+  if (texturePic) {
+    const textureWrap = document.createElement('div');
+    textureWrap.className = 'cards-card-bg-texture';
+    textureWrap.appendChild(texturePic.cloneNode(true));
+    cardItem.appendChild(textureWrap);
+  }
+  // CARD_FIELDS[5]: text
+  appendCellContentAs(cardItem, cells[5], 'cards-card-body');
+  // CARD_FIELDS[6]: cardLink, [7]: cardLinkText
+  const linkEl = (cells[6]?.querySelector('div') || cells[6])?.querySelector?.('a[href]');
+  const linkText = cells[7] ? getCellValue(cells[7]) : getCellValue(cells[6]);
+  if (linkEl && linkEl.href) {
+    const btnWrap = document.createElement('p');
+    btnWrap.className = 'button-container';
+    const a = linkEl.cloneNode(true);
+    if (linkText) a.textContent = linkText;
+    btnWrap.appendChild(a);
+    const body = cardItem.querySelector('.cards-card-body');
+    (body || cardItem).appendChild(btnWrap);
+  }
+  // CARD_FIELDS[8]: modalContent
+  appendCellContentAs(cardItem, cells[8], 'cards-card-body cards-modal-content');
+  return cardItem;
+}
+
+/**
+ * Builds a single card from 7 cells (sheet order: image, imageAlt, dividerImage,
+ * backgroundImageTexture, text, cardLink, modalContent). Used when card row has 7 cells.
+ */
+function buildCardFromSevenCells(cells, rowOrRows) {
+  if (!cells || cells.length < 7) return null;
+  const cardItem = document.createElement('div');
+  cardItem.classList.add('cards-card');
+  const rows = Array.isArray(rowOrRows) ? rowOrRows : [rowOrRows];
+  rows.forEach((row) => {
+    if (row) moveInstrumentation(row, cardItem);
+  });
+  cardItem.removeAttribute('data-aue-prop');
+  cardItem.setAttribute('data-aue-type', 'container');
+  cardItem.setAttribute('data-aue-label', 'Card');
+
+  const pic0 = getCellPictureOrImg(cells[0]);
+  if (pic0) {
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'cards-card-image';
+    const cloned = pic0.cloneNode(true);
+    const alt = (cells[1] && getCellValue(cells[1])) || '';
+    if (alt && cloned.tagName === 'IMG') cloned.alt = alt;
+    if (cloned.tagName === 'PICTURE' && cloned.querySelector('img')) {
+      cloned.querySelector('img').alt = alt;
+    }
+    imageWrap.appendChild(cloned);
+    cardItem.appendChild(imageWrap);
+  }
+  const dividerPic = getCellPictureOrImg(cells[2]);
+  if (dividerPic) {
+    const dividerWrap = document.createElement('div');
+    dividerWrap.className = 'cards-card-divider';
+    dividerWrap.appendChild(dividerPic.cloneNode(true));
+    cardItem.appendChild(dividerWrap);
+  }
+  // Fallback: no image/divider in 0 or 2 but cell 1 has a picture → use as card image
+  if (!pic0 && !dividerPic && cells[1]) {
+    const picFromCell1 = getCellPictureOrImg(cells[1]);
+    if (picFromCell1) {
+      const imageWrap = document.createElement('div');
+      imageWrap.className = 'cards-card-image';
+      imageWrap.appendChild(picFromCell1.cloneNode(true));
+      cardItem.insertBefore(imageWrap, cardItem.firstChild);
+    }
+  }
+  const texturePic = getCellPictureOrImg(cells[3]);
+  if (texturePic) {
+    const textureWrap = document.createElement('div');
+    textureWrap.className = 'cards-card-bg-texture';
+    textureWrap.appendChild(texturePic.cloneNode(true));
+    cardItem.appendChild(textureWrap);
+  }
+  appendCellContentAs(cardItem, cells[4], 'cards-card-body');
+  const linkEl = (cells[5]?.querySelector('div') || cells[5])?.querySelector?.('a[href]');
+  const linkText = getCellValue(cells[5]);
+  if (linkEl && linkEl.href) {
+    const btnWrap = document.createElement('p');
+    btnWrap.className = 'button-container';
+    const a = linkEl.cloneNode(true);
+    if (linkText && linkText !== linkEl.href) a.textContent = linkText;
+    btnWrap.appendChild(a);
+    const body = cardItem.querySelector('.cards-card-body');
+    (body || cardItem).appendChild(btnWrap);
+  }
+  appendCellContentAs(cardItem, cells[6], 'cards-card-body cards-modal-content');
+  return cardItem;
+}
+
+/**
+ * Builds a single card from one row with 3 cells (legacy: image | decor | content).
+ * @param {HTMLElement} row Row element with 3 child cells
+ * @returns {HTMLElement} The card element
+ */
+function buildCardFromThreeCells(row) {
+  const cells = [...row.children];
+  if (cells.length < 3) return null;
+  const cardItem = document.createElement('div');
+  cardItem.classList.add('cards-card');
+  moveInstrumentation(row, cardItem);
+  cardItem.removeAttribute('data-aue-prop');
+  cardItem.setAttribute('data-aue-type', 'container');
+  cardItem.setAttribute('data-aue-label', 'Card');
+
+  const imageCell = cells[0].querySelector('div') || cells[0];
+  const picture = imageCell.querySelector?.('picture');
+  if (picture) {
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'cards-card-image';
+    imageWrap.appendChild(picture);
+    cardItem.appendChild(imageWrap);
+  }
+  const decorCell = cells[1].querySelector('div') || cells[1];
+  const pictures = [...decorCell.querySelectorAll?.('picture') || []];
+  if (pictures.length >= 1) {
+    const dividerWrap = document.createElement('div');
+    dividerWrap.className = 'cards-card-divider';
+    dividerWrap.appendChild(pictures[0]);
+    cardItem.appendChild(dividerWrap);
+  }
+  if (pictures.length >= 2) {
+    const textureWrap = document.createElement('div');
+    textureWrap.className = 'cards-card-bg-texture';
+    textureWrap.appendChild(pictures[1]);
+    cardItem.appendChild(textureWrap);
+  }
+  splitCardContentCell(cardItem, cells[2]);
+  return cardItem;
 }
 
 /**
@@ -501,6 +764,8 @@ function globalMayuraScrollbarResizeHandler() {
 }
 
 export default async function decorate(block) {
+  // Order: (1) sync setup and build card DOM, (2) block.replaceChildren(cardsContainer),
+  // (3) sync class/interactivity, (4) await Swiper only if needed.
   const isDesktop = window.matchMedia('(min-width: 900px)').matches;
   const section = block.closest('.section');
   const wrapper = block.closest('.cards-wrapper') || block.parentElement;
@@ -561,11 +826,11 @@ export default async function decorate(block) {
   const { classList } = block;
   const isImportantDocuments = classList.contains('important-documents');
   const isRelatedSearch = classList.contains('related-search');
+  const isImageAndTitle = classList.contains('image-and-title');
   const isExperienceLife = classList.contains('experience-life');
   const isBlogPosts = classList.contains('blog-posts');
   const isEarnRewards = classList.contains('earn-rewards');
   const isJoiningPerks = classList.contains('joining-perks');
-  const isImageAndTitle = classList.contains('image-and-title');
   const supportsSemanticElements = classList.contains('key-benefits')
     || isExperienceLife
     || classList.contains('reward-points');
@@ -574,36 +839,100 @@ export default async function decorate(block) {
   // Check if this cards block is within the #cscards section (customer service dropdown)
   const isInCsCards = block.closest('#cscards') !== null;
 
-  // Build container structure and collect card elements in one pass
-  // Use div structure for all cards (unified approach, simpler and more maintainable)
+  // Skip rebuild when block was already built (e.g. clone inserted into nav). Otherwise we
+  // misinterpret .grid-cards as "first row" and its .cards-card children as "cells", get
+  // numCells=2, no branch matches, and replaceChildren() wipes the content.
+  const singleChild = block.children.length === 1 ? block.children[0] : null;
+  const isGridCards = singleChild?.classList?.contains('grid-cards');
+  const hasCardCards = singleChild?.querySelector?.('.cards-card');
+  if (isGridCards && hasCardCards) return;
+
+  // First CONFIG_ROW_COUNT (7) rows = block config by CARDS_FIELDS order; rest = card rows.
+  // When block has a single .default-content/.block-content child, use its children as rows
+  // (fragment/nav often wraps the table; otherwise we see blockChildrenCount: 1, numCells: 2).
+  let rows = [...block.children];
+  if (rows.length === 1 && rows[0].classList?.contains('default-content')) {
+    rows = [...rows[0].children];
+  } else if (rows.length === 1 && rows[0].classList?.contains('block-content')) {
+    rows = [...rows[0].children];
+  }
+  const configRowCount = extractBlockProperties(block, rows);
+  const cardRows = rows.slice(configRowCount);
+
+  const firstCardRow = cardRows[0];
+  const numCells = firstCardRow ? firstCardRow.children.length : 0;
+
+  // Move block-level UE instrumentation from config rows onto the block (row element only,
+  // not descendants) so the tree shows one "Cards" node. Same pattern as accordion:
+  // moveInstrumentation(sourceRow, targetContainer) without pulling in property-level attrs.
+  for (let i = 0; i < configRowCount; i += 1) {
+    moveInstrumentation(rows[i], block);
+  }
+  block.removeAttribute('data-aue-prop');
+  block.setAttribute('data-aue-type', 'container');
+  block.setAttribute('data-aue-label', 'Cards');
+
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('grid-cards');
-  const rows = [...block.children];
 
-  rows.forEach((row) => {
-    const cardItem = document.createElement('div');
-    cardItem.classList.add('cards-card');
-    moveInstrumentation(row, cardItem);
-    while (row.firstElementChild) cardItem.append(row.firstElementChild);
-
-    // Process children in a single pass
-    const divsToRemove = [];
-    [...cardItem.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) {
-        div.className = 'cards-card-image';
-      } else if (div.children.length > 0 || div.textContent.trim().length > 0) {
-        div.className = 'cards-card-body';
-      } else {
-        divsToRemove.push(div);
-      }
+  if (numCells === CARD_FIELDS.length) {
+    // 1 row per card, 9 cells per row (strict order from _cards.json)
+    cardRows.forEach((row) => {
+      const cells = [...row.children];
+      const cardItem = buildCardFromCells(cells, row);
+      if (cardItem) cardsContainer.append(cardItem);
     });
-    // Remove empty divs after iteration (avoid modifying during iteration)
-    divsToRemove.forEach((div) => div.remove());
+  } else if (numCells === 4) {
+    // 3 rows per card: 4+4+1 cells (CARD_FIELDS order)
+    for (let i = 0; i < cardRows.length; i += 3) {
+      const group = cardRows.slice(i, i + 3);
+      if (group.length === 3) {
+        const cells = [
+          ...group[0].children,
+          ...group[1].children,
+          ...group[2].children,
+        ];
+        const cardItem = buildCardFromCells(cells, group);
+        if (cardItem) cardsContainer.append(cardItem);
+      } else if (group.length > 0) {
+        // eslint-disable-next-line no-console
+        console.error(
+          'Cards block: card rows group has unexpected length (expected 3, got %d). Index: %d.',
+          group.length,
+          i,
+        );
+      }
+    }
+  } else if (numCells === 3) {
+    // Legacy: 1 row per card, 3 cells (image | decor | content)
+    cardRows.forEach((row) => {
+      const cardItem = buildCardFromThreeCells(row);
+      if (cardItem) cardsContainer.append(cardItem);
+    });
+  } else if (numCells === 7) {
+    // 7 cells per row: sheet order image, imageAlt, divider, texture, text, link, modal
+    cardRows.forEach((row) => {
+      const cells = [...row.children];
+      const cardItem = buildCardFromSevenCells(cells, row);
+      if (cardItem) cardsContainer.append(cardItem);
+    });
+  } else if (numCells === 8) {
+    // 8 cells: pad to 9 so buildCardFromCells index mapping holds
+    cardRows.forEach((row) => {
+      const cells = [...row.children];
+      cells.push(document.createElement('div'));
+      const cardItem = buildCardFromCells(cells, row);
+      if (cardItem) cardsContainer.append(cardItem);
+    });
+  } else if (cardRows.length > 0) {
+    // eslint-disable-next-line no-console
+    console.error(
+      'Cards block: unexpected card row cell count (%d). Expected 3, 4, 7, 8, or 9.',
+      numCells,
+    );
+  }
 
-    cardsContainer.append(cardItem);
-  });
-
-  // Identify semantic elements if needed (before image optimization)
+  // Identify semantic elements (divider/texture by size, cardTag by heading)
   if (supportsSemanticElements) {
     cardsContainer.querySelectorAll('.cards-card').forEach((cardItem) => {
       identifySemanticCardElements(cardItem);
@@ -632,12 +961,7 @@ export default async function decorate(block) {
     img.closest('picture').replaceWith(optimizedPic);
   });
 
-  // Append container to block (use replaceChildren for better performance)
-  cardsContainer.classList.add('grid-cards');
   block.replaceChildren(cardsContainer);
-
-  // Extract block properties from placeholder cards
-  extractBlockProperties(block, cardsContainer);
 
   // Get all card elements once and reuse
   const allCards = cardsContainer.querySelectorAll('.cards-card');
@@ -646,48 +970,9 @@ export default async function decorate(block) {
   allCards.forEach((cardItem) => {
     if (isImportantDocuments) {
       cardItem.classList.add('important-documents-card');
-
-      // Make entire card clickable - wrap card content in link
-      const link = cardItem.querySelector('.cards-card-body a');
-      if (link && link.href) {
-        const linkUrl = link.href;
-        const linkTitle = link.getAttribute('title') || link.textContent.trim();
-        const imageDiv = cardItem.querySelector('.cards-card-image');
-        const bodyDiv = cardItem.querySelector('.cards-card-body');
-
-        // Create new link wrapper
-        const cardLink = document.createElement('a');
-        cardLink.href = linkUrl;
-        cardLink.title = linkTitle;
-        cardLink.className = 'important-documents-card-link';
-
-        // Move elements directly instead of cloning (performance optimization)
-        if (imageDiv) {
-          // Remove from parent and append to link
-          const imageDivClone = imageDiv.cloneNode(true);
-          cardLink.appendChild(imageDivClone);
-        }
-
-        // Move body content into link, but replace nested link with just text
-        if (bodyDiv) {
-          const bodyDivClone = bodyDiv.cloneNode(true);
-          const nestedLink = bodyDivClone.querySelector('a');
-          if (nestedLink) {
-            // Replace link with its text content (use textContent for better performance)
-            const strong = document.createElement('strong');
-            strong.textContent = nestedLink.textContent;
-            nestedLink.replaceWith(strong);
-          }
-          cardLink.appendChild(bodyDivClone);
-        }
-
-        // Clear and append link wrapper
-        cardItem.textContent = '';
-        cardItem.appendChild(cardLink);
-      }
     } else if (isBlogPosts) {
       cardItem.classList.add('blog-post-card');
-    } else if (!isEarnRewards && !isJoiningPerks && !isAllAboutCard) {
+    } else if (!isEarnRewards && !isJoiningPerks && !isImageAndTitle && !isAllAboutCard) {
       if (isExploreOtherCards) {
         cardItem.classList.add('explore-other-cards');
       } else {
@@ -696,8 +981,8 @@ export default async function decorate(block) {
     }
 
     // Setup interactivity for all card types (links, modals)
-    // Skip for blog-posts and important-documents - they use standard link behavior
-    if (!isBlogPosts && !isImportantDocuments) {
+    // Skip for blog-posts and important-documents - they use wrap-in-link behavior only
+    if (!isBlogPosts) {
       // Add arrow icons for key-benefits, experience-life, reward-points variants
       const shouldAddArrow = supportsSemanticElements;
       const modalTheme = block.dataset.modalTheme || '';
@@ -705,7 +990,7 @@ export default async function decorate(block) {
     }
   });
 
-  block.append(cardsContainer);
+  // cardsContainer is the block's only child (from replaceChildren); no second append.
 
   // Check if swiper is enabled via data attribute
   const isSwipable = block.dataset.swipable === 'true';
@@ -1021,7 +1306,7 @@ export default async function decorate(block) {
       });
     }
   } else if (
-    !isImportantDocuments && !isRelatedSearch
+    !isImportantDocuments && !isRelatedSearch && !isImageAndTitle
     && !isEarnRewards && !isJoiningPerks && !isInCsCards
   ) {
     // === View All / View Less Toggle (Mobile Only) - Only for benefit cards ===

@@ -858,12 +858,14 @@ The height and width are set to 200 assuming the decorations won't be larger. */
   left: auto;
   right: 0;
   background-position: top right;
+  background-image: var(--decoration-after-image);
 }
 
 .section.has-decorations.decorations-reversed::after {
   right: auto;
   left: 0;
   background-position: bottom left;
+  background-image: var(--decoration-before-image);
 }
 
 /* Mobile: hide category nav wrapper (redundant with category-nav.css but kept for safety) */
