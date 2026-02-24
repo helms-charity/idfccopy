@@ -22,6 +22,9 @@ import {
 // Re-export for blocks that import from scripts.js
 export { sanitizeHTML };
 
+// Max collection size before iteration to prevent DoS from excessive loops (CWE-400)
+const MAX_ITERATION_LIMIT = 500;
+
 // DOMPurify loaded once for HTML sanitization (mitigates DOM XSS from contentMap/dataset)
 let domPurifyReady = null;
 
